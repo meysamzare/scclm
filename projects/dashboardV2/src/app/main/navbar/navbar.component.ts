@@ -21,6 +21,7 @@ export class NavbarComponent implements OnInit {
 
     @Input() showColorButton = false;
     @Input() showRefresh = false;
+    @Input() showBackNavigate = false;
     @Input() showSidebarToggleButton = true;
     @Input() showTitle = true;
     @Input() Title = "";

@@ -15,13 +15,13 @@
                 </div>
             </ng-container>
 
-            <div class="level-item">
-                <button *ngIf="showRefresh" (click)="refresh$.next()" mat-icon-button>
+            <div class="level-item" *ngIf="showRefresh">
+                <button (click)="refresh$.next()" mat-icon-button>
                     <mat-icon>refresh</mat-icon>
                 </button>
             </div>
 
-            <div class="level-item">
+            <div class="level-item" *ngIf="showBackNavigate">
                 <button [disabled]="!locationService.canGoBack()" (click)="locationService.back()" mat-icon-button>
                     <mat-icon>keyboard_arrow_left</mat-icon>
                 </button>
