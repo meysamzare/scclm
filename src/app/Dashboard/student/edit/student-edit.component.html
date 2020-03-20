@@ -1,0 +1,306 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <form #fm1="ngForm" id="fm11" style="padding: 10px;">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-sm-6 b-r">
+
+                                <div class="form-group">
+                                    <label>نام </label>
+                                    <input type="text" required #name="ngModel" name="name" [(ngModel)]="student.name"
+                                        placeholder="نام" class="form-control">
+                                    <div *ngIf="(name.touched || name.dirty) && name.invalid">
+                                        <p *ngIf="name.hasError('required')" class="error">
+                                            وارد کردن نام الزامی است
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>نام خانوادگی </label>
+                                    <input type="text" required #lastName="ngModel" name="lastName"
+                                        [(ngModel)]="student.lastName" placeholder="نام خانوادگی" class="form-control">
+                                    <div *ngIf="(lastName.touched || lastName.dirty) && lastName.invalid">
+                                        <p *ngIf="lastName.hasError('required')" class="error">
+                                            وارد کردن نام خانوادگی الزامی است
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>تاریخ تولد</label>
+                                    <mat-form-field class="example-full-width">
+                                        <input tabindex="7" #dateStart="ngModel" (click)="openc(picker1)" readonly
+                                            name="dateStart" required matInput [matDatepicker]="picker1"
+                                            [(ngModel)]="student.birthDate" placeholder="تاریخ تولد">
+                                        <mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker1">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #picker1 touchUi="true"></mat-datepicker>
+                                    </mat-form-field>
+                                    <div *ngIf="dateStart.touched && dateStart.invalid" class="error">
+                                        <div>
+                                            وارد کردن تاریخ تولد الزامی است
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>سریال شناسنامه</label>
+                                    <input type="text" name="serial" [(ngModel)]="student.idCardSerial"
+                                        placeholder="سریال شناسنامه" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>محل تولد</label>
+                                    <input type="text" name="blocation" [(ngModel)]="student.birthLocation"
+                                        placeholder="محل تولد" class="form-control">
+                                </div>
+
+                            </div>
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label>نام پدر </label>
+                                    <input type="text" required #fatherName="ngModel" name="fatherName"
+                                        [(ngModel)]="student.fatherName" placeholder="نام پدر" class="form-control">
+                                    <div *ngIf="(fatherName.touched || fatherName.dirty) && fatherName.invalid">
+                                        <p *ngIf="fatherName.hasError('required')" class="error">
+                                            وارد کردن نام پدر الزامی است
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>شماره شناسنامه</label>
+                                    <input type="number" required #idNumber="ngModel" name="idNumber"
+                                        [(ngModel)]="student.idNumber" placeholder="شماره شناسنامه"
+                                        class="form-control">
+                                    <div *ngIf="(idNumber.touched || idNumber.dirty) && idNumber.invalid">
+                                        <p *ngIf="idNumber.hasError('required')" class="error">
+                                            وارد کردن شماره شناسنامه الزامی است
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>شماره ملی</label>
+                                    <input type="number" required #idNumber2="ngModel" name="idNumber2"
+                                        [(ngModel)]="student.idNumber2" placeholder="شماره ملی" class="form-control">
+                                    <div *ngIf="(idNumber2.touched || idNumber2.dirty) && idNumber2.invalid">
+                                        <p *ngIf="idNumber2.hasError('required')" class="error">
+                                            وارد کردن شماره ملی الزامی است
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>کد دانش آموز</label>
+                                    <input type="number" required #code="ngModel" name="code" [(ngModel)]="student.code"
+                                        placeholder="کد دانش آموز" class="form-control">
+                                    <div *ngIf="(code.touched || code.dirty) &&
+                                    code.invalid">
+                                        <p *ngIf="code.hasError('required')" class="error">
+                                            وارد کردن کد دانش آموز الزامی است
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>کد شناسه ای آموزش و پرورش دانش آموز</label>
+                                    <input type="number" #orgCode="ngModel" name="orgCode" [(ngModel)]="student.orgCode"
+                                        placeholder="کد شناسه ای آموزش و پرورش دانش آموز" class="form-control">
+                                    <!-- <div *ngIf="(orgCode.touched || orgCode.dirty) &&
+                                    orgCode.invalid">
+                                        <p *ngIf="orgCode.hasError('required')" class="error">
+                                            وارد کردن کد شناسه ای آموزش و پرورش دانش آموز الزامی است
+                                        </p>
+                                    </div> -->
+                                </div>
+
+
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label>تصویر دانش آموز</label>
+                                    <br>
+                                    <button (click)="removePic()" [disabled]="student.picData.length == 0"
+                                        mat-raised-button> حذف تصویر </button>
+
+                                    <a target="_blank" mat-raised-button style="margin: 5px;"
+                                        *ngIf="student.picUrl && isEdit" [href]="auth.getFileUrl(student.picUrl)">نمایش
+                                        تصویر دانش آموز</a>
+
+                                    <ngx-dropzone #d1 [disabled]="student.picData.length != 0"
+                                        (filesRejected)="removePic()" (filesAdded)="setPic($event)" [multiple]="false"
+                                        [showPreviews]="true" [accept]="'image/png,image/jpeg'"
+                                        [label]="'تصویر خود را اینجا رها کنید یا کلیک کنید'">
+                                    </ngx-dropzone>
+
+                                    <mat-error *ngIf="!isEdit && student.picData.length == 0">
+                                        انتخاب تصویر دانش آموز الزامی است
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <h4 style="color: orange">اطلاعات تکمیلی دانش آموز</h4>
+                        <div class="row">
+                            <div class="col-sm-6 b-r">
+
+                                <div class="form-group">
+                                    <label>نام و نام خانوادگی پدر</label>
+                                    <input type="text" name="fnamefull" [(ngModel)]="studentInfo.fatherName"
+                                        placeholder="نام و نام خانوادگی پدر" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>تحصیلات پدر</label>
+                                    <input type="text" name="fedu" [(ngModel)]="studentInfo.fatherEdu"
+                                        placeholder="تحصیلات پدر" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>شغل پدر</label>
+                                    <input type="text" name="fjob" [(ngModel)]="studentInfo.fatherJob"
+                                        placeholder="شغل پدر" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>تلفن همراه پدر</label>
+                                    <input type="text" name="fphone" [(ngModel)]="studentInfo.fatherPhone"
+                                        placeholder="تلفن همراه پدر" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>تلفن محل کار پدر</label>
+                                    <input type="text" name="fjobphone" [(ngModel)]="studentInfo.fatherJobPhone"
+                                        placeholder="تلفن محل کار پدر" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>آدرس محل کار پدر</label>
+                                    <input type="text" name="fjobadd" [(ngModel)]="studentInfo.fatherJobAddress"
+                                        placeholder="آدرس محل کار پدر" class="form-control">
+                                </div>
+
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>نام و نام خانوادگی مادر</label>
+                                    <input type="text" name="mnamefull" [(ngModel)]="studentInfo.momName"
+                                        placeholder="نام و نام خانوادگی مادر" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>تحصیلات مادر</label>
+                                    <input type="text" name="medu" [(ngModel)]="studentInfo.momEdu"
+                                        placeholder="تحصیلات مادر" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>شغل مادر</label>
+                                    <input type="text" name="mjob" [(ngModel)]="studentInfo.momJob"
+                                        placeholder="شغل مادر" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>تلفن همراه مادر</label>
+                                    <input type="text" name="mphone" [(ngModel)]="studentInfo.momPhone"
+                                        placeholder="تلفن همراه مادر" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>تلفن محل کار مادر</label>
+                                    <input type="text" name="mjobphone" [(ngModel)]="studentInfo.momJobPhone"
+                                        placeholder="تلفن محل کار مادر" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>آدرس محل کار مادر</label>
+                                    <input type="text" name="mjobadd" [(ngModel)]="studentInfo.momJobAddress"
+                                        placeholder="آدرس محل کار مادر" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6 b-r">
+
+                                <div class="form-group">
+                                    <label>نشانی منزل</label>
+                                    <textarea type="text" name="hadd" [(ngModel)]="studentInfo.homeAddress"
+                                        placeholder="نشانی منزل" class="form-control"></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>تلفن ثابت منزل</label>
+                                    <input type="tel" name="hphone" [(ngModel)]="studentInfo.homePhone"
+                                        placeholder="تلفن ثابت منزل" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>وضعیت خانوادگی</label>
+                                    <ng-select name="famstate" [(ngModel)]="studentInfo.familyState">
+                                        <ng-option [value]="'عادی'">عادی</ng-option>
+                                        <ng-option [value]="'شهدا'">شهدا</ng-option>
+                                        <ng-option [value]="'جانباز'">جانباز</ng-option>
+                                        <ng-option [value]="'آزادگان'">آزادگان</ng-option>
+                                        <ng-option [value]="'مفقود الاثر'">مفقود الاثر</ng-option>
+                                        <ng-option [value]="'فوت پدر'">فوت پدر</ng-option>
+                                        <ng-option [value]="'فوت مادر'">فوت مادر</ng-option>
+                                        <ng-option [value]="'متارکه حضانت با پدر'">متارکه حضانت با پدر</ng-option>
+                                        <ng-option [value]="'متارکه حضانت با مادر'">متارکه حضانت با مادر</ng-option>
+                                    </ng-select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>دین، مذهب</label>
+                                    <input type="text" name="reli" [(ngModel)]="studentInfo.religion"
+                                        placeholder="دین، مذهب" class="form-control">
+                                </div>
+
+                            </div>
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label>شماره شبکه اجتماعی</label>
+                                    <input type="tel" name="socialnet" [(ngModel)]="studentInfo.socialNet"
+                                        placeholder="شماره شبکه اجتماعی" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>آدرس پست الکترونیک</label>
+                                    <input type="email" name="email" [(ngModel)]="studentInfo.email"
+                                        placeholder="آدرس پست الکترونیک" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>توضیحات</label>
+                                    <textarea type="text" name="desc" [(ngModel)]="studentInfo.desc"
+                                        placeholder="توضیحات" class="form-control"></textarea>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <br>
+                        <br>
+                        <div class="col-md-12">
+                            <a mat-raised-button color="warn" style="margin:
+                                    5px;" routerLink="/dashboard/student">لغو</a>
+                            <button type="submit" mat-raised-button color="primary"
+                                [disabled]="!fm1.valid || !isEdit && student.picData.length == 0"
+                                (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

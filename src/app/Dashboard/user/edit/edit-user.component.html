@@ -1,0 +1,127 @@
+<span class="fa fa-refresh fa-spin spinner" *ngIf="isLoading"></span>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <form #fm1="ngForm">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>نام</label>
+                                <input type="text" tabindex="1" required #name="ngModel" name="name"
+                                    [(ngModel)]="User.firstname" placeholder="نام کاربر" class="form-control">
+                                <div *ngIf="(name.touched || name.dirty)  && name.invalid">
+                                    <p *ngIf="name.hasError('required')" class="error">
+                                        وارد کردن نام کاربر الزامی است
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>کد ملی</label>
+                                <input type="text" required tabindex="3" #meliCode="ngModel" minlength="10"
+                                    maxlength="10" name="meliCode" [(ngModel)]="User.meliCode"
+                                    placeholder="کد ملی کاربر" class="form-control">
+                                <div *ngIf="(meliCode.touched || meliCode.dirty)  && meliCode.invalid">
+                                    <p *ngIf="meliCode.hasError('required')" class="error">
+                                        وارد کردن کد ملی کاربر الزامی است
+                                    </p>
+                                    <p *ngIf="meliCode.hasError('minlength') || meliCode.hasError('maxlength')">
+                                        کد ملی را به درستی وارد نمایید
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>کلمه عبور</label>
+                                <input type="password" required tabindex="5" #password="ngModel" minlength="8"
+                                    maxlength="18" name="password" [(ngModel)]="User.password" placeholder="کلمه عبور "
+                                    class="form-control">
+                                <div *ngIf="(password.touched || password.dirty)  && password.invalid">
+                                    <p *ngIf="password.hasError('required')" class="error">
+                                        وارد کردن کلمه عبور الزامی است
+                                    </p>
+                                    <p *ngIf="password.hasError('minlength') || password.hasError('maxlength')">
+                                        کلمه عبور باید بین 8 تا 18 کارکتر باشد
+                                    </p>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="col-sm-6 b-r-r">
+                            <div class="form-group">
+                                <label>نام خانوادگی</label>
+                                <input type="text" required tabindex="2" #lastname="ngModel" name="lastname"
+                                    [(ngModel)]="User.lastname" placeholder="نام خانوادگی کاربر" class="form-control">
+                                <div *ngIf="(lastname.touched || lastname.dirty)  && lastname.invalid">
+                                    <p *ngIf="lastname.hasError('required')" class="error">
+                                        وارد کردن نام خانوادگی کاربر الزامی است
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>نام کاربری</label>
+                                <input type="text" required tabindex="4" #username="ngModel" name="username"
+                                    [(ngModel)]="User.username" placeholder="نام کاربری " class="form-control">
+                                <div *ngIf="(username.touched || username.dirty)  && username.invalid">
+                                    <p *ngIf="username.hasError('required')" class="error">
+                                        وارد کردن نام کاربری الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>انتخاب سطح دسترسی</label>
+                                <ng-select #roleselect="ngModel" name="role1" [(ngModel)]="User.roleId" required>
+                                    <ng-option *ngFor="let role of roles" [value]="role.id">{{role.name}}</ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="roleselect.hasError('required')">
+                                    انتخاب سطح دسترسی الزامی است
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>تصویر پروفایل</label>
+                                <br>
+                                <button (click)="removePic()" [disabled]="User.picData.length == 0" mat-raised-button>
+                                    حذف تصویر
+                                </button>
+
+                                <a target="_blank" mat-raised-button style="margin: 5px;" *ngIf="User.picUrl && isEdit"
+                                    [href]="auth.getFileUrl(User.picUrl)">
+                                    نمایش تصویر پروفایل
+                                </a>
+
+                                <ngx-dropzone #d1 [disabled]="User.picData.length != 0" (filesRejected)="removePic()"
+                                    (filesAdded)="setPic($event)" [multiple]="false" [showPreviews]="true"
+                                    [accept]="'image/png,image/jpeg'"
+                                    [label]="'تصویر خود را اینجا رها کنید یا کلیک کنید'">
+                                </ngx-dropzone>
+
+                                <mat-error *ngIf="!isEdit && User.picData.length == 0">
+                                    انتخاب تصویر پروفایل الزامی است
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button mat-raised-button color="warn" style="margin: 5px;"
+                                routerLink="/dashboard/user">لغو</button>
+                            <button mat-raised-button color="primary" type="submit"
+                                [disabled]="!fm1.valid || !isRoleselected() || (!isEdit && User.picData.length == 0)"
+                                (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

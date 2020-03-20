@@ -1,0 +1,36 @@
+
+.toast-block {
+    position: fixed; 
+    bottom: 0; 
+    right: 0; 
+    padding: 0px; 
+    min-width: 250px; 
+    z-index: 10000;
+    margin-right: 10px;
+    margin-bottom: 80px;
+}
+
+.toast-body {
+    display: flex;
+}
+
+
+  .toast.show.error {
+	color: white !important;
+    background-color: darkred;
+  }
+
+  .toast.show.success {
+	color: white;
+    background-color: green;
+  }
+
+  .toast.show.warning {
+	color: white;
+    background-color: orange;
+  }
+
+  .toast.show.info {
+	color: white;
+    background-color: dodgerblue;
+  }

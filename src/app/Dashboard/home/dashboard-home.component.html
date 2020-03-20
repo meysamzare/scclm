@@ -1,0 +1,425 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+
+        <div class="col-md-3">
+            <div class="widget style1 lazur-bg" style="cursor: pointer;" [routerLink]="['./titute']">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <i class="fa fa-home fa-5x"></i>
+                    </div>
+                    <div class="col-md-8">
+                        <span> آموزشگاه </span>
+                        <h2 class="font-bold" style="font-size: 19px;"> {{firstTituteName}}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="widget style1 navy-bg" style="cursor: pointer;" [routerLink]="['./yeareducation']">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <i class="fa fa-map fa-5x"></i>
+                    </div>
+                    <div class="col-md-8">
+                        <span> سال تحصیلی </span>
+                        <h2 class="font-bold" style="font-size: 19px;"> {{ activeYeareducationName }} </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="widget style1 yellow-bg" style="cursor: pointer" [routerLink]="['./student']"
+                [tooltip]="'تعداد دانش آموزان ثبت نام شده'">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <i class="fa fa-user fa-5x"></i>
+                    </div>
+                    <div class="col-md-8">
+                        <span> تعداد دانش آموز </span>
+                        <h2 class="font-bold"> {{ registredStudentCountInActiveYeareducation }} </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="widget style1 navy-bg" [routerLink]="['./ticket/conversations']">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <i class="fa fa-envelope-open fa-5x"></i>
+                    </div>
+                    <div class="col-md-8">
+                        <span> کار در گردش </span>
+                        <h2 class="font-bold"> {{ openTickets.length }} </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <hr>
+
+    <div class="row margin-top-10">
+        <div class="col-lg-2">
+            <div class="widget style1 lazur-bg" [class.new-w]="unreadTickets.length > 0 || openTickets.length > 0"
+                [routerLink]="['./ticket/conversations']" style="background-color: #345995"
+                [tooltip]="'تعداد مکاتبات خوانده نشده'">
+                <div class="row vertical-align" style="text-align: center;">
+                    <div class="col-md-3">
+                        <i class="fa fa-envelope fa-3x"></i>
+                    </div>
+                    <div class="col-md-9">
+                        <h2 class="font-bold">{{ unreadTickets.length }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-10">
+            <mat-card class="border-top-green" style="border-top-color: #345995;">
+                <mat-card-title-group>
+                    <h4 style="width: 100%;">مکاتبات</h4>
+                    <div class="ibox-tools">
+                        <span *ngIf="" class="label label-warning-light float-right">
+                        </span>
+                    </div>
+                </mat-card-title-group>
+
+                <ng-template #ticketTemp let-Tickets="tickets">
+
+                    <ng-container *ngFor="let i of Tickets">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div matRipple [routerLink]="['/dashboard/ticket/conversations/view/' + i.id]"
+                                    class="margin-top-10"
+                                    style="cursor: pointer; padding: 15px; border-color: black; border-width: 0.5px !important; border-radius: 10px; border: solid;">
+                                    <div class="row">
+                                        <div class="col-lg-8">
+                                            <h3>{{ i.subject }}</h3>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <p>
+                                                فوریت :
+                                                <label>{{ getTicketOrderString(i.order) }}</label>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <p> ارسال کننده :
+                                                <label>{{ getTicketTypeString(i.senderType) + ' ' + i.senderName }}</label>
+                                            </p>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <p> دریافت کننده :
+                                                <label>{{ getTicketTypeString(i.reciverType) + ' ' + i.reciverName }}</label>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                </ng-template>
+
+                <mat-card-content>
+                    <mat-tab-group dynamicHeight mat-align-tabs="center">
+                        <mat-tab>
+                            <ng-template mat-tab-label>
+                                <span [matBadge]="unreadTickets.length == 10 ? '10+' : unreadTickets.length">
+                                    خوانده نشده
+                                </span>
+                            </ng-template>
+
+                            <div *ngTemplateOutlet="ticketTemp; context: { tickets: unreadTickets }"></div>
+                        </mat-tab>
+                        <mat-tab>
+                            <ng-template mat-tab-label>
+                                <span [matBadge]="openTickets.length == 10 ? '10+' : openTickets.length">در جریان</span>
+                            </ng-template>
+
+                            <div *ngTemplateOutlet="ticketTemp; context: { tickets: openTickets }"></div>
+                        </mat-tab>
+
+                    </mat-tab-group>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+
+    <div class="row margin-top-10">
+        <div class="col-lg-2">
+            <div class="widget style1 navy-bg" [class.new-w]="chat.unReadMessages.length > 0" [routerLink]="['./chat']"
+                style="background-color: #03CEA4" [tooltip]="'تعداد گفتگو های خوانده نشده'">
+                <div class="row vertical-align" style="text-align: center;">
+                    <div class="col-md-3">
+                        <i class="fa fa-weixin fa-3x"></i>
+                    </div>
+                    <div class="col-md-9">
+                        <h2 class="font-bold">{{ chat.unReadMessages.length }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-10">
+
+            <mat-card class="border-top-green" style="border-top-color: #03CEA4">
+                <mat-card-title-group>
+                    <h4 style="width: 100%;">تازه ترین گفتگو ها</h4>
+                    <div class="ibox-tools">
+                        <span *ngIf="chat.getLastUnreadsMessages().length != 0"
+                            class="label label-warning-light float-right">{{ chat.getLastUnreadsMessages().length }}
+                            گفتگو جدید
+                        </span>
+                    </div>
+                </mat-card-title-group>
+
+                <mat-card-content>
+                    <ng-container *ngIf="chat.unReadMessages.length == 0">
+                        <div style="text-align: center;">
+                            <b> شما پیام جدیدی ندارید </b>
+                        </div>
+                    </ng-container>
+
+
+                    <ng-container>
+                        <div class="feed-activity-list">
+                            <div class="feed-element" *ngFor="let mes of chat.getLastUnreadsMessages()">
+                                <div class="media-body">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <strong>{{ mes.lastNewMessage.senderName }}</strong>
+                                        </div>
+                                        <div class="col-lg-6" style="text-align: left;">
+                                            <small class="text-muted">{{ mes.lastNewMessage.sendDate }}</small>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <span>
+                                                {{ mes.lastNewMessage.messageText.length > 30 ?  mes.lastNewMessage.messageText.substr(0, 30) + '...' : mes.lastNewMessage.messageText  }}
+                                            </span>
+                                        </div>
+                                        <div class="col-lg-6" style="text-align: left;">
+                                            <span *ngIf="mes.totalCount != 1"
+                                                class="label label-success float-right">{{ mes.totalCount }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </ng-container>
+
+                </mat-card-content>
+
+                <mat-card-actions></mat-card-actions>
+            </mat-card>
+        </div>
+    </div>
+
+    <div class="row margin-top-10" *ngIf="auth.isUserAccess('view_Exam', false)">
+        <div class="col-lg-2">
+            <div class="widget style1 yellow-bg" [class.new-w]="upcommingExamsTotalCount > 0" [routerLink]="['./exam']"
+                style="background-color: #FB4D3D" [tooltip]="'آزمون های پیش رو'">
+                <div class="row vertical-align" style="text-align: center;">
+                    <div class="col-md-3">
+                        <i class="fa fa-paper-plane fa-3x"></i>
+                    </div>
+                    <div class="col-md-9">
+                        <h2 class="font-bold">{{ upcommingExamsTotalCount }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-10">
+
+            <mat-card class="border-top-green" style="border-top-color: #FB4D3D">
+                <mat-card-title-group>
+                    <h4 style="width: 100%;">آزمون ها</h4>
+                    <div class="ibox-tools">
+                        <span *ngIf="" class="label label-warning-light float-right">
+                        </span>
+                    </div>
+                </mat-card-title-group>
+
+                <mat-card-content>
+
+                    <ng-template #examTemp let-Exams="exams" let-showResTick="showTick" let-totalCount="totalCount">
+
+                        <div style="text-align: center" *ngIf="Exams.length == 0">
+                            <b> آزمونی یافت نشد </b>
+                        </div>
+
+                        <div class="col-lg-12" *ngFor="let i of Exams; let index = index;">
+                            <div style="border-radius: 5px; padding: 8px;"
+                                [ngStyle]="{ 'background-color' : (index + 1) % 2 == 0 ? 'white' : 'whitesmoke' }">
+
+                                <div class="row" style="cursor: pointer;" matRipple (click)="openExamDetails(i.id)">
+                                    <div class="col-lg-1">
+                                        {{ (Exams.indexOf(i) + 1) }}
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <mat-icon [matTooltip]="'اعلام نتایج شده است'" *ngIf="showResTick && i.result">
+                                            done
+                                        </mat-icon>
+
+                                        <mat-icon [matTooltip]="'در انتظار نتیجه'" *ngIf="showResTick && !i.result">
+                                            restore
+                                        </mat-icon>
+                                    </div>
+                                    <div class="col-lg-7">
+                                        <p style="display: inline;" [matTooltip]=" 'دبیر : ' +  i.teacherName">
+                                            {{i.name + ' (' + i.gradeName + ' - ' + i.className +')'}}
+                                        </p>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        {{ i.dateString }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="totalCount > 10">
+                            <div class="col-lg-12" style="margin-top: 15px;">
+                                <div style="text-align: center;">
+                                    <b style="cursor: pointer;" routerLink="/dashboard/exam">
+                                        {{ totalCount - 10 }} مورد دیگر باقی مانده است...
+                                    </b>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+
+
+                    <ng-container>
+
+                        <mat-tab-group dynamicHeight>
+
+
+                            <mat-tab>
+                                <ng-template mat-tab-label>
+                                    <span [matBadge]="upcommingExamsTotalCount">پیش رو</span>
+                                </ng-template>
+
+                                <div class="row">
+                                    <div
+                                        *ngTemplateOutlet="examTemp;context:{exams:upcommingExams, totalCount: upcommingExamsTotalCount}">
+                                    </div>
+                                </div>
+                            </mat-tab>
+
+                            <mat-tab mat-stretch-tabs mat-align-tabs="center">
+                                <ng-template mat-tab-label>
+                                    <span [matBadge]="passedExamsTotalCount">برگزار شده</span>
+                                </ng-template>
+
+                                <div class="row">
+                                    <div
+                                        *ngTemplateOutlet="examTemp;context:{exams: passedExams, showTick: true, totalCount: passedExamsTotalCount}">
+                                    </div>
+                                </div>
+                            </mat-tab>
+
+
+                            <mat-tab>
+                                <ng-template mat-tab-label>
+                                    <span [matBadge]="waitingForResultExamsTotalCount">در انتظار نتیجه</span>
+                                </ng-template>
+
+                                <div class="row">
+                                    <div
+                                        *ngTemplateOutlet="examTemp;context:{exams:waitingForResultExams, totalCount: waitingForResultExamsTotalCount}">
+                                    </div>
+                                </div>
+                            </mat-tab>
+
+                            <mat-tab>
+                                <ng-template mat-tab-label>
+                                    <span [matBadge]="cancelledExamsTotalCount">لغو شده</span>
+                                </ng-template>
+
+                                <div class="row">
+                                    <div
+                                        *ngTemplateOutlet="examTemp;context:{exams:cancelledExams, totalCount: cancelledExamsTotalCount}">
+                                    </div>
+                                </div>
+                            </mat-tab>
+
+                        </mat-tab-group>
+
+                    </ng-container>
+
+                </mat-card-content>
+
+            </mat-card>
+
+        </div>
+    </div>
+
+    <div class="row margin-top-10">
+        <div class="col-lg-2">
+            <div class="widget style1 navy-bg" [class.new-w]="schedulesCount > 0" [routerLink]="['./schedule']"
+                style="background-color: #EAC435" [tooltip]="'تعداد کل رویداد های پیش رو'">
+                <div class="row vertical-align" style="text-align: center;">
+                    <div class="col-md-3">
+                        <i class="fa fa-calendar-o fa-3x"></i>
+                    </div>
+                    <div class="col-md-9">
+                        <h2 class="font-bold">{{ schedulesCount }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-10">
+            <mat-card class="border-top-green" style="border-top-color: #EAC435">
+                <mat-card-title-group>
+                    <h4 style="width: 100%;">رویداد های پیش رو</h4>
+                    <div class="ibox-tools">
+                        <span *ngIf="" class="label label-warning-light float-right">
+                        </span>
+                    </div>
+                </mat-card-title-group>
+                <mat-card-content>
+                    <div class="row">
+
+
+                        <div class="col-lg-12" *ngFor="let i of upCommingSchedules; let index = index;">
+                            <div style="border-radius: 5px; padding: 8px;"
+                                [ngStyle]="{ 'background-color' : (index + 1) % 2 == 0 ? 'white' : 'whitesmoke' }">
+
+                                <div class="row">
+                                    <div class="col-lg-9">
+                                        <p style="display: inline;">
+                                            {{ (upCommingSchedules.indexOf(i) + 1) + ' .' }}
+                                            {{i.title + ' (' + i.content.substr(0, 20) +')'}}
+                                        </p>
+                                        &nbsp;
+                                    </div>
+                                    <div class="col-lg-3 al-left">
+                                        {{ i.dateStartString + ' - ' + i.dateEndString }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="schedulesCount > 5">
+                            <div class="col-lg-12" style="margin-top: 15px;">
+                                <div style="text-align: center; cursor: pointer;" routerLink="/dashboard/schedule">
+                                    <b>
+                                        {{ schedulesCount - 5 }} مورد دیگر باقی مانده است...
+                                    </b>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+</div>

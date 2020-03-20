@@ -1,0 +1,165 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <form #fm1="ngForm" id="fm11" (keydown.esc)="goToList()">
+                        <div class="col-sm-6 b-r">
+                            <div class="form-group">
+                                <label>عنوان</label>
+                                <input type="text" (keydown.enter)="sts()" required #name="ngModel" name="name"
+                                    [(ngModel)]="attr.title" placeholder="عنوان" class="form-control">
+                                <div *ngIf="(name.touched || name.dirty)  && name.invalid">
+                                    <p *ngIf="name.hasError('required')" class="error">
+                                        وارد کردن عنوان الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>انتخاب واحد</label>
+                                <ng-select #units="ngModel" name="units" [(ngModel)]="attr.unitId" required>
+                                    <ng-option *ngFor="let u of tys" [value]="u.id">{{u.title}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="units.hasError('required')">
+                                    انتخاب واحد الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب نوع</label>
+                                <ng-select [disabled]="isEdit" #type="ngModel" name="type"
+                                    [(ngModel)]="attr.attrTypeInt" required>
+                                    <ng-option [value]="1">متن</ng-option>
+                                    <ng-option [value]="9">متن بلند</ng-option>
+                                    <ng-option [value]="2">عدد</ng-option>
+                                    <ng-option [value]="3">تاریخ</ng-option>
+                                    <ng-option [value]="4">چک باکس</ng-option>
+                                    <ng-option [value]="5">کلمه عبور</ng-option>
+                                    <ng-option [value]="6">لیست</ng-option>
+                                    <ng-option [value]="7">تصویر</ng-option>
+                                    <ng-option [value]="8">فایل</ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="type.hasError('required')">
+                                    انتخاب نوع الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group" *ngIf="attr.attrTypeInt == 6">
+                                <mat-form-field class="example-chip-list">
+                                    <mat-chip-list #chipList>
+                                        <mat-chip *ngFor="let i of values" [selectable]="true" [removable]="true"
+                                            (removed)="remove(i)">
+                                            {{ i.name }}
+                                            <mat-icon matChipRemove>clear</mat-icon>
+                                        </mat-chip>
+                                        <input placeholder="موارد قابل انتخاب توسط کاربر را با اینتر جدا کنید"
+                                            [matChipInputFor]="chipList"
+                                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                            [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="add($event)">
+                                    </mat-chip-list>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="form-group">
+                                <label>آیا این فیلد توسط کاربر پر میشود؟</label>
+                                <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="attr.isInClient">توسط
+                                    کاربر</mat-checkbox>
+                            </div>
+
+                            <div class="form-group">
+                                <label>آیا این فیلد در اطلاع رسانی باشد؟</label>
+                                <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="attr.isInShowInfo">
+                                    اطلاع رسانی</mat-checkbox>
+                            </div>
+
+                            <div class="form-group">
+                                <label>آیا این فیلد در جستجو باشد؟</label>
+                                <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="attr.isInSearch">جستجو
+                                </mat-checkbox>
+                            </div>
+
+                            <div class="form-group">
+                                <label>اولویت در اطلاع رسانی</label>
+                                <input [disabled]="attr.isInShowInfo == false" type="number" required
+                                    #orderInfo="ngModel" name="orderInfo" [(ngModel)]="attr.orderInInfo"
+                                    placeholder="اولویت" class="form-control">
+                                <div *ngIf="(orderInfo.touched || orderInfo.dirty)  && orderInfo.invalid">
+                                    <p *ngIf="orderInfo.hasError('required')" class="error">
+                                        وارد کردن اولویت در اطلاع رسانی الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>آیا وارد کردن این فیلد اجباری است؟</label>
+                                <mat-checkbox [disabled]="attr.attrTypeInt == 4" [ngModelOptions]="{standalone: true}"
+                                    [(ngModel)]="attr.isRequired">
+                                    اجباری
+                                </mat-checkbox>
+                            </div>
+
+                            <div class="form-group">
+                                <label>آیا این فیلد کد ملی است؟</label>
+                                <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="attr.isMeliCode">
+                                    کد ملی
+                                </mat-checkbox>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Placeholder</label>
+                                <input type="text" #plshold="ngModel" name="plshold" [(ngModel)]="attr.placeholder"
+                                    placeholder="Placeholder" class="form-control">
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6 ">
+                            <div class="form-group">
+                                <label>نمون برگ</label>
+                                <div [ngClass]="{ 'di': isEdit ? true : false }" id="divtree"></div>
+                                <mat-error *ngIf="!isCatSelected()">
+                                    انتخاب نمون برگ الزامی است
+                                </mat-error>
+                            </div>
+                            <div class="form-group">
+                                <label>توضیحات</label>
+                                <textarea type="text" rows="5" (keydown.enter)="sts()" name="desc"
+                                    [(ngModel)]="attr.desc" placeholder="توضیحات " class="form-control"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>غیر تکراری</label>
+                                <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="attr.isUniq">مقدار این
+                                    فیلد در هنگام ثبت نام تکراری وارد نشود</mat-checkbox>
+                            </div>
+                            <div class="form-group">
+                                <label>اولویت</label>
+                                <input type="number" (keydown.enter)="sts()" required #order="ngModel" name="order"
+                                    [(ngModel)]="attr.orderInt" placeholder="اولویت" class="form-control">
+                                <div *ngIf="(order.touched || order.dirty)  && order.invalid">
+                                    <p *ngIf="order.hasError('required')" class="error">
+                                        وارد کردن اولویت الزامی است
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-12">
+                            <button type="button" mat-raised-button color="warn" style="margin: 5px;"
+                                (click)="location.back()">لغو</button>
+                            <button type="submit" mat-raised-button color="primary"
+                                [disabled]="!fm1.valid || !isTypeSelected() || !isCatSelected() || !isUnitSelected()"
+                                (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

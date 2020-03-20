@@ -1,0 +1,110 @@
+<mat-card>
+
+    <mat-card-title></mat-card-title>
+
+    <mat-card-content>
+
+        <div class="row">
+            <div class="col-lg-6">
+
+                <div class="form-group">
+                    <label>انتخاب درس</label>
+                    <ng-select #courseselect="ngModel" name="course" [(ngModel)]="selectedCourse" required>
+                        <ng-option *ngFor="let cor of courses" [value]="cor.id">{{cor.name}}
+                        </ng-option>
+                    </ng-select>
+                    <mat-error *ngIf="courseselect.hasError('required')">
+                        انتخاب درس الزامی است
+                    </mat-error>
+                </div>
+
+            </div>
+            <div class="col-lg-6">
+
+                <div class="form-group">
+                    <label>انتخاب آزمون</label>
+                    <ng-select [disabled]="!selectedCourse" #selectexam="ngModel" name="selecexam"
+                        [(ngModel)]="selectedExam" required>
+                        <ng-option *ngFor="let i of getFiltredExams()" [disabled]="isAnyExamWithId(i.id)"
+                            [value]="i.id">{{i.name}}
+                        </ng-option>
+                    </ng-select>
+                    <mat-error *ngIf="selectexam.hasError('required')">
+                        انتخاب آزمون الزامی است
+                    </mat-error>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <button [disabled]="selectedExam == null" (click)="addExamChart()" mat-flat-button color="primary">
+                    <mat-icon>add</mat-icon> &nbsp; نمایش نمودار آزمون
+                </button>
+            </div>
+        </div>
+
+
+    </mat-card-content>
+
+    <mat-card-actions></mat-card-actions>
+
+</mat-card>
+
+
+<ng-container *ngFor="let i of examAnalizeDatas">
+
+
+    <mat-card style="margin-top: 10px;" [@enterAnim]>
+        <mat-card-content>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <button mat-flat-button color="warn" (click)="removeExamChart(i.ID)">
+                        <mat-icon>remove</mat-icon> &nbsp; حذف آزمون از لیست
+                    </button>
+                    <button style="margin-right: 5px;" mat-flat-button color="primary" (click)="showExamDetail(i.exam.id)">
+                        <mat-icon>remove_red_eye</mat-icon> &nbsp; لیست نمرات
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-lg-4">
+                    <br>
+                    <p> نام آزمون : <label>{{ i.exam.name }}</label> </p>
+                    <p> پایه و کلاس آزمون : <label>{{ i.exam.gradeName + ' | ' + i.exam.className }}</label> </p>
+                    <p> تعداد دانش آموز شرکت کرده در آزمون : <label>{{ i.examscores.length }}</label> </p>
+                    <p> ملاک آزمون : <label>{{ i.exam.topScore }}</label> </p>
+                    <p> بودجه آزمون : <label>{{ i.exam.source }}</label> </p>
+                    <p> میانگین : <label>{{ i.exam.avgInExam }}</label> </p>
+                    <p> کمترین : <label>{{ i.exam.minInExam }}</label> </p>
+                    <p> بیشترین : <label>{{ i.exam.maxInExam }}</label> </p>
+                </div>
+                <div class="col-lg-8">
+                    <canvas *ngIf="i.chartData[0].data" baseChart [datasets]="i.chartData" [labels]="i.chartLabel"
+                        [chartType]="'bar'">
+                    </canvas>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-lg-4" style="margin-top: 10px;"
+                    *ngFor="let typeChartData of i.typesChartDatas; let index = index">
+                    <b>{{ i.typeNames[index] }} : </b>
+                    <hr>
+                    <p>میانگین: {{ i.typesAvgs[index].toFixed(2) }}</p>
+                    <p>بیشترین: {{ i.typesMax[index] }}</p>
+                    <p>کمترین: {{ i.typesMin[index] }}</p>
+                    <canvas *ngIf="typeChartData[0].data" baseChart [datasets]="typeChartData"
+                        [labels]="i.typesChartLabels[index]" [chartType]="'bar'">
+                    </canvas>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+
+</ng-container>

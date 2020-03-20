@@ -1,0 +1,39 @@
+.row {
+    margin-bottom: 7px;
+}
+
+.item-card {
+    padding: 0;
+    cursor: pointer;
+
+    div {
+        padding: 10px;
+        height: 105px;
+
+        p.icon {
+            margin: 5px;
+
+            mat-icon {
+                font-size: 30px;
+            }
+        }
+
+        p.title {
+            margin: 0;
+            font-size: 14px;
+        }
+    }
+}
+
+.item-card.new {
+    background-color: #ffe813;
+
+    p.title {
+        color: initial;
+    }
+}
+
+.company {
+    width: inherit;
+    margin-bottom: 10px;
+}

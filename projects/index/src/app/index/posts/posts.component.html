@@ -1,0 +1,270 @@
+<div class="row">
+    <div class="col-12">
+        <div class="header-amazing-search" [ngStyle]="{ 'background-image': getGradentOfTop() }"></div>
+    </div>
+    <aside class="sidebar-page col-12 col-sm-12 col-md-4 col-lg-3 order-1">
+        <div class="sidebar-title-amazing">
+            <!-- <img src="assets/img/ptyp/{{type}}.svg" style="width: 200px;" alt=""> -->
+        </div>
+        <div class="box">
+            <div class="box-header">جستجو در {{ getTypeString() }}</div>
+            <div class="box-content">
+                <div class="ui-input ui-input--quick-search">
+                    <input type="text" [disabled]="posts.length == 0 && searchText.length == 0" name="setch"
+                        [(ngModel)]="searchText" (ngModelChange)="searchTextChange()"
+                        class="ui-input-field ui-input-field--cleanable"
+                        placeholder="عبارت مورد نظر خود را وارد کنید .....">
+                    <span class="ui-input-cleaner"></span>
+                </div>
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-header">
+                <div class="box-toggle" data-toggle="collapse" href="#collapseExample1" role="button"
+                    aria-expanded="true" aria-controls="collapseExample1">
+                    نمونه برگ های مربوط به {{ getTypeString() }}
+                    <i class="now-ui-icons arrows-1_minimal-down"></i>
+                </div>
+            </div>
+            <div class="box-content">
+                <div class="collapse show" id="collapseExample1">
+                    <ng-container *ngIf="catsByType.length != 0">
+                        <div class="ui-input ui-input--quick-search">
+                            <input type="text" name="flcat" [(ngModel)]="filterCats"
+                                class="ui-input-field ui-input-field--cleanable"
+                                placeholder="نام نونه برگ مورد نظر را وارد کنید ....">
+                            <span class="ui-input-cleaner"></span>
+                        </div>
+                        <div style="width: 100%">
+                            <ng-container *ngFor="let i of getFilterCats()">
+                                <a style="width: 100%; margin-top: 10px;" class="btn btn-info"
+                                    routerLink="/register-item/{{i.id}}">{{ i.title }}</a>
+                            </ng-container>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="catsByType.length == 0">
+                        <div class="row justify-content-center" style="text-align: center;">
+                            موردی یافت نشد
+                        </div>
+                    </ng-container>
+                </div>
+
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-header">
+                <div class="box-toggle" data-toggle="collapse" href="#collapseExample2" role="button"
+                    aria-expanded="true" aria-controls="collapseExample2">
+                    دسته بندی
+                    <i class="now-ui-icons arrows-1_minimal-down"></i>
+                </div>
+            </div>
+            <div class="box-content">
+                <div class="collapse" id="collapseExample2">
+                    <ng-container *ngIf="posts.length != 0 && searchText.length == 0 || isUserInSearch()">
+                        <ng-container *ngIf="tags.length != 0">
+                            <div class="ui-input ui-input--quick-search">
+                                <input type="text" name="fltags" [(ngModel)]="filterTags"
+                                    class="ui-input-field ui-input-field--cleanable"
+                                    placeholder="نام دسته بندی مورد نظر را وارد کنید ....">
+                                <span class="ui-input-cleaner"></span>
+                            </div>
+                        </ng-container>
+                        <div class="filter-option">
+                            <mat-checkbox style="display: inherit;" [(ngModel)]="searchLast15"
+                                (ngModelChange)="refreshPosts()">
+                                &nbsp;15 روز گذشته
+                            </mat-checkbox>
+                            <mat-checkbox style="display: inherit;" [(ngModel)]="searchLastMonth"
+                                (ngModelChange)="refreshPosts()">
+                                &nbsp;ماه جاری
+                            </mat-checkbox>
+                            <ng-container *ngFor="let i of getFilterTags(); let index = index;">
+                                <mat-checkbox (change)="setSearchTags(i, $event)" style="display: inherit;">
+                                    &nbsp;{{i}}
+                                </mat-checkbox>
+                            </ng-container>
+
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="posts.length == 0 && !isUserInSearch()">
+                        <div class="row justify-content-center" style="text-align: center;">
+                            موردی یافت نشد
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-header">
+                <div class="box-toggle" data-toggle="collapse" href="#collapseExample3" role="button"
+                    aria-expanded="true" aria-controls="collapseExample3">
+                    نویسندگان
+                    <i class="now-ui-icons arrows-1_minimal-down"></i>
+                </div>
+            </div>
+            <div class="box-content">
+                <div class="collapse show" id="collapseExample3">
+                    <ng-container *ngIf="authors.length != 0 && posts.length != 0 || isUserInSearch()">
+
+                        <div class="ui-input ui-input--quick-search">
+                            <input type="text" name="flauthor" [(ngModel)]="filterAuthors"
+                                class="ui-input-field ui-input-field--cleanable"
+                                placeholder="نام نویسنده مورد نظر را وارد کنید ....">
+                            <span class="ui-input-cleaner"></span>
+                        </div>
+                        <div class="filter-option">
+                            <ng-container *ngFor="let i of getFilterAuthors(); let index = index;">
+                                <mat-checkbox (change)="setSearchAuthors(i, $event)">{{i}}</mat-checkbox>
+                            </ng-container>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="authors.length == 0 || posts.length == 0 && !isUserInSearch()">
+                        <div class="row justify-content-center" style="text-align: center;">
+                            موردی یافت نشد
+                        </div>
+                    </ng-container>
+
+                </div>
+            </div>
+        </div>
+    </aside>
+    <div class="amazing-content col-12 col-sm-12 col-md-12 col-lg-9 order-2">
+
+        <div class="row">
+            <ng-container *ngFor="let i of catsByType">
+
+                <div class="col-6 col-lg-3">
+                    <div class="widget-banner card">
+                        <a routerLink="/register-item/{{i.id}}">
+                            <img class="img-fluid" [src]="auth.getFileUrl(i.registerPicUrl)">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-6 col-lg-3" *ngIf="i.isInfoShow">
+                    <div class="widget-banner card">
+                        <a routerLink="/login-item/{{i.id}}/1">
+                            <img class="img-fluid" [src]="auth.getFileUrl(i.showInfoPicUrl)">
+                        </a>
+                    </div>
+                </div>
+
+            </ng-container>
+        </div>
+
+        <div class="breadcrumb-section default">
+            <ul class="breadcrumb-list">
+                <li>
+                    <span style="color: white;">مطالب سایت</span>
+                </li>
+                <li><span style="color: white;"> {{ getTypeString() }} </span></li>
+            </ul>
+        </div>
+        <div class="listing default">
+            <div class="listing-counter" style="color: white"> {{ totalCount }} پست </div>
+            <div class="listing-header default">
+                <ul class="listing-sort nav nav-tabs justify-content-center" role="tablist"
+                    data-label="مرتب‌سازی بر اساس :">
+                    <li>
+                        <a style="cursor: pointer;" [class.active]="sort == 'new'" (click)="setSort('new')">جدیدترین</a>
+                    </li>
+                    <li>
+                        <a style="cursor: pointer;" [class.active]="sort == 'comment'"
+                            (click)="setSort('comment')">پربحث ترین</a>
+                    </li>
+                    <li>
+                        <a style="cursor: pointer;" [class.active]="sort == 'view'"
+                            (click)="setSort('view')">پربازدیدترین</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-content default text-center">
+                <div class="tab-pane active" id="related" role="tabpanel" aria-expanded="true">
+                    <div class="container no-padding-right">
+                        <ul class="row listing-items">
+                            <ng-container *ngIf="posts.length == 0">
+                                <div class="justify-content-center" style="text-align: center; width: 100%;">
+                                    موردی یافت نشد
+                                </div>
+                            </ng-container>
+                            <li class="col-xl-12 col-lg-12 col-md-6 col-12 no-padding" *ngFor="let po of posts"
+                                style="cursor: pointer;" routerLink="/post/{{po.id}}/{{po.url}}">
+
+                                <div class="label-check" [ngStyle]="{ 'background-color' : getColor(po.type) }" style="margin-top: 5px;">
+                                    {{ getTypeString(po.type) }}
+                                </div>
+                                <div class="label-check" style="background-color: #00bfd6; margin-top: 35px;">
+                                    {{ po.dateCreateString }}
+                                </div>
+                                <div *ngIf="po.isHighLight" class="label-check" style="background-color: #d60084; margin-top: 65px;">
+                                    ویژه
+                                </div>
+                                <div class="product-box" style="border-radius: 10px;">
+                                    <div class="row">
+
+                                        <div class="col-lg-4">
+                                            <a class="product-box-img">
+                                                <img *ngIf="!po.haveVideo" [src]="auth.getFileUrl(po.headerPicUrl)"
+                                                    [alt]="po.title" style="border-radius: 10px;">
+
+                                                <video *ngIf="po.haveVideo" [currentTime]="10" width="300px"
+                                                    [preload]="false" [autoplay]="false" [controls]="false"
+                                                    [textContent]="po.title" [title]="po.title" style="direction: ltr"
+                                                    [src]="auth.getFileUrl(po.headerPicUrl)"
+                                                    style="opacity: .6; pointer-events: none;">
+                                                </video>
+                                            </a>
+                                        </div>
+                                        <div class="col-lg-8">
+                                            <div class="product-box-content">
+                                                <div class="product-box-content-row">
+                                                    <div class="product-box-title titleBox"
+                                                        style="display: flex; width: 75%;">
+                                                        <a>
+                                                            {{ po.title }}
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="product-box-row product-box-row-price"
+                                                    style="display: inline-block">
+                                                    <div class="price" style="text-align: right;">
+                                                        {{ po.shortContent }}
+                                                    </div>
+                                                    <div style="margin-top: 100px">
+                                                        <div class="row">
+                                                            <div class="col-lg-4" style="text-align: right;">
+                                                                نویسنده : <strong>{{ po.author }}</strong>
+
+                                                            </div>
+                                                            <div class="col-lg-4"></div>
+                                                            <div class="col-lg-4" style="text-align: left;">
+
+                                                                {{po.viewCount}} <i class="fa fa-eye"></i><span> |
+                                                                </span>
+                                                                {{po.commentCount}} <i class="fa fa-comment"></i>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="pager default text-center">
+                <pagination (pageChanged)="setPage($event)" [totalItems]="totalCount"
+                    [pageBtnClass]="'pager-item'" [maxSize]="7" [nextText]="'صفحه بعد'" [previousText]="'صفحه قبل'"
+                    [itemsPerPage]="pageSize" [(ngModel)]="page">
+                </pagination>
+            </div>
+        </div>
+    </div>
+</div>

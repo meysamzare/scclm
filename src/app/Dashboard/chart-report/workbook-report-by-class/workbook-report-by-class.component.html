@@ -1,0 +1,132 @@
+<mat-card>
+    <mat-card-content>
+        <div class="row">
+            <div class="col-lg-4">
+
+                <div class="form-group">
+                    <label>انتخاب کارنامه</label>
+                    <ng-select #workbook="ngModel" name="workbooksel" [(ngModel)]="selectedWorkbook" required>
+                        <ng-option *ngFor="let i of workbooks" [value]="i.id">{{i.name}}
+                        </ng-option>
+                    </ng-select>
+                    <mat-error *ngIf="workbook.hasError('required')">
+                        انتخاب کارنامه الزامی است
+                    </mat-error>
+                </div>
+
+            </div>
+            <div class="col-lg-4">
+
+                <div class="form-group">
+                    <label>انتخاب پایه</label>
+                    <ng-select #grade="ngModel" name="gradesel" [(ngModel)]="selectedGrade"
+                        (change)="onGradeSelect(); selectedClass = null;" required>
+                        <ng-option *ngFor="let i of grades" [value]="i.id">{{i.name}}
+                        </ng-option>
+                    </ng-select>
+                    <mat-error *ngIf="grade.hasError('required')">
+                        انتخاب پایه الزامی است
+                    </mat-error>
+                </div>
+
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>انتخاب کلاس</label>
+                    <ng-select #class="ngModel" name="classsel" [(ngModel)]="selectedClass">
+                        <ng-option *ngFor="let i of classes" [value]="i.id">{{i.name}}
+                        </ng-option>
+                    </ng-select>
+                    <mat-hint>
+                        انتخاب کلاس اختیاری است
+                    </mat-hint>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <button mat-flat-button class="btn-block" color="primary"
+                    [disabled]="!selectedWorkbook || !selectedGrade" (click)="addData()">
+                    <mat-icon>add</mat-icon> &nbsp;
+                    نمایش جزئیات
+                </button>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<ng-container *ngIf="isLoading">
+    <div class="margin-top-10">
+        <mat-progress-bar mode="buffer"></mat-progress-bar>
+    </div>
+</ng-container>
+
+<ng-container *ngIf="!isLoading && datas.length != 0">
+    <mat-card class="margin-top-10" *ngFor="let data of datas; let index = index;">
+        <mat-card-content>
+            <a class="close-link" matTooltip="حذف از لیست" (click)="removeData(index)">
+                <i class="fa fa-times"></i>
+            </a>
+            <h3>
+                <b>{{ data.title }}</b>
+            </h3>
+            <div class="row">
+                <div class="col-lg-12 mat-elevation-z8" style="max-height: 500px; overflow: auto;">
+
+                    <table mat-table [dataSource]="data.dataSource" matSort
+                        (matSortChange)="onSortChange($event)">
+
+                        <ng-container matColumnDef="rate">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> رتبه </th>
+                            <td mat-cell *matCellDef="let row" style="padding-right: 5px;"> {{row.rate}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> نام و نام خانوادگی </th>
+                            <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="totalAvg">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> معدل </th>
+                            <td mat-cell *matCellDef="let row"> {{row.totalAvg.toFixed(2)}} </td>
+                        </ng-container>
+
+                        <ng-container *ngFor="let course of data.courses; let courseIndex = index;"
+                            matColumnDef="{{ course.id }}">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ course.name }} </th>
+                            <td mat-cell *matCellDef="let row"> {{ row[course.id].toFixed(2) }} </td>
+                        </ng-container>
+
+
+                        <tr mat-header-row *matHeaderRowDef="data.displayedColumns; sticky: true"></tr>
+                        <tr mat-row *matRowDef="let row; columns: data.displayedColumns;" class="mat-row-tr"></tr>
+                    </table>
+
+                    <!-- 
+                    <table class="table table-bordered" style="white-space: nowrap;">
+                        <thead>
+                            <tr>
+                                <th>رتبه</th>
+                                <th>نام و نام خانوادگی</th>
+                                <th>معدل کل</th>
+                                <th *ngFor="let i of data.courses">{{ i.name }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let i of data.results;">
+                                <td><b>{{ i.rate }}</b></td>
+                                <td>{{ i.name }}</td>
+                                <td><b>{{ i.totalAvg.toFixed(2) }}</b></td>
+                                <td *ngFor="let co of i.courseAvgs">{{ co.toFixed(2) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                -->
+
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</ng-container>

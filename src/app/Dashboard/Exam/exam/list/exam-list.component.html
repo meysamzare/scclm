@@ -1,0 +1,248 @@
+<span class="fa fa-refresh fa-spin spinner" *ngIf="isLoading"></span>
+<div class="row animated fadeInRight">
+    <!-- <div class="col-lg-3">
+
+        <div class="ibox float-e-margins" style="background: aliceblue;">
+            <div class="ibox-title">
+                <h5>فهرست آزمون ها</h5>
+            </div>
+            <div class="ibox-content">
+                <button mat-mini-fab [disabled]="!txtSearch" (click)="clearSelection()"
+                    matTooltip="غیر فعال کردن مورد انتخاب شده">
+                    <mat-icon>clear_all</mat-icon>
+                </button>
+                <br>
+                <br>
+                <div id="divtree"></div>
+            </div>
+        </div>
+
+    </div> -->
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>لیست آزمون ها</h5>
+                <div class="ibox-tools">
+                    <a (click)="refreshDataSource()" matTooltip="بارگذاری مجدد">
+                        <i class="fa fa-refresh"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+
+                <div *ngIf="!haveAnyData() && !isLoading">
+                    <P>موردی یافت نشد</P>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>انتخاب پایه تحصیلی</label>
+                            <ng-select #gradeselect="ngModel" name="grade" [(ngModel)]="selectedGrade"
+                                (change)="refreshDataSource(); selectedClass = null;">
+                                <ng-option *ngFor="let gr of grades" [value]="gr.id">{{gr.name}}
+                                </ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>انتخاب کلاس</label>
+                            <ng-select [disabled]="!selectedGrade" #classselect="ngModel" name="class"
+                                [(ngModel)]="selectedClass" (change)="refreshDataSource();">
+                                <ng-option *ngFor="let cls of getFiltredClass()" [value]="cls.id">{{cls.name}}
+                                </ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>انتخاب دبیر</label>
+                            <ng-select #teacherselect="ngModel" name="teacher" [(ngModel)]="selectedTeacher"
+                                (change)="refreshDataSource();">
+                                <ng-option *ngFor="let i of teachers" [value]="i.id">{{i.name}}
+                                </ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>انتخاب کارنامه</label>
+                            <ng-select #workbookselect="ngModel" name="workbook" [(ngModel)]="selectedWorkbook"
+                                (change)="refreshDataSource();">
+                                <ng-option *ngFor="let i of workbooks" [value]="i.id">{{i.name}}
+                                </ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>انتخاب نوع آزمون</label>
+                            <ng-select #examtypeselect="ngModel" name="examType" [(ngModel)]="selectedExamType"
+                                (change)="refreshDataSource();">
+                                <ng-option *ngFor="let i of examTypes" [value]="i.id">{{i.name}}
+                                </ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-4"></div>
+                    <div class="col-lg-4 al-center">
+                        <mat-button-toggle-group name="type" [(ngModel)]="filtredType"
+                            (ngModelChange)="refreshDataSource();">
+                            <mat-button-toggle value="all">همه</mat-button-toggle>
+                            <mat-button-toggle value="upcomming">پیش رو</mat-button-toggle>
+                            <mat-button-toggle value="passed">برگزارشده</mat-button-toggle>
+                            <mat-button-toggle value="waitingForResult">در انتظار نتیجه</mat-button-toggle>
+                            <mat-button-toggle value="cancelled">لغو شده</mat-button-toggle>
+                        </mat-button-toggle-group>
+                    </div>
+                    <div class="col-lg-4"></div>
+                </div>
+
+                <div>
+                    <div dir="rtl">
+
+                        <button class="btn btn-primary font-11" type="button" [routerLink]="['/dashboard/exam/edit/0']"
+                            matTooltip="افزودن آزمون جدید"><i class="fa fa-plus"></i>&nbsp;افزودن آزمون</button>
+
+                        <button class="btn btn-danger font-11 mg-r" type="button" matTooltip="حذف آزمون های انتخاب شده"
+                            [disabled]="selection.selected.length < 1" [swal]="deleteSwal"><i
+                                class="fa fa-trash"></i>&nbsp;حذف آزمون ها</button>
+
+                        <swal #deleteSwal [confirmButtonText]="'بله'" [cancelButtonText]="'خیر'" title="آیا اطمینان
+                            دارید؟" text="حذف کردن این موارد قابل بازگشت نمی
+                            باشد" type="question" [showCancelButton]="true" [focusCancel]="true"
+                            (confirm)="deleteSelected()">
+                        </swal>
+                        <input type="text" id="text1" (keyup)="applyFilter($event.target.value)" [(ngModel)]="txtSearch"
+                            placeholder="جستجو" class="form-control">
+                    </div>
+                    <br>
+                    <div class="example-container mat-elevation-z8">
+                        <div class="example-loading-shade" *ngIf="isLoadingResults">
+                            <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+                        </div>
+                        <div class="mat-elevation-z8">
+                            <table style="width: 1100px;" mat-table [dataSource]="dataSource" matSort>
+                                <ng-container matColumnDef="select">
+                                    <th mat-header-cell *matHeaderCellDef>
+                                        <mat-checkbox [disabled]="!haveAnyData() || getRowCanSelected() == 0"
+                                            matTooltipPosition="before"
+                                            matTooltip="تعداد {{ selection.selected.length }} مورد انتخاب شده است"
+                                            (change)="$event ? masterToggle() : null"
+                                            [checked]="selection.hasValue() && isAllSelected()"
+                                            [indeterminate]="selection.hasValue() && !isAllSelected()">
+                                        </mat-checkbox>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <mat-checkbox [disabled]="row.haveChildren" matTooltipPosition="before"
+                                            matTooltip="{{ row.haveChildren ? 'این آزمون دارای زیر مجموعه است، نمیتوان آن را حذف کرد' : 'انتخاب برای حذف' }}"
+                                            (click)="$event.stopPropagation()"
+                                            (change)="$event ? selection.toggle(row) : null"
+                                            [checked]="selection.isSelected(row)">
+                                        </mat-checkbox>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="id">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> کد </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        {{row.id}}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="result">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> نتایج </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <mat-icon matTooltip="نتایج اعلام شده است" style="color: green;"
+                                            *ngIf="row.result">done</mat-icon>
+                                        <mat-icon matTooltip="در انتظار نتیجه" *ngIf="!row.result">query_builder
+                                        </mat-icon>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="name">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> نام آزمون </th>
+                                    <td mat-cell *matCellDef="let row" matRipple style="cursor: pointer;"
+                                        (click)="showExamDetail(row.id)">
+                                        {{ row.name }}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="courseName">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> نام درس </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        {{ row.courseName }}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="date">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> تاریخ </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        {{row.dateString}}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="examTypeName">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> نوع آزمون </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        {{row.examTypeName}}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="className">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> پایه | کلاس </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        {{ row.gradeName + ' | ' + row.className }}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="action">
+                                    <th mat-header-cell *matHeaderCellDef>
+                                        عملیات
+                                    </th>
+                                    <td mat-cell *matCellDef="let row">
+
+                                        <button matTooltip="ثبت نمره" matTooltipPosition="before" mat-icon-button
+                                            (click)="openSetScoreGroupModal(row.id)">
+                                            <mat-icon>library_add</mat-icon>
+                                        </button>
+                                        <button matTooltip="ویرایش
+                                            {{row.name}}" matTooltipPosition="before" mat-icon-button
+                                            (click)="onEdit(row.id)">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                        <button mat-icon-button matTooltip="حذف {{ row.title }}"
+                                            [swal]="{ title: 'آیا اطمینان دارید؟', text: 'حذف کردن این موارد قابل بازگشت نمی باشد', type: 'question', confirmButtonText: 'تایید میکنم', cancelButtonText: 'خیر' }"
+                                            (confirm)="deleteRow(row.id)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </td>
+
+                                </ng-container>
+
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns:
+                                    displayedColumns;">
+                                </tr>
+                            </table>
+
+                            <div dir="ltr">
+                                <mat-paginator [length]="itemLength" [pageSizeOptions]="[5, 10, 15, 20, 25]"
+                                    (page)="resetSelection($event)" showFirstLastButtons></mat-paginator>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

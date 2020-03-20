@@ -1,0 +1,92 @@
+<header class="main-header default">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-2 col-md-3 col-sm-4 col-5">
+				<div class="logo-area default">
+					<a routerLink="/">
+						<img src="/assets/img/logo.png" alt="">
+					</a>
+				</div>
+			</div>
+			<div class="col-lg-5 col-md-5 col-sm-8 col-7">
+				<div class="search-area default">
+					<form class="search">
+						<input type="text" [disabled]="true" placeholder="عناوین ، مطالب و هر آنچه نیاز دارید را جستجو کنید ...">
+						<button><img src="/assets/img/search.png" alt=""></button>
+					</form>
+				</div>
+			</div>
+			<div style="margin: auto;" class="form-account-row form-account-submit">
+				<div class="linkM">
+					<a class="btn btn-neutral" [routerLink]="['/posts']" [queryParams]="{ 'type' : 14 }">
+						<i class="fa fa-question-circle"></i>
+						سوالات متداول
+					</a>
+					<a class="btn btn-neutral">
+						<i class="fa fa-life-ring"></i>
+						پشتیبانی
+					</a>
+					<a (click)="gotoLogin()" class="btn btn-neutral">
+						<i class="fa fa-sign-in"></i>
+						ورود به سیستم آموزشی
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<nav class="main-menu">
+		<div class="container">
+			<ul class="list float-right">
+                
+				<li class="list-item">
+                    <a [routerLink]="['/']" class="nav-link">
+                        <i class="fa fa-home"></i>
+                    </a>
+				</li>
+
+				<li class="list-item">
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 4 }" class="nav-link">معاونت آموزشی</a>
+				</li>
+				<li class="list-item">
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 5 }" class="nav-link">معاونت اجرایی</a>
+				</li>
+				<li class="list-item">
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 6 }" class="nav-link">معاونت پرورشی</a>
+				</li>
+				<li class="list-item">
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 7 }" class="nav-link">معاونت مالی و اداری</a>
+				</li>
+				<li class="list-item">
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 8 }" class="nav-link">انجمن اولیا و مربیان</a>
+				</li>
+				<li class="list-item">
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 9 }" class="nav-link">واحد مشاوره و هدایت تحصیلی</a>
+				</li>
+				<li class="list-item">
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 2 }" class="nav-link">بلاگ</a>
+				</li>
+				<li class="list-item">
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 1 }" class="nav-link">اخبار</a>
+				</li>
+				<li class="list-item">
+					<a class="nav-link">همکاری با ما</a>
+				</li>
+				<li class="list-item">
+					<a class="nav-link">تماس با ما</a>
+				</li>
+				<li class="list-item amazing-item">
+					<a class="nav-link" [routerLink]="['/gallery']">
+						<i class="fa fa-picture"></i>
+						آلبوم عکس
+					</a>
+				</li>
+				<li class="list-item amazing-item">
+					<a class="nav-link" [routerLink]="['/posts']" [queryParams]="{ 'type' : 3 }">
+						<i class="fa fa-book"></i>
+						نشریه دانش آموزی فدک
+					</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+</header>

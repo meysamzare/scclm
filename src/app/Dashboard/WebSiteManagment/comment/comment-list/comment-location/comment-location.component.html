@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>جایگاه نظر</h1>
+<div mat-dialog-content>
+    <div class="comments-area default" style="padding: 20px;">
+        <ol class="comment-list" style="direction: rtl;">
+            <app-post-comment [showCommentId]="true" [hilightCommentId]="commentId" [showCommentPic]="true"
+                [showReplayLink]="false" [comments]="relatedComments" [parentId]="null"></app-post-comment>
+        </ol>
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="" cdkFocusInitial>تایید</button>
+</div>

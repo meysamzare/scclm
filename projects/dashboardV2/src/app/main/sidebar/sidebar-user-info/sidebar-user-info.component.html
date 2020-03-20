@@ -1,0 +1,39 @@
+<div class="box user-info">
+
+    <figure class="image is-96x96 user-image">
+        <img class="is-rounded" [src]="auth.getUserProfilePic()">
+    </figure>
+
+
+
+    <div class="dropdown" [class.is-active]="menuActive">
+        <div class="dropdown-trigger">
+            <p (click)="menuActive = !menuActive" class="role-name" [style.color]="menuActive ? '#209cee' : 'unset'"
+                aria-haspopup="true" aria-controls="dropdown-menu3">
+                {{ auth.getUserRole().name }}
+                <ng-container *ngIf="menuActive">
+                    <app-icon icon="caret-up"></app-icon>
+                </ng-container>
+                <ng-container *ngIf="!menuActive">
+                    <app-icon icon="caret-down"></app-icon>
+                </ng-container>
+            </p>
+        </div>
+        <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+            <div class="dropdown-content">
+                <a class="dropdown-item">
+                    قفل کردن صفحه
+                </a>
+                <a class="dropdown-item">
+                    لاگ های سیستم
+                </a>
+                <hr class="dropdown-divider">
+                <a (click)="auth.Logout()" class="dropdown-item">
+                    <app-icon icon="sign-out-alt" color="danger"></app-icon>
+                    خروج
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>

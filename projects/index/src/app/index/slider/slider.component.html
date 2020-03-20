@@ -1,0 +1,33 @@
+<section id="main-slider" class="carousel slide carousel-fade card" data-ride="carousel">
+	<ol class="carousel-indicators">
+
+		<ng-container *ngFor="let i of slides; let index = index">
+			<li data-target="#main-slider" [tooltip]="i.title" attr.data-slide-to='{{index}}'
+				[ngClass]="{ 'active': index == 0 }"></li>
+		</ng-container>
+	</ol>
+	<div class="carousel-inner">
+		<ng-container *ngFor="let i of slides; let index = index">
+			<div class="carousel-item" [ngClass]="{ 'active': index == 0 }">
+				<a routerLink="/post/{{i.postId}}/{{i.postUrl}}" class="d-block">
+					<img [src]="getFileUrl(i.imgUrl)" class="d-block w-100" alt="">
+				</a>
+			</div>
+		</ng-container>
+
+	</div>
+	<a class="carousel-control-prev" href="#main-slider" role="button" data-slide="prev">
+		<i class="now-ui-icons arrows-1_minimal-right"></i>
+	</a>
+	<a class="carousel-control-next" href="#main-slider" data-slide="next">
+		<i class="now-ui-icons arrows-1_minimal-left"></i>
+	</a>
+</section>
+<!-- 
+<carousel class="carousel-fade card">
+	<slide *ngFor="let i of slides; let index = index">
+		<a routerLink="/post/{{i.postId}}/{{i.postUrl}}" class="d-block">
+			<img [src]="getFileUrl(i.imgUrl)" class="d-block w-100" alt="">
+		</a>
+	</slide>
+</carousel> -->

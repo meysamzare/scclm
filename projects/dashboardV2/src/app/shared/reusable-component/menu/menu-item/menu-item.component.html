@@ -1,0 +1,30 @@
+<li *ngIf="ShowByRole">
+    <a (click)="toggleSubMenu()" class="menuItem level no-margin" style="display: flex;"
+        [class.hovered-menu]="haveAnyItemActive()">
+        <div class="level-left">
+            <span class="icon" [class.has-text-info]="Show" style="margin-left: 5px;">
+                <i class="fas fa-{{ icon }}"></i>
+            </span>
+            {{ title }}
+        </div>
+        <div class="level-right no-margin">
+            <ng-container *ngIf="Show">
+                <span class="icon has-text-info">
+                    <i class="fas fa-angle-up"></i>
+                </span>
+            </ng-container>
+            <ng-container *ngIf="!Show">
+                <span class="icon">
+                    <i class="fas fa-angle-down"></i>
+                </span>
+            </ng-container>
+        </div>
+    </a>
+    <ul class="menu-list" [ngStyle]="{ 'display': Show ? 'block' : 'none'}">
+        <li *ngFor="let item of menuItems">
+            <a (click)="item.onClick()" [class.is-active]="item.isActiveRoute()">
+                {{ item.title }}
+            </a>
+        </li>
+    </ul>
+</li>

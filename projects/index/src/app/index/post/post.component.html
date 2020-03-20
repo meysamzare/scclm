@@ -1,0 +1,176 @@
+<mat-card style="margin-top: 16px; margin-bottom: 15px;">
+    <div class="row" style="padding: 10px; margin-right: 4px;">
+        <h3>{{post.title}}</h3>
+    </div>
+    <div class="row">
+
+        <div class="col-lg-8 justify-content-center">
+
+            <img *ngIf="!post.haveVideo" style="
+                        width: 100%;
+                        margin-bottom: 10px;
+                        border-radius: 10px;
+                        box-shadow: 0px 2px 20px 0px black;" [src]="auth.getFileUrl(post.headerPicUrl)"
+                [alt]="post.title">
+
+
+            <video *ngIf="post.haveVideo" style="width: 100%" [preload]="false" [autoplay]="false" [controls]="false"
+                [textContent]="post.title" [title]="post.title" style="direction: ltr"
+                [src]="auth.getFileUrl(post.headerPicUrl)">
+            </video>
+
+        </div>
+        <div class="col-lg-4">
+            <div class="row justify-content-center">
+                <button [copy]="getPostShortUrl()" (copied)="message.showSuccessAlert('لینک پست کپی شد')" matTooltip="کپی لینک پست" matTooltipPosition="before" mat-icon-button>
+                    <mat-icon>share</mat-icon>
+                </button>
+            </div>
+            <div class="row justify-content-center">
+                <mat-chip-list>
+                    <mat-chip [ngStyle]="{ 'background-color': getTypeColor(post.type) }" selected>
+                        {{ getTypeString(post.type) }}
+                    </mat-chip>
+                </mat-chip-list>
+            </div>
+            <div class="row justify-content-center">
+                <label class="lbldet"> تاریخ : <strong>{{post.dateCreateString}}</strong> </label>
+            </div>
+            <div class="row justify-content-center">
+                <label class="lbldet"> نویسنده : <strong>{{post.author}}</strong> </label>
+            </div>
+            <div class="row justify-content-center">
+                <label class="lbldet"> تعداد بازدید : <strong>{{post.viewCount}}</strong> </label>
+            </div>
+            <div class="row justify-content-center">
+                <label class="lbldet"> تعداد نظرات : <strong>{{postComments.length}}</strong> </label>
+            </div>
+
+            <div class="row justify-content-center" style="margin-top: 7px;">
+                <label class="lbldet"> تگ های پست </label>&nbsp;&nbsp;
+                <br>
+                <mat-chip-list>
+                    <mat-chip *ngFor="let i of getShiftedTags(post.tags)">
+                        {{ i }}
+                    </mat-chip>
+                </mat-chip-list>
+            </div>
+
+        </div>
+    </div>
+</mat-card>
+<mat-card>
+    <mat-tab-group dynamicHeight mat-align-tabs="center" animationDuration="600ms">
+        <mat-tab style="width: 50%">
+            <ng-template mat-tab-label>
+                <mat-icon class="example-tab-icon">format_align_right</mat-icon>&nbsp;
+                متن پست
+            </ng-template>
+            <div style="margin-top: 6px;" [innerHTML]="TrustedPostContent"></div>
+        </mat-tab>
+
+        <mat-tab [disabled]="!post.haveComment"
+            [tooltip]="post.haveComment ? '' : 'ارسال نظر برای این پست غیر فعال است'">
+
+            <ng-template mat-tab-label>
+                <mat-icon [matBadge]="postComments.length" class="example-tab-icon">mode_comment</mat-icon>&nbsp;
+                نظرات
+            </ng-template>
+
+            <div id="prpanel"></div>
+
+            <div *ngIf="replayId != 0" class="alert alert-info alert-dismissible fade show" style="margin-top: 10px;"
+                role="alert">
+                شما در حال پاسخ گویی به <strong>{{ replayName }}</strong> هستید.
+                <br>
+                <p [tooltip]="'نظر ' + replayName" style="text-align: center; opacity: .7;">
+                    ({{ replayContent }})
+                </p>
+                <button type="button" [tooltip]="'لغو پاسخ گویی'" placement="left" (click)="cancellReplay()"
+                    class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <mat-expansion-panel [expanded]="isCommentPanelExpend === true" (opened)="isCommentPanelExpend = true"
+                (closed)="isCommentPanelExpend = false">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        ارسال نظر
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        {{ isCommentPanelExpend ? 'نام و نام خانوادگی و پست الکترونیک خود را برای ارسال نظر وارد نمایید' : 'برای ارسال نظر کلیک نمایید' }}
+
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <div class="row">
+                    <div class="col-lg-6">
+
+                        <div class="form-group">
+                            <label>نام و نام خانوادگی</label>
+                            <input type="text" required #name="ngModel" name="name" [(ngModel)]="comment.fullName"
+                                placeholder="نام و نام خانوادگی" class="form-control">
+                            <div *ngIf="(name.touched || name.dirty) && name.invalid">
+                                <p *ngIf="name.hasError('required')" class="error">
+                                    وارد کردن نام و نام خانوادگی الزامی است
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-6">
+
+                        <div class="form-group">
+                            <label>آدرس پست الکترونیک</label>
+                            <input email type="email" required #email="ngModel" name="email" [(ngModel)]="comment.email"
+                                placeholder="آدرس پست الکترونیک" class="form-control">
+                            <div *ngIf="(email.touched || email.dirty) && email.invalid">
+                                <p *ngIf="email.hasError('required')" class="error">
+                                    وارد کردن آدرس پست الکترونیک الزامی است
+                                </p>
+                                <p *ngIf="email.hasError('email')" class="error">
+                                    پست الکترونیک خود را به درستی وارد کنید
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label>نظر شما</label>
+                            <textarea type="text" required #shortContent="ngModel" name="shortContent"
+                                [(ngModel)]="comment.content" placeholder="نظر" class="form-control"></textarea>
+                            <div *ngIf="(shortContent.touched || shortContent.dirty) && shortContent.invalid">
+                                <p *ngIf="shortContent.hasError('required')" class="error">
+                                    وارد کردن نظر الزامی است
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <mat-action-row>
+                    <button mat-stroked-button color="warn" (click)="commentCancel()">لغو</button>
+                    <button mat-stroked-button color="primary"
+                        [disabled]="name.hasError('required') || shortContent.hasError('required') || email.hasError('email') || email.hasError('required')"
+                        (click)="sendComment()" style="margin-right: 5px;">ارسال نظر</button>
+                </mat-action-row>
+            </mat-expansion-panel>
+
+            <div class="comments-area default" style="padding: 20px;">
+                <ol class="comment-list">
+                    <app-post-comment (onReplay)="setReplay($event)" [comments]="postComments" [parentId]="null">
+                    </app-post-comment>
+                </ol>
+            </div>
+
+
+        </mat-tab>
+    </mat-tab-group>
+</mat-card>

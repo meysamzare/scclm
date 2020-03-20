@@ -1,0 +1,12 @@
+<div class="toast-block">
+    <div class="toast show {{cusm.type}}" [@enterAnim] *ngFor="let cusm of customMessages">
+        <div class="toast-body">
+            <div style="width: 100%; padding-left: 10px;">
+                {{ cusm.message }}
+            </div>
+            <div *ngIf="cusm.count != 0" style="display: inline;">
+                ({{ cusm.count }})
+            </div>
+        </div>
+    </div>
+</div>

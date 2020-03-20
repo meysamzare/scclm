@@ -1,0 +1,753 @@
+{
+    "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+    "version": 1,
+    "newProjectRoot": "projects",
+    "projects": {
+        "SchoolManagmentRelase": {
+            "root": "",
+            "sourceRoot": "src",
+            "projectType": "application",
+            "prefix": "app",
+            "schematics": {},
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:browser",
+                    "options": {
+                        "progress": true,
+                        "extractCss": true,
+                        "outputPath": "dist/dashboard",
+                        "index": "src/index.html",
+                        "main": "src/main.ts",
+                        "polyfills": "src/polyfills.ts",
+                        "tsConfig": "src/tsconfig.app.json",
+                        "assets": [
+                            "src/assets",
+                            "src/manifest.json",
+                            {
+                                "glob": "mode-json.js",
+                                "input": "./node_modules/ace-builds/src-min/",
+                                "output": "/"
+                            }
+                        ],
+                        "styles": [
+                            "src/assets/css/bootstrap.min.css",
+                            "src/assets/css/style.css",
+                            "src/assets/font.css",
+                            "src/assets/css/plugins/jsTree/style.min.css",
+                            "src/assets/scrollem/trackpad-scroll-emulator.css",
+                            "src/assets/css/plugins/bootstrap-rtl/bootstrap-rtl.min.css",
+                            "src/assets/font-awesome/css/font-awesome.css",
+                            "src/assets/css/animate.css",
+                            "node_modules/metismenu/dist/metisMenu.min.css",
+                            "src/assets/fonts/material/material-icons.css",
+                            "src/styles.scss"
+                        ],
+                        "scripts": [
+                            "src/assets/js/jquery-3.1.1.min.js",
+                            "src/assets/js/bootstrap.min.js",
+                            "src/assets/js/plugins/slimscroll/jquery.slimscroll.min.js",
+                            "node_modules/jstree/dist/jstree.min.js",
+                            "node_modules/hammerjs/hammer.min.js",
+                            "src/assets/js/plugins/wow/wow.min.js",
+                            "src/assets/js/plugins/metisMenu/jquery.metisMenu.js",
+                            "src/assets/toastr/toastr.min.js",
+                            "src/assets/scrollem/jquery.trackpad-scroll-emulator.js"
+                        ]
+                    },
+                    "configurations": {
+                        "production": {
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.prod.ts"
+                                }
+                            ],
+                            "optimization": true,
+                            "outputHashing": "all",
+                            "sourceMap": false,
+                            "extractCss": true,
+                            "namedChunks": false,
+                            "aot": true,
+                            "extractLicenses": true,
+                            "vendorChunk": false,
+                            "buildOptimizer": true,
+                            "serviceWorker": true,
+                            "ngswConfigPath": "src/ngsw-config.json"
+                        }
+                    }
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "options": {
+                        "browserTarget": "SchoolManagmentRelase:build"
+                    },
+                    "configurations": {
+                        "production": {
+                            "browserTarget": "SchoolManagmentRelase:build:production"
+                        }
+                    }
+                },
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "options": {
+                        "browserTarget": "SchoolManagmentRelase:build"
+                    }
+                },
+                "test": {
+                    "builder": "@angular-devkit/build-angular:karma",
+                    "options": {
+                        "main": "src/test.ts",
+                        "polyfills": "src/polyfills.ts",
+                        "tsConfig": "src/tsconfig.spec.json",
+                        "karmaConfig": "src/karma.conf.js",
+                        "styles": [
+                            "styles.css"
+                        ],
+                        "scripts": [],
+                        "assets": [
+                            "src/assets",
+                            "src/manifest.json"
+                        ]
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-devkit/build-angular:tslint",
+                    "options": {
+                        "tsConfig": [
+                            "src/tsconfig.app.json",
+                            "src/tsconfig.spec.json"
+                        ],
+                        "exclude": [
+                            "**/node_modules/**"
+                        ]
+                    }
+                },
+                "server": {
+                    "builder": "@angular-devkit/build-angular:server",
+                    "options": {
+                        "outputPath": "dist-server",
+                        "main": "src/main.ts",
+                        "tsConfig": "src/tsconfig.server.json"
+                    },
+                    "configurations": {
+                        "dev": {
+                            "optimization": true,
+                            "outputHashing": "all",
+                            "sourceMap": false,
+                            "namedChunks": false,
+                            "extractLicenses": true,
+                            "vendorChunk": true
+                        },
+                        "production": {
+                            "optimization": true,
+                            "outputHashing": "all",
+                            "sourceMap": false,
+                            "namedChunks": false,
+                            "extractLicenses": true,
+                            "vendorChunk": false
+                        }
+                    }
+                }
+            }
+        },
+        "SchoolManagmentRelase-e2e": {
+            "root": "e2e/",
+            "projectType": "application",
+            "architect": {
+                "e2e": {
+                    "builder": "@angular-devkit/build-angular:protractor",
+                    "options": {
+                        "protractorConfig": "e2e/protractor.conf.js",
+                        "devServerTarget": "SchoolManagmentRelase:serve"
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-devkit/build-angular:tslint",
+                    "options": {
+                        "tsConfig": "e2e/tsconfig.e2e.json",
+                        "exclude": [
+                            "**/node_modules/**"
+                        ]
+                    }
+                }
+            }
+        },
+        "index": {
+            "projectType": "application",
+            "schematics": {},
+            "root": "projects/index",
+            "sourceRoot": "projects/index/src",
+            "prefix": "app",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:browser",
+                    "options": {
+                        "outputPath": "dist/index",
+                        "index": "projects/index/src/index.html",
+                        "main": "projects/index/src/main.ts",
+                        "polyfills": "projects/index/src/polyfills.ts",
+                        "tsConfig": "projects/index/tsconfig.app.json",
+                        "aot": false,
+                        "assets": [
+                            "projects/index/src/favicon.ico",
+                            "projects/index/src/assets"
+                        ],
+                        "styles": [
+                            "projects/index/src/styles.scss",
+                            "projects/index/src/assets/fonts/font-awesome/css/font-awesome.min.css",
+                            "projects/index/src/assets/css/now-ui-kit.css",
+                            "projects/index/src/assets/css/bootstrap.min.css",
+                            "projects/index/src/assets/css/plugins/owl.carousel.css",
+                            "projects/index/src/assets/css/plugins/owl.theme.default.min.css",
+                            "projects/index/src/assets/css/font-icons.css",
+                            "projects/index/src/assets/font.css",
+                            "projects/index/src/assets/css/main.css",
+                            "src/assets/fonts/material/material-icons.css"
+                        ],
+                        "scripts": [
+                            "projects/index/src/assets/js/core/jquery.3.2.1.min.js",
+                            "projects/index/src/assets/js/core/bootstrap.min.js",
+                            "node_modules/hammerjs/hammer.min.js",
+                            "projects/index/src/assets/js/plugins/bootstrap-switch.js",
+                            "projects/index/src/assets/js/core/popper.min.js",
+                            "projects/index/src/assets/js/plugins/nouislider.min.js",
+                            "projects/index/src/assets/js/plugins/bootstrap-datepicker.js",
+                            "projects/index/src/assets/js/plugins/jquery.sharrre.js",
+                            "projects/index/src/assets/js/plugins/countdown.min.js",
+                            "projects/index/src/assets/js/plugins/owl.carousel.min.js",
+                            "projects/index/src/assets/js/flickity.pkgd.min.js",
+                            "projects/index/src/assets/js/modernizr.min.js",
+                            "projects/index/src/assets/js/now-ui-kit.js",
+                            "projects/index/src/assets/js/main.js",
+                            "projects/index/src/assets/js/plugins/jquery.easing.1.3.min.js",
+                            "projects/index/src/assets/js/jquery.newsTicker.min.js",
+                            "projects/index/src/assets/js/scripts.js"
+                        ]
+                    },
+                    "configurations": {
+                        "production": {
+                            "fileReplacements": [
+                                {
+                                    "replace": "projects/index/src/environments/environment.ts",
+                                    "with": "projects/index/src/environments/environment.prod.ts"
+                                }
+                            ],
+                            "optimization": true,
+                            "outputHashing": "all",
+                            "sourceMap": false,
+                            "extractCss": true,
+                            "namedChunks": false,
+                            "aot": true,
+                            "extractLicenses": true,
+                            "vendorChunk": false,
+                            "buildOptimizer": true,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "2mb",
+                                    "maximumError": "5mb"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "options": {
+                        "browserTarget": "index:build"
+                    },
+                    "configurations": {
+                        "production": {
+                            "browserTarget": "index:build:production"
+                        }
+                    }
+                },
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "options": {
+                        "browserTarget": "index:build"
+                    }
+                },
+                "test": {
+                    "builder": "@angular-devkit/build-angular:karma",
+                    "options": {
+                        "main": "projects/index/src/test.ts",
+                        "polyfills": "projects/index/src/polyfills.ts",
+                        "tsConfig": "projects/index/tsconfig.spec.json",
+                        "karmaConfig": "projects/index/karma.conf.js",
+                        "assets": [
+                            "projects/index/src/favicon.ico",
+                            "projects/index/src/assets"
+                        ],
+                        "styles": [
+                            "projects/index/src/styles.scss"
+                        ],
+                        "scripts": []
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-devkit/build-angular:tslint",
+                    "options": {
+                        "tsConfig": [
+                            "projects/index/tsconfig.app.json",
+                            "projects/index/tsconfig.spec.json",
+                            "projects/index/e2e/tsconfig.json"
+                        ],
+                        "exclude": [
+                            "**/node_modules/**"
+                        ]
+                    }
+                },
+                "e2e": {
+                    "builder": "@angular-devkit/build-angular:protractor",
+                    "options": {
+                        "protractorConfig": "projects/index/e2e/protractor.conf.js",
+                        "devServerTarget": "index:serve"
+                    },
+                    "configurations": {
+                        "production": {
+                            "devServerTarget": "index:serve:production"
+                        }
+                    }
+                }
+            }
+        },
+        "ParentsMobileApp": {
+            "projectType": "application",
+            "schematics": {
+                "@schematics/angular:class": {
+                    "skipTests": true
+                },
+                "@schematics/angular:component": {
+                    "skipTests": true
+                },
+                "@schematics/angular:directive": {
+                    "skipTests": true
+                },
+                "@schematics/angular:guard": {
+                    "skipTests": true
+                },
+                "@schematics/angular:module": {
+                    "skipTests": true
+                },
+                "@schematics/angular:pipe": {
+                    "skipTests": true
+                },
+                "@schematics/angular:service": {
+                    "skipTests": true
+                }
+            },
+            "root": "projects/ParentsMobileApp",
+            "sourceRoot": "projects/ParentsMobileApp/src",
+            "prefix": "app",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:browser",
+                    "options": {
+                        "outputPath": "dist/ParentsMobileApp",
+                        "index": "projects/ParentsMobileApp/src/index.html",
+                        "main": "projects/ParentsMobileApp/src/main.ts",
+                        "polyfills": "projects/ParentsMobileApp/src/polyfills.ts",
+                        "tsConfig": "projects/ParentsMobileApp/tsconfig.app.json",
+                        "aot": false,
+                        "assets": [
+                            "projects/ParentsMobileApp/src/favicon.ico",
+                            "projects/ParentsMobileApp/src/assets",
+                            "projects/ParentsMobileApp/src/manifest.json",
+                            "projects/ParentsMobileApp/src/main-sw.js"
+                        ],
+                        "styles": [
+                            "projects/ParentsMobileApp/src/styles.scss",
+                            "projects/ParentsMobileApp/src/theme.scss",
+                            "projects/ParentsMobileApp/src/assets/fonts/material/material-icons.css",
+                            "projects/ParentsMobileApp/src/assets/font.css"
+                        ],
+                        "scripts": []
+                    },
+                    "configurations": {
+                        "production": {
+                            "fileReplacements": [
+                                {
+                                    "replace": "projects/ParentsMobileApp/src/environments/environment.ts",
+                                    "with": "projects/ParentsMobileApp/src/environments/environment.prod.ts"
+                                }
+                            ],
+                            "optimization": true,
+                            "outputHashing": "all",
+                            "sourceMap": false,
+                            "extractCss": true,
+                            "namedChunks": false,
+                            "aot": true,
+                            "extractLicenses": true,
+                            "vendorChunk": false,
+                            "buildOptimizer": true,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "2mb",
+                                    "maximumError": "5mb"
+                                }
+                            ],
+                            "serviceWorker": true,
+                            "ngswConfigPath": "projects/ParentsMobileApp/ngsw-config.json"
+                        }
+                    }
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "options": {
+                        "browserTarget": "ParentsMobileApp:build"
+                    },
+                    "configurations": {
+                        "production": {
+                            "browserTarget": "ParentsMobileApp:build:production"
+                        }
+                    }
+                },
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "options": {
+                        "browserTarget": "ParentsMobileApp:build"
+                    }
+                },
+                "test": {
+                    "builder": "@angular-devkit/build-angular:karma",
+                    "options": {
+                        "main": "projects/ParentsMobileApp/src/test.ts",
+                        "polyfills": "projects/ParentsMobileApp/src/polyfills.ts",
+                        "tsConfig": "projects/ParentsMobileApp/tsconfig.spec.json",
+                        "karmaConfig": "projects/ParentsMobileApp/karma.conf.js",
+                        "assets": [
+                            "projects/ParentsMobileApp/src/favicon.ico",
+                            "projects/ParentsMobileApp/src/assets",
+                            "projects/ParentsMobileApp/src/manifest.json"
+                        ],
+                        "styles": [
+                            "projects/ParentsMobileApp/src/style.scss"
+                        ],
+                        "scripts": []
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-devkit/build-angular:tslint",
+                    "options": {
+                        "tsConfig": [
+                            "projects/ParentsMobileApp/tsconfig.app.json",
+                            "projects/ParentsMobileApp/tsconfig.spec.json",
+                            "projects/ParentsMobileApp/e2e/tsconfig.json"
+                        ],
+                        "exclude": [
+                            "**/node_modules/**"
+                        ]
+                    }
+                },
+                "e2e": {
+                    "builder": "@angular-devkit/build-angular:protractor",
+                    "options": {
+                        "protractorConfig": "projects/ParentsMobileApp/e2e/protractor.conf.js",
+                        "devServerTarget": "ParentsMobileApp:serve"
+                    },
+                    "configurations": {
+                        "production": {
+                            "devServerTarget": "ParentsMobileApp:serve:production"
+                        }
+                    }
+                }
+            }
+        },
+        "TeacherMobileApp": {
+            "projectType": "application",
+            "schematics": {
+                "@schematics/angular:class": {
+                    "skipTests": true
+                },
+                "@schematics/angular:component": {
+                    "skipTests": true
+                },
+                "@schematics/angular:directive": {
+                    "skipTests": true
+                },
+                "@schematics/angular:guard": {
+                    "skipTests": true
+                },
+                "@schematics/angular:module": {
+                    "skipTests": true
+                },
+                "@schematics/angular:pipe": {
+                    "skipTests": true
+                },
+                "@schematics/angular:service": {
+                    "skipTests": true
+                }
+            },
+            "root": "projects/TeacherMobileApp",
+            "sourceRoot": "projects/TeacherMobileApp/src",
+            "prefix": "app",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:browser",
+                    "options": {
+                        "outputPath": "dist/TeacherMobileApp",
+                        "index": "projects/TeacherMobileApp/src/index.html",
+                        "main": "projects/TeacherMobileApp/src/main.ts",
+                        "polyfills": "projects/TeacherMobileApp/src/polyfills.ts",
+                        "tsConfig": "projects/TeacherMobileApp/tsconfig.app.json",
+                        "aot": false,
+                        "assets": [
+                            "projects/TeacherMobileApp/src/favicon.ico",
+                            "projects/TeacherMobileApp/src/assets",
+                            "projects/TeacherMobileApp/src/manifest.json"
+                        ],
+                        "styles": [
+                            "projects/TeacherMobileApp/src/styles.scss",
+                            "projects/TeacherMobileApp/src/theme.scss",
+                            "projects/TeacherMobileApp/src/assets/font.css",
+                            "projects/TeacherMobileApp/src/assets/fonts/material/material-icons.css"
+                        ],
+                        "scripts": [
+                            "node_modules/hammerjs/hammer.min.js"
+                        ]
+                    },
+                    "configurations": {
+                        "production": {
+                            "fileReplacements": [
+                                {
+                                    "replace": "projects/TeacherMobileApp/src/environments/environment.ts",
+                                    "with": "projects/TeacherMobileApp/src/environments/environment.prod.ts"
+                                }
+                            ],
+                            "optimization": true,
+                            "outputHashing": "all",
+                            "sourceMap": false,
+                            "extractCss": true,
+                            "namedChunks": false,
+                            "aot": true,
+                            "extractLicenses": true,
+                            "vendorChunk": false,
+                            "buildOptimizer": true,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "2mb",
+                                    "maximumError": "5mb"
+                                }
+                            ],
+                            "serviceWorker": true,
+                            "ngswConfigPath": "projects/TeacherMobileApp/ngsw-config.json"
+                        }
+                    }
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "options": {
+                        "browserTarget": "TeacherMobileApp:build"
+                    },
+                    "configurations": {
+                        "production": {
+                            "browserTarget": "TeacherMobileApp:build:production"
+                        }
+                    }
+                },
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "options": {
+                        "browserTarget": "TeacherMobileApp:build"
+                    }
+                },
+                "test": {
+                    "builder": "@angular-devkit/build-angular:karma",
+                    "options": {
+                        "main": "projects/TeacherMobileApp/src/test.ts",
+                        "polyfills": "projects/TeacherMobileApp/src/polyfills.ts",
+                        "tsConfig": "projects/TeacherMobileApp/tsconfig.spec.json",
+                        "karmaConfig": "projects/TeacherMobileApp/karma.conf.js",
+                        "assets": [
+                            "projects/TeacherMobileApp/src/favicon.ico",
+                            "projects/TeacherMobileApp/src/assets",
+                            "projects/TeacherMobileApp/src/manifest.json"
+                        ],
+                        "styles": [
+                            "projects/TeacherMobileApp/src/styles.css"
+                        ],
+                        "scripts": [
+                            "node_modules/hammerjs/hammer.min.js"
+                        ]
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-devkit/build-angular:tslint",
+                    "options": {
+                        "tsConfig": [
+                            "projects/TeacherMobileApp/tsconfig.app.json",
+                            "projects/TeacherMobileApp/tsconfig.spec.json",
+                            "projects/TeacherMobileApp/e2e/tsconfig.json"
+                        ],
+                        "exclude": [
+                            "**/node_modules/**"
+                        ]
+                    }
+                },
+                "e2e": {
+                    "builder": "@angular-devkit/build-angular:protractor",
+                    "options": {
+                        "protractorConfig": "projects/TeacherMobileApp/e2e/protractor.conf.js",
+                        "devServerTarget": "TeacherMobileApp:serve"
+                    },
+                    "configurations": {
+                        "production": {
+                            "devServerTarget": "TeacherMobileApp:serve:production"
+                        }
+                    }
+                }
+            }
+        },
+        "dashboardV2": {
+            "projectType": "application",
+            "schematics": {
+                "@schematics/angular:class": {
+                    "skipTests": true
+                },
+                "@schematics/angular:component": {
+                    "skipTests": true
+                },
+                "@schematics/angular:directive": {
+                    "skipTests": true
+                },
+                "@schematics/angular:guard": {
+                    "skipTests": true
+                },
+                "@schematics/angular:module": {
+                    "skipTests": true
+                },
+                "@schematics/angular:pipe": {
+                    "skipTests": true
+                },
+                "@schematics/angular:service": {
+                    "skipTests": true
+                }
+            },
+            "root": "projects/dashboardV2",
+            "sourceRoot": "projects/dashboardV2/src",
+            "prefix": "app",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:browser",
+                    "options": {
+                        "outputPath": "dist/dashboardV2",
+                        "index": "projects/dashboardV2/src/index.html",
+                        "main": "projects/dashboardV2/src/main.ts",
+                        "polyfills": "projects/dashboardV2/src/polyfills.ts",
+                        "tsConfig": "projects/dashboardV2/tsconfig.app.json",
+                        "aot": true,
+                        "assets": [
+                            "projects/dashboardV2/src/favicon.ico",
+                            "projects/dashboardV2/src/assets"
+                        ],
+                        "styles": [
+                            "projects/dashboardV2/src/styles.scss",
+                            "projects/dashboardV2/src/theme.scss",
+                            "projects/dashboardV2/src/assets/fontawesome/all.min.css",
+                            "projects/dashboardV2/src/assets/fonts/material/material-icons.css",
+                            "projects/dashboardV2/src/assets/font.css"
+                        ],
+                        "scripts": [
+                            "projects/dashboardV2/src/assets/fontawesome/all.min.js",
+                            "node_modules/hammerjs/hammer.min.js"
+                        ]
+                    },
+                    "configurations": {
+                        "production": {
+                            "fileReplacements": [
+                                {
+                                    "replace": "projects/dashboardV2/src/environments/environment.ts",
+                                    "with": "projects/dashboardV2/src/environments/environment.prod.ts"
+                                }
+                            ],
+                            "optimization": true,
+                            "outputHashing": "all",
+                            "sourceMap": false,
+                            "extractCss": true,
+                            "namedChunks": false,
+                            "aot": true,
+                            "extractLicenses": true,
+                            "vendorChunk": false,
+                            "buildOptimizer": true,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "2mb",
+                                    "maximumError": "5mb"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "options": {
+                        "browserTarget": "dashboardV2:build"
+                    },
+                    "configurations": {
+                        "production": {
+                            "browserTarget": "dashboardV2:build:production"
+                        }
+                    }
+                },
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "options": {
+                        "browserTarget": "dashboardV2:build"
+                    }
+                },
+                "test": {
+                    "builder": "@angular-devkit/build-angular:karma",
+                    "options": {
+                        "main": "projects/dashboardV2/src/test.ts",
+                        "polyfills": "projects/dashboardV2/src/polyfills.ts",
+                        "tsConfig": "projects/dashboardV2/tsconfig.spec.json",
+                        "karmaConfig": "projects/dashboardV2/karma.conf.js",
+                        "assets": [
+                            "projects/dashboardV2/src/favicon.ico",
+                            "projects/dashboardV2/src/assets"
+                        ],
+                        "styles": [
+                            "projects/dashboardV2/src/styles.css"
+                        ],
+                        "scripts": []
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-devkit/build-angular:tslint",
+                    "options": {
+                        "tsConfig": [
+                            "projects/dashboardV2/tsconfig.app.json",
+                            "projects/dashboardV2/tsconfig.spec.json",
+                            "projects/dashboardV2/e2e/tsconfig.json"
+                        ],
+                        "exclude": [
+                            "**/node_modules/**"
+                        ]
+                    }
+                },
+                "e2e": {
+                    "builder": "@angular-devkit/build-angular:protractor",
+                    "options": {
+                        "protractorConfig": "projects/dashboardV2/e2e/protractor.conf.js",
+                        "devServerTarget": "dashboardV2:serve"
+                    },
+                    "configurations": {
+                        "production": {
+                            "devServerTarget": "dashboardV2:serve:production"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "defaultProject": "SchoolManagmentRelase",
+    "schematics": {
+        "@nrwl/angular:component": {
+            "styleext": "scss"
+        }
+    }
+}

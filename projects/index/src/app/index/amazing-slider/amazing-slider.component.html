@@ -1,0 +1,111 @@
+<section *ngIf="schedules.length != 0" id="amazing-slider" class="carousel slide carousel-fade card"
+    data-ride="carousel">
+    <div class="row m-0">
+        <ol class="carousel-indicators pr-0 d-flex flex-column col-lg-3">
+            <ng-container *ngFor="let i of schedules; let index = index;">
+                <li [ngClass]="{ 'active': index == 0 }" data-target="#amazing-slider" attr.data-slide-to="{{index}}">
+                    <span>{{ i.title }}</span>
+                </li>
+            </ng-container>
+            <!-- <li class="view-all">
+				<a   class="btn btn-primary btn-block hvr-sweep-to-left">
+					<i class="fa fa-arrow-left"></i>مشاهده همه شگفت انگیزها
+				</a>
+			</li> -->
+        </ol>
+        <div class="carousel-inner p-0 col-12 col-lg-9">
+            <img class="amazing-title" src="/assets/img/amazing-slider/amazing-title-01.png" alt="">
+
+            <ng-container *ngFor="let sch of schedules; let index = index;">
+
+                <div class="carousel-item" [ngClass]="{ 'active': index == 0, 'finished': sch.isOver }">
+                    <div class="row m-0">
+                        <div class="right-col col-5 d-flex align-items-center">
+                            <a routerLink="/post/{{sch.postId}}/{{sch.post.url}}" class="w-100 text-center">
+                                <img [src]="auth.getFileUrl(sch.picUrl)" class="img-fluid" [alt]="sch.title">
+                            </a>
+                        </div>
+                        <div class="left-col col-7">
+                            <div class="">
+                                <span style="font-size: 20px; font-weight: bold; color: red">
+                                    {{ sch.title }}
+                                </span>
+                            </div>
+                            <h3 style="font-size: 14px;">
+                                <a routerLink="/post/{{sch.postId}}/{{sch.post.url}}">
+                                    {{ sch.content }}
+                                </a>
+                            </h3>
+                            <h2 class="product-title">
+                                <a routerLink="/post/{{sch.postId}}/{{sch.post.url}}">
+                                    {{ sch.post.shortContent }}
+                                </a>
+                            </h2>
+                            <ul class="list-group">
+                                <li *ngFor="let tag of getSplitedTags(sch.post.tags)" style="font-weight: bold;"
+                                    class="list-group-item">
+                                    {{tag}}
+                                </li>
+                            </ul>
+                            <hr>
+
+                            <ng-container *ngIf="!sch.isOver">
+                                <countdown-timer style="font-size: 25px; color: red; font-weight: bold;"
+                                    [end]="sch.formatedDateEnd"></countdown-timer>
+                                <h5>زمان باقی مانده تا پایان رویداد</h5>
+                            </ng-container>
+
+                            <ng-container *ngIf="sch.isOver">
+                                <a class="finished btn"> رویداد پایان یافت </a>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+
+
+        </div>
+    </div>
+</section>
+
+<div *ngIf="schedules.length != 0" class="row" id="amazing-slider-responsive">
+    <div class="col-12">
+        <div class="widget widget-product card">
+            <header class="card-header">
+                <img src="/assets/img/amazing-slider/amazing-title-01.png" width="150px" alt="">
+                <!-- <a class="view-all">مشاهده همه</a> -->
+            </header>
+            <owl-carousel [options]="owlOption" [carouselClasses]="['product-carousel', 'owl-theme']">
+
+
+                <div class="item" *ngFor="let sch of schedules">
+                    <a routerLink="/post/{{sch.postId}}/{{sch.post.url}}">
+                        <img style="width: 200px; height: 200px;" [src]="auth.getFileUrl(sch.picUrl)" class="img-fluid"
+                            [alt]="sch.title">
+                    </a>
+                    <h2 style="font-weight: bold; color: red" class="post-title">
+                        <a routerLink="/post/{{sch.postId}}/{{sch.post.url}}"> {{ sch.title }} </a>
+                    </h2>
+                    <div class="price">
+                        <span style="font-size: 11px; color: #ef5661;">{{sch.post.title}}</span>
+                    </div>
+                    <hr>
+
+                    <ng-container *ngIf="!sch.isOver">
+                        <countdown-timer style="font-size: 25px; color: red; font-weight: bold;"
+                            [end]="sch.formatedDateEnd"></countdown-timer>
+                        <div class="timer-title">زمان باقی مانده تا پایان رویداد</div>
+                    </ng-container>
+
+                    <ng-container *ngIf="sch.isOver">
+                        <a class="finished btn"> رویداد پایان یافت </a>
+                    </ng-container>
+
+                </div>
+
+
+
+            </owl-carousel>
+        </div>
+    </div>
+</div>

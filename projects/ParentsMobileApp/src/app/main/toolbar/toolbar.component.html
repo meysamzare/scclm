@@ -1,0 +1,50 @@
+<mat-toolbar *ngIf="showToolbar" color="primary">
+    <mat-toolbar-row style="padding: 0;" [style.box-shadow]="getShadowColor()">
+        <div class="row" style="width: 100%; margin: 0;">
+            <div class="col-sm-4" style="text-align: right">
+                <button style="margin-left: 7px;" *ngIf="showBackButton" (click)="back()" mat-icon-button>
+                    <mat-icon>arrow_forward</mat-icon>
+                </button>
+                <img *ngIf="showIcon" src="/assets/img/taha.png" class="logo">
+                <label style="margin: 0;" *ngIf="showTitle">{{ Title }}</label>
+
+                <ng-content select="app-toolbar-item-right"></ng-content>
+
+            </div>
+            <div class="col-sm-4" style="text-align: center">
+
+                <ng-content select="app-toolbar-item-center"></ng-content>
+
+            </div>
+            <div class="col-sm-4" style="text-align: left">
+
+                <button *ngIf="showRefresh" (click)="RefreshClick.next()" mat-icon-button>
+                    <mat-icon>refresh</mat-icon>
+                </button>
+
+                <ng-content select="app-toolbar-item-left"></ng-content>
+
+                <button *ngIf="showColorButton" mat-icon-button [matMenuTriggerFor]="menu">
+                    <mat-icon>format_color_fill</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item [disabled]="themeSrv.getCurrentTheme() == 'default'"
+                        (click)="themeSrv.setThemeColor('default')">
+                        <mat-icon>wb_incandescent</mat-icon>
+                        <span>پیش فرض</span>
+                    </button>
+                    <button mat-menu-item [disabled]="themeSrv.getCurrentTheme() == 'light'"
+                        (click)="themeSrv.setThemeColor('light')">
+                        <mat-icon>brightness_5</mat-icon>
+                        <span>روشن</span>
+                    </button>
+                    <button mat-menu-item [disabled]="themeSrv.getCurrentTheme() == 'dark'"
+                        (click)="themeSrv.setThemeColor('dark')">
+                        <mat-icon>brightness_2</mat-icon>
+                        <span>تاریک</span>
+                    </button>
+                </mat-menu>
+            </div>
+        </div>
+    </mat-toolbar-row>
+</mat-toolbar>

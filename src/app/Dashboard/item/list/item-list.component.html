@@ -1,0 +1,489 @@
+<span class="fa fa-refresh fa-spin spinner" *ngIf="isLoading"></span>
+<div class="row animated fadeInRight">
+    <div class="col-lg-3">
+        <div class="row">
+            <div class="ibox float-e-margins" style="background: aliceblue;">
+                <div class="ibox-title">
+                    <h5>فهرست نمون برگ ها</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <button mat-mini-fab
+                        [ngStyle]="{'background-color': selectedCatName.length == 0 ? 'whitesmoke' : '#1ab394'}"
+                        [disabled]="selectedCatName.length == 0" (click)="clearSelection()"
+                        matTooltip="غیر فعال کردن مورد انتخاب شده">
+                        <mat-icon>clear_all</mat-icon>
+                    </button>
+                    <br>
+                    <br>
+                    <div class="form-group">
+                        <div id="divtree" #tree></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="ibox float-e-margins animated fadeInRight" style="background: aliceblue;"
+                *ngIf="selectedCatName && searchedAttrs.length != 0">
+                <div class="ibox-title">
+                    <h5>جستجو پیشرفته</h5>
+                    <mat-hint style="float: left;"> {{ itemLength }} ردیف </mat-hint>
+                </div>
+                <div class="ibox-content">
+                    <div class="form-group" *ngFor="let i of searchedAttrs">
+
+                        <input *ngIf="i.attrTypeInt == 1 || i.attrTypeInt == 9" type="text" class="form-control"
+                            placeholder="{{i.title}}" [matTooltip]="i.desc" (input)="addSearchAttrVal(i.id, $event)"
+                            [value]="getSearchAttrVal(i.id)" />
+
+                        <input *ngIf="i.attrTypeInt == 2" type="number" class="form-control" placeholder="{{i.title}}"
+                            [matTooltip]="i.desc" (input)="addSearchAttrVal(i.id, $event)"
+                            [value]="getSearchAttrVal(i.id)" />
+
+                        <mat-form-field class="example-full-width" *ngIf="i.attrTypeInt == 3">
+                            <input required matInput [matTooltip]="i.desc" [value]="getSearchAttrVal(i.id)" readonly
+                                (click)="openc(picker)" (dateChange)="addSearchAttrVal(i.id, $event)"
+                                [matDatepicker]="picker" placeholder="{{i.title}}">
+                            <mat-datepicker-toggle style="font-size: 25px;" matTooltip="باز کردن تقویم" matSuffix
+                                [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker touchUi="true"></mat-datepicker>
+                        </mat-form-field>
+                        <button mat-mini-fab *ngIf="i.attrTypeInt == 3" matTooltip="پاک کردن مقدار {{ i.title }}"
+                            [disabled]="!getSearchAttrVal(i.id)" (click)="addSearchAttrVal(i.id, '')">
+                            <mat-icon>remove</mat-icon>
+                        </button>
+
+
+                        <mat-checkbox *ngIf="i.attrTypeInt == 4" [value]="getSearchAttrVal(i.id)" [matTooltip]="i.desc"
+                            (change)="addSearchAttrVal(i.id, $event)">{{i.title}}</mat-checkbox>
+                        <button mat-mini-fab *ngIf="i.attrTypeInt == 4" matTooltip="پاک کردن مقدار {{ i.title }}"
+                            [disabled]="!getSearchAttrVal(i.id)" (click)="addSearchAttrVal(i.id, '')">
+                            <mat-icon>remove</mat-icon>
+                        </button>
+
+                        <input *ngIf="i.attrTypeInt == 5" [value]="getSearchAttrVal(i.id)" class="form-control"
+                            type="password" placeholder="{{i.title}}" [matTooltip]="i.desc"
+                            (input)="addSearchAttrVal(i.id, $event)" />
+
+                        <mat-form-field *ngIf="i.attrTypeInt == 6">
+                            <mat-label>{{i.title}}</mat-label>
+                            <mat-select style="direction: ltr" [value]="getSearchAttrVal(i.id)"
+                                (valueChange)="addSearchAttrValForSelect(i.id, $event)">
+                                <mat-option *ngFor="let v of getShiftedItem(i.values)" [value]="v">{{v}}</mat-option>
+                            </mat-select>
+                            <mat-hint>{{i.desc}}</mat-hint>
+                        </mat-form-field>
+                        <button mat-mini-fab *ngIf="i.attrTypeInt == 6" matTooltip="پاک کردن مقدار {{ i.title }}"
+                            [disabled]="!getSearchAttrVal(i.id)" (click)="addSearchAttrValForSelect(i.id, '')">
+                            <mat-icon>remove</mat-icon>
+                        </button>
+
+                    </div>
+
+                    <button style="width: 100%" mat-stroked-button [disabled]="searchAttrVals.length == 0"
+                        (click)="clearSearchAttrVals()">پاک کردن</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-9">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>فهرست اطلاعات ثبت شده</h5>
+                <div class="ibox-tools">
+                    <a (click)="refreshDataSource()" matTooltip="بارگذاری مجدد">
+                        <i class="fa fa-refresh"></i>
+                    </a>
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+
+                <div *ngIf="!haveAnyData() && !isLoading">
+                    <P>موردی یافت نشد</P>
+                </div>
+
+                <div>
+                    <div dir="rtl">
+                        <div class="row">
+
+                            <div class="col-lg-7">
+
+                                <button class="btn btn-primary font-11" type="button"
+                                    [routerLink]="['/dashboard/item/edit/0']" matTooltip="افزودن یک رکورد جدید"><i
+                                        class="fa fa-plus"></i>&nbsp;جدید</button>
+
+                                <button class="btn btn-info font-11 mg-r" type="button"
+                                    [disabled]="selection.selected.length == 0" (click)="openChahngeGroupDialog()"
+                                    matTooltip="ویرایش گروهی رکورد های انتخاب شده"><i
+                                        class="fa fa-pencil"></i>&nbsp;ویرایش گروهی</button>
+
+                                <button class="btn btn-danger font-11 mg-r" type="button"
+                                    matTooltip="حذف گروهی رکوردهای انتخاب شده"
+                                    [disabled]="selection.selected.length < 2" [swal]="deleteSwal"><i
+                                        class="fa fa-trash"></i>&nbsp;حذف گروهی</button>
+
+                                <div class="btn-group mg-r">
+                                    <button data-toggle="dropdown" [disabled]="selection.selected.length == 0"
+                                        class="btn btn-warning dropdown-toggle font-11 ">وضعیت</button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" matTooltip="تغییر وضعیت موارد انتخابی به فعال"
+                                                (click)="setIsActiveGroup(true)">فعال</a></li>
+                                        <li class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" matTooltip="تغییر وضعیت موارد انتخابی به غیر فعال"
+                                                (click)="setIsActiveGroup(false)">غیر فعال</a></li>
+                                    </ul>
+                                </div>
+
+                            </div>
+
+                            <div class="col-lg-3">
+                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <label class="btn btn-sm btn-white active" (click)="setState('both')"
+                                        [ngClass]="{ 'active': state === 'both' }">
+                                        <input type="radio" name="optactive" autocomplete="off" checked> همه
+                                    </label>
+                                    <label class="btn btn-sm btn-white " (click)="setState('active')"
+                                        [ngClass]="{ 'active': state === 'active' }">
+                                        <input type="radio" name="optactive" autocomplete="off"> فعال
+                                    </label>
+                                    <label class="btn btn-sm btn-white" (click)="setState('deactive')"
+                                        [ngClass]="{ 'active': state === 'deactive' }">
+                                        <input type="radio" name="optactive" autocomplete="off"> غیر فعال
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <div style="float: left;">
+
+                                    <button class="btn btn-white btn-sm " [disabled]="true" matTooltip="چاپ"><i
+                                            class="fa fa-print"></i> </button>
+                                            
+                                    <button class="btn btn-primary btn-sm mg-r" [disabled]="!selectedCatName"
+                                        (click)="getExcelFileOfList()" matTooltip="خروجی اکسل"><i
+                                            class="fa fa-file-text-o"></i> </button>
+                                </div>
+                            </div>
+
+
+                            <swal #deleteSwal [confirmButtonText]="'بله'" [cancelButtonText]="'خیر'"
+                                title="آیا اطمینان دارید؟" text="حذف کردن این موارد قابل بازگشت نمی باشد"
+                                type="question" [showCancelButton]="true" [focusCancel]="true"
+                                (confirm)="deleteSelected()">
+                            </swal>
+                        </div>
+
+                        <input type="text" id="text1" [(ngModel)]="txtSearch" (input)="applyFilter($event.target.value)"
+                            placeholder="جستجو" class="form-control form-control-sm">
+
+
+
+
+                    </div>
+                    <br>
+                    <div class="mat-elevation-z8">
+                        <div class="example-loading-shade" *ngIf="isLoadingResults">
+                            <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+                        </div>
+                        <table style="width: 800px;" mat-table [dataSource]="dataSource" matSort
+                            (matSortChange)="refreshDataSource()" multiTemplateDataRows>
+
+                            <ng-container matColumnDef="select">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <mat-checkbox [disabled]="!haveAnyData()" matTooltipPosition="before"
+                                        matTooltip=" تعداد {{ selection.selected.length }} مورد انتخاب شده است"
+                                        (change)="$event ? masterToggle() : null"
+                                        [checked]="selection.hasValue() && isAllSelected()"
+                                        [indeterminate]="selection.hasValue() && !isAllSelected()">
+                                    </mat-checkbox>
+                                </th>
+                                <td mat-cell *matCellDef="let row">
+                                    <mat-checkbox [disabled]="row.users?.length == 0" (click)="$event.stopPropagation()"
+                                        (change)="$event ? selection.toggle(row) : null"
+                                        [checked]="selection.isSelected(row)">
+                                    </mat-checkbox>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="id">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> ردیف </th>
+                                <td mat-cell *matCellDef="let row"> {{row.id}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="title">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> عنوان </th>
+                                <td mat-cell *matCellDef="let row"> {{row.title}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="isActive">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> وضعیت </th>
+                                <td mat-cell *matCellDef="let row">
+                                    <mat-chip-list>
+                                        <mat-chip matTooltip="فعال" style="background-color: #1ab394" selected
+                                            *ngIf="row.isActive" (click)="setIsActive(row.id, false)">
+                                            <mat-icon>check</mat-icon>
+                                        </mat-chip>
+                                        <mat-chip matTooltip="غیر فعال" color="warn" selected *ngIf="!row.isActive"
+                                            (click)="setIsActive(row.id, true)">
+                                            <mat-icon>block</mat-icon>
+                                        </mat-chip>
+                                    </mat-chip-list>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="rahCode">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> کد رهگیری </th>
+                                <td mat-cell *matCellDef="let row"> {{row.rahCode}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="categoryString">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> نمون برگ </th>
+                                <td mat-cell *matCellDef="let row"> {{row.categoryString}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="date">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> تاریخ ثبت | ویرایش </th>
+                                <td mat-cell *matCellDef="let row">
+                                    {{ row.dateAddPersian + ' | ' + row.dateEditPersian }}
+                                </td>
+                            </ng-container>
+
+
+                            <ng-container matColumnDef="action">
+                                <th mat-header-cell *matHeaderCellDef> عملیات </th>
+                                <td mat-cell *matCellDef="let row">
+                                    <button mat-icon-button matTooltip="افزودن به لیست انتخاب شده ها"
+                                        [disabled]="isItemExistInSelectedItemList(row)"
+                                        (click)="addToSelectedList(row)">
+                                        <mat-icon>done_all</mat-icon>
+                                    </button>
+                                    <button mat-icon-button matTooltip="نمایش {{ row.title }}"
+                                        (click)="showDietaleOfItem(row.id, row.categoryId)">
+                                        <mat-icon>remove_red_eye</mat-icon>
+                                    </button>
+                                    <button matTooltip="ویرایش {{row.title}}" mat-icon-button (click)="onEdit(row.id)">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                    <button mat-icon-button matTooltip="حذف {{ row.title }}"
+                                        [swal]="{ title: 'آیا اطمینان دارید؟', text: 'حذف کردن این موارد قابل بازگشت نمی باشد', type: 'question', confirmButtonText: 'تایید میکنم', cancelButtonText: 'خیر' }"
+                                        (confirm)="deleteRow(row.id)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="expandedDetail">
+                                <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+                                    <div class="example-element-detail"
+                                        [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                                        <!-- <div *ngFor="let attr of element.category.attributes">
+                                                    <p> {{ attr.title }} : {{ getItemAttrVal(attr.id) }} </p>
+                                                </div> -->
+                                    </div>
+                                </td>
+                            </ng-container>
+
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="example-element-row"
+                                [class.example-expanded-row]="expandedElement === row"
+                                (click)="expandedElement = expandedElement === row ? null : row">
+                            </tr>
+
+                            <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row">
+                            </tr>
+
+                        </table>
+
+                        <div dir="ltr">
+                            <mat-paginator [length]="itemLength" [pageSizeOptions]="[5, 10, 15, 20, 25]"
+                                (page)="resetSelection($event)" showFirstLastButtons></mat-paginator>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="col-lg-12">
+
+        <div class="ibox float-e-margins animated fadeInRight" *ngIf="showSelectedItemList">
+            <div class="ibox-title">
+                <h5> لیست انتخاب شده ها </h5>
+                <div class="ibox-tools">
+                    <a class="close-link" matTooltip="بستن" (click)="closeSelectedList()">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <swal #deleteSwal2 [confirmButtonText]="'بله'" [cancelButtonText]="'خیر'"
+                    title="آیا اطمینان دارید؟" text="حذف کردن این موارد قابل بازگشت نمی باشد" type="question"
+                    [showCancelButton]="true" [focusCancel]="true" (confirm)="deleteSelectedItemList()">
+                </swal>
+                <button class="btn btn-danger font-11" type="button" matTooltip="حذف دائمی گروهی لیست انتخاب شده"
+                    [swal]="deleteSwal2"><i class="fa fa-trash"></i>&nbsp;حذف دائمی لیست انتخاب شده </button>
+                <button class="btn btn-info font-11 mg-r" type="button" matTooltip="ویرایش گروهی لیست انتخاب شده"
+                    (click)="chengGroupSelectedItemList()"><i class="fa fa-pencil"></i>&nbsp;ویرایش گروهی لیست انتخاب
+                    شده </button>
+                <div class="btn-group mg-r">
+                    <button data-toggle="dropdown" class="btn btn-warning dropdown-toggle font-11 ">تغییر وضعیت
+                        گروهی</button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" matTooltip="تغییر وضعیت لیست انتخاب شده به فعال"
+                                (click)="setIsActiveGroupSelectedItemList(true)">فعال</a></li>
+                        <li class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" matTooltip="تغییر وضعیت لیست انتخاب شده به غیر فعال"
+                                (click)="setIsActiveGroupSelectedItemList(false)">غیر فعال</a></li>
+                    </ul>
+                </div>
+                <br>
+                <br>
+                <div class="mat-elevation-z8">
+                    <table class="pad-td" mat-table [dataSource]="dataSourceSelectedItemList">
+
+                        <ng-container matColumnDef="id">
+                            <th style="padding: 15px !important; " mat-header-cell *matHeaderCellDef> ردیف </th>
+                            <td style="padding: 15px !important; " mat-cell *matCellDef="let row"> {{row.id}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="title">
+                            <th mat-header-cell *matHeaderCellDef> عنوان </th>
+                            <td mat-cell *matCellDef="let row"> {{row.title}} </td>
+                        </ng-container>
+
+
+                        <ng-container matColumnDef="isActive">
+                            <th mat-header-cell *matHeaderCellDef> وضعیت </th>
+                            <td mat-cell *matCellDef="let row">
+                                <mat-chip-list>
+                                    <mat-chip matTooltip="فعال" style="background-color: #1ab394" selected
+                                        *ngIf="row.isActive" (click)="setIsActiveSelectedItemList(row.id, false)">
+                                        <mat-icon>check</mat-icon>
+                                    </mat-chip>
+                                    <mat-chip matTooltip="غیر فعال" color="warn" selected *ngIf="!row.isActive"
+                                        (click)="setIsActiveSelectedItemList(row.id, true)">
+                                        <mat-icon>block</mat-icon>
+                                    </mat-chip>
+                                </mat-chip-list>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="rahCode">
+                            <th mat-header-cell *matHeaderCellDef> کد رهگیری </th>
+                            <td mat-cell *matCellDef="let row"> {{row.rahCode}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="categoryString">
+                            <th mat-header-cell *matHeaderCellDef> نمون برگ </th>
+                            <td mat-cell *matCellDef="let row"> {{row.categoryString}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="date">
+                            <th mat-header-cell *matHeaderCellDef> تاریخ ثبت | ویرایش </th>
+                            <td mat-cell *matCellDef="let row">
+                                {{ row.dateAddPersian + ' | ' + row.dateEditPersian }}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef> عملیات </th>
+                            <td mat-cell *matCellDef="let row">
+                                <button mat-icon-button matTooltip="جستجو {{ row.title }}"
+                                    (click)="searchFromSelectedList(row.rahCode)">
+                                    <mat-icon>search</mat-icon>
+                                </button>
+                                <button mat-icon-button matTooltip="نمایش {{ row.title }}"
+                                    (click)="showDietaleOfItem(row.id, row.categoryId)">
+                                    <mat-icon>remove_red_eye</mat-icon>
+                                </button>
+                                <button mat-icon-button matTooltip="حذف {{ row.title }} از لیست"
+                                    (click)="deleteSelectedListRow(row)">
+                                    <mat-icon>delete_sweep</mat-icon>
+                                </button>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumnsForSelectedItem"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumnsForSelectedItem;"></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="col-lg-12">
+
+        <div class="ibox float-e-margins animated fadeInRight" *ngIf="showDietaledBox">
+            <div class="ibox-title">
+                <h5>داده های ثبت شده در نمون برگ : <strong> {{ showDietaleItem.title }} </strong></h5>
+                <!-- <button style="float: left;" matTooltip="بستن" (click)="showDietaledBox = false;" mat-icon-button><mat-icon>close</mat-icon></button> -->
+                <div class="ibox-tools">
+                    <a class="close-link" matTooltip="بستن" (click)="showDietaledBox = false;">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <div *ngFor="let unit of units">
+                        <div class="col-lg-4" *ngIf="getAttrsForUnit(unit.id).length != 0">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    {{unit.title}}
+                                </div>
+                                <div class="panel-body">
+                                    <div *ngFor="let i of getAttrsForUnit(unit.id)">
+
+                                        <div
+                                            *ngIf="i.attrTypeInt == 1 || i.attrTypeInt == 2 || i.attrTypeInt == 5 || i.attrTypeInt == 6 || i.attrTypeInt == 9">
+                                            <strong> {{ i.title }} </strong> :
+                                            <b style="color: blue; display: inline;"> {{ getItemAttrValDietale(i.id) }}
+                                            </b>
+                                        </div>
+
+                                        <mat-form-field class="example-full-width" *ngIf="i.attrTypeInt == 3">
+                                            <input required matInput [matTooltip]="i.desc" readonly
+                                                [matDatepicker]="picker" [value]="getItemAttrValDietale(i.id)"
+                                                placeholder="{{i.title}}">
+                                            <mat-datepicker #picker touchUi="true"></mat-datepicker>
+                                        </mat-form-field>
+
+                                        <mat-checkbox *ngIf="i.attrTypeInt == 4" [disabled]="true" [matTooltip]="i.desc"
+                                            [checked]="getItemAttrValDietale(i.id)">{{i.title}}</mat-checkbox>
+
+                                        <strong *ngIf="i.attrTypeInt == 7 || i.attrTypeInt == 8"> {{ i.title }}
+                                        </strong>
+                                        <img [src]="getItemAttrUrlDietale(i.id)"
+                                            (click)="showPopupImage(getItemAttrUrlDietale(i.id))" [matTooltip]="i.desc"
+                                            style="width: 100px; height: 100px;" class="img-circle"
+                                            *ngIf="i.attrTypeInt == 7 && getItemAttrUrlDietale(i.id)">
+
+                                        <a *ngIf="i.attrTypeInt == 8 && getItemAttrUrlDietale(i.id)"
+                                            [matTooltip]="i.desc" style="margin-top: 5px;"
+                                            [href]="getItemAttrUrlDietale(i.id)" mat-raised-button>دانلود فایل</a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>

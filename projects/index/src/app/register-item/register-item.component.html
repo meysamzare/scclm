@@ -1,0 +1,138 @@
+<main>
+    <div class="container text-center">
+        <div class="row margin-top-10">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <img *ngIf="cat.headerPicUrl"
+                    style="width: 100%; border-radius: 10px;box-shadow: 2px 3px 12px black; margin-bottom: 15px;"
+                    [src]="auth.getFileUrl(cat.headerPicUrl)">
+
+                <h4 class="margin-top-10" style="color: green;">
+                    {{ cat.desc }}
+                </h4>
+                <div style="text-align: left;">
+                    <small style="font-size: 13px;">مهلت ثبت نام تا {{ cat.dateExpireString }}</small>
+                </div>
+            </div>
+            <div class="col-lg-2"></div>
+        </div>
+
+        <div class="row margin-top-10">
+
+            <div class="col-md-3"></div>
+            <div class="col-md-6" style="margin-top: 10px;">
+                <form [formGroup]="group" style="text-align: right;">
+
+                    <ng-container *ngFor="let unit of units">
+
+                        <div class="margin-top-10" style="margin-top: 45px; margin-bottom: 5px;"
+                            *ngIf="canShowUnit(unit.id)">
+                            <b style="font-size: 16px; color: #de7100;">{{ unit.title }}</b>
+                            <!-- <mat-divider></mat-divider> -->
+                        </div>
+
+                        <div class="bordered" *ngIf="canShowUnit(unit.id)">
+
+                            <div class="form-group" *ngFor="let i of getAttrsForUnit(unit.id)">
+                                <label *ngIf="i.attrTypeInt != 4">{{i.title}}</label>
+
+                                <input *ngIf="i.attrTypeInt == 1"
+                                    (blur)="i.isUniq ? checkForUniqValue($event, i.id) : null"
+                                    [formControlName]="'p' + getIndexForAttr(i.id)" type="text" class="form-control"
+                                    placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
+                                    (change)="setItemAttr($event, i.id)" />
+
+                                <input *ngIf="i.attrTypeInt == 2"
+                                    (blur)="i.isUniq ? checkForUniqValue($event, i.id) : null"
+                                    [formControlName]="'p' + getIndexForAttr(i.id)" type="number" class="form-control"
+                                    placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
+                                    (change)="setItemAttr($event, i.id)" />
+
+                                <mat-form-field class="example-full-width" *ngIf="i.attrTypeInt == 3">
+                                    <input matInput [formControlName]="'p' + getIndexForAttr(i.id)" readonly
+                                        (click)="openc(picker)" (dateChange)="setItemAttr($event, i.id)"
+                                        [matDatepicker]="picker"
+                                        placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}">
+                                    <mat-datepicker-toggle style="font-size: 25px;" matTooltip="باز کردن تقویم"
+                                        matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker touchUi="true"></mat-datepicker>
+                                </mat-form-field>
+
+                                <mat-checkbox *ngIf="i.attrTypeInt == 4" [formControlName]="'p' + getIndexForAttr(i.id)"
+                                    (change)="setItemAttr($event, i.id)">{{i.title}}</mat-checkbox>
+
+                                <input *ngIf="i.attrTypeInt == 5" [formControlName]="'p' + getIndexForAttr(i.id)"
+                                    class="form-control" type="password" (change)="setItemAttr($event, i.id)"
+                                    placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}" />
+
+                                <mat-form-field *ngIf="i.attrTypeInt == 6">
+                                    <mat-label>{{i.title}}</mat-label>
+                                    <mat-select style="direction: ltr" [formControlName]="'p' + getIndexForAttr(i.id)"
+                                        (valueChange)="setItemAttrforselect($event, i.id)">
+                                        <mat-option *ngFor="let v of getShiftedItem(i.values)" [value]="v">{{v}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+
+                                <input type="file" *ngIf="i.attrTypeInt == 7"
+                                    [formControlName]="'p' + getIndexForAttr(i.id)" accept="image/x-png,image/jpeg"
+                                    class="form-control" (change)="setItemAttrforPic($event, i.id, 'pic')" />
+
+                                <input type="file" *ngIf="i.attrTypeInt == 8"
+                                    [formControlName]="'p' + getIndexForAttr(i.id)" class="form-control"
+                                    (change)="setItemAttrforPic($event, i.id, 'file')" />
+
+                                <textarea *ngIf="i.attrTypeInt == 9" [formControlName]="'p' + getIndexForAttr(i.id)"
+                                    type="text" class="form-control"
+                                    placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
+                                    (change)="setItemAttr($event, i.id)"></textarea>
+
+
+
+                                <p *ngIf="group.get('p'+getIndexForAttr(i.id)).hasError('required') && i.attrTypeInt != 4 && (group.get('p'+getIndexForAttr(i.id)).touched || group.get('p'+getIndexForAttr(i.id)).dirty)  && group.get('p'+getIndexForAttr(i.id)).invalid"
+                                    class="error">
+                                    وارد کردن {{i.title}} الزامی است
+                                </p>
+
+                                <p *ngIf="isAtrrUniqExsist(i.id)" class="error">
+                                    این {{i.title}} قبلا وارد شده است
+                                </p>
+
+                                <p *ngIf="isFileExist(i.id)" class="error">
+                                    وارد کردن {{i.title}} الزامی است
+                                </p>
+
+                                <div class="row" *ngIf="canShowDesc(i.desc)">
+                                    <div class="col-lg-2">
+                                        <image-icon icon="info" [height]="15"></image-icon>
+                                    </div>
+                                    <div class="col-lg-10">
+                                        <small style="color: #0072ab;">
+                                            {{ i.desc }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </ng-container>
+
+                    <div class="col-md-12 margin-top-10">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <button type="button" routerLink="/"
+                                    class="btn btn-block btn-outline-danger">انصراف</button>
+                            </div>
+                            <div class="col-lg-9">
+                                <button type="button" class="btn btn-block btn-outline-success"
+                                    [disabled]="group.invalid || attrUniqList.length != 0 || reqfilesAttrint.length != 0 || disableButton"
+                                    (click)="sts()">{{ getRegisterBtnTitle() }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+    </div>
+</main>

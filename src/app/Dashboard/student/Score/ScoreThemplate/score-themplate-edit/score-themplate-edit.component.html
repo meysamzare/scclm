@@ -1,0 +1,81 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <form #fm1="ngForm" id="fm11">
+                        <div class="col-sm-6">
+
+                            <div class="form-group" dir="rtl">
+                                <label>عنوان</label>
+                                <mat-form-field>
+                                    <mat-select #title="ngModel" name="title" [(ngModel)]="PAGE_Data.title" required>
+                                        <mat-option [value]="'آموزشی'">آموزشی</mat-option>
+                                        <mat-option [value]="'پرورشی'">پرورشی</mat-option>
+                                        <mat-option [value]="'مدیریت'">مدیریت</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-error *ngIf="title.hasError('required')">
+                                    انتخاب عنوان الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group" dir="rtl">
+                                <label>دسته</label>
+                                <mat-form-field>
+                                    <mat-select #type="ngModel" name="type" [(ngModel)]="PAGE_Data.type" required>
+                                        <mat-option [value]="'A'">A</mat-option>
+                                        <mat-option [value]="'B'">B</mat-option>
+                                        <mat-option [value]="'C'">C</mat-option>
+                                        <mat-option [value]="'D'">D</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-error *ngIf="type.hasError('required')">
+                                    انتخاب دسته الزامی است
+                                </mat-error>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6 b-r-r">
+
+
+                            <div class="form-group">
+                                <label>موضوع {{ PAGE_TITLE }}</label>
+                                <input type="text" required #subject="ngModel" name="subject" [(ngModel)]="PAGE_Data.subject"
+                                    placeholder="موضوع" class="form-control">
+                                <div *ngIf="(subject.touched || subject.dirty) && subject.invalid">
+                                    <p *ngIf="subject.hasError('required')" class="error">
+                                        وارد کردن موضوع {{ PAGE_TITLE }} الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>میزان {{ PAGE_TITLE }}</label>
+                                <input type="tel" required #value="ngModel" name="value" [(ngModel)]="PAGE_Data.value"
+                                    placeholder="میزان" class="form-control">
+                                <div *ngIf="(value.touched || value.dirty) && value.invalid">
+                                    <p *ngIf="value.hasError('required')" class="error">
+                                        وارد کردن میزان {{ PAGE_TITLE }} الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-12">
+                            <a mat-raised-button color="warn" style="margin: 5px;"
+                                [routerLink]="'/dashboard/' + PAGE_URL">لغو</a>
+                            <button type="submit" mat-raised-button color="primary" [disabled]="!fm1.valid"
+                                (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

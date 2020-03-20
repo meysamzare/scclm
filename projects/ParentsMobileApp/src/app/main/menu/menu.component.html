@@ -1,0 +1,47 @@
+<div class="menu">
+    <mat-toolbar>
+        <mat-toolbar-row style="height: auto;">
+            <div routerLink="/" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{ exact: true }"
+                class="menu-item" matRipple>
+                <span>
+                    <mat-icon class="menu-icon">home</mat-icon>
+                </span>
+                <span class="title">خانه</span>
+            </div>
+            <div routerLink="/work-book" [routerLinkActive]="'active'" class="menu-item" matRipple>
+                <span>
+                    <mat-icon class="menu-icon">list</mat-icon>
+                </span>
+                <span class="title">کارنامه</span>
+            </div>
+            <div routerLink="/more/notifications" [routerLinkActive]="'active'" class="menu-item" matRipple>
+                <span>
+                    <small *ngIf="moreService.getUnreadNotificationCount() != 0" class="dot"></small>
+                    <mat-icon class="menu-icon">notifications</mat-icon>
+                </span>
+                <span class="title">اعلان ها</span>
+            </div>
+            <div routerLink="/chat" [routerLinkActive]="'active'" class="menu-item" matRipple>
+                <span>
+                    <mat-icon class="menu-icon">chats</mat-icon>
+                </span>
+                <span class="title">گفتگو</span>
+            </div>
+            <div routerLink="/more/tickets" [routerLinkActive]="'active'" class="menu-item" matRipple>
+                <span>
+                    <small *ngIf="moreService.unReadTicketsCount != 0" class="dot"></small>
+                    <mat-icon class="menu-icon">question_answer</mat-icon>
+                </span>
+                <span class="title">مکاتبه</span>
+            </div>
+            <!-- <div routerLink="/more" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{ exact: true }"
+                class="menu-item" matRipple>
+                <span>
+                    <small *ngIf="moreService.getUnreadNotificationCount() != 0" class="dot"></small>
+                    <mat-icon class="menu-icon">more_horiz</mat-icon>
+                </span>
+                <span class="title">سایر</span>
+            </div> -->
+        </mat-toolbar-row>
+    </mat-toolbar>
+</div>

@@ -1,0 +1,23 @@
+<body class="md-skin fixed-nav  gray-bg">
+    <div class="middle-box text-center lockscreen animated fadeInDown">
+        <div>
+            <div class="m-b-md">
+                <img alt="image" style="width: 150px; height: 150px;" class="img-circle"
+                    [src]="auth.getUserProfilePic()">
+            </div>
+            <h3>{{ auth.getUser().fullName }}</h3>
+            <p> برای ادامه کار با سیستم، لطفا مجددا رمز عبور خود را وارد نمایید </p>
+            <form class="m-t">
+                <div class="form-group">
+                    <input type="password" name="pd" class="form-control" [(ngModel)]="password" required>
+                </div>
+                <button type="submit" [disabled]="!password" (click)="Login()"
+                    class="btn btn-primary block full-width">بازگشایی</button>
+                <button routerLink="/" style="margin-top: 5px;" class="btn btn-info block full-width">
+                    بازگشت به صفحه اصلی
+                </button>
+            </form>
+        </div>
+    </div>
+
+</body>

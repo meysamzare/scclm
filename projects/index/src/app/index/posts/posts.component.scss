@@ -1,0 +1,20 @@
+.titleBox {
+    width: 100%;
+    color: #000;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 1.1;
+    text-align: right;
+}
+
+
+input[type=checkbox].css-checkbox {
+	position: absolute; 
+    overflow: hidden; 
+    clip: rect(0 0 0 0); 
+    height:1px; 
+    width:1px; 
+    margin:-1px; 
+    padding:0;
+    border:0;
+}

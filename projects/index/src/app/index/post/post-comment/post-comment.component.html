@@ -1,0 +1,29 @@
+<ng-container *ngFor="let i of getCommnetWithParentId()">
+    <li style="display: block">
+        <div class="comment-body" style="border-radius: 15px; margin-top: 0;" 
+            [ngStyle]="{ 'background-color': hilightCommentId == i.id ? '#d8ef94' : '' }">
+            <div class="comment-author" style="display: contents;">
+                <div *ngIf="showCommentId" style="display: flex;">
+                    <p class="fn">ردیف : {{ i.id }}</p>
+                </div>
+                <img *ngIf="showCommentPic" src="/assets/img/default-avatar.png" class="avatar">
+                <cite class="fn">{{ i.fullName }}</cite>
+                <!-- <span class="says">گفت:</span> -->
+            </div>
+
+            <div class="commentmetadata" style="margin-right: 16px;"><a>{{ i.dateString }}</a> </div>
+
+            <p>
+                {{ i.content }}
+            </p>
+
+            <div class="reply" *ngIf="showReplayLink"><a (click)="replayClicked(i.id, i.fullName, i.content)"
+                    class="comment-reply-link">پاسخ</a></div>
+        </div>
+        <ol class="children">
+            <app-post-comment (onReplay)="replayClicked($event.id, $event.name, $event.content)"
+                [showCommentPic]="showCommentPic" [hilightCommentId]="hilightCommentId" [showCommentId]="showCommentId"
+                [showReplayLink]="showReplayLink" [comments]="comments" [parentId]="i.id"></app-post-comment>
+        </ol>
+    </li>
+</ng-container>

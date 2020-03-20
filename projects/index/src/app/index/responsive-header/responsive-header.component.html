@@ -1,0 +1,73 @@
+<nav class="navbar direction-ltr fixed-top header-responsive">
+	<div class="container">
+		<div class="navbar-translate">
+			<a class="navbar-brand" routerLink="/">
+				<img src="/assets/img/logo.png" height="24px" alt="">
+			</a>
+			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+				data-target="#navigation" aria-controls="navigation-index" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-bar bar1"></span>
+				<span class="navbar-toggler-bar bar2"></span>
+				<span class="navbar-toggler-bar bar3"></span>
+			</button>
+			<div class="search-nav default">
+				<form>
+					<input type="text" placeholder="جستجو ...">
+					<button type="submit"><img src="/assets/img/search.png" alt=""></button>
+				</form>
+				<ul>
+					<li><a (click)="gotoLogin()"><i class="fa fa-sign-in"></i></a></li>
+					<!-- <li><a><i class="fa fa-life-ring"></i></a></li> -->
+					<li><a [routerLink]="['/posts']" [queryParams]="{ 'type' : 14 }"><i class="fa fa-question-circle"></i></a></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="collapse navbar-collapse justify-content-end" id="navigation">
+			<div class="logo-nav-res default text-center">
+				<a>
+					<img src="/assets/img/logo.png" height="36px" alt="">
+				</a>
+			</div>
+			<ul class="navbar-nav default">
+				<li>
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 4 }">معاونت آموزشی</a>
+				</li>
+				<li>
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 5 }">معاونت اجرایی</a>
+				</li>
+				<li>
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 6 }">معاونت پرورشی</a>
+				</li>
+				<li>
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 7 }">معاونت مالی و اداری</a>
+				</li>
+				<li>
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 8 }">انجمن اولیا و مربیان</a>
+				</li>
+				<li>
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 9 }">واحد مشاوره و هدایت تحصیلی</a>
+				</li>
+				<li>
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 2 }">بلاگ</a>
+				</li>
+				<li>
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 1 }">اخبار</a>
+				</li>
+				<li>
+					<a>همکاری با ما</a>
+				</li>
+				<li>
+					<a>تماس با ما</a>
+				</li>
+				<li>
+					<a [routerLink]="['/gallery']"> آلبوم عکس</a>
+				</li>
+				<li>
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 3 }"> نشریه دانش آموزی فدک</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>

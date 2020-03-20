@@ -1,0 +1,283 @@
+<app-toolbar [Title]="'پرونده تحصیلی دانش آموز'" [showRefresh]="false"></app-toolbar>
+
+<!-- <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar> -->
+
+<div class="form-group">
+    <label>
+        <image-icon icon="grade"></image-icon>
+        انتخاب پایه تحصیلی
+    </label>
+    <select class="form-control" [disabled]="registredGrades.length == 0" name="grade" [(ngModel)]="selectedGrade"
+        (change)="onGradeSelect($event.srcElement.value)" #gradeselect="ngModel">
+        <option [value]="null">---</option>
+        <option *ngFor="let i of registredGrades" [value]="i.id">{{ i.name }}</option>
+    </select>
+</div>
+
+
+<div class="form-group">
+    <div class="al-center">
+        <ng-switchery [disabled]="coursesByGrade.length == 0 || isLoading" [(ngModel)]="showByWorkBooks"
+            [offLabel]="'کارنامه'" [onLabel]="'دروس'"></ng-switchery>
+    </div>
+</div>
+
+
+<div class="form-group" *ngIf="!showByWorkBooks">
+    <label [class.disabled]="!selectedGrade">
+        <image-icon icon="course"></image-icon>
+        انتخاب درس
+    </label>
+    <select class="form-control" [disabled]="coursesByGrade.length == 0 || isLoading" name="course"
+        [(ngModel)]="selectedCourse" (change)="onCourseSelect($event.srcElement.value)">
+        <option [value]="null">---</option>
+
+        <option *ngFor="let i of coursesByGrade" [value]="i.id">{{ i.name }}
+        </option>
+    </select>
+</div>
+
+<div class="form-group" *ngIf="showByWorkBooks">
+    <label [class.disabled]="!selectedGrade">
+        <image-icon icon="course"></image-icon>
+        انتخاب کارنامه
+    </label>
+    <select class="form-control" [disabled]="coursesByGrade.length == 0 || isLoading" name="wb"
+        [(ngModel)]="selectedWorkbook" (change)="onWorkBookSelect($event.srcElement.value)">
+        <option [value]="null">---</option>
+
+        <option *ngFor="let i of getShowWorkbook()" [value]="i.id">{{ i.name }}</option>
+    </select>
+</div>
+
+<div *ngIf="!showByWorkBooks">
+
+    <ng-container *ngIf="classBookForSelectedCourse.length != 0">
+        <b>دفتر کلاسی</b>
+        <mat-divider></mat-divider>
+        <br>
+
+        <mat-accordion>
+            <ng-container *ngFor="let classBook of classBookForSelectedCourse">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            {{ classBook.dateString }}
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            {{ getClassBookTypeString(classBook.type) }}
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+
+                    <p>دبیر : <strong>{{ classBook.teacherName }}</strong></p>
+                    <p>مقدار :
+                        <strong [style.color]="getClassBookResult(classBook.type, classBook.value).color">
+                            {{ getClassBookResult(classBook.type, classBook.value).result }}
+                        </strong>
+                    </p>
+                </mat-expansion-panel>
+            </ng-container>
+        </mat-accordion>
+    </ng-container>
+    <br>
+
+    <div class="row">
+        <div class="col-sm-12" style="margin-top: 15px;" *ngIf="selectedCourse && examsForSelectedCourse.length != 0">
+            <b>آزمون ها</b>
+            <mat-divider></mat-divider>
+            <br>
+
+            <ng-container *ngFor="let workbook of workbooks">
+                <ng-container *ngIf="getExamsByWorkbook(workbook.id).length != 0">
+
+                    <p>{{ workbook.name }}</p>
+                    <mat-divider></mat-divider>
+
+                    <mat-accordion>
+                        <ng-container *ngFor="let i of getExamsByWorkbook(workbook.id)">
+                            <mat-expansion-panel *ngIf="getExamScoreForExam(i.id)">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        {{ i.dateString }}
+                                    </mat-panel-title>
+                                    <mat-panel-description>
+                                        <strong
+                                            [ngStyle]="{ 'color' : getExamScoreForExam(i.id).score >= i.avgInExam ? 'green' : 'red' }">
+                                            {{ getExamScoreForExam(i.id).score }} &nbsp;
+                                        </strong>
+                                        از
+                                        <strong>
+                                            &nbsp; {{ getExamScoreForExam(i.id).topScore }}
+                                        </strong>
+                                    </mat-panel-description>
+                                </mat-expansion-panel-header>
+
+                                <p>نام آزمون : {{ i.name }}</p>
+
+                                <p>نمره دانش آموز :
+                                    <strong
+                                        [ngStyle]="{ 'color' : getExamScoreForExam(i.id).score >= i.avgInExam ? 'green' : 'red' }">
+                                        {{ getExamScoreForExam(i.id).score }}
+                                    </strong>
+                                    از
+                                    <strong>
+                                        {{ getExamScoreForExam(i.id).topScore }}
+                                    </strong>
+                                </p>
+
+                                <p>میانگین : <strong>{{ i.avgInExam }}</strong></p>
+                                <p>بیشترین : <strong>{{ i.maxInExam }}</strong></p>
+                                <p>کمترین : <strong>{{ i.minInExam }}</strong></p>
+                                <p>وضعیت حضور :
+                                    <strong style="color: green"
+                                        *ngIf="getExamScoreForExam(i.id).state == 0">حاضر</strong>
+                                    <strong style="color: orange" *ngIf="getExamScoreForExam(i.id).state == 1">غائب و
+                                        موجه</strong>
+                                    <strong style="color: red" *ngIf="getExamScoreForExam(i.id).state == 2">غائب و غیر
+                                        موجه</strong>
+                                </p>
+                            </mat-expansion-panel>
+                        </ng-container>
+
+
+                    </mat-accordion>
+
+                    <br>
+                </ng-container>
+            </ng-container>
+
+
+            <ng-container *ngIf="getExamsByWorkbook(null).length != 0">
+
+                <p>بدون کارنامه</p>
+                <mat-divider></mat-divider>
+
+                <mat-accordion>
+                    <ng-container *ngFor="let i of getExamsByWorkbook(null)">
+                        <mat-expansion-panel *ngIf="getExamScoreForExam(i.id)">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{ i.dateString }}
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    <strong
+                                        [ngStyle]="{ 'color' : getExamScoreForExam(i.id).score >= i.avgInExam ? 'green' : 'red' }">
+                                        {{ getExamScoreForExam(i.id).score }} &nbsp;
+                                    </strong>
+                                    از
+                                    <strong>
+                                        &nbsp; {{ getExamScoreForExam(i.id).topScore }}
+                                    </strong>
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+
+                            <p>نام آزمون : {{ i.name }}</p>
+
+                            <p>نمره دانش آموز :
+                                <strong
+                                    [ngStyle]="{ 'color' : getExamScoreForExam(i.id).score >= i.avgInExam ? 'green' : 'red' }">
+                                    {{ getExamScoreForExam(i.id).score }}
+                                </strong>
+                                از
+                                <strong>
+                                    {{ getExamScoreForExam(i.id).topScore }}
+                                </strong>
+                            </p>
+
+                            <p>میانگین : <strong>{{ i.avgInExam }}</strong></p>
+                            <p>بیشترین : <strong>{{ i.maxInExam }}</strong></p>
+                            <p>کمترین : <strong>{{ i.minInExam }}</strong></p>
+                            <p>وضعیت حضور :
+                                <strong style="color: green" *ngIf="getExamScoreForExam(i.id).state == 0">حاضر</strong>
+                                <strong style="color: orange" *ngIf="getExamScoreForExam(i.id).state == 1">غائب و
+                                    موجه</strong>
+                                <strong style="color: red" *ngIf="getExamScoreForExam(i.id).state == 2">غائب و غیر
+                                    موجه</strong>
+                            </p>
+                        </mat-expansion-panel>
+                    </ng-container>
+
+
+                </mat-accordion>
+            </ng-container>
+
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <canvas *ngIf="selectedCourse && canShowChart(selectedCourse, true)" width="300" height="300" baseChart
+                [datasets]="chartDataByCourse" [labels]="chartLabelByCourse" [chartType]="'line'">
+            </canvas>
+
+            <div style="text-align: center;" *ngIf="selectedCourse && !canShowChart(selectedCourse, true)">
+                <b style="color: orange">تا کنون نمره ای برای این درس ثبت نشده است</b>
+                <br>
+                <b style="color: orange">و یا دانش آموز در امتحانات غائب بوده است</b>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div *ngIf="showByWorkBooks && selectedGrade && selectedWorkbook && !isLoading">
+    <ng-container *ngIf="coursesHeaders.length != 0 ">
+
+
+        <div class="row">
+            <div class="col-12">
+                <mat-accordion>
+
+                    <mat-expansion-panel
+                        [style.background-color]="getBackColorOfPanel(avgOfTotalAvrageGrade, totalAvg)">
+                        <mat-expansion-panel-header
+                            [style.background-color]="getBackColorOfPanel(avgOfTotalAvrageGrade, totalAvg)">
+                            <mat-panel-title style="white-space: pre;">{{ totalAvgTitle }}</mat-panel-title>
+                            <mat-panel-description><strong>{{ totalAvg.toFixed(2) }}</strong></mat-panel-description>
+                        </mat-expansion-panel-header>
+
+                        <p>
+                            رتبه در کلاس:
+                            <strong>{{ ratingOfTotalAvgClass }}</strong>
+                        </p>
+
+                        <p>
+                            رتبه در پایه:
+                            <strong>{{ ratingOfTotalAvgGrade }}</strong>
+                        </p>
+
+                        <p>
+                            معدل برتر در پایه:
+                            <strong>{{ topTotalAvrageGrade.toFixed(2) }}</strong>
+                        </p>
+                    </mat-expansion-panel>
+
+                    <mat-expansion-panel *ngFor="let head of coursesHeaders; let index = index;">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title style="white-space: pre;">{{ head }}</mat-panel-title>
+                            <mat-panel-description>{{ courseAvgs[index].toFixed(2) }}</mat-panel-description>
+                        </mat-expansion-panel-header>
+
+                        <p>رتبه در کلاس:
+                            <strong>
+                                {{ ratingsInClass[index] }}
+                            </strong>
+                        </p>
+                        <p>رتبه در پایه:
+                            <strong>
+                                {{ ratingsInGrade[index] }}
+                            </strong>
+                        </p>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="coursesHeaders.length == 0">
+        <div class="al-center">
+            <b>نمره ای برای این کارنامه ثبت نشده است</b>
+        </div>
+    </ng-container>
+</div>

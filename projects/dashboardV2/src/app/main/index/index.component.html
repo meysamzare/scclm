@@ -1,0 +1,45 @@
+<app-navbar [Title]="'خانه'" [showColorButton]="true">
+    <div *navItem>
+        <button mat-icon-button>
+            <mat-icon>home</mat-icon>
+        </button>
+    </div>
+    <div *navItem>
+        <button mat-icon-button>
+            <mat-icon>home</mat-icon>
+        </button>
+    </div>
+    <div *navItem>
+        <button mat-icon-button>
+            <mat-icon>home</mat-icon>
+        </button>
+    </div>
+</app-navbar>
+
+<app-data-list #list [PAGE_TITLE]="'دبیر'" [PAGE_TITLES]="'دبیران'" [PAGE_APIURL]="'Teacher'"
+    [conditionalProperty]="''" [conditionalTitle]="'افرادی'" (onEditClick)="list.onEdit($event.id)" (deleteClick)="alert()">
+
+    <ng-template dataListItem [def]="'id'" [title]="'ردیف'" [sortHeader]="false" [show]="false" let-row="Row">
+        <p>{{ row.id }}</p>
+    </ng-template>
+    <ng-template dataListItem [def]="'name'" [title]="'نام و نام خانوادگی'" let-row="Row">
+        <p>{{ row.name }}</p>
+    </ng-template>
+    <ng-template dataListItem [def]="'code'" [title]="'کد دبیر'" let-row="Row">
+        <p>{{ row.code }}</p>
+    </ng-template>
+    <ng-template dataListItem [def]="'getPersonelCode'" [title]="'کد پرسنلی'" [show]="false" let-row="Row">
+        <p>{{ row.getPersonelCode }}</p>
+    </ng-template>
+
+    <app-data-list-filter-item [title]="'دسترسی ویژه'" name="access" #item>
+        <bu-column>
+            <app-select [(ngModel)]="filter1" name="access" [label]="'دسترسی ویژه'" [required]="false" [showLabelSection]="false">
+                <app-select-option [title]="'همه'" [value]="'all'"></app-select-option>
+                <app-select-option [title]="'دسترسی عمومی'" [value]="'allcourse'"></app-select-option>
+                <app-select-option [title]="'دسترسی خصوصی'" [value]="'owncourse'"></app-select-option>
+            </app-select>
+        </bu-column>
+    </app-data-list-filter-item>
+
+</app-data-list>

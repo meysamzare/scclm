@@ -1,0 +1,55 @@
+<div class="full-width-height text-center">
+
+    <!-- <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar> -->
+
+    <div class="full-width-height text-right">
+
+
+        <mat-card class="full-height" style="overflow-y: auto;">
+            <mat-card-title-group class="text-center full-width">
+                <image-icon class="full-width" icon="taha_icon" [height]="150"></image-icon>
+            </mat-card-title-group>
+            <mat-card-content>
+                <form #fm1="ngForm">
+                    <div class="form-group">
+                        <label>نام کاربری</label>
+                        <input type="text" #us="ngModel" required name="us" [(ngModel)]="username" class="form-control"
+                            placeholder="نام کاربری">
+
+                        <mat-error *ngIf="us.hasError('required') && us.touched">
+                            وارد کردن نام کاربری الزامی است
+                        </mat-error>
+                    </div>
+                    <div class="form-group">
+                        <label>کلمه عبور</label>
+                        <input type="password" #pass="ngModel" required name="pass" [(ngModel)]="password"
+                            class="form-control" placeholder="کلمه عبور">
+                        <mat-error *ngIf="pass.hasError('required') && pass.touched">
+                            وارد کردن کلمه عبور الزامی است
+                        </mat-error>
+                    </div>
+                </form>
+            </mat-card-content>
+
+
+            <small>
+                <image-icon icon="info" [height]="15"></image-icon>
+                جهت دریافت نام کاربری و کلمه عبور به معاونت آموزشی مراجعه فرمایید
+            </small>
+
+            <app-login-messages [Type]="3"></app-login-messages>
+
+            <div class="row">
+                <div class="col-lg-12" style="margin-top: 50px;">
+
+                    <button class="margin-top-10" type="button" (click)="sts()" [disabled]="!fm1.valid || isLoading"
+                        class="btn btn-success btn-block">
+                        ورود
+                    </button>
+                </div>
+            </div>
+
+        </mat-card>
+    </div>
+
+</div>

@@ -1,0 +1,84 @@
+<div dir="rtl">
+    <h1 mat-dialog-title> </h1>
+    <div mat-dialog-content style="min-width: 700px;">
+        <form #fm1="ngForm" id="fm11">
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>انتخاب پایه تحصیلی</label>
+                        <ng-select #gradeselect="ngModel" name="grade" [(ngModel)]="selectedGrade"
+                            (change)="selectedClass = null;">
+                            <ng-option *ngFor="let gr of grades" [value]="gr.id">{{gr.name}}
+                            </ng-option>
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>انتخاب کلاس</label>
+                        <ng-select [disabled]="!selectedGrade" #classselect="ngModel" name="class"
+                            [(ngModel)]="selectedClass">
+                            <ng-option *ngFor="let cls of getFiltredClass()" [value]="cls.id">{{cls.name}}
+                            </ng-option>
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>انتخاب کارنامه</label>
+                        <ng-select #workbookselect="ngModel" name="workbook" [(ngModel)]="selectedWorkbook">
+                            <ng-option [value]="0">بدون کارنامه</ng-option>
+                            <ng-option *ngFor="let i of workbooks" [value]="i.id">{{i.name}}
+                            </ng-option>
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group" style="display: block; height: 100px;">
+                        <label>انتخاب آزمون</label>
+                        <ng-select style="position: absolute; width: 95%;" #examselect="ngModel" name="exam"
+                            (change)="getSelectedExam()" [(ngModel)]="examId" required>
+                            <ng-option *ngFor="let i of getFiltredExam()" [value]="i.id">{{i.name}}
+                            </ng-option>
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </form>
+
+        <br>
+        <br>
+
+        <ng-container *ngIf="examId">
+            <p>جزئیات آزمون</p>
+            <mat-divider></mat-divider>
+            <br>
+            <p> نام درس : <label>{{selectedExam.courseName}}</label> </p>
+            <br>
+            <p> نام دبیر : <label>{{selectedExam.teacherName}}</label> </p>
+            <br>
+            <p> پایه : <label>{{selectedExam.gradeName}}</label> </p>
+            <br>
+            <p> کلاس : <label>{{selectedExam.className}}</label> </p>
+            <br>
+            <p> نوع آزمون : <label>{{selectedExam.examTypeName}}</label> </p>
+            <br>
+            <p> تاریخ آزمون : <label>{{selectedExam.dateString}}</label> </p>
+            <br>
+
+        </ng-container>
+
+    </div>
+    <div mat-dialog-actions>
+        <button mat-stroked-button color="primary" [disabled]="!examId || fm1.invalid"
+            (click)="openSetScoreGroupModal()">تایید و ثبت نمرات</button>
+        <button mat-stroked-button color="warn" style="margin-right: 5px;" [mat-dialog-close]="false">لغو</button>
+    </div>
+</div>

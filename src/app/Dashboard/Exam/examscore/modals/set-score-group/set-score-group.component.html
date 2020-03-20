@@ -1,0 +1,134 @@
+<div dir="rtl">
+    <h1 mat-dialog-title> ثبت نمره دانش آموز <strong style="color: green;">{{ getStudentName() }}</strong> </h1>
+    <div mat-dialog-content>
+
+        <mat-progress-bar mode="buffer" *ngIf="isLoading"></mat-progress-bar>
+
+        <strong>ورود نمره با اکسل</strong>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <button (click)="getEnteringScoreSheet()" mat-stroked-button color="primary">
+                    <mat-icon>cloud_download</mat-icon> &nbsp;
+                    دریافت نمونه فایل اکسل
+                </button>
+            </div>
+            <div class="col-lg-6">
+                <button onclick="document.getElementById('fi1').click()" mat-flat-button color="primary">
+                    <mat-icon>cloud_upload</mat-icon> &nbsp;
+                    آپلود فایل اکسل نمره
+                </button>
+                <input #fi1 type="file" id="fi1" style="display: none;"
+                    accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    (change)="uploadScoreSheet($event.target.files)">
+            </div>
+        </div>
+
+        <hr>
+
+        <div style="text-align: center;" *ngIf="isUserAccessToEdit()">
+            <span style="color: #948200;">
+                <mat-icon>lock_open</mat-icon>
+                &nbsp;
+                <b>شما امکان ویرایش نمره را دارید!</b>
+            </span>
+        </div>
+
+        <form #fm1="ngForm">
+
+            نام درس : <label> {{ exam?.courseName }} </label>
+            <br>
+            عنوان آزمون : <label> {{ exam?.name }} </label>
+            <br>
+            نام دبیر : <label> {{ exam?.teacherName }} </label>
+            <br>
+            بودجه آزمون : <label>{{ exam?.source }} </label>
+            <br>
+            ملاک آزمون : <label>{{ exam?.topScore }} </label>
+            <br>
+            <mat-slide-toggle [disabled]="isStudentHaveScore(examscore.studentId) || examscore.state != 0"
+                [matTooltip]="'ارقام بعد از ممیز حتما باید، 0.25، 0.5 و یا 0.75 باشد'" name="afterPoint"
+                [(ngModel)]="checkScoreAfterPoint">حساس بودن به ارقام بعد از ممیز</mat-slide-toggle>
+
+            <br>
+            <br>
+            <input type="number" [disabled]="isStudentHaveScore(examscore.studentId) || examscore.state != 0"
+                [value]="isStudentHaveScore(examscore.studentId) ? getStudentScore(examscore.studentId) : null"
+                placeholder="نمره" #sc="ngModel" required (keydown.enter)="sts()" name="score" class="form-control"
+                [(ngModel)]="examscore.score" (input)="checkForScore(sc.value)">
+
+            <span>
+                با کلید های
+                Ctrl + → یا Ctrl + ←
+                میتوانید بین دانش آموزان جا به جا شوید
+            </span>
+
+            <br>
+
+            <p *ngIf="!isScoreValid && examscore.score" style="color: orange;">
+                نمره نمیتواند از ملاک آزمون بیشتر شود
+            </p>
+
+            <p *ngIf="!isAfterPointScoreValid()" style="color: red">
+                ارقام بعد از ممیز باید 0.25، 0.5 یا 0.75 باشد
+            </p>
+
+        </form>
+
+        <div class="row">
+            <div class="col-lg-12" style="text-align: center; margin-top: 10px;">
+                <mat-button-toggle-group [disabled]="isStudentHaveScore(examscore.studentId)"
+                    [(ngModel)]="examscore.state" (ngModelChange)="onExamScoreStateChange()">
+                    <mat-button-toggle [value]="0">حاضر</mat-button-toggle>
+                    <mat-button-toggle [value]="1">غائب و موجه</mat-button-toggle>
+                    <mat-button-toggle [value]="2">غائب و غیرموجه</mat-button-toggle>
+                </mat-button-toggle-group>
+            </div>
+        </div>
+
+
+        <hr>
+
+        <div style="text-align: left">
+            <span>میانگین : <label>{{ getAvgOfScores() }}</label> </span>
+        </div>
+
+        <br>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ردیف</th>
+                    <th>کد دانش آموز</th>
+                    <th>نام خانوادگی نام</th>
+                    <th>نمره</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let std of students" style="cursor: pointer;" (click)="setNewExamScoreByStudent(std.id)"
+                    [ngStyle]="{ 'background-color' : std.id == examscore.studentId ? '#1ab394' : '', 'color' : std.id == examscore.studentId ? 'white' : '' }">
+                    <td>{{ students.indexOf(std) + 1 }}</td>
+                    <td>{{ std.code }}</td>
+                    <td>{{ std.lastName + ' ' + std.name }}</td>
+                    <td>{{ getStudentScore(std.id) }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+
+        <div style="text-align: left">
+            <span>میانگین : <label>{{ getAvgOfScores() }}</label> </span>
+        </div>
+
+
+    </div>
+    <div mat-dialog-actions>
+        <button mat-stroked-button color="primary" (click)="sts()"
+            [disabled]="fm1.invalid || ( (examscore.state == 0 && (examscore.score == null || examscore.score > examscore.topScore)) || (examscore.state != 0 && examscore.score != null) ) || !isAfterPointScoreValid() || isStudentHaveScore(examscore.studentId)">
+            ثبت نمره
+        </button>
+        <button mat-stroked-button color="warn" style="margin-right: 5px;" [mat-dialog-close]="false">
+            ثبت نهایی و خروج
+        </button>
+    </div>
+</div>

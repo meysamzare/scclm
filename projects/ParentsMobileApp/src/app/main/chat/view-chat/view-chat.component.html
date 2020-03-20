@@ -1,0 +1,77 @@
+<app-toolbar [Title]="Title" [showIcon]="false" [showRefresh]="false"></app-toolbar>
+
+<mat-progress-bar *ngIf="isSendingChat" mode="indeterminate"></mat-progress-bar>
+
+<div class="chat-content">
+
+    <div class="al-center">
+        <image-icon icon="loading" [format]="'gif'" *ngIf="canShowMoreButton()" [height]="60"></image-icon>
+    </div>
+
+    <div class="chat-history" dir="ltr">
+        <ul>
+            <li class="clearfix" *ngFor="let i of chats" [class.clearfix]="detectIsSender(i)" style="display: contents">
+                <div class="message-data" [class.align-right]="detectIsSender(i)">
+                    <span class="message-data-time">{{ i.sendDateString }}</span> &nbsp; &nbsp;
+                    <span class="message-data-name">
+                        {{ detectIsSender(i) ? 'شما' : getReciverName() }}
+                    </span>
+                    <mat-icon style="opacity: .5;" *ngIf="!i.isRead && detectIsSender(i)">done</mat-icon>
+                    <mat-icon style="color: blue;" *ngIf="i.isRead && detectIsSender(i)">done_all</mat-icon>
+                </div>
+                <div class="message" [class.float-right]="detectIsSender(i)" [class.other-message]="detectIsSender(i)"
+                    [class.my-message]="!detectIsSender(i)" style="direction: rtl;">
+                    {{ i.text }}
+
+                    <div class="margin-top-10" *ngIf="i.fileUrl">
+                        <a class="btn-block" mat-stroked-button [href]="stdAuth.auth.getFileUrl(i.fileUrl)"
+                            target="_blank">
+                            <mat-icon>attachment</mat-icon>
+                            &nbsp;
+                            دانلود فایل ضمیمه
+                        </a>
+                    </div>
+                </div>
+            </li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+<div class="chat-action">
+    <mat-toolbar class="chat-action-toolbar">
+        <mat-toolbar-row class="chat-action-row">
+
+            <div class="row full-wigth">
+                <div class="col-2 al-right auto-margin">
+                    <button (click)="sendChat()" [disabled]="!Chat.text && !Chat.fileData || isSendingChat"
+                        mat-mini-fab>
+                        <mat-icon>send</mat-icon>
+                    </button>
+                </div>
+                <div class="col-8 al-center auto-margin">
+                    <textarea name="text" class="form-control chat-text" placeholder="متنی را تایپ کنید"
+                        [(ngModel)]="Chat.text"></textarea>
+                </div>
+                <div class="col-2 al-right auto-margin">
+                    <button mat-icon-button color="warn" style="margin-right: 5px;" (click)="clearFile()"
+                        *ngIf="Chat.fileData.length != 0" matTooltip="حذف فایل فعلی">
+                        <mat-icon>clear</mat-icon>
+                    </button>
+
+                    <button *ngIf="Chat.fileData.length == 0" matTooltip="افزودن فایل"
+                        onclick="document.getElementById('fi1').click()" mat-icon-button>
+                        <mat-icon>link</mat-icon>
+                    </button>
+
+                    <input type="file" style="display: none;" id="fi1" class="form-control" name="image"
+                        (change)="onFileChanged($event)" />
+                </div>
+
+            </div>
+        </mat-toolbar-row>
+
+    </mat-toolbar>
+</div>

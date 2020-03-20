@@ -1,0 +1,21 @@
+.main {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: 1s;
+    margin-top: 45px;
+    margin-bottom: 65px;
+    padding: 10px;
+
+    height: 100%;
+
+    transition: margin-top 0s;
+}
+
+.root {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}

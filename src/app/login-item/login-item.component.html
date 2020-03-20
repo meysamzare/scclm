@@ -1,0 +1,23 @@
+<body class="gray-bg">
+
+    <div class="middle-box text-center loginscreen animated fadeInDown" style="padding-top: 140px;">
+        <div>
+            <h3>خوش آمدید</h3>
+            <p> جهت ورود لطفا کد رهگیری خود را وارد کنید </p>
+            <form class="m-t" #fm1="ngForm">
+                <div class="form-group">
+                    <input type="number" max="9999999999" name="rcode" [(ngModel)]="rahCode" #rahcode="ngModel" class="form-control" placeholder="کد رهگیری" required>
+                    <p *ngIf="rahcode.hasError('required') && (rahcode.touched || rahcode.dirty)  && rahcode.invalid" class="error">
+                        وارد کردن کد رهگیری الزامی است
+                    </p>
+                    <p *ngIf="rahcode.hasError('maxlength') && (rahcode.touched || rahcode.dirty)  && rahcode.invalid" class="error">
+                        کد رهگیری را به درستی وارد کنید
+                    </p>
+                </div>
+                <button type="submit" (click)="login()" [disabled]="!fm1.valid" class="btn btn-primary block full-width m-b">ورود</button>
+            </form>
+            <a class="btn btn-sm btn-white btn-block" routerLink="/">بازگشت به صفحه اصلی</a>
+        </div>
+    </div>
+
+</body>

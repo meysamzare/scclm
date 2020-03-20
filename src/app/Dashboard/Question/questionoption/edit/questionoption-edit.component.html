@@ -1,0 +1,57 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <form #fm1="ngForm" id="fm11">
+                        <div class="col-sm-6 b-r">
+
+                            <div class="form-group">
+                                <label>عنوان گزینه</label>
+                                <input type="text" required #name="ngModel" name="name"
+                                    [(ngModel)]="questionoption.name" placeholder="عنوان گزینه" class="form-control">
+                                <div *ngIf="(name.touched || name.dirty) &&
+                                    name.invalid">
+                                    <p *ngIf="name.hasError('required')" class="error">
+                                        وارد کردن عنوان گزینه الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <p>آیا این گزینه صحیح است؟</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="questionoption.isTrue">صحیح
+                            </mat-checkbox>
+
+
+                        </div>
+                        <div class="col-sm-6">
+
+                            <div class="form-group">
+                                <label>انتخاب سوال</label>
+                                <ng-select #questionselect="ngModel" name="question"
+                                    [(ngModel)]="questionoption.questionId" required>
+                                    <ng-option *ngFor="let i of questions" [value]="i.id">{{i.name}}</ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="questionselect.hasError('required')">
+                                    انتخاب سوال الزامی است
+                                </mat-error>
+                            </div>
+
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-12">
+                            <a mat-raised-button color="warn" style="margin: 5px;"
+                                routerLink="/dashboard/questionoption">لغو</a>
+                            <button type="submit" mat-raised-button color="primary" [disabled]="!fm1.valid"
+                                (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

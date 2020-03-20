@@ -1,0 +1,108 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <form #fm1="ngForm" id="fm11">
+                        <div class="col-sm-6">
+
+                            <div class="form-group">
+                                <label>عنوان {{ PAGE_TITLE }}</label>
+                                <input type="text" required #name="ngModel" name="name" [(ngModel)]="PAGE_Data.title"
+                                    placeholder="عنوان" class="form-control">
+                                <div *ngIf="(name.touched || name.dirty) && name.invalid">
+                                    <p *ngIf="name.hasError('required')" class="error">
+                                        وارد کردن عنوان {{ PAGE_TITLE }} الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>متن کوتاه {{ PAGE_TITLE }}</label>
+                                <input type="text" required #shortContent="ngModel" name="shortContent"
+                                    [(ngModel)]="PAGE_Data.shortContent" placeholder="متن کوتاه" class="form-control">
+                                <div *ngIf="(shortContent.touched || shortContent.dirty) && shortContent.invalid">
+                                    <p *ngIf="shortContent.hasError('required')" class="error">
+                                        وارد کردن متن کوتاه {{ PAGE_TITLE }} الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>انتخاب نوع {{ PAGE_TITLE }}</label>
+                                <mat-form-field>
+                                    <mat-label>نوع</mat-label>
+                                    <mat-select #Notitype="ngModel" name="Notitype"
+                                        [(ngModel)]="PAGE_Data.notiifcationType" required>
+                                        <mat-option *ngFor="let i of [0,1,2,3]" [value]="i">
+                                            {{ getNotificationTypeString(i) }}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-error *ngIf="Notitype.hasError('required')">
+                                    انتخاب نوع {{ PAGE_TITLE }} الزامی است
+                                </mat-error>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6 b-r-r">
+
+
+                            <div class="form-group">
+                                <label>متن {{ PAGE_TITLE }}</label>
+                                <textarea type="text" required #content="ngModel" name="content"
+                                    [(ngModel)]="PAGE_Data.content" placeholder="متن" class="form-control"></textarea>
+                                <div *ngIf="(content.touched || content.dirty) && content.invalid">
+                                    <p *ngIf="content.hasError('required')" class="error">
+                                        وارد کردن متن {{ PAGE_TITLE }} الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>عنوان دکمه {{ PAGE_TITLE }}</label>
+                                <input type="text" required #btnTitle="ngModel" name="btnTitle"
+                                    [(ngModel)]="PAGE_Data.buttonTitle" placeholder="عنوان دکمه" class="form-control">
+                                <div *ngIf="(btnTitle.touched || btnTitle.dirty) && btnTitle.invalid">
+                                    <p *ngIf="btnTitle.hasError('required')" class="error">
+                                        وارد کردن عنوان دکمه {{ PAGE_TITLE }} الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>نمایش {{ PAGE_TITLE }} برای</label>
+                                <ng-select #showType="ngModel" name="type" [(ngModel)]="PAGE_Data.showType" required>
+                                    <ng-option *ngFor="let i of [0,1,2,3,4,5,6]" [value]="i">
+                                        {{ getNotificationShowTypeString(i) }}</ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="showType.hasError('required')">
+                                    انتخاب نمایش {{ PAGE_TITLE }} الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>نمایش داده شود؟</label>
+
+                                <mat-checkbox name="show" [(ngModel)]="PAGE_Data.isShow">انتشار پیام</mat-checkbox>
+                            </div>
+
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-12">
+                            <a mat-raised-button color="warn" style="margin: 5px;"
+                                [routerLink]="'/dashboard/' + PAGE_URL">لغو</a>
+                            <button type="submit" mat-raised-button color="primary" [disabled]="!fm1.valid"
+                                (click)="sts()">{{ btnAddTitle }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

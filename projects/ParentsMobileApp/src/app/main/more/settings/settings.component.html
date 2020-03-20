@@ -1,0 +1,13 @@
+<app-toolbar [Title]="'تنظیمات'" [showBackButton]="true" [showColorButton]="false"></app-toolbar>
+
+<div>
+    <div class="row">
+        <div class="col-sm-12">
+            <mat-slide-toggle [checked]="mainSW.isPushNorificationSubscribed" [labelPosition]="'before'"
+                (change)="mainSW.toggleSubscription()">
+                نمایش نوتیفیکیشن
+            </mat-slide-toggle>
+            <p class="desc">پیام هایی از طرف مجتمع آموزشی که به شما در موارد مختلف اطلاع رسانی میشود</p>
+        </div>
+    </div>
+</div>

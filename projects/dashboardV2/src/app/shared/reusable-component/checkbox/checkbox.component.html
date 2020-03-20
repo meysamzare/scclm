@@ -1,0 +1,12 @@
+<div class="field is-horizontal margin-bot">
+    <div *ngIf="showLabelSection" class="field-label is-normal">
+        <label class="label">{{ label }}</label>
+    </div>
+    <div class="field-body">
+
+        <mat-checkbox class="checkbox" (change)="onChange($event.checked)" #checkbox
+            [(indeterminate)]="indeterminate" labelPosition="after" [disabled]="disabled">
+            {{ desc }}
+        </mat-checkbox>
+    </div>
+</div>

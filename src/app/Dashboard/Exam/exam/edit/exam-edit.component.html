@@ -1,0 +1,260 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+
+            <ng-template #cancelBtn>
+                <button mat-button color="warn" style="margin-right: 10px;">لغو</button>
+            </ng-template>
+            <ng-template #confirmBtn>
+                <button mat-button color="primary">تایید</button>
+            </ng-template>
+
+
+            <div class="ibox-content">
+                <div class="row" style="padding: 10px;">
+                    <mat-form-field>
+                        <mat-label>انتخاب آزمون مورد نظر</mat-label>
+                        <mat-select [disabled]="isEdit" style="direction: ltr" #u
+                            (valueChange)="copySelectedData(u.value)" name="class">
+                            <mat-option selected="selected" value="0">-- موردی را انتخاب نمایید --</mat-option>
+                            <mat-option *ngFor="let ex of exams" [value]="ex.id">{{ex.name}}</mat-option>
+                        </mat-select>
+                        <mat-hint>کپی کردن داده های مورد انتخاب شده در صفحه جاری</mat-hint>
+                    </mat-form-field>
+                </div>
+                <hr>
+                <div class="row">
+                    <form #fm1="ngForm" id="fm11">
+                        <div class="col-sm-6 b-r">
+
+                            <div class="form-group">
+                                <label>نام آزمون</label>
+                                <input type="text" required #name="ngModel" name="name" [(ngModel)]="exam.name"
+                                    placeholder="نام" class="form-control">
+                                <div *ngIf="(name.touched || name.dirty) &&
+                                    name.invalid">
+                                    <p *ngIf="name.hasError('required')" class="error">
+                                        وارد کردن نام آزمون الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>تاریخ آزمون</label>
+                                <mat-form-field class="example-full-width">
+                                    <input tabindex="7" #dateStart="ngModel" (click)="openc(picker1)" readonly
+                                        name="dateStart" required matInput [matDatepicker]="picker1"
+                                        [(ngModel)]="exam.date" placeholder="تاریخ آزمون">
+                                    <mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker1">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #picker1 touchUi="true"></mat-datepicker>
+                                </mat-form-field>
+                                <div *ngIf="dateStart.touched && dateStart.invalid" class="error">
+                                    <div>
+                                        وارد کردن تاریخ آزمون الزامی است
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>تعداد سوالات آزمون</label>
+                                <input type="number" #number="ngModel" name="number" [(ngModel)]="exam.numberQ"
+                                    placeholder="تعداد سوالات" class="form-control">
+
+                            </div>
+
+                            <div class="form-group">
+                                <label>بودجه آزمون</label>
+                                <input type="text" #source="ngModel" name="source" [(ngModel)]="exam.source"
+                                    placeholder="بودجه" class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <label>ملاک نمره آزمون</label>
+                                <input type="number" required #topScore="ngModel" name="topScore"
+                                    [(ngModel)]="exam.topScore" placeholder="ملاک نمره" class="form-control">
+                                <div *ngIf="(topScore.touched || topScore.dirty) &&
+                                    topScore.invalid">
+                                    <p *ngIf="topScore.hasError('required')" class="error">
+                                        وارد کردن ملاک نمره آزمون الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>مدت زمان آزمون</label>
+                                <input type="number" #time="ngModel" name="time" [(ngModel)]="exam.time"
+                                    placeholder="مدت زمان آزمون به دقیقه" class="form-control">
+
+                            </div>
+
+                            <p>اعلام نتایج شده است؟</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="exam.result">اعلام نتایج شد
+                            </mat-checkbox>
+
+                            <div class="form-group">
+                                <label>تاریخ و ساعت اعلام نتایج</label>
+                                <mat-form-field class="example-full-width">
+                                    <input tabindex="7" #resultDate="ngModel" (click)="openc(picker2)" readonly
+                                        name="resultDate" matInput [matDatepicker]="picker2"
+                                        [(ngModel)]="exam.resultDate" placeholder="تاریخ و ساعت اعلام نتایج">
+                                    <mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker2">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #picker2 touchUi="true"></mat-datepicker>
+                                </mat-form-field>
+
+
+                                <input class="form-control" [ngxTimepicker]="pickerTime2" name="timeEx" readonly
+                                    [format]="24" [(ngModel)]="resultTime" placeholder="زمان اعلام نتایج" #timeEx>
+
+                                <ngx-material-timepicker [cancelBtnTmpl]="cancelBtn" (opened)="onTimeOpened()"
+                                    [confirmBtnTmpl]="confirmBtn" #pickerTime2></ngx-material-timepicker>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label>ترتیب</label>
+                                <input type="number" #order="ngModel" name="order" [(ngModel)]="exam.order"
+                                    placeholder="ترتیب" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <p>آیا آزمون لغو شده است؟</p>
+                                <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="exam.isCancelled">
+                                    لغو شده
+                                </mat-checkbox>
+                                <input [disabled]="!exam.isCancelled" type="number" #reason="ngModel" name="cancellreas"
+                                    [(ngModel)]="exam.cancellReason" placeholder="علت لغو آزمون" required
+                                    class="form-control">
+                                <div *ngIf="(reason.touched || reason.dirty) && reason.invalid">
+                                    <p *ngIf="reason.hasError('required')" class="error">
+                                        وارد کردن ترتیب الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6">
+
+                            <!-- <label>انتخاب والد</label>
+                            <br>
+                            <button color="primary"
+                                [ngStyle]="{'background-color': exam.parentId == null ? 'green' : 'red' }" mat-mini-fab
+                                (click)="clearSelection()" matTooltip="انتخاب به عنوان ریشه">
+                                <mat-icon>clear_all</mat-icon>
+                            </button>
+                            <button color="primary" [ngStyle]="{'background-color':
+                                !checkForNodeOpen() ? 'red' : 'green' }" style="margin: 5px;" mat-mini-fab
+                                (click)="openAllTree()" matTooltip="بازکردن همه"><i class="fa fa-plus"></i></button>
+                            <button color="primary" [ngStyle]="{'background-color':
+                                checkForNodeOpen() ? 'red' : 'green' }" style="margin: 2px;" mat-mini-fab
+                                (click)="closeAllTree()" matTooltip="بستن همه"><i class="fa fa-minus"></i></button>
+                            <br>
+                            <br>
+                            <div id="divtree">
+                            </div>
+
+                            <hr> -->
+
+                            <div class="form-group">
+                                <label>انتخاب نوع آزمون</label>
+                                <ng-select #examtypeselect="ngModel" name="examtype" [(ngModel)]="exam.examTypeId"
+                                    required>
+                                    <ng-option *ngFor="let i of examTypes" [value]="i.id">{{i.name}}</ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="examtypeselect.hasError('required')">
+                                    انتخاب نوع آزمون الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب سال تحصیلی</label>
+                                <ng-select [disabled]="exam.haveScore" [activeyear]="isEdit" #yearselect="ngModel"
+                                    name="year" [(ngModel)]="exam.yeareducationId" required>
+                                    <ng-option *ngFor="let year of yeareducations" [value]="year.id">{{year.name}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="yearselect.hasError('required')">
+                                    انتخاب سال تحصیلی الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب پایه تحصیلی</label>
+                                <ng-select [disabled]="exam.haveScore" #gradeselect="ngModel" name="grade"
+                                    [(ngModel)]="exam.gradeId" required (change)="exam.classId = null;">
+                                    <ng-option *ngFor="let gr of grades" [value]="gr.id">{{gr.name}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="gradeselect.hasError('required')">
+                                    انتخاب پایه تحصیلی الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب کلاس</label>
+                                <ng-select [disabled]="!exam.gradeId || exam.haveScore" #classselect="ngModel"
+                                    name="class" [(ngModel)]="exam.classId" required>
+                                    <ng-option *ngFor="let cls of getFiltredClass()" [value]="cls.id">{{cls.name}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-hint>در انتخاب کلاس، پایه و سال تحصیلی دقت شود که، تا زمانی که نمره ای برای این
+                                    آزمون ثبت نشده است
+                                    می توان آن را تغییر داد در غیر این صورت امکان تغییر کلاس، پایه و سال تحصیلی وجود
+                                    ندارد.</mat-hint>
+                                <mat-error *ngIf="classselect.hasError('required')">
+                                    انتخاب کلاس الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب درس</label>
+                                <ng-select [disabled]="!exam.gradeId" #courseselect="ngModel" name="course"
+                                    (change)="setTeacherIdByCourse()" [(ngModel)]="exam.courseId" required>
+                                    <ng-option *ngFor="let cor of getFiltredCourse()" [value]="cor.id">{{cor.name}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="courseselect.hasError('required')">
+                                    انتخاب درس الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب دبیر</label>
+                                <ng-select [disabled]="!exam.courseId" #teacherselect="ngModel" name="teacher"
+                                    [(ngModel)]="exam.teacherId" required>
+                                    <ng-option *ngFor="let i of teachers" [value]="i.id">{{i.name}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="teacherselect.hasError('required')">
+                                    انتخاب دبیر الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب کارنامه</label>
+                                <ng-select #workbook="ngModel" name="workbook" [(ngModel)]="exam.workbookId">
+                                    <ng-option *ngFor="let i of workbooks" [value]="i.id">{{i.name}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-hint>
+                                    انتخاب کارنامه اختیاری است
+                                </mat-hint>
+                            </div>
+
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-12">
+                            <a mat-raised-button color="warn" style="margin: 5px;" routerLink="/dashboard/exam">لغو</a>
+                            <button type="submit" mat-raised-button color="primary" [disabled]="!fm1.valid"
+                                (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,85 @@
+<app-toolbar [Title]="'لیست دفتر کلاسی ' + student.name + ' ' + student.lastName" [showBackButton]="true"></app-toolbar>
+
+<div class="row">
+    <div class="col-4 al-center">
+        <image-icon *ngIf="!student.picUrl" icon="student" [height]="100"></image-icon>
+        <img *ngIf="student.picUrl" class="img-circle" [src]="tchAuth.auth.getFileUrl(student.picUrl)">
+    </div>
+    <div class="col-8">
+        <p>
+            <small>
+                نام و نام خانوادگی :
+            </small>
+            <b>{{ student.name + ' ' + student.lastName }}</b>
+        </p>
+        <P>
+            <small>
+                کلاس و شعبه :
+            </small>
+            <b>{{ className }}</b>
+        </P>
+        <P>
+            <small>
+                درس :
+            </small>
+            <b>{{ courseName }}</b>
+        </P>
+    </div>
+</div>
+
+<div class="row margin-top-10">
+    <div class="col-6 auto-margin">
+        مرتب سازی بر اساس :
+    </div>
+    <div class="col-6 al-left">
+        <mat-button-toggle-group name="sortButton" [(ngModel)]="sort" (ngModelChange)="refreshClassBooks(true)">
+            <mat-button-toggle [value]="'date'">تاریخ</mat-button-toggle>
+            <mat-button-toggle [value]="'type'">نوع</mat-button-toggle>
+        </mat-button-toggle-group>
+    </div>
+</div>
+
+<div class="row margin-top-10">
+    <div class="col-12">
+
+        <div class="card" matRipple *ngFor="let i of studentClassBooks; let index = index;">
+            <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col-12">
+
+                        <div class="row">
+                            <div class="col-5">
+                                {{ getClassBookTypeString(i.type) }}
+                            </div>
+                            <div class="col-7" [style.color]="getClassBookResult(i.type, i.value, i.examName).color">
+                                {{ getClassBookResult(i.type, i.value, i.examName).result }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <image-icon (click)="delete(i.id, i.type)" icon="trash" [height]="20"></image-icon>
+                            </div>
+                            <div class="col-6 al-left">
+                                <small>
+                                    {{ i.dateString }}
+                                </small>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row margin-top-10" *ngIf="canShowMoreButton()">
+            <div class="col-sm-12">
+                <button (click)="nextPage()" class="btn btn-block btn-outline-info">نمایش بیشتر</button>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,38 @@
+<div class="menu">
+    <mat-toolbar>
+        <mat-toolbar-row style="height: auto;">
+            <div routerLink="/" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{ exact: true }"
+                class="menu-item" matRipple>
+                <span>
+                    <mat-icon class="menu-icon">home</mat-icon>
+                </span>
+                <span class="title">خانه</span>
+            </div>
+            <div routerLink="/class-book" [routerLinkActive]="'active'" class="menu-item" matRipple>
+                <span>
+                    <mat-icon class="menu-icon">assignment</mat-icon>
+                </span>
+                <span class="title">دفتر کلاسی</span>
+            </div>
+            <div routerLink="/tickets" [routerLinkActive]="'active'" class="menu-item" matRipple>
+                <span>
+                    <mat-icon class="menu-icon">question_answer</mat-icon>
+                </span>
+                <span class="title">مکاتبات</span>
+            </div>
+            <div routerLink="/chats" [routerLinkActive]="'active'" class="menu-item" matRipple>
+                <span>
+                    <mat-icon class="menu-icon">chat</mat-icon>
+                </span>
+                <span class="title">گفتگوها</span>
+            </div>
+            <div routerLink="/more" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{ exact: true }"
+                class="menu-item" matRipple>
+                <span>
+                    <mat-icon class="menu-icon">more_horiz</mat-icon>
+                </span>
+                <span class="title">سایر</span>
+            </div>
+        </mat-toolbar-row>
+    </mat-toolbar>
+</div>

@@ -1,0 +1,147 @@
+<app-toolbar [Title]="'دفتر کلاسی'"></app-toolbar>
+
+<mat-card *ngIf="havePrivData == false">
+    <mat-card-content>
+
+        <div class="form-group">
+            <label>
+                <image-icon icon="grade"></image-icon>
+                انتخاب پایه تحصیلی
+            </label>
+            <select class="form-control" [disabled]="teacherGrades.length == 0" name="grade" [(ngModel)]="selectedGrade" (change)="onGradeSelect()"
+                #gradeselect="ngModel">
+                <option [value]="null">---</option>
+
+                <option *ngFor="let i of teacherGrades" [value]="i.id">{{ i.name }}</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label [class.disabled]="!selectedGrade">
+                <image-icon icon="course"></image-icon>
+                انتخاب درس
+            </label>
+            <select [disabled]="teacherCourseByGrade.length == 0" class="form-control" name="course"
+                [(ngModel)]="selectedCourse" #courseSelect="ngModel" (change)="onCourseSelect()">
+                <option [value]="null">---</option>
+
+                <option *ngFor="let i of teacherCourseByGrade" [value]="i.id">{{ i.name }}</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label [class.disabled]="!selectedCourse">
+                <image-icon icon="class"></image-icon>
+                انتخاب کلاس
+            </label>
+            <select [disabled]="classByGrade.length == 0" class="form-control" name="class" [(ngModel)]="selectedClass"
+                (change)="onClassSelect()" #classSelect="ngModel">
+                <option [value]="null">---</option>
+
+                <option *ngFor="let i of classByGrade" [value]="i.id">{{ i.name }}</option>
+            </select>
+        </div>
+
+    </mat-card-content>
+</mat-card>
+
+<div class="row" *ngIf="havePrivData">
+    <div class="col-7 al-right">
+        <p style="color: #22416e;">
+            <image-icon icon="list"></image-icon>
+            {{ selectedClassName }}
+            <small>
+                {{ ' - ' + selectedCourseName}}
+            </small>
+        </p>
+    </div>
+    <div class="col-5 al-left">
+        <button mat-button color="warn" class="btn-block" (click)="removePerivData()">
+            تغییر لیست
+        </button>
+    </div>
+</div>
+
+<div class="row margin-top-10">
+    <div class="col-12">
+
+
+        <div class="row">
+            <div class="col-12">
+                <input type="text" *ngIf="studentByClass.length != 0" placeholder="جستجو" name="search"
+                    class="form-control" [(ngModel)]="search">
+            </div>
+        </div>
+
+        <ng-template #menuTemp let-i="student" let-ShowChat="showChat" let-ForAll="forAll">
+            <button (click)="goToSetClassBook(ForAll ? null : i.id, 0, ForAll)" mat-menu-item>
+                <mat-icon>pan_tool</mat-icon>
+                <span>ثبت حضور، غیاب</span>
+            </button>
+            <button (click)="goToSetClassBook(ForAll ? null : i.id, 1, ForAll)" mat-menu-item>
+                <mat-icon>note_add</mat-icon>
+                <span>ثبت نمره آزمون</span>
+            </button>
+            <button (click)="goToSetClassBook(ForAll ? null : i.id, 2, ForAll)" mat-menu-item>
+                <mat-icon>hearing</mat-icon>
+                <span>ثبت نمره پرسش کلاسی</span>
+            </button>
+            <button (click)="goToSetClassBook(ForAll ? null : i.id, 3, ForAll)" mat-menu-item>
+                <mat-icon>exposure_plus_1</mat-icon>
+                <span>ثبت مثبت / منفی</span>
+            </button>
+            <button (click)="goToSetClassBook(ForAll ? null : i.id, 4, ForAll)" mat-menu-item>
+                <mat-icon>gavel</mat-icon>
+                <span>ثبت مورد انضباطی</span>
+            </button>
+            <button *ngIf="ShowChat" [routerLink]="['/chats/view/' + i.id + '/0/'+ i.name + ' ' + i.lastName]"
+                mat-menu-item>
+                <mat-icon>chat</mat-icon>
+                <span>گفتگو با اولیای دانش آموز</span>
+            </button>
+        </ng-template>
+
+        <div class="row margin-top-10">
+            <div class="col-12" *ngIf="studentByClass.length != 0">
+                <button class="btn-block" [matMenuTriggerFor]="menuForAll" mat-flat-button color="primary">ثبت برای
+                    تمامی دانش آموزان</button>
+                <mat-menu #menuForAll="matMenu">
+                    <div *ngTemplateOutlet="menuTemp; context: { student: null, showChat: false, forAll: true }">
+                    </div>
+                </mat-menu>
+            </div>
+        </div>
+
+        <div class="row margin-top-10">
+            <div class="col-12">
+
+                <div class="card" matRipple *ngFor="let i of getFiltredStudents()" long-press
+                    (onLongPress)="menuTrigger.openMenu()" [routerLink]="['./view-student/' + i.id]">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-3 auto-margin">
+                                <img *ngIf="i.picUrl" class="img-circle-50" [src]="tchAuth.auth.getFileUrl(i.picUrl)">
+                                <image-icon *ngIf="!i.picUrl" icon="student" [height]="50"></image-icon>
+                            </div>
+                            <div class="col-6 auto-margin">
+                                <b>{{ i.lastName + ' ' + i.name }}</b>
+                            </div>
+                            <div class="col-3 auto-margin" style="text-align: left;">
+                                <button mat-icon-button [matMenuTriggerFor]="menu" #menuTrigger="matMenuTrigger">
+                                    <mat-icon>more_vert</mat-icon>
+                                </button>
+                                <mat-menu #menu="matMenu">
+                                    <div
+                                        *ngTemplateOutlet="menuTemp; context: { student: i, showChat: true, forAll: false }">
+                                    </div>
+                                </mat-menu>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>

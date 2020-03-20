@@ -1,0 +1,79 @@
+<app-toolbar [Title]="'خانه'"></app-toolbar>
+
+<div *ngIf="tchAuth.getTeacher().allCourseAccess" class="alert alert-info" role="alert">
+    <b class="al-center">
+        شما به تمامی دروس دسترسی دارید!
+    </b>
+</div>
+
+<div *ngIf="tchAuth.isUserHaveToChangePass" class="alert alert-danger" role="alert">
+    <h4>
+        <image-icon icon="lock"></image-icon>
+
+        کلمه عبور خود را عوض کنید
+    </h4>
+    <p>
+        کلمه عبور فعلی شما دارای امنیت بسیار کم است و برای ادامه کار با این برنامه به شما پیشنهاد میدهیم که
+        کلمه عبور خود را تعویض کنید.
+    </p>
+    <p style="text-align: center;">
+        <button type="button" [routerLink]="['/more/change-password']" class="btn btn-success">
+            تعویض کلمه عبور
+        </button>
+    </p>
+</div>
+
+<mat-card>
+    <mat-card-content>
+        <div class="row">
+            <div class="col-sm-12 label-bold">
+                <p style="text-align: center">
+                    <image-icon icon="teacher" [height]="100"></image-icon>
+                </p>
+                <p> نام و نام خانوادگی : <label>{{ tchAuth.getTeacherName() }}</label></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12" *ngIf="registredCourses.length != 0">
+                <b>دروس : </b>
+                <p *ngFor="let i of registredCourses">
+                    {{ i.name + ' (' + i.gradeName + ' - ' + i.grade.yeareducationName + ') '  }}
+                </p>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+
+<div class="row">
+    <div class="col-sm-12" style="margin-top: 20px;" *ngIf="upComingExams.length != 0">
+        <p>
+            <image-icon icon="up_comming"></image-icon>
+            آزمون های پیش رو (هفته جاری)
+        </p>
+        <mat-accordion>
+            <ng-container *ngFor="let i of upComingExams">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            {{ i.name.length > 20 ? i.name.substr(0, 20) + '...' : i.name }}
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            {{ i.dateString }}
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+
+                    <p *ngIf="i.name.length > 20">نام آزمون : {{ i.name }}</p>
+
+                    <p> درس : {{ i.courseName }} </p>
+                    <p> دبیر : {{ i.teacherName }} </p>
+                    <p> بودجه آزمون : {{ i.source }} </p>
+                    <p> مدت زمان آزمون : {{ i.time }} دقیقه </p>
+                    <p> ملاک آزمون : {{ i.topScore }} </p>
+                    <p> نوع آزمون : {{ i.examTypeName }} </p>
+
+                </mat-expansion-panel>
+            </ng-container>
+        </mat-accordion>
+    </div>
+</div>

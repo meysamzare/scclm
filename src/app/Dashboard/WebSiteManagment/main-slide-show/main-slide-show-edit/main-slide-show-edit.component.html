@@ -1,0 +1,148 @@
+<div class="row">
+	<div class="col-lg-12">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>{{ Title }}</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="row">
+					<form #fm1="ngForm" id="fm11">
+						<div class="col-sm-6 b-r">
+
+							<div class="form-group">
+								<label>نام اسلاید</label>
+								<input type="text" required #name="ngModel" name="name" [(ngModel)]="mainslideshow.name"
+									placeholder="نام" class="form-control">
+								<div *ngIf="(name.touched || name.dirty) && name.invalid">
+									<p *ngIf="name.hasError('required')" class="error">
+										وارد کردن نام اسلاید الزامی است
+									</p>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label>عنوان اسلاید</label>
+								<input type="text" required #title="ngModel" name="title"
+									[(ngModel)]="mainslideshow.title" placeholder="عنوان" class="form-control">
+								<div *ngIf="(title.touched || title.dirty) && title.invalid">
+									<p *ngIf="title.hasError('required')" class="error">
+										وارد کردن عنوان اسلاید الزامی است
+									</p>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label>صفحه اسلاید</label>
+								<input type="text" required #page="ngModel" name="page" [(ngModel)]="mainslideshow.page"
+									placeholder="صفحه" class="form-control">
+								<div *ngIf="(page.touched || page.dirty) && page.invalid">
+									<p *ngIf="page.hasError('required')" class="error">
+										وارد کردن صفحه اسلاید الزامی است
+									</p>
+								</div>
+							</div>
+
+
+							<div class="form-group">
+								<label>توضیحات</label>
+								<textarea type="text" #desc="ngModel" name="desc" [(ngModel)]="mainslideshow.desc"
+									placeholder="توضیحات" class="form-control"></textarea>
+							</div>
+
+
+							<div class="form-group">
+								<label> آیا این اسلاید نمایش داده شود؟ </label>
+								<mat-checkbox [ngModelOptions]="{standalone: true}"
+									[(ngModel)]="mainslideshow.showState"> نمایش
+								</mat-checkbox>
+							</div>
+
+						</div>
+						<div class="col-sm-6">
+
+							<div class="form-group">
+								<label>انتخاب پست</label>
+								<ng-select style="direction: ltr" #post="ngModel" name="post"
+									[(ngModel)]="mainslideshow.postId" required>
+									<ng-option *ngFor="let i of posts" [value]="i.id">{{i.name}}</ng-option>
+								</ng-select>
+								<mat-error *ngIf="post.hasError('required')">
+									انتخاب پست الزامی است
+								</mat-error>
+							</div>
+
+
+							<div class="form-group">
+								<label>تاریخ نمایش</label>
+								<mat-form-field class="example-full-width">
+									<input #datePublish="ngModel" (click)="openc(picker1)" readonly name="datePublish"
+										required matInput [matDatepicker]="picker1"
+										[(ngModel)]="mainslideshow.datePublish" placeholder="تاریخ نمایش">
+									<mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker1">
+									</mat-datepicker-toggle>
+									<mat-datepicker #picker1 touchUi="true"></mat-datepicker>
+								</mat-form-field>
+								<div *ngIf="datePublish.touched && datePublish.invalid" class="error">
+									<div>
+										وارد کردن تاریخ نمایش الزامی است
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label>تاریخ انقضا</label>
+								<mat-form-field class="example-full-width">
+									<input #dateExpire="ngModel" (click)="openc(picker2)" readonly name="dateExpire"
+										required matInput [matDatepicker]="picker2"
+										[(ngModel)]="mainslideshow.dateExpire" placeholder="تاریخ انقضا">
+									<mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker2">
+									</mat-datepicker-toggle>
+									<mat-datepicker #picker2 touchUi="true"></mat-datepicker>
+								</mat-form-field>
+								<div *ngIf="dateExpire.touched && dateExpire.invalid" class="error">
+									<div>
+										وارد کردن تاریخ انقضا الزامی است
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+
+						<div class="col-md-12">
+							<div class="form-group">
+								<label>تصویر اسلاید</label>
+								<br>
+								<button (click)="removePic()" [disabled]="mainslideshow.imgData.length == 0"
+									mat-raised-button> حذف تصویر </button>
+
+								<a target="_blank" mat-raised-button style="margin: 5px;"
+									*ngIf="mainslideshow.imgUrl && isEdit"
+									[href]="getFileUrl(mainslideshow.imgUrl)">نمایش تصویر اسلاید</a>
+
+								<ngx-dropzone #d1 [disabled]="mainslideshow.imgData.length != 0"
+									(filesRejected)="removePic()" (filesAdded)="setPic($event)" [multiple]="false"
+									[showPreviews]="true" [accept]="'image/png,image/jpeg'"
+									[label]="'تصویر خود را اینجا رها کنید یا کلیک کنید'">
+								</ngx-dropzone>
+
+								<mat-error *ngIf="!isEdit && mainslideshow.imgData.length == 0">
+									انتخاب تصویر اسلاید الزامی است
+								</mat-error>
+							</div>
+						</div>
+
+						<br>
+						<br>
+						<div class="col-md-12">
+							<a mat-raised-button color="warn" style="margin: 5px;"
+								routerLink="/dashboard/mainslideshow">لغو</a>
+							<button type="submit" mat-raised-button color="primary" [disabled]="!fm1.valid || (!isEdit && mainslideshow.imgData.length == 0)"
+								(click)="sts()">{{ btnTitle }}</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

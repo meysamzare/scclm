@@ -1,0 +1,102 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row" style="padding: 10px;">
+                    <mat-form-field>
+                        <mat-label>انتخاب چارت سازمانی مورد نظر</mat-label>
+                        <mat-select [disabled]="isEdit" style="direction: ltr" #u
+                            (valueChange)="copySelectedData(u.value)" name="class">
+                            <mat-option selected="selected" value="0">-- موردی را انتخاب نمایید --</mat-option>
+                            <mat-option *ngFor="let och of orgcharts" [value]="och.id">{{och.name}}</mat-option>
+                        </mat-select>
+                        <mat-hint>کپی کردن داده های مورد انتخاب شده در صفحه جاری</mat-hint>
+                    </mat-form-field>
+                </div>
+                <hr>
+                <div class="row">
+                    <form #fm1="ngForm" id="fm11">
+                        <div class="col-sm-6 b-r">
+
+                            <div class="form-group">
+                                <label>نام چارت سازمانی</label>
+                                <input type="text" required #name="ngModel" name="name" [(ngModel)]="orgchart.name"
+                                    placeholder="نام" class="form-control">
+                                <div *ngIf="(name.touched || name.dirty) &&
+                                        name.invalid">
+                                    <p *ngIf="name.hasError('required')" class="error">
+                                        وارد کردن نام چارت سازمانی الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>کد چارت سازمانی</label>
+                                <input type="number" required #code="ngModel" name="code" [(ngModel)]="orgchart.code"
+                                    placeholder="کد چارت سازمانی" class="form-control">
+                                <div *ngIf="(code.touched || code.dirty) &&
+                                        code.invalid">
+                                    <p *ngIf="code.hasError('required')" class="error">
+                                        وارد کردن کد چارت سازمانی الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6">
+
+                            <label>انتخاب والد</label>
+                            <br>
+                            <button color="primary" [ngStyle]="{'background-color':
+                                    orgchart.parentId != null ? 'red' : 'green' }" mat-mini-fab
+                                (click)="clearSelection()" matTooltip="انتخاب به
+                                    عنوان ریشه">
+                                <mat-icon>clear_all</mat-icon>
+                            </button>
+                            <button color="primary" [ngStyle]="{'background-color':
+                                    !checkForNodeOpen() ? 'red' : 'green' }" style="margin: 5px;" mat-mini-fab
+                                (click)="openAllTree()" matTooltip="بازکردن همه"><i class="fa fa-plus"></i></button>
+                            <button color="primary" [ngStyle]="{'background-color':
+                                    checkForNodeOpen() ? 'red' : 'green' }" style="margin: 2px;" mat-mini-fab
+                                (click)="closeAllTree()" matTooltip="بستن همه"><i class="fa fa-minus"></i></button>
+                            <br>
+                            <br>
+                            <div id="divtree">
+                            </div>
+
+                            <div class="form-group">
+                                <label>ترتیب</label>
+                                <input type="number" required #order="ngModel" name="order" [(ngModel)]="orgchart.order"
+                                    placeholder="ترتیب" class="form-control">
+                                <div *ngIf="(order.touched || order.dirty)  && order.invalid">
+                                    <p *ngIf="order.hasError('required')" class="error">
+                                        وارد کردن ترتیب الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>توضیحات </label>
+                                <input type="text" name="desc" [(ngModel)]="orgchart.desc" placeholder="توضیحات"
+                                    class="form-control">
+                            </div>
+
+
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-12">
+                            <a mat-raised-button color="warn" style="margin: 5px;"
+                                routerLink="/dashboard/orgchart">لغو</a>
+                            <button type="submit" mat-raised-button color="primary" [disabled]="!fm1.valid"
+                                (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

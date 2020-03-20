@@ -1,0 +1,231 @@
+<mat-card class="border-right-green">
+    <mat-card-title> </mat-card-title>
+
+    <mat-card-content>
+        <div class="row">
+            <div class="col-lg-6">
+
+                <div class="form-group">
+                    <label>انتخاب دانش آموز</label>
+                    <ng-select (change)="studentSelected()" #student="ngModel" name="student"
+                        [(ngModel)]="selectedStudent" required>
+                        <ng-option *ngFor="let i of registredStudent" [value]="i.id">
+                            {{i.name + ' ' + i.lastName + ' (' + i.fatherName + ')'}}
+                        </ng-option>
+                    </ng-select>
+                    <mat-error *ngIf="student.hasError('required')">
+                        انتخاب دانش آموز الزامی است
+                    </mat-error>
+                </div>
+
+            </div>
+            <div class="col-lg-6">
+
+
+                <div class="form-group">
+                    <label>انتخاب پایه تحصیلی</label>
+                    <ng-select [disabled]="!selectedStudent" (change)="gradeSelected()" #grade="ngModel" name="grade"
+                        [(ngModel)]="selectedGrade" required>
+                        <ng-option *ngFor="let i of studentGrades" [value]="i.id">{{i.name}}</ng-option>
+                    </ng-select>
+                    <mat-error *ngIf="grade.hasError('required')">
+                        انتخاب پایه تحصیلی الزامی است
+                    </mat-error>
+                </div>
+
+            </div>
+        </div>
+    </mat-card-content>
+
+    <mat-card-actions>
+
+    </mat-card-actions>
+</mat-card>
+
+<div class="row" style="margin-top: 15px;" *ngIf="!student.hasError('required')">
+    <div class="col-lg-4">
+
+        <mat-card class="border-right-green">
+            <mat-card-title></mat-card-title>
+            <mat-card-content>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <img class="avatar" *ngIf="comformedStudent.picUrl"
+                            style="max-width: 100%; border-radius: 15px;"
+                            [src]="auth.getFileUrl(comformedStudent.picUrl)" [alt]="comformedStudent.fullName">
+                    </div>
+                    <div class="col-lg-8">
+                        <p>نام و نام خانوادگی :
+                            <strong>{{ comformedStudent.name + ' ' + comformedStudent.lastName }}</strong>
+                        </p>
+
+                        <p>نام پدر : <strong>{{ comformedStudent.fatherName }}</strong></p>
+
+                        <p>کد ملی : <strong>{{ comformedStudent.idNumber }}</strong></p>
+
+                        <p>تاریخ تولد : <strong>{{ comformedStudent.birthDateString }}</strong></p>
+
+                        <p>محل تولد : <strong>{{ comformedStudent.birthLocation }}</strong></p>
+
+                        <p>کد دانش آموز : <strong>{{ comformedStudent.code }}</strong></p>
+                    </div>
+                </div>
+            </mat-card-content>
+
+        </mat-card>
+
+    </div>
+    <div class="col-lg-8">
+        <mat-card class="border-right-green">
+            <mat-card-title> </mat-card-title>
+            <mat-card-content>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label>انتخاب نوع آزمون</label>
+                            <ng-select (clear)="clearSearch()" [disabled]="!selectedGrade"
+                                (change)="updateStudentEducationChartData()" #grade="ngModel" name="grade"
+                                [(ngModel)]="selectedExamType">
+                                <ng-option *ngFor="let i of examTypes" [value]="i.id">{{i.name}}</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <!-- <div class="col-lg-3">
+
+                        <div class="form-group">
+                            <label>تاریخ شروع</label>
+                            <mat-form-field class="example-full-width">
+                                <input [disabled]="!selectedExamType" #dateStart="ngModel" (click)="openc(picker1)"
+                                    readonly name="dateStart" matInput [matDatepicker]="picker1" [(ngModel)]="startDate"
+                                    placeholder="تاریخ شروع">
+                                <mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker1">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #picker1 touchUi="true"></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-3">
+
+                        <div class="form-group">
+                            <label>تاریخ پایان</label>
+                            <mat-form-field class="example-full-width">
+                                <input [disabled]="!startDate" #dateEnd="ngModel" (click)="openc(picker2)" readonly
+                                    name="dateStart" matInput [matDatepicker]="picker2" [(ngModel)]="endDate"
+                                    placeholder="تاریخ پایان" (ngModelChange)="getExamBetweenDatesForEducationChart()">
+                                <mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker2">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #picker2 touchUi="true"></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-2">
+                        <button mat-stroked-button style="width: 100%; margin-top: 28px; margin-bottom: 10px;"
+                            [disabled]="!startDate && !endDate" (click)="clearSearch()">پاک کردن</button>
+                    </div> -->
+                </div>
+                <div class="row">
+                    <div class="col-lg-8">
+                        <canvas *ngIf="studentEducationDatas[0].data.length != 0" width="300" height="300" baseChart
+                            [datasets]="studentEducationDatas" [labels]="studentEducationDatasLabel"
+                            [chartType]="'bar'">
+                        </canvas>
+                    </div>
+                    <div class="col-lg-4" *ngIf="studentEducationDatas[0].data.length != 0">
+                        <p>مرتب سازی نمره</p>
+                        <mat-button-toggle-group name="sort" [(ngModel)]="courseChartDataSort"
+                            (ngModelChange)="updateStudentEducationChartData()">
+                            <mat-button-toggle value="min">کمتر به بیشتر</mat-button-toggle>
+                            <mat-button-toggle value="max">بیشتر به کمتر</mat-button-toggle>
+                        </mat-button-toggle-group>
+                    </div>
+                </div>
+
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
+
+<mat-card style="margin-top: 20px;" *ngIf="selectedStudent && selectedGrade">
+    <mat-card-title> </mat-card-title>
+    <mat-card-content>
+
+        <div class="row" style="margin-top: 5px;">
+            <div class="col-lg-12" *ngFor="let course of coursesByGrade; let indexCourse = index;">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">{{ course.name }}</h4>
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <div class="row">
+                                    <ng-container *ngFor="let exam of getExamsByCourse(course.id)">
+                                        <div class="col-lg-4" *ngIf="getExamScoreForExam(exam.id)">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+
+                                                    <strong
+                                                        style="font-size: 16px; color: #002796">{{ exam.name }}</strong>
+                                                    <p>تاریخ : <strong>{{ exam.dateString }}</strong></p>
+
+                                                    <p>نمره دانش آموز :
+                                                        <strong
+                                                            [ngStyle]="{ 'color' : getExamScoreForExam(exam.id).score >= exam.avgInExam ? 'green' : 'red' }">
+                                                            {{ getExamScoreForExam(exam.id).score }}
+                                                        </strong>
+                                                        از
+                                                        <strong>
+                                                            {{ getExamScoreForExam(exam.id).topScore }}
+                                                        </strong>
+                                                    </p>
+
+                                                    <p>میانگین : <strong>{{ exam.avgInExam }}</strong></p>
+                                                    <p>بیشترین : <strong>{{ exam.maxInExam }}</strong></p>
+                                                    <p>کمترین : <strong>{{ exam.minInExam }}</strong></p>
+
+                                                    <p>وضعیت حضور :
+                                                        <strong style="color: green"
+                                                            *ngIf="getExamScoreForExam(exam.id).state == 0">حاضر</strong>
+                                                        <strong style="color: green"
+                                                            *ngIf="getExamScoreForExam(exam.id).state == 1">غائب و
+                                                            موجه</strong>
+                                                        <strong style="color: red"
+                                                            *ngIf="getExamScoreForExam(exam.id).state == 2">غائب و غیر
+                                                            موجه</strong>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+
+                                </div>
+                            </div>
+
+                            <div class="col-lg-5">
+
+                                <canvas *ngIf="canShowChart(course.id, true)" width="300" height="300" baseChart
+                                    [datasets]="datas[indexCourse]" [labels]="datasLable[indexCourse]"
+                                    [chartType]="'line'">
+                                </canvas>
+
+                            </div>
+                            <div style="text-align: center;" *ngIf="!canShowChart(course.id, true)">
+                                <b>تا کنون نمره ای برای این درس ثبت نشده است</b>
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+    <mat-card-actions>
+
+    </mat-card-actions>
+</mat-card>

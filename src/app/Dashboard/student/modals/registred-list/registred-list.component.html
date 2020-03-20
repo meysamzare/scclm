@@ -1,0 +1,86 @@
+<div dir="rtl">
+    <h1 mat-dialog-title>لیست ثبت نامی دانش آموز {{ data.stdName }}</h1>
+    <div mat-dialog-content>
+        <table class="table table-bordered" *ngIf="stdClassMngs.length != 0">
+            <thead>
+                <tr>
+                    <th>فعال</th>
+                    <th>ردیف</th>
+                    <th>آموزشگاه</th>
+                    <th>سال تحصیلی</th>
+                    <th>پایه تحصیلی</th>
+                    <th>کلاس</th>
+
+                    <th>گروه دانش آموز</th>
+
+                    <th>وضعیت آموزشی</th>
+                    <th>وضعیت انضباطی</th>
+                    <th>وضعیت مالی</th>
+
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let i of stdClassMngs">
+                    <td>
+                        <mat-radio-button [checked]="getActiveStdClassMngId() == i.id"
+                            (click)="setActiveStdClassMngId(i.id)" [value]="i.id"></mat-radio-button>
+                    </td>
+                    <td>{{ stdClassMngs.indexOf(i) + 1 }}</td>
+                    <td>{{ i.tituteName }}</td>
+                    <td>{{ i.yeareducationName }}</td>
+                    <td>{{ i.gradeName }}</td>
+                    <td>{{ i.className }}</td>
+
+                    <td>
+                        <span (click)="openChangeStateBotSheet(4, i.id, i.studentTypeId)"
+                            class="label label-info">{{ i.studentTypeName }}</span>
+                    </td>
+
+                    <td>
+                        <ng-container *ngFor="let l of [0,1,2,3,4,5,6,7]">
+                            <span (click)="openChangeStateBotSheet(1, i.id, l)" *ngIf="i.studyState == l"
+                                class="label label-default"
+                                [style.background-color]="getStdStudyStateColorString(l)">{{ getStdStudyStateString(l) }}</span>
+                        </ng-container>
+                    </td>
+                    <td>
+                        <ng-container *ngFor="let l of [0,1,2,3]">
+                            <span (click)="openChangeStateBotSheet(2, i.id, l)" *ngIf="i.behaveState == l"
+                                class="label label-default"
+                                [style.background-color]="getStdBehaveStateColorString(l)">{{ getStdBehaveStateString(l) }}</span>
+                        </ng-container>
+                    </td>
+                    <td>
+                        <ng-container *ngFor="let l of [0,1,2,3]">
+                            <span (click)="openChangeStateBotSheet(3, i.id, l)" *ngIf="i.payrollState == l"
+                                class="label label-default"
+                                [style.background-color]="getStdPayrollStateColorString(l)">{{ getStdPayrollStateString(l) }}</span>
+                        </ng-container>
+                    </td>
+
+                    <td>
+                        <button [disabled]="!i.canRemove" class="btn btn-danger" (click)="deleteStdClassMng(i)">
+                            <span class="fa fa-trash"></span>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div *ngIf="stdClassMngs.length == 0">
+            <h4>داده ای ثبت نشده است لطفا موردی را اضافه کنید</h4>
+        </div>
+    </div>
+    <div mat-dialog-actions>
+        <button mat-stroked-button color="primary" [mat-dialog-close]="true">
+            تایید
+        </button>
+        <button mat-stroked-button color="primary" (click)="registerStudent()" style="margin-right: 5px;">
+            ثبت نام جدید
+        </button>
+        <button mat-stroked-button color="warn" style="margin-right: 5px;" [mat-dialog-close]="false">
+            لغو
+        </button>
+    </div>
+</div>

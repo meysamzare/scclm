@@ -1,0 +1,8 @@
+<button (click)="clicked()" class="button is-{{ color }} is-{{ size }}" [disabled]="disabled" [class.is-light]="light"
+    [class.is-fullwidth]="fullWidth" [class.is-outlined]="outlined" [class.is-link]="link" [class.is-rounded]="rounded"
+    [class.is-loading]="loading">
+    <span class="icon" *ngIf="haveIcon">
+        <i class="fas fa-{{ icon }}"></i>
+    </span>
+    <span>{{ text }}</span>
+</button>

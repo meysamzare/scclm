@@ -1,0 +1,97 @@
+<mat-progress-bar *ngIf="isLoading" mode="buffer"></mat-progress-bar>
+
+<mat-card class="margin-top-10">
+    <mat-card-content>
+        <form #fm1="ngForm">
+            <div class="row">
+                <div class="col-lg-4">
+
+                    <div class="form-group">
+                        <label>انتخاب کارنامه</label>
+                        <ng-select #workbook="ngModel" name="workbooksel" [(ngModel)]="selectedWorkbook" required>
+                            <ng-option *ngFor="let i of workbooks" [value]="i.id">{{i.name}}
+                            </ng-option>
+                        </ng-select>
+                        <mat-error *ngIf="workbook.hasError('required')">
+                            انتخاب کارنامه الزامی است
+                        </mat-error>
+                    </div>
+
+                </div>
+                <div class="col-lg-4">
+
+                    <div class="form-group">
+                        <label>انتخاب دانش آموز</label>
+                        <ng-select [disabled]="!selectedWorkbook"
+                            (change)="onStudentSelect(); selectedStdClassMng = null;" #student="ngModel" name="student"
+                            [(ngModel)]="selectedStudent" required>
+                            <ng-option *ngFor="let i of students" [value]="i.id">
+                                {{ i.name + ' ' + i.lastName + ' (' + i.fatherName + ')' }}
+                            </ng-option>
+                        </ng-select>
+                        <mat-error *ngIf="student.hasError('required')">
+                            انتخاب دانش آموز الزامی است
+                        </mat-error>
+                    </div>
+
+                </div>
+                <div class="col-lg-4">
+
+                    <div class="form-group">
+                        <label>انتخاب پایه تحصیلی</label>
+                        <ng-select [disabled]="!selectedStudent" #grade="ngModel" name="grade"
+                            [(ngModel)]="selectedStdClassMng" required>
+                            <ng-option *ngFor="let i of registredStdClassMngs" [value]="i.id">
+                                {{ i.gradeName + ' (' + i.yeareducationName + ') ' }}
+                            </ng-option>
+                        </ng-select>
+                        <mat-error *ngIf="grade.hasError('required')">
+                            انتخاب پایه تحصیلی الزامی است
+                        </mat-error>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <button mat-stroked-button color="primary" class="btn-block" [disabled]="fm1.invalid"
+                        (click)="addWorkbook()">
+                        <mat-icon>add</mat-icon> &nbsp;
+                        افزودن
+                    </button>
+                </div>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>
+
+
+<div class="row">
+    <div class="col-lg-3 margin-top-10" *ngFor="let result of workbookResults; let resultIndex = index;">
+        <mat-card>
+            <mat-card-content>
+                <a class="close-link" matTooltip="حذف" (click)="removeWorkbook(resultIndex)">
+                    <i class="fa fa-times"></i>
+                </a>
+                <h4>
+                    <b>{{ result.title }}</b>
+                </h4>
+                <p [style.color]="result.totalAvg >= result.avgOfTotalAvrageGrade ? 'green' : 'red'"
+                    [tooltipHtml]="'رتبه در کلاس: ' + result.ratingOfTotalAvgClass + ' | رتبه در پایه: ' + result.ratingOfTotalAvgGrade">
+                    معدل کل: <b>{{ result.totalAvg.toFixed(2) }}</b>
+                </p>
+                <div class="row" *ngFor="let head of result.coursesHeaders; let headIndex = index;">
+                    <div class="col-lg-6" style="text-align: right;">
+                        {{ head }}
+                    </div>
+                    <div class="col-lg-6" style="text-align: left; margin-bottom: 5px;"
+                        [tooltipHtml]="'رتبه در کلاس: ' + result.ratingsInClass[headIndex] + ' | رتبه در پایه: ' + result.ratingsInGrade[headIndex]">
+                        {{ result.courseAvgs[headIndex].toFixed(2) }}
+                    </div>
+                    <hr>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

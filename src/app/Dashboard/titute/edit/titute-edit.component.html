@@ -1,0 +1,174 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row" style="padding: 10px;">
+                    <mat-form-field>
+                        <mat-label>انتخاب آموزشگاه مورد نظر</mat-label>
+                        <mat-select [disabled]="isEdit" style="direction: ltr" #u
+                            (valueChange)="copySelectedData(u.value)" name="class">
+                            <mat-option selected="selected" value="0">-- موردی را انتخاب نمایید --</mat-option>
+                            <mat-option *ngFor="let tit of titutes" [value]="tit.id">{{tit.name}}</mat-option>
+                        </mat-select>
+                        <mat-hint>کپی کردن داده های مورد انتخاب شده در صفحه جاری</mat-hint>
+                    </mat-form-field>
+                </div>
+                <hr>
+                <div class="row">
+                    <form #fm1="ngForm" id="fm11">
+                        <div class="col-sm-6">
+
+                            <div class="form-group">
+                                <label>نام آموزشگاه</label>
+                                <input type="text" required #name="ngModel" name="name" [(ngModel)]="titute.name"
+                                    placeholder="نام" class="form-control">
+                                <div *ngIf="(name.touched || name.dirty) && name.invalid">
+                                    <p *ngIf="name.hasError('required')" class="error">
+                                        وارد کردن نام آموزشگاه الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>کد آموزشگاه</label>
+                                <input type="number" required #code="ngModel" name="code" [(ngModel)]="titute.orgCode"
+                                    placeholder="کد آموزشگاه" class="form-control">
+                                <div *ngIf="(code.touched || code.dirty) && code.invalid">
+                                    <p *ngIf="code.hasError('required')" class="error">
+                                        وارد کردن کد آموزشگاه الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>ناحیه آموزش و پرورش</label>
+                                <input type="text" required #section="ngModel" name="section"
+                                    [(ngModel)]="titute.orgSection" placeholder="ناحیه آموزش و پرورش"
+                                    class="form-control">
+                                <div *ngIf="(section.touched || section.dirty) && section.invalid">
+                                    <p *ngIf="section.hasError('required')" class="error">
+                                        وارد کردن ناحیه آموزش و پرورش الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب نوع آموزشگاه</label>
+                                <ng-select #type="ngModel" name="type" [(ngModel)]="titute.orgSex" required>
+                                    <ng-option [value]="1">پسرانه</ng-option>
+                                    <ng-option [value]="2">دخترانه</ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="type.hasError('required')">
+                                    انتخاب نوع آموزشگاه الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>کد پستی</label>
+                                <input type="text" required #postCode="ngModel" name="postCode"
+                                    [(ngModel)]="titute.postCode" placeholder="کد پستی" class="form-control">
+                                <div *ngIf="(postCode.touched || postCode.dirty) && postCode.invalid">
+                                    <p *ngIf="postCode.hasError('required')" class="error">
+                                        وارد کردن کد پستی الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>شماره تماس</label>
+                                <input type="tel" required #tell="ngModel" name="tell" [(ngModel)]="titute.tell"
+                                    placeholder="شماره تماس" class="form-control">
+                                <div *ngIf="(tell.touched || tell.dirty) && tell.invalid">
+                                    <p *ngIf="tell.hasError('required')" class="error">
+                                        وارد کردن شماره تماس الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6 b-r-r">
+
+                            <label>انتخاب والد</label>
+                            <br>
+                            <button color="primary"
+                                [ngStyle]="{'background-color': titute.tituteCode != null ? 'red' : 'green' }"
+                                mat-mini-fab (click)="clearSelection()" matTooltip="انتخاب به عنوان ریشه">
+                                <mat-icon>clear_all</mat-icon>
+                            </button>
+                            <button color="primary"
+                                [ngStyle]="{'background-color': !checkForNodeOpen() ? 'red' : 'green' }"
+                                style="margin: 5px;" mat-mini-fab (click)="openAllTree()" matTooltip="بازکردن همه"><i
+                                    class="fa fa-plus"></i></button>
+                            <button color="primary"
+                                [ngStyle]="{'background-color': checkForNodeOpen() ? 'red' : 'green' }"
+                                style="margin: 2px;" mat-mini-fab (click)="closeAllTree()" matTooltip="بستن همه"><i
+                                    class="fa fa-minus"></i></button>
+                            <br>
+                            <br>
+                            <div id="divtree">
+                            </div>
+
+                            <div class="form-group">
+                                <label>سازمان آموزش و پرورش (استان) </label>
+                                <input type="text" required #state="ngModel" name="state" [(ngModel)]="titute.state"
+                                    placeholder="استان" class="form-control">
+                                <div *ngIf="(state.touched || state.dirty) && state.invalid">
+                                    <p *ngIf="state.hasError('required')" class="error">
+                                        وارد کردن استان الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>شهر</label>
+                                <input type="text" required #city="ngModel" name="city" [(ngModel)]="titute.city"
+                                    placeholder="شهر، شهرستان" class="form-control">
+                                <div *ngIf="(city.touched || city.dirty) && city.invalid">
+                                    <p *ngIf="city.hasError('required')" class="error">
+                                        وارد کردن شهر الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>نشانی</label>
+                                <textarea type="text" required #address="ngModel" name="address"
+                                    [(ngModel)]="titute.address" placeholder="آدرس" class="form-control"></textarea>
+                                <div *ngIf="(address.touched || address.dirty) && address.invalid">
+                                    <p *ngIf="address.hasError('required')" class="error">
+                                        وارد کردن آدرس الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>توضیحات </label>
+                                <input type="text" name="desc" [(ngModel)]="titute.desc" placeholder="توضیحات"
+                                    class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <label>پست الکترونیک</label>
+                                <input type="email" name="email" [(ngModel)]="titute.email" placeholder="پست الکترونیک"
+                                    class="form-control">
+                            </div>
+
+
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-12">
+                            <a mat-raised-button color="warn" style="margin: 5px;"
+                                routerLink="/dashboard/titute">لغو</a>
+                            <button type="submit" mat-raised-button color="primary" [disabled]="!fm1.valid"
+                                (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

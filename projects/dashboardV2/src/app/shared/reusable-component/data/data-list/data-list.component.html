@@ -1,0 +1,156 @@
+<div class="example-container mat-elevation-z2">
+    <div class="example-loading-shade" *ngIf="isLoadingResults">
+        <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+    </div>
+    <div class="mat-elevation-z2 table-container">
+        <ng-container *ngIf="selection.selected.length == 0">
+            <mat-card class="table-head">
+                <div class="level">
+                    <div class="level-left" style="width: 50%;">
+                        <ng-container *ngIf="!showSearch">
+                            <button mat-icon-button (click)="location.back()" matTooltip="بازگشت">
+                                <mat-icon>keyboard_arrow_right</mat-icon>
+                            </button>
+                            <b>{{ PAGE_TITLES }}</b>
+                        </ng-container>
+                        <ng-container *ngIf="showSearch">
+                            <mat-form-field style="width: 100%; text-align: right; font-size: 13px;">
+                                <mat-label>جستجو</mat-label>
+                                <input matInput placeholder="موردی را جستجو کنید" [(ngModel)]="txtSearch" name="search"
+                                    (input)="txtSearch$.next()">
+                            </mat-form-field>
+                            <button mat-icon-button (click)="showSearch = false; clearSearch()"
+                                matTooltip="پاکسازی جستجو">
+                                <mat-icon>clear</mat-icon>
+                            </button>
+                        </ng-container>
+                    </div>
+                    <div class="level-right">
+                        <button mat-icon-button (click)="toggleSearch()" matTooltip="جستجو">
+                            <mat-icon>search</mat-icon>
+                        </button>
+                        <button mat-icon-button [matMenuTriggerFor]="viewCols" matTooltip="نمایش ستون ها">
+                            <mat-icon>view_column</mat-icon>
+                        </button>
+                        <mat-menu #viewCols="matMenu">
+                            <div class="mat-menu-container" (click)="$event.stopPropagation()">
+                                <ng-container *ngFor="let i of columns; let index = index;">
+                                    <mat-checkbox (change)="toggleCol(i.def, $event.checked, index)"
+                                        [checked]="isOnDisplayCols(i.def)" [disabled]="isLastItemInDisplayCol(i.def)">
+                                        {{ i.title }}
+                                    </mat-checkbox>
+                                    <br>
+                                </ng-container>
+                            </div>
+                        </mat-menu>
+                        <button mat-icon-button matTooltip="فیلتر ها" [matMenuTriggerFor]="filtersMenu"
+                            [disabled]="filters.length == 0">
+                            <mat-icon>filter_list</mat-icon>
+                        </button>
+
+                        <mat-menu #filtersMenu="matMenu">
+                            <div class="mat-menu-container" style="min-width: 350px; min-height: 150px;"
+                                (click)="$event.stopPropagation()">
+                                <ng-content select="app-data-list-filter-item"></ng-content>
+                            </div>
+                        </mat-menu>
+                    </div>
+                </div>
+            </mat-card>
+        </ng-container>
+        <ng-container *ngIf="selection.selected.length != 0">
+            <mat-card>
+                <div class="level">
+                    <div class="level-left">
+                        <b>{{ selection.selected.length }} مورد انتخاب شده است</b>
+                    </div>
+                    <div class="level-right">
+                        <button mat-icon-button matTooltip="حذف دائمی" [swal]="deleteSwal">
+                            <mat-icon>delete_forever</mat-icon>
+                        </button>
+                    </div>
+
+                </div>
+            </mat-card>
+            <swal #deleteSwal [confirmButtonText]="'بله'" [cancelButtonText]="'خیر'" title="آیا اطمینان دارید؟"
+                text="حذف کردن این موارد قابل بازگشت نمی باشد" [icon]="'question'" [showCancelButton]="true"
+                [focusCancel]="true" (confirm)="deleteClick.next()"></swal>
+        </ng-container>
+        <mat-card *ngIf="isAnyAppliedFilter()">
+            <mat-chip-list>
+                <ng-container *ngFor="let i of filterDatas">
+                    <mat-chip *ngIf="i.value">
+                        {{ i.title }}
+                        <mat-icon matChipRemove (click)="clearFilterValue(i.name)"
+                            style="margin-right: 5px; margin-left: 0;">cancel</mat-icon>
+                    </mat-chip>
+                </ng-container>
+            </mat-chip-list>
+        </mat-card>
+        <hr class="table-dvider">
+        <table mat-table [dataSource]="dataSource" matSort>
+
+            <ng-container matColumnDef="select" *ngIf="showSelect">
+                <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox [disabled]="!haveAnyData() || getRowCanSelected() == 0" matTooltipPosition="before"
+                        matTooltip="تعداد {{ selection.selected.length }} مورد انتخاب شده است"
+                        [matTooltipHideDelay]="1700" (change)="$event ?  masterToggle() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()">
+                    </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-checkbox [disabled]="haveConditionalProperty(row)" matTooltipPosition="before"
+                        [matTooltip]="getConditionalMessage(row)" (click)="$event.stopPropagation()"
+                        (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
+                    </mat-checkbox>
+                </td>
+            </ng-container>
+
+            <ng-container *ngFor="let i of items.toArray()" [matColumnDef]="i._def">
+                <ng-container *ngIf="i._sortHeader">
+                    <th mat-header-cell *matHeaderCellDef [mat-sort-header]="i._def"> {{ i._title }}
+                    </th>
+                </ng-container>
+                <ng-container *ngIf="!i._sortHeader">
+                    <th mat-header-cell *matHeaderCellDef> {{ i._title }}
+                    </th>
+                </ng-container>
+
+                <td mat-cell *matCellDef="let row">
+                    <ng-container *ngTemplateOutlet="i.tempRef; context: { Row: row }"></ng-container>
+                </td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="action" *ngIf="showAction">
+                <th mat-header-cell *matHeaderCellDef> عملیات </th>
+                <td mat-cell *matCellDef="let row">
+                    <button matTooltip="ویرایش {{row[tooltipalProperty]}}" matTooltipPosition="before" mat-icon-button
+                        (click)="editClick.next(row)">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="noRecord">
+                <td mat-footer-cell *matFooterCellDef colspan="110" style="text-align: center !important;">
+                    داده ای یافت نشد
+                </td>
+            </ng-container>
+
+            <tr mat-footer-row *matFooterRowDef="['noRecord']"
+                [style.display]="dataSource?.data.length === 0 ? 'table-row' : 'none'"></tr>
+
+
+            <tr mat-header-row *matHeaderRowDef="this.getDisplayedCols()"></tr>
+            <tr mat-row *matRowDef="let row; columns: this.getDisplayedCols();"
+                [style.backgroundColor]="isRowSelected(row) ? '#c6c6c630': 'unset'"></tr>
+        </table>
+
+        <div dir="ltr">
+            <mat-paginator [length]="itemLength" (page)="resetSelection($event)" showFirstLastButtons>
+            </mat-paginator>
+        </div>
+    </div>
+</div>

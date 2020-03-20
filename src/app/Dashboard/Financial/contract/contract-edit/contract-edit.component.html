@@ -1,0 +1,149 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <form #fm1="ngForm" id="fm11">
+                        <div class="col-md-12">
+                            <div class="col-sm-6 b-r">
+
+                                <div class="form-group">
+                                    <label>عنوان</label>
+                                    <input type="text" required #name="ngModel" name="name" [(ngModel)]="contrct.title"
+                                        placeholder="عنوان" class="form-control">
+                                    <div *ngIf="(name.touched || name.dirty) && name.invalid">
+                                        <p *ngIf="name.hasError('required')" class="error">
+                                            وارد کردن عنوان الزامی است
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>کد قرارداد</label>
+                                    <input type="text" required #code="ngModel" name="code" [(ngModel)]="contrct.code"
+                                        placeholder="کد قرارداد" class="form-control">
+                                    <div *ngIf="(code.touched || code.dirty) && code.invalid">
+                                        <p *ngIf="code.hasError('required')" class="error">
+                                            وارد کردن کد قرارداد الزامی است
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>قیمت کل قرارداد</label>
+                                    <input type="number" required #price="ngModel" name="price"
+                                        [(ngModel)]="contrct.price" placeholder="قیمت کل قرارداد" class="form-control">
+                                    <div *ngIf="(price.touched || price.dirty) && price.invalid">
+                                        <p *ngIf="price.hasError('required')" class="error">
+                                            وارد کردن قیمت کل قرارداد الزامی است
+                                        </p>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label>تاریخ عقد قرارداد</label>
+                                    <mat-form-field class="example-full-width">
+                                        <input tabindex="7" #date="ngModel" (click)="openc(picker1)" readonly
+                                            name="date" required matInput [matDatepicker]="picker1"
+                                            [(ngModel)]="contrct.date" placeholder="تاریخ عقد قرارداد">
+                                        <mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker1">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #picker1 touchUi="true"></mat-datepicker>
+                                    </mat-form-field>
+                                    <div *ngIf="date.touched && date.invalid" class="error">
+                                        <div>
+                                            وارد کردن تاریخ عقد قرارداد الزامی است
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>انتخاب نوع قرارداد</label>
+                                    <ng-select #conttype="ngModel" name="conttype" [(ngModel)]="contrct.contractTypeId"
+                                        #u (change)="getRelatedTable(u.selectedValues[0])" required>
+                                        <ng-option *ngFor="let i of contractTypes" [value]="i.id">{{i.title}}
+                                        </ng-option>
+                                    </ng-select>
+                                    <mat-error *ngIf="conttype.hasError('required')">
+                                        انتخاب نوع قرارداد الزامی است
+                                    </mat-error>
+                                </div>
+
+                                <div class="form-group" *ngIf="haveRelatedData">
+                                    <label>انتخاب {{ relatedDataTitle }} مورد نظر</label>
+
+                                    <ng-select style="direction: ltr" #partcont="ngModel" name="partcont"
+                                        [(ngModel)]="contrct.partyContractId" required>
+                                        <ng-option *ngFor="let i of relatedData" [value]="i.id">{{i.name}}</ng-option>
+                                    </ng-select>
+                                    <mat-error *ngIf="partcont.hasError('required')">
+                                        انتخاب {{ relatedDataTitle }} الزامی است
+                                    </mat-error>
+
+                                </div>
+
+                                <div class="form-group" *ngIf="!haveRelatedData && contrct.contractTypeId">
+                                    <label>نام شخص متفرقه</label>
+                                    <input type="text" required #othername="ngModel" name="othername"
+                                        [(ngModel)]="contrct.partyContractName" placeholder="نام شخص"
+                                        class="form-control">
+                                    <div *ngIf="(othername.touched || othername.dirty) && othername.invalid">
+                                        <p *ngIf="othername.hasError('required')" class="error">
+                                            وارد کردن نام شخص الزامی است
+                                        </p>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-12" style="text-align: center;">
+                            <label>فایل پیوست</label>
+
+                            <button mat-mini-fab style="margin-right: 5px;" (click)="clearFile()"
+                                [disabled]="contrct.fileName.length == 0" matTooltip="حذف فایل پیوست فعلی">
+                                <mat-icon>clear</mat-icon>
+                            </button>
+                            <button mat-fab style="margin: 5px;" color="primary"
+                                [disabled]="contrct.fileName.length != 0" matTooltip="بارگذاری فایل پیوست جدید"
+                                onclick="document.getElementById('fi1').click()">
+                                <mat-icon>add</mat-icon>
+                            </button>
+                            <strong *ngIf="contrct.fileName">{{ contrct.fileName }}</strong>
+
+                            <a mat-raised-button style="margin: 5px;" *ngIf="contrct.fileUrl && isEdit"
+                                [href]="getFileUrl(contrct.fileUrl)">دانلود فایل</a>
+
+                            <button mat-raised-button color="warn" style="margin: 5px;"
+                                *ngIf="contrct.fileUrl && isEdit" (click)="removeFile()">حذف فایل موجود</button>
+
+
+
+
+                            <input type="file" style="display: none;" id="fi1" class="form-control" name="image"
+                                (change)="onFileChanged($event)" />
+                        </div>
+
+
+                        <br>
+                        <br>
+                        <div class="col-md-12">
+                            <a mat-raised-button color="warn" style="margin: 5px;"
+                                routerLink="/dashboard/contract">لغو</a>
+                            <button type="submit" mat-raised-button color="primary" [disabled]="!fm1.valid"
+                                (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

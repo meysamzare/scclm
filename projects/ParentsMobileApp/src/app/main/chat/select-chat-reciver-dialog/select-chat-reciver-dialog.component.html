@@ -1,0 +1,16 @@
+<div style="direction: rtl; min-width: 180px;" mat-dialog-content>
+    <mat-list *ngIf="!isLoading && teachers.length != 0">
+        <h4 mat-subheader>دبیران</h4>
+        <mat-divider></mat-divider>
+        <mat-list-item *ngFor="let teacher of teachers" matRipple
+            (click)="onReciverSelected(teacher.id, teacher.name, 1)">
+            <mat-icon mat-list-icon style="margin-left: 15px;">person</mat-icon>
+            <h4 mat-line>{{ teacher.name }}</h4>
+            <p mat-line>دبیر</p>
+        </mat-list-item>
+    </mat-list>
+
+    <ng-container *ngIf="isLoading">
+        <mat-progress-bar [mode]="'buffer'"></mat-progress-bar>
+    </ng-container>
+</div>

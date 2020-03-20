@@ -1,0 +1,12 @@
+<div class="message-container">
+
+    <div *ngFor="let message of messages" [class.is-danger]="message.type == 'error'"
+        class="notification is-{{ message.type }}" [@enterAnim]>
+        <button class="delete" (click)="hide(message)"></button>
+        {{ message.message }}
+        <p *ngIf="message.count != 0" style="display: inline;">
+            ({{ message.count }})
+        </p>
+    </div>
+
+</div>

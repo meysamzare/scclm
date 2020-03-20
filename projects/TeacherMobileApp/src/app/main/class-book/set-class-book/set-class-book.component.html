@@ -1,0 +1,154 @@
+<app-toolbar [Title]="Title" [showBackButton]="true"></app-toolbar>
+
+<mat-card>
+    <div (swipeleft)="onSwipeLeft()" (swiperight)="onSwipeRight()" class="row">
+        <div class="col-2 auto-margin" *ngIf="isForAllStudent()">
+            <button mat-icon-button [disabled]="!isAnyNextStudent()" (click)="nextStudent()">
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </button>
+        </div>
+        <div class="al-center" [class.col-8]="isForAllStudent()" [class.col-12]="!isForAllStudent()">
+            <p>
+                <img *ngIf="studentPicUrl" [src]="tchAuth.auth.getFileUrl(studentPicUrl)" class="img-circle">
+                <image-icon *ngIf="!studentPicUrl" icon="student" [height]="100"></image-icon>
+            </p>
+            <p> دانش آموز: <label style="font-weight: bold;">{{ studentName }}</label> </p>
+            <p class="al-center" style="font-weight: bold;" *ngIf="isForAllStudent()">
+                {{ (ViewedStudentIndex + 1) + '/' + Students.length  }}
+            </p>
+        </div>
+        <div class="col-2 auto-margin" *ngIf="isForAllStudent()">
+            <button mat-icon-button [disabled]="!isAnyPrevStudent()" (click)="prevStudent()">
+                <mat-icon>keyboard_arrow_left</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <form #fm1="ngForm" id="fm11" class="center">
+
+                <div *ngIf="classBook.type == 0">
+                    <mat-radio-group #p_a="ngModel" required name="pa" [(ngModel)]="classBook.value">
+                        <mat-radio-button color="primary" [value]="'P'">
+                            &nbsp;
+                            <b>
+                                حاضر
+                            </b>
+                        </mat-radio-button>
+                        <mat-radio-button class="margin-right-15" color="warn" [value]="'A'">
+                            &nbsp;
+                            <b>
+                                غائب
+                            </b>
+                        </mat-radio-button>
+                    </mat-radio-group>
+                </div>
+
+                <div *ngIf="classBook.type == 1">
+                    <label>
+                        انتخاب آزمون
+                    </label>
+                    <select class="form-control" name="exam" [(ngModel)]="classBook.examId"
+                        (ngModelChange)="onExamSelected()" #examselect="ngModel">
+                        <option *ngFor="let i of teacherExams" [value]="i.id">{{ i.name }}</option>
+                    </select>
+
+                    <div *ngIf="classBook.examId" class="margin-top-10">
+                        <p>ملاک آزمون : <label>{{ getSelectedExam().topScore }}</label></p>
+
+                        <div class="form-group">
+                            <label>نمره</label>
+                            <input type="number" required #score="ngModel" name="score" [(ngModel)]="classBook.value"
+                                min="0" placeholder="نمره" class="form-control">
+                            <div *ngIf="(score.touched || score.dirty) && score.invalid">
+                                <p *ngIf="score.hasError('required')" class="error">
+                                    وارد کردن نمره الزامی است
+                                </p>
+                            </div>
+                            <p *ngIf="!isScoreValid()" class="error">
+                                نمره را به درستی وارد نمایید
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="classBook.type == 2">
+                    <label>نتیجه {{ getClassBookTypeString(2) }}</label>
+                    <input type="text" required #classAsk="ngModel" name="classAsk" [(ngModel)]="classBook.value"
+                        placeholder="نتیجه {{ getClassBookTypeString(2) }}" class="form-control">
+                    <div *ngIf="(classAsk.touched || classAsk.dirty) && classAsk.invalid">
+                        <p *ngIf="classAsk.hasError('required')" class="error">
+                            وارد کردن نتیجه {{ getClassBookTypeString(2) }} الزامی است
+                        </p>
+                    </div>
+                </div>
+
+                <div *ngIf="classBook.type == 3">
+                    <mat-radio-group #pointG="ngModel" required name="point" [(ngModel)]="classBook.value">
+                        <mat-radio-button color="primary" [value]="1">
+                            &nbsp;
+                            <b>
+                                +
+                            </b>
+                        </mat-radio-button>
+                        <mat-radio-button class="margin-right-15" color="warn" [value]="-1">
+                            &nbsp;
+                            <b>
+                                -
+                            </b>
+                        </mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                <!-- 
+                <div *ngIf="classBook.type == 4">
+                    <label>عنوان مورد انضباطی</label>
+                    <textarea rows="6" type="text" required #disipline="ngModel" name="disipline"
+                        [(ngModel)]="classBook.value" placeholder="شرح موضوع انضباطی را وارد نمایید"
+                        class="form-control"></textarea>
+                    <div *ngIf="(disipline.touched || disipline.dirty) && disipline.invalid">
+                        <p *ngIf="disipline.hasError('required')" class="error">
+                            وارد کردن {{ getClassBookTypeString(4) }} الزامی است
+                        </p>
+                    </div>
+                </div> -->
+
+
+                <div class="form-group" *ngIf="classBook.type == 4">
+
+                    <div class="form-group">
+                        <label>انتخاب {{ getClassBookTypeString(4) }}</label>
+                        <mat-form-field>
+                            <mat-label>انتخاب {{ getClassBookTypeString(4) }}</mat-label>
+                            <mat-select (change)="onExamSelected()" #desiplineS="ngModel" name="desipline"
+                                [(ngModel)]="disiplineTypeSelected" required>
+                                <mat-option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12,13]" [value]="i">
+                                    {{ getDesiplineTypeString(i) }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="desiplineS.hasError('required')">
+                                انتخاب {{ getClassBookTypeString(4) }} الزامی است
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="form-group" *ngIf="disiplineTypeSelected">
+                        <label>توضیحات</label>
+                        <input type="text" name="desc" [(ngModel)]="disiplineText" placeholder="توضیحات"
+                            class="form-control">
+                    </div>
+                </div>
+
+                <div class="row margin-top-10">
+                    <div class="col-12">
+                        <button [disabled]="fm1.invalid || !isScoreValid()" (click)="sts()"
+                            class="btn btn-primary btn-block">ثبت</button>
+
+                        <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</mat-card>

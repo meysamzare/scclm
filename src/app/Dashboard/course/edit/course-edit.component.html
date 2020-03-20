@@ -1,0 +1,121 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row" style="padding: 10px;">
+                    <mat-form-field>
+                        <mat-label>انتخاب درس مورد نظر</mat-label>
+                        <mat-select [disabled]="isEdit" style="direction: ltr" #u
+                            (valueChange)="copySelectedData(u.value)" name="class">
+                            <mat-option selected="selected" value="0">-- موردی را انتخاب نمایید --</mat-option>
+                            <mat-option *ngFor="let cls of courses" [value]="cls.id">{{cls.name}}</mat-option>
+                        </mat-select>
+                        <mat-hint>کپی کردن داده های مورد انتخاب شده در صفحه جاری</mat-hint>
+                    </mat-form-field>
+                </div>
+                <hr>
+                <div class="row">
+                    <form #fm1="ngForm" id="fm11">
+                        <div class="col-sm-6 b-r">
+
+                            <div class="form-group">
+                                <label>نام درس</label>
+                                <input type="text" required #name="ngModel" name="name" [(ngModel)]="course.name"
+                                    placeholder="نام" class="form-control">
+                                <div *ngIf="(name.touched || name.dirty) &&
+                                        name.invalid">
+                                    <p *ngIf="name.hasError('required')" class="error">
+                                        وارد کردن نام درس الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>ضریب در کارنامه</label>
+                                <input type="number" required #courseMix="ngModel" name="courseMix"
+                                    [(ngModel)]="course.courseMix" placeholder="ضریب در کارنامه" class="form-control">
+                                <div *ngIf="(courseMix.touched || courseMix.dirty) &&
+                                    courseMix.invalid">
+                                    <p *ngIf="courseMix.hasError('required')" class="error">
+                                        وارد کردن ضریب در کارنامه الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>ترتیب در کارنامه</label>
+                                <input type="number" required #order="ngModel" name="order" [(ngModel)]="course.order"
+                                    placeholder="ترتیب در کارنامه" class="form-control">
+                                <div *ngIf="(order.touched || order.dirty)  && order.invalid">
+                                    <p *ngIf="order.hasError('required')" class="error">
+                                        وارد کردن ترتیب در کارنامه الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>ترتیب اهمیت</label>
+                                <input type="number" required #order2="ngModel" name="order2"
+                                    [(ngModel)]="course.order2" placeholder="ترتیب اهمیت" class="form-control">
+                                <div *ngIf="(order2.touched || order2.dirty)  && order2.invalid">
+                                    <p *ngIf="order2.hasError('required')" class="error">
+                                        وارد کردن ترتیب اهمیت الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>تعداد ساعات تدریس در هفته</label>
+                                <input type="number" required #teachTime="ngModel" name="teachTime"
+                                    [(ngModel)]="course.teachTime" placeholder="تعداد ساعات تدریس در هفته"
+                                    class="form-control">
+                                <div *ngIf="(teachTime.touched || teachTime.dirty)  && teachTime.invalid">
+                                    <p *ngIf="teachTime.hasError('required')" class="error">
+                                        وارد کردن تعداد ساعات تدریس در هفته الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6">
+
+
+                            <div class="form-group">
+                                <label>انتخاب پایه تحصیلی</label>
+                                <ng-select #gradeselect="ngModel" name="grade" [(ngModel)]="course.gradeId" required>
+                                    <ng-option *ngFor="let grd of grades" [value]="grd.id">{{grd.name}}</ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="gradeselect.hasError('required')">
+                                    انتخاب پایه تحصیلی الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب دبیر یا مدرس</label>
+                                <ng-select #teacherselect="ngModel" name="teacher" [(ngModel)]="course.teacherId"
+                                    required>
+                                    <ng-option *ngFor="let tch of teachers" [value]="tch.id">{{tch.name}}</ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="teacherselect.hasError('required')">
+                                    انتخاب دبیر یا مدرس الزامی است
+                                </mat-error>
+                            </div>
+
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-12">
+                            <button type="button" mat-raised-button color="warn" style="margin:
+                                    5px;" routerLink="/dashboard/course">لغو</button>
+                            <button type="submit" mat-raised-button color="primary" [disabled]="!fm1.valid"
+                                (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

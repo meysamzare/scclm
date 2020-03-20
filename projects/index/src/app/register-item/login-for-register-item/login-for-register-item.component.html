@@ -1,0 +1,34 @@
+<div class="wrapper">
+    <div id="formContent">
+
+        <form #fm1="ngForm">
+            <p style="margin-top: 20px;">
+                <b>به منظور تکمیل کردن این نمون برگ شما بایستی به حساب کاربری خود وارد شوید</b>
+            </p>
+            <p>
+                نام کاربری و کلمه عبور شما، مربوط به حساب شما در نرم افزار مبنا می باشد
+            </p>
+            <input type="text" class="second" name="username" [(ngModel)]="username" #use="ngModel"
+                placeholder="نام کاربری" required>
+            <p *ngIf="use.hasError('required') && (use.touched || use.dirty)  && use.invalid"
+                class="error">
+                وارد کردن نام کاربری الزامی است
+            </p>
+            <input type="password" class="third" name="password" [(ngModel)]="password" #pass="ngModel"
+                placeholder="کلمه عبور" required>
+
+            <p *ngIf="pass.hasError('required') && (pass.touched || pass.dirty)  && pass.invalid"
+                class="error">
+                وارد کردن کلمه عبور الزامی است
+            </p>
+
+            <input type="submit" [disabled]="fm1.invalid" (click)="sts()" class="fourth" value="ورود">
+            <input type="button" routerLink="/" class="fourth" value="بازگشت" style="background-color: darkred;">
+        </form>
+
+        <div id="formFooter">
+            <a class="underlineHover">در صورت فراموشی کلمه عبور لطفا با مدیر سیستم تماس حاصل فرمایید</a>
+        </div>
+
+    </div>
+</div>

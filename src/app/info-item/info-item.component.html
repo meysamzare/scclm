@@ -1,0 +1,95 @@
+<body class="gray-bg" *ngIf="type == 1">
+    <div class="loginColumns animated fadeInDown text-center" style="padding: 50px;">
+        <div class="row">
+
+            <div class="contact-box center-version" style="padding: 10px;">
+                <h3 [ngStyle]="{'color': Item.isActive == true ? 'green' : 'orange'}">
+                    {{ Item.isActive == true ? category.activeMessage : category.deActiveMessage }} </h3>
+            </div>
+
+            <div class="contact-box center-version" style="padding: 20px;">
+                <div class="form-group" *ngFor="let i of attrs">
+
+                    <h4 *ngIf="i.attrTypeInt == 1 ||i.attrTypeInt == 2 || i.attrTypeInt == 3 || i.attrTypeInt == 5|| i.attrTypeInt == 6"
+                        [matTooltip]="i.desc"> {{ i.title }} :
+                        <h3 style="color: chocolate"> {{ getItemAttrVal(i.id) }} </h3>
+                    </h4>
+
+                    <mat-checkbox *ngIf="i.attrTypeInt == 4" [matTooltip]="i.desc" [disabled]="true">{{i.title}}
+                    </mat-checkbox>
+
+                    <img [src]="getItemAttrUrl(i.id)" [matTooltip]="i.desc" style="width: 100px; height: 100px;"
+                        class="img-circle" *ngIf="i.attrTypeInt == 7 && getItemAttrUrl(i.id)">
+
+                    <a *ngIf="i.attrTypeInt == 8 && getItemAttrUrl(i.id)" [matTooltip]="i.desc" style="margin-top: 5px;"
+                        [href]="getItemAttrUrl(i.id)" mat-raised-button>دانلود فایل</a>
+
+                </div>
+
+
+                <br>
+            </div>
+
+
+
+            <a class="btn btn-sm btn-danger btn-block" (click)="logout()">خروج </a>
+
+        </div>
+    </div>
+</body>
+
+<body class="gray-bg" *ngIf="type == 2">
+    <div class="loginColumns animated fadeInDown text-center">
+        <div class="contact-box center-version" style="padding: 10px;">
+            <h3 [ngStyle]="{'color': Item.isActive == true ? 'green' : 'orange'}">
+                {{ Item.isActive == true ? category.activeMessage : category.deActiveMessage }} </h3>
+        </div>
+        <div class="row">
+
+            <div class="col-md-6">
+                <div class="form-group" *ngFor="let i of getAttrZoje()">
+
+                    <h4 *ngIf="i.attrTypeInt == 1 ||i.attrTypeInt == 2 || i.attrTypeInt == 3 || i.attrTypeInt == 5|| i.attrTypeInt == 6"
+                        [matTooltip]="i.desc">
+                        {{ i.title }} : <h3 style="color: chocolate; display: inline-block;"> {{ getItemAttrVal(i.id) }}
+                        </h3>
+                    </h4>
+
+                    <mat-checkbox *ngIf="i.attrTypeInt == 4" [matTooltip]="i.desc" [disabled]="true">{{i.title}}
+                    </mat-checkbox>
+
+                    <img [src]="getItemAttrUrl(i.id)" [matTooltip]="i.desc" style="width: 100px; height: 100px;"
+                        class="img-circle" *ngIf="i.attrTypeInt == 7 && getItemAttrUrl(i.id)">
+
+                    <a *ngIf="i.attrTypeInt == 8 && getItemAttrUrl(i.id)" [matTooltip]="i.desc" style="margin-top: 5px;"
+                        [href]="getItemAttrUrl(i.id)" mat-raised-button>دانلود فایل</a>
+
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group" *ngFor="let i of getAttrFard()">
+
+                    <h4 *ngIf=" (i.attrTypeInt == 1 ||i.attrTypeInt == 2 || i.attrTypeInt == 3 || i.attrTypeInt == 5|| i.attrTypeInt == 6) && (getItemAttrVal(i.id)) "
+                        [matTooltip]="i.desc">
+                        {{ i.title }} : <h3 style="color: chocolate; display: inline-block;"> {{ getItemAttrVal(i.id) }}
+                        </h3>
+                    </h4>
+
+                    <mat-checkbox *ngIf="i.attrTypeInt == 4" [matTooltip]="i.desc" [disabled]="true">{{i.title}}
+                    </mat-checkbox>
+
+                    <img [src]="getItemAttrUrl(i.id)" [matTooltip]="i.desc" style="width: 100px; height: 100px;"
+                        class="img-circle" *ngIf="i.attrTypeInt == 7 && getItemAttrUrl(i.id)">
+
+                    <a *ngIf="i.attrTypeInt == 8 && getItemAttrUrl(i.id)" [matTooltip]="i.desc" style="margin-top: 5px;"
+                        [href]="getItemAttrUrl(i.id)" mat-raised-button>دانلود فایل</a>
+
+                </div>
+            </div>
+        </div>
+        <br>
+        <a class="btn btn-sm btn-info btn-block" onclick="print()" (click)="printPage()"> پرینت </a>
+        <br>
+        <a class="btn btn-sm btn-danger btn-block" (click)="logout()">خروج </a>
+    </div>
+</body>

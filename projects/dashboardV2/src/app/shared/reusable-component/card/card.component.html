@@ -1,0 +1,24 @@
+<div class="card">
+    <header class="card-header" (click)="isCardOpen = !isCardOpen">
+        <p class="card-header-title">
+            {{ title }}
+        </p>
+        <a class="card-header-icon">
+            <ng-container *ngIf="isCardOpen">
+                <span class="icon">
+                    <i class="fas fa-angle-up"></i>
+                </span>
+            </ng-container>
+            <ng-container *ngIf="!isCardOpen">
+                <span class="icon">
+                    <i class="fas fa-angle-down"></i>
+                </span>
+            </ng-container>
+        </a>
+    </header>
+    <div class="card-content" [style.display]="isCardOpen ? 'block' : 'none'">
+        <div class="content">
+            <ng-content></ng-content>
+        </div>
+    </div>
+</div>

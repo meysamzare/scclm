@@ -1,0 +1,66 @@
+<mat-nav-list dir="rtl" *ngIf="Type == 0">
+
+    <h3>
+        تغییر وضعیت دانش آموز به:
+    </h3>
+
+    <a *ngFor="let i of [0,1,2,3,4]" [ngClass]="{'disabled': nowState == i}" class="item"
+        [style.background-color]="getStudentStateColorString(i)" mat-list-item (click)="changeState(i)">
+        <span mat-line> {{ getStudentStateString(i) }} </span>
+    </a>
+</mat-nav-list>
+
+<mat-nav-list dir="rtl" *ngIf="Type == 1">
+
+    <h3>
+        تغییر وضعیت آموزشی دانش آموز به:
+    </h3>
+
+    <a *ngFor="let i of [0,1,2,3,4,5,6,7]" [ngClass]="{'disabled': nowState == i}" class="item"
+        [style.background-color]="getStdStudyStateColorString(i)" mat-list-item (click)="changeState(i)">
+        <span mat-line> {{ getStdStudyStateString(i) }} </span>
+    </a>
+</mat-nav-list>
+
+<mat-nav-list dir="rtl" *ngIf="Type == 2">
+
+    <h3>
+        تغییر وضعیت انضباطی دانش آموز به:
+    </h3>
+
+    <a *ngFor="let i of [0,1,2,3]" [ngClass]="{'disabled': nowState == i}" class="item"
+        [style.background-color]="getStdBehaveStateColorString(i)" mat-list-item (click)="changeState(i)">
+        <span mat-line> {{ getStdBehaveStateString(i) }} </span>
+    </a>
+</mat-nav-list>
+
+<mat-nav-list dir="rtl" *ngIf="Type == 3">
+
+    <h3>
+        تغییر وضعیت مالی دانش آموز به:
+    </h3>
+
+    <a *ngFor="let i of [0,1,2,3]" [ngClass]="{'disabled': nowState == i}" class="item"
+        [style.background-color]="getStdPayrollStateColorString(i)" mat-list-item (click)="changeState(i)">
+        <span mat-line> {{ getStdPayrollStateString(i) }} </span>
+    </a>
+</mat-nav-list>
+
+<mat-nav-list dir="rtl" *ngIf="Type == 4">
+
+    <h3>
+        تغییر گروه دانش آموز به:
+    </h3>
+
+
+    <a [ngClass]="{'disabled': nowState === null}" class="item" style="background-color: #23d100" mat-list-item
+        (click)="changeState(null)">
+        <span mat-line> بدون گروه </span>
+    </a>
+
+    <a *ngFor="let type of studentTypes" [class.disabled]="nowState == type.id" class="item"
+        style="background-color: #23d100" mat-list-item (click)="changeState(type.id)">
+        <span mat-line> {{ type.name }} </span>
+    </a>
+
+</mat-nav-list>

@@ -1,0 +1,71 @@
+<div dir="rtl" style="min-width: 350px;">
+    <h1 mat-dialog-title> ثبت نام {{ data.stdName }}</h1>
+    <div mat-dialog-content>
+        <form #fm1="ngForm" id="fm11">
+
+            <div class="form-group">
+                <label>انتخاب آموزشگاه</label>
+                <ng-select #tituteselect="ngModel" name="titute" [(ngModel)]="stdClassMng.insTituteId" required>
+                    <ng-option *ngFor="let i of titutes" [value]="i.id">{{i.name}}
+                    </ng-option>
+                </ng-select>
+                <mat-error *ngIf="tituteselect.hasError('required')">
+                    انتخاب آموزشگاه الزامی است
+                </mat-error>
+            </div>
+
+            <div class="form-group">
+                <label>انتخاب سال تحصیلی</label>
+                <ng-select #yeareducationselect="ngModel" [activeyear]="false" name="yeareducation"
+                    [(ngModel)]="stdClassMng.yeareducationId" required>
+                    <ng-option *ngFor="let i of yeareducations" [value]="i.id">{{i.name}}
+                    </ng-option>
+                </ng-select>
+                <mat-error *ngIf="yeareducationselect.hasError('required')">
+                    انتخاب سال تحصیلی الزامی است
+                </mat-error>
+            </div>
+
+            <div class="form-group">
+                <label>انتخاب پایه تحصیلی</label>
+                <ng-select #u (change)="getClassesByGrade(u.selectedValues[0])" #gradeselect="ngModel" name="grade"
+                    [(ngModel)]="stdClassMng.gradeId" required>
+                    <ng-option *ngFor="let i of grades" [value]="i.id">{{i.name}}
+                    </ng-option>
+                </ng-select>
+                <mat-error *ngIf="gradeselect.hasError('required')">
+                    انتخاب پایه تحصیلی الزامی است
+                </mat-error>
+            </div>
+
+            <div class="form-group">
+                <label>انتخاب کلاس</label>
+                <ng-select [disabled]="!u.selectedValues[0]" #classelect="ngModel" name="class"
+                    [(ngModel)]="stdClassMng.classId" required>
+                    <ng-option *ngFor="let i of classes" [value]="i.id">{{i.name}}
+                    </ng-option>
+                </ng-select>
+                <mat-error *ngIf="classelect.hasError('required')">
+                    انتخاب کلاس الزامی است
+                </mat-error>
+            </div>
+
+            <div class="form-group">
+                <label>انتخاب گروه دانش آموز (اختیاری)</label>
+                <ng-select [disabled]="!u.selectedValues[0]" #stdtype="ngModel" name="stdtype"
+                    [(ngModel)]="stdClassMng.studentTypeId">
+                    <ng-option *ngFor="let i of studentTypes" [value]="i.id">{{i.name}}
+                    </ng-option>
+                </ng-select>
+            </div>
+
+
+        </form>
+
+    </div>
+    <div mat-dialog-actions>
+        <button mat-stroked-button color="primary" [disabled]="!fm1.valid || getDisableButtonState()"
+            (click)="registerStudent()">ثبت نام</button>
+        <button mat-stroked-button color="warn" style="margin-right: 5px;" [mat-dialog-close]="false">لغو</button>
+    </div>
+</div>

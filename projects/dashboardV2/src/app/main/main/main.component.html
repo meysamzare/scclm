@@ -1,0 +1,18 @@
+<div class="ex-container" [class.ex-is-mobile]="mobileQuery.matches">
+
+    <mat-sidenav-container autosize class="ex-sidenav-container" [style.margin-top.px]="mobileQuery.matches ? 0 : 65">
+        <mat-sidenav style="padding: 10px;" #snav [mode]="mobileQuery.matches ? 'over' : 'side'"
+            [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" [opened]="openState" position="end"
+            (opened)="navbar.opened()" (closed)="navbar.closed()">
+            <app-sidebar></app-sidebar>
+        </mat-sidenav>
+
+        <mat-sidenav-content class="main-content" [style.margin-top.px]="mobileQuery.matches ? 40 : 0"
+            [style.overflow]="mobileQuery.matches ? 'hidden' : 'auto'">
+            <!-- <div class="container"> -->
+            <router-outlet #outlet="outlet"></router-outlet>
+            <!-- </div> -->
+
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>

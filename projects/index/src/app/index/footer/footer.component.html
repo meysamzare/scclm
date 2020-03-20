@@ -1,0 +1,201 @@
+<footer class="main-footer default">
+    <div class="back-to-top">
+        <a style="cursor: pointer;">
+            <span class="icon">
+                <i class="now-ui-icons arrows-1_minimal-up"></i>
+            </span>
+            <span>بازگشت به بالا</span>
+        </a>
+    </div>
+    <div class="container">
+        <div class="footer-services">
+            <div class="row">
+                <div class="service-item col" [routerLink]="['/virtual-teaching']" style="cursor: pointer;">
+                    <a>
+                        <img src="/assets/img/svg/Elearning.svg">
+                    </a>
+                    <p>شبکه آموزش مجازی طاها</p>
+                </div>
+                <div class="service-item col" [routerLink]="['/products']" style="cursor: pointer;">
+                    <a>
+                        <img src="/assets/img/svg/Book.svg">
+                    </a>
+                    <p>کتب و جزوات کمک آموزشی</p>
+                </div>
+                <div class="service-item col">
+                    <a>
+                        <img src="/assets/img/svg/OnlineExam.svg">
+                    </a>
+                    <p>آزمون های آنلاین</p>
+                </div>
+                <div [routerLink]="['/posts']" [queryParams]="{ 'type' : 25 }" style="cursor: pointer;"
+                    class="service-item col">
+                    <a>
+                        <img src="/assets/img/svg/Student.svg">
+                    </a>
+                    <p>هدایت تحصیلی</p>
+                </div>
+                <div [routerLink]="['/posts']" [queryParams]="{ 'type' : 24 }" style="cursor: pointer;"
+                    class="service-item col">
+                    <a>
+                        <img src="/assets/img/svg/content.svg">
+                    </a>
+                    <p>دبیرخانه برگزیدگان طاها</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-widgets">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="widget-menu widget card">
+                        <header class="card-header">
+                            <h3 class="card-title">راهنمای سامانه آموزشی طاها</h3>
+                        </header>
+                        <ul class="footer-menu">
+                            <li>
+                                <a [routerLink]="['/posts']" [queryParams]="{ 'type' : 10 }">نحوه ورود به سامانه</a>
+                            </li>
+                            <li>
+                                <a [routerLink]="['/posts']" [queryParams]="{ 'type' : 11 }">رویه ثبت نام</a>
+                            </li>
+                            <li>
+                                <a [routerLink]="['/posts']" [queryParams]="{ 'type' : 12 }">رویه پیگیری مکاتبات</a>
+                            </li>
+                            <li>
+                                <a [routerLink]="['/posts']" [queryParams]="{ 'type' : 13 }">قسمت های مختلف سامانه</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="widget-menu widget card">
+                        <header class="card-header">
+                            <h3 class="card-title">خدمات کاربران</h3>
+                        </header>
+                        <ul class="footer-menu">
+                            <li>
+                                <a [routerLink]="['/posts']" [queryParams]="{ 'type' : 14 }">پاسخ به پرسش‌های متداول</a>
+                            </li>
+                            <li>
+                                <a [routerLink]="['/posts']" [queryParams]="{ 'type' : 15 }">رویه‌های احراز هویت</a>
+                            </li>
+                            <li>
+                                <a [routerLink]="['/posts']" [queryParams]="{ 'type' : 16 }">شرایط ثبت نام در طاها</a>
+                            </li>
+                            <li>
+                                <a [routerLink]="['/posts']" [queryParams]="{ 'type' : 17 }">درخواست تجدید نظر</a>
+                            </li>
+                            <li>
+                                <a [routerLink]="['/posts']" [queryParams]="{ 'type' : 18 }">انتقادات و پیشنهادات</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="widget-menu widget card">
+                        <header class="card-header">
+                            <h3 class="card-title">طاهایی ها</h3>
+                        </header>
+                        <ul class="footer-menu">
+                            <li>
+                                <a [routerLink]="['/posts']" [queryParams]="{ 'type' : 19 }">دانش آموزان</a>
+                            </li>
+                            <li>
+                                <a [routerLink]="['/posts']" [queryParams]="{ 'type' : 20 }">دانش آموختگان</a>
+                            </li>
+                            <li>
+                                <a [routerLink]="['/posts']" [queryParams]="{ 'type' : 21 }">فرصت‌های شغلی</a>
+                            </li>
+                            <li>
+                                <a [routerLink]="['/posts']" [queryParams]="{ 'type' : 22 }">تماس با طاها</a>
+                            </li>
+                            <li>
+                                <a [routerLink]="['/posts']" [queryParams]="{ 'type' : 23 }">درباره طاها</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <!-- <div class="newsletter">
+                        <p>از آخرین رویداد ها و برنامه های طاها باخبر شوید:</p>
+                        <form>
+                            <input type="email" class="form-control" placeholder="آدرس ایمیل خود را وارد کنید...">
+                            <input type="submit" class="btn btn-primary" value="ارسال">
+                        </form>
+                    </div> -->
+
+                    <div class="socials">
+                        <p>لینک دانلود نرم افزار های موبایل</p>
+                        <div class="footer-social PMA-mobile">
+                            <a [href]="auth.parentMobileAppUrl">
+                                <i class="fa fa-android"></i>&nbsp;
+                                نرم افزار والدین مبنا
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="socials">
+                        <p>ما را در شبکه های اجتماعی دنبال کنید.</p>
+                        <div class="footer-social">
+                            <a target="_blank"><i class="fa fa-instagram"></i>اینستاگرام طاها</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="info">
+            <div class="row">
+                <div class="col-12 col-lg-4">
+                    <span> شنبه تا چهارشنبه در ساعات اداری (7:30 الی 13:30) پاسخگوی شما هستیم.</span>
+                </div>
+                <div class="col-12 col-lg-4"> شماره های تماس :
+                    36334578 - 36334576 - 36334574 (071)
+                </div>
+                <div class="col-12 col-lg-2">آدرس ایمیل:<a>info@taha.sch.ir</a></div>
+            </div>
+        </div>
+    </div>
+    <div class="description">
+        <div class="container">
+            <div class="row">
+                <div class="site-description col-12 col-lg-7">
+                    <h1 class="site-title">مجتمع آموزشی پسرانه طاها ، بیش از 22 سال سابقه تربیت و هدایت فرزندان این
+                        مملکت</h1>
+                    <p>
+                        طاها به دنبال گزینش دانش آموزان برتر اخلاقی و درسی است
+                        . طاها به دنبال انتخاب دانش آموزانی است که تحت هدایت و نظارت خانواده ،
+                        ضمن تسلط بر مطالب علمی و داشتن استعداد ویژه در زمینه دریافت آموزش های برتر ، دغدغه ی مهم خانواده
+                        و مدرسه را در کسب فضایل اخلاقی و دینی به خوبی پاسخ می دهند
+                        و در راستای حفظ ارزش های الهی و معنوی تلاش و حرکت می نمایند
+                        . به این ترتیب ما به دنبال انتخاب دانش آموزانی شاخص هستیم که از صمیم قلب خود و
+                        خانواده شان طاها را دوست داشته باشند نه این
+                        که اسیر نام های فریبنده و تبلیغات گوناگون باشند و تلاش های ما را در نیمه راه ابتر گذارند .
+                        آنها که طاها را عشق اول خود جهت تحصیل می دانند در انتخاب ( گزینش ) ما موفق ترند .
+                    </p>
+                </div>
+                <div class="symbol col-12 col-lg-5">
+
+                    <img src="/assets/img/symbol-001.png" alt="">
+
+                    <img src="/assets/img/symbol-002.png" alt="">
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="copyright">
+        <div class="container">
+            <p>
+                استفاده از مطالب درگاه اینترنتی مجتمع آموزشی طاها فقط برای مقاصد غیرتجاری و با ذکر منبع بلامانع است.
+                کلیه حقوق این سایت متعلق
+                به مجتمع آموزشی طاها (مدارس پسرانه طاها) می‌باشد.
+
+            </p>
+
+            <br>
+            <p>طراحی و توسعه : شرکت نو آوران هوشمند سیناپس</p>
+
+            <p style="font-family: Arial, Helvetica, sans-serif !important"> Version: {{ auth.INDEX_VERSION }}</p>
+        </div>
+    </div>
+</footer>

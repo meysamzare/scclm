@@ -1,0 +1,63 @@
+<div dir="rtl">
+    <h1 mat-dialog-title>
+        جزئیات آزمون
+    </h1>
+    <div mat-dialog-content>
+
+        نام درس : <label> {{ exam?.courseName }} </label>
+        <br>
+        عنوان آزمون : <label> {{ exam?.name }} </label>
+        <br>
+        نام دبیر : <label> {{ exam?.teacherName }} </label>
+        <br>
+        بودجه آزمون : <label>{{ exam?.source }} </label>
+        <br>
+        ملاک آزمون : <label>{{ exam?.topScore }} </label>
+        <br>
+
+        <hr>
+
+
+        <div style="text-align: left">
+            <span>میانگین : <label>{{ getAvgOfScores() }}</label> </span>
+        </div>
+
+        <br>
+
+
+        <ng-container *ngIf="isLoading">
+            <mat-progress-bar mode="buffer"></mat-progress-bar>
+        </ng-container>
+        <ng-container *ngIf="!isLoading">
+            <table class="table" *ngIf="students.length != 0">
+                <thead>
+                    <tr>
+                        <th>ردیف</th>
+                        <th>کد دانش آموز</th>
+                        <th>نام خانوادگی نام</th>
+                        <th>نمره</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let std of students">
+                        <td>{{ students.indexOf(std) + 1 }}</td>
+                        <td>{{ std.code }}</td>
+                        <td>{{ std.lastName + ' ' + std.name }}</td>
+                        <td>{{ getStudentScore(std.id) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="al-center" *ngIf="students.length == 0">
+                <b>
+                    دانش آموزی برای این آزمون ثبت نشده است
+                </b>
+            </div>
+        </ng-container>
+
+    </div>
+    <div mat-dialog-actions>
+        <button mat-stroked-button style="margin-right: 5px;" [mat-dialog-close]="">
+            تایید
+        </button>
+    </div>
+</div>

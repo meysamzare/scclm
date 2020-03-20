@@ -1,0 +1,99 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <form #fm1="ngForm" id="fm11">
+                        <div class="col-sm-6 b-r">
+
+                            <div class="form-group">
+                                <label>نام تبلیغ</label>
+                                <input type="text" required #name="ngModel" name="name" [(ngModel)]="advertising.name"
+                                    placeholder="نام" class="form-control">
+                                <div *ngIf="(name.touched || name.dirty) && name.invalid">
+                                    <p *ngIf="name.hasError('required')" class="error">
+                                        وارد کردن نام تبلیغ الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>آدرس لینک تبلیغ</label>
+                                <input type="url" style="direction: ltr" required #url="ngModel" name="url"
+                                    [(ngModel)]="advertising.url" placeholder="آدرس لینک مثال: http://www.example.com"
+                                    class="form-control">
+                                <div *ngIf="(url.touched || url.dirty) && url.invalid">
+                                    <p *ngIf="url.hasError('required')" class="error">
+                                        وارد کردن آدرس لینک تبلیغ الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6">
+
+                            <div class="form-group">
+                                <label>انتخاب نوع نمایش در صفحه اصلی</label>
+                                <ng-select #type="ngModel" name="type" [(ngModel)]="advertising.type" required>
+                                    <ng-option [value]="1">در یک ردیف کامل</ng-option>
+                                    <ng-option [value]="2">در نصف ردیف</ng-option>
+                                    <ng-option [value]="3">تبلیغ ویژه - یک ردیف کامل - (بین اسلاید شو اصلی و رویداد ها)</ng-option>
+                                    <ng-option [value]="4">اپ دبیران</ng-option>
+                                    <ng-option [value]="5">اپ اولیاء</ng-option>
+                                    <ng-option [value]="6">تمامی اپ ها</ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="type.hasError('required')">
+                                    انتخاب نوع نمایش در صفحه اصلی الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>آیا این تبلیغ فعال است؟</label>
+                                <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="advertising.isActive">
+                                    فعال
+                                </mat-checkbox>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>تصویر تبلیغ</label>
+                                <br>
+                                <button (click)="removePic()" [disabled]="advertising.picData.length == 0"
+                                    mat-raised-button> حذف تصویر </button>
+
+                                <a target="_blank" mat-raised-button style="margin: 5px;"
+                                    *ngIf="advertising.picUrl && isEdit" [href]="getFileUrl(advertising.picUrl)">نمایش
+                                    تصویر تبلیغ</a>
+
+                                <ngx-dropzone #d1 [disabled]="advertising.picData.length != 0"
+                                    (filesRejected)="removePic()" (filesAdded)="setPic($event)" [multiple]="false"
+                                    [showPreviews]="true" [accept]="'image/png,image/jpeg'"
+                                    [label]="'تصویر خود را اینجا رها کنید یا کلیک کنید'">
+                                </ngx-dropzone>
+
+                                <mat-error *ngIf="!isEdit && advertising.picData.length == 0">
+                                    انتخاب تصویر تبلیغ الزامی است
+                                </mat-error>
+                            </div>
+                        </div>
+
+                        <br>
+                        <br>
+                        <div class="col-md-12">
+                            <a mat-raised-button color="warn" style="margin: 5px;"
+                                routerLink="/dashboard/advertising">لغو</a>
+                            <button type="submit" mat-raised-button color="primary"
+                                [disabled]="!fm1.valid || (!isEdit && advertising.picData.length == 0)"
+                                (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

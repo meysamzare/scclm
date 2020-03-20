@@ -1,0 +1,40 @@
+<div class="field is-horizontal margin-bot">
+    <div *ngIf="showLabelSection" class="field-label is-normal">
+        <label class="label">{{ label }}</label>
+    </div>
+    <div class="field-body">
+
+        <a target="_blank" mat-raised-button style="margin: 5px;" *ngIf="fileUrl"
+            [href]="auth.getFileUrl(fileUrl)">نمایش تصویر ابتدای صفحه</a>
+
+        <div class="field">
+            <div class="file is-centered is-boxed has-name is-{{ Size }}" [matTooltip]="hint"
+                [class.is-success]="isValid()" [class.is-danger]="!isValid()">
+                <label class="file-label">
+                    <input class="file-input" #input type="file" multiple="false" [accept]="accept"
+                        (change)="onFileChange($event.target.files)" (blur)="onTouched()">
+                    <span class="file-cta">
+                        <span class="file-icon">
+                            <i class="fas fa-upload"></i>
+                        </span>
+                        <span class="file-label">
+                            {{ fileUrl ? 'آپلود و ویرایش فایل' : 'آپلود فایل جدید' }}
+                        </span>
+                    </span>
+                    <span class="file-name">
+                        {{ fileName ? fileName : '---' }}
+                    </span>
+                </label>
+                <label class="delete" style="margin: 5px;" *ngIf="canShowClearButton()" (click)="reset()"></label>
+            </div>
+
+
+        </div>
+
+    </div>
+    <!--     
+    <mat-hint *ngIf="!isValid()" style="color: red; font-size: 14px;">
+        {{ getInvalidMessage() }}
+    </mat-hint> -->
+
+</div>

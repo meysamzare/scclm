@@ -1,0 +1,160 @@
+<span class="fa fa-refresh fa-spin spinner" *ngIf="isLoading"></span>
+<div class="row animated fadeInRight">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>لیست سوالات</h5>
+                <div class="ibox-tools">
+                    <a (click)="refreshDataSource()" matTooltip="بارگذاری مجدد">
+                        <i class="fa fa-refresh"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+
+                <div *ngIf="!haveAnyData() && !isLoading">
+                    <P>موردی یافت نشد</P>
+                </div>
+
+                <div>
+                    <div dir="rtl">
+
+                        <button class="btn btn-primary font-11" type="button"
+                            [routerLink]="['/dashboard/question/edit/0']" matTooltip="افزودن سوال جدید"><i
+                                class="fa fa-plus"></i>&nbsp;افزودن سوال</button>
+
+                        <button class="btn btn-danger font-11 mg-r" type="button" matTooltip="حذف سوال های انتخاب شده"
+                            [disabled]="selection.selected.length < 1" [swal]="deleteSwal"><i
+                                class="fa fa-trash"></i>&nbsp;حذف سوال ها</button>
+
+                        <swal #deleteSwal [confirmButtonText]="'بله'" [cancelButtonText]="'خیر'" title="آیا اطمینان
+                            دارید؟" text="حذف کردن این موارد قابل بازگشت نمی
+                            باشد" type="question" [showCancelButton]="true" [focusCancel]="true"
+                            (confirm)="deleteSelected()">
+                        </swal>
+                        <input type="text" id="text1" (keyup)="applyFilter($event.target.value)" [(ngModel)]="txtSearch"
+                            placeholder="جستجو" class="form-control">
+                    </div>
+                    <br>
+                    <div class="example-container mat-elevation-z8">
+                        <div class="example-loading-shade" *ngIf="isLoadingResults">
+                            <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+                        </div>
+                        <div class="mat-elevation-z8">
+                            <table mat-table [dataSource]="dataSource" matSort>
+                                <ng-container matColumnDef="select">
+                                    <th mat-header-cell *matHeaderCellDef>
+                                        <mat-checkbox [disabled]="!haveAnyData()
+                                            ||
+                                            getRowCanSelected() == 0" matTooltipPosition="before" matTooltip="تعداد
+                                            {{ selection.selected.length }} مورد
+                                            انتخاب شده است" (change)="$event ?
+                                            masterToggle() : null" [checked]="selection.hasValue() &&
+                                            isAllSelected()" [indeterminate]="selection.hasValue()
+                                            &&
+                                            !isAllSelected()">
+                                        </mat-checkbox>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <mat-checkbox matTooltipPosition="before" matTooltip="{{ 'انتخاب برای حذف' }}"
+                                            (click)="$event.stopPropagation()"
+                                            (change)="$event ? selection.toggle(row) : null"
+                                            [checked]="selection.isSelected(row)">
+                                        </mat-checkbox>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="id">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> ردیف </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        {{row.id}}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="name">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> عنوان </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        {{row.name}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="title">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> صورت سوال </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <ng-container *ngIf="row.title.length > 40; else elseTemplate">
+                                            {{row.title.substr(0 , 40) + '....'}}
+                                        </ng-container>
+                                        <ng-template #elseTemplate>
+                                            {{row.title}}
+                                        </ng-template>
+
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="gradeName">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> پایه تحصیلی </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        {{row.gradeName}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="courseName">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> درس </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        {{row.courseName}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="person">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> طراح </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        {{row.person}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="markString">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> نمره </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        {{row.markString}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="type">
+                                    <th mat-header-cell *matHeaderCellDef> نوع </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <mat-chip-list>
+                                            <mat-chip *ngIf="row.type == 1">تشریحی</mat-chip>
+                                            <mat-chip *ngIf="row.type == 2">تستی</mat-chip>
+                                            <mat-chip *ngIf="row.type == 3">جایگزینی</mat-chip>
+                                            <mat-chip *ngIf="row.type == 4">صحیح / غلط</mat-chip>
+                                        </mat-chip-list>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="action">
+                                    <th mat-header-cell *matHeaderCellDef>
+                                        عملیات
+                                    </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <button matTooltip="ویرایش
+                                            {{row.name}}" matTooltipPosition="before" mat-icon-button
+                                            (click)="onEdit(row.id)">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                    </td>
+
+                                </ng-container>
+
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns:
+                                    displayedColumns;">
+                                </tr>
+                            </table>
+
+                            <div dir="ltr">
+                                <mat-paginator [length]="itemLength" [pageSizeOptions]="[5, 10, 15, 20,
+                                    25]" (page)="resetSelection($event)" showFirstLastButtons></mat-paginator>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

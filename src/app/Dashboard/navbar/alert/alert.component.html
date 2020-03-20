@@ -1,0 +1,87 @@
+<ul class="nav navbar-top-links navbar-right">
+    <li style="margin-left: 30px;">
+        <span class="m-r-sm text-muted welcome-message" [tooltip]="'Version: ' + auth.DASHBOARD_VERSION ">
+            پرتال آموزشی مبنا ({{ firstTituteName }})
+        </span>
+
+    </li>
+    <li style="margin-right: 5px; margin-left: 5px;">
+
+        <span [matTooltip]="getConnectionString()" style="cursor: default">
+            <span class="fa fa-plug" style="font-size: 15px;" [ngStyle]="{'color':  getConnectionColor()}"></span>
+        </span>
+
+        <button mat-icon-button *ngIf="getConnectionState() == 4 || getConnectionState() == 0 " matTooltip="اتصال مجدد"
+            (click)="refreshConnection()">
+            <mat-icon style="color: blanchedalmond" class="mat-18">refresh</mat-icon>
+        </button>
+
+    </li>
+    <li class="dropdown">
+        <a class="dropdown-toggle count-info" data-toggle="dropdown">
+            <i class="fa fa-envelope"></i> <span class="label"
+                style="background-color: #23c6c8; color: white">{{ chat.unReadMessages.length }}</span>
+        </a>
+        <ul class="dropdown-menu dropdown-messages">
+            <ng-container *ngFor="let mes of chat.unReadMessages">
+                <li>
+                    <div class="dropdown-messages-box">
+                        <div class="media-body">
+                            <small class="pull-right">{{mes.sendDate}}</small>
+                            <strong>{{ mes.senderName }}</strong> <br>
+                            <small class="text-muted">{{mes.messageText}}</small>
+                        </div>
+                    </div>
+                </li>
+                <li class="divider"></li>
+            </ng-container>
+            <li class="divider"></li>
+            <li>
+                <div class="text-center link-block">
+                    <a routerLink="/dashboard/chat">
+                        <i class="fa fa-envelope-o"></i>
+                        <strong style="margin-right: 5px;"> نمایش تمامی گفتگو ها
+                        </strong>
+                    </a>
+                </div>
+            </li>
+
+        </ul>
+    </li>
+    <li class="dropdown">
+        <a class="dropdown-toggle count-info" data-toggle="dropdown">
+            <i class="fa fa-pencil"></i><span class="label label-warning">{{ draftCount }}</span>
+        </a>
+        <ul class="dropdown-menu dropdown-alerts">
+            <p>
+                زمانی که شما در فرمی داده هایی را وارد می کنید
+                ولی صفحه مورد نظر را ترک می کنید، آن داده ها ذخیره، 
+                و با ورود به فرم مورد نظر، بارگیری میشوند
+            </p>
+            <li class="divider"></li>
+            <li>
+                <div class="text-center link-block">
+                    <a (click)="clearDrafts()" [class.disabled]="draftCount == 0">
+                        <i class="fa fa-trash"></i>
+                        <strong style="margin-right: 5px;"> حذف تمامی پیش نویس ها
+                        </strong>
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </li>
+
+
+    <li matTooltip="زمان باقی مانده تا خروج" style="min-width: 40px; text-align: center;">
+        <div>
+            <b style="color: whitesmoke;">{{ remainTime }}</b>
+        </div>
+    </li>
+
+
+    <li>
+        <a (click)="Logout()">
+            <i class="fa fa-sign-out"></i> خروج
+        </a>
+    </li>
+</ul>

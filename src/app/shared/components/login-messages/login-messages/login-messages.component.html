@@ -1,0 +1,6 @@
+<ul>
+    <li *ngFor="let i of notifications" style="margin-bottom: 12px; text-align: justify;"
+        [style.color]="getColorByType(i.notiifcationType)">
+        {{ i.content }}
+    </li>
+</ul>

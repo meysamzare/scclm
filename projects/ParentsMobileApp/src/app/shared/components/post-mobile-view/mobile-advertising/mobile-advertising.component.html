@@ -1,0 +1,9 @@
+<div class="row" style="margin-top: 10px;" *ngFor="let i of ads">
+    <div class="col-12">
+        <div class="widget-banner card">
+            <a target="_blank" [href]="i.url">
+                <img class="img-fluid" [src]="auth.getFileUrl(i.picUrl)">
+            </a>
+        </div>
+    </div>
+</div>

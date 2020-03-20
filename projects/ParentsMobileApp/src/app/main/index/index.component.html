@@ -1,0 +1,111 @@
+<app-toolbar [Title]="'خانه'" [showRefresh]="false">
+    <app-toolbar-item-left>
+        <button mat-icon-button [matMenuTriggerFor]="menu"
+            [style.background-color]="isNewUpdateAvalable ? '#c3c32d' : 'unset'">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button [routerLink]="['/more/change-password']" mat-menu-item>
+                <mat-icon style="color: #00b1b1">fingerprint</mat-icon>
+                <span>تغییر کلمه عبور</span>
+            </button>
+            <button (click)="reload()" mat-menu-item
+                [style.background-color]="isNewUpdateAvalable ? '#c3c32d' : 'unset'">
+                <mat-icon style="color: #dae501">refresh</mat-icon>
+                <span>بارگذاری مجدد</span>
+            </button>
+            <button (click)="stdAuth.logout()" mat-menu-item>
+                <mat-icon style="color: #e10000">power_settings_new</mat-icon>
+                <span>خروج</span>
+            </button>
+        </mat-menu>
+    </app-toolbar-item-left>
+</app-toolbar>
+
+
+<div>
+
+    <mat-card style="margin: -10px; margin-bottom: 15px; box-shadow: none; padding: 0;">
+        <mat-card-content style="margin: 0;">
+            <div class="row">
+                <div class="col-5">
+                    <img
+                        [src]="stdAuth.getStudent().picUrl ? stdAuth.auth.getFileUrl(stdAuth.getStudent().picUrl) : '/assets/img/student.png'">
+                </div>
+                <div class="col-7">
+                    <b>
+                        <p style="margin-top: 15px;">{{ stdAuth.getStudentFullName() }}</p>
+                    </b>
+                    <p style="margin: 0;">{{ stdAuth.getActiveStdClassMng()?.className }}</p>
+                    <p>{{ stdAuth.getActiveStdClassMng()?.yeareducationName }}</p>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+    <!-- 
+    <div *ngIf="!stdAuth.getStudent().isStudentInfoComplated" class="alert alert-warning margin-top-10"
+        style="color: white;" role="alert">
+        <p class="alert-content">
+            با توجه به بروز رسانی پرونده های دانش آموزان ، پرونده الکترونیک فرزند شما ناقص می باشد ، لطفا در اسرع وقت به
+            تکمیل آن اقدام نمایید
+        </p>
+        <p class="alert-content">
+            تکمیل پرونده الکنرونیک &nbsp;
+            <button type="button" [routerLink]="['/complate-student-info']" class="btn btn-success">
+                کلیک کنید
+            </button>
+        </p>
+    </div> -->
+    <!-- 
+    <div *ngIf="stdAuth.isUserHaveToChangePass" class="alert alert-danger" role="alert">
+
+        <p>
+            تغییر کلمه عبور &nbsp;
+            <button type="button" [routerLink]="['/more/change-password']" class="btn btn-success">
+                کلیک کنید
+            </button>
+        </p>
+    </div> -->
+
+
+    <div class="row">
+        <div class="col-sm-12" style="margin-top: 5px;" *ngIf="upComingExams.length != 0">
+            <p>
+                <image-icon icon="up_comming"></image-icon>
+                آزمون های پیش رو (هفته جاری)
+            </p>
+            <mat-accordion>
+                <ng-container *ngFor="let i of upComingExams">
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{ i.name.length > 20 ? i.name.substr(0, 20) + '...' : i.name }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                {{ i.dateString }}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+
+                        <p *ngIf="i.name.length > 20">نام آزمون : {{ i.name }}</p>
+
+                        <p> درس : {{ i.courseName }} </p>
+                        <p> دبیر : {{ i.teacherName }} </p>
+                        <p> بودجه آزمون : {{ i.source }} </p>
+                        <p> مدت زمان آزمون : {{ i.time }} دقیقه </p>
+                        <p> ملاک آزمون : {{ i.topScore }} </p>
+                        <p> نوع آزمون : {{ i.examTypeName }} </p>
+
+                    </mat-expansion-panel>
+                </ng-container>
+            </mat-accordion>
+        </div>
+    </div>
+
+
+
+    <app-mobile-advertising class="margin-top-10" [Type]="5"></app-mobile-advertising>
+
+    <app-hpost-view Type="special"></app-hpost-view>
+
+
+</div>

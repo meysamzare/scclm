@@ -1,0 +1,144 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row" style="padding: 10px;">
+                    <mat-form-field>
+                        <mat-label>انتخاب پایه تحصیلی مورد نظر</mat-label>
+                        <mat-select [disabled]="isEdit" style="direction: ltr" #u
+                            (valueChange)="copySelectedData(u.value)" name="class">
+                            <mat-option selected="selected" value="0">-- موردی را انتخاب نمایید --</mat-option>
+                            <mat-option *ngFor="let grade of grades" [value]="grade.id">{{grade.name}}</mat-option>
+                        </mat-select>
+                        <mat-hint>کپی کردن داده های مورد انتخاب شده در صفحه جاری</mat-hint>
+                    </mat-form-field>
+                </div>
+                <hr>
+                <div class="row">
+                    <form #fm1="ngForm" id="fm11">
+                        <div class="col-sm-6">
+
+                            <div class="form-group">
+                                <label>نام پایه تحصیلی</label>
+                                <input type="text" required #name="ngModel" name="name" [(ngModel)]="grade.name"
+                                    placeholder="نام" class="form-control">
+                                <div *ngIf="(name.touched || name.dirty) &&
+                                    name.invalid">
+                                    <p *ngIf="name.hasError('required')" class="error">
+                                        وارد کردن نام پایه تحصیلی الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>کد پایه تحصیلی</label>
+                                <input type="number" required #code="ngModel" name="code" [(ngModel)]="grade.code"
+                                    placeholder="کد پایه تحصیلی" class="form-control">
+                                <div *ngIf="(code.touched || code.dirty) &&
+                                    code.invalid">
+                                    <p *ngIf="code.hasError('required')" class="error">
+                                        وارد کردن کد پایه تحصیلی الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>کد سازمان آموزش و پرورش</label>
+                                <input type="number" required #orgcode="ngModel" name="orgcode"
+                                    [(ngModel)]="grade.orgCode" placeholder="کد سازمان آموزش و پرورش"
+                                    class="form-control">
+                                <div *ngIf="(orgcode.touched || orgcode.dirty) &&
+                                    orgcode.invalid">
+                                    <p *ngIf="orgcode.hasError('required')" class="error">
+                                        وارد کردن کد سازمان آموزش و پرورش الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>کد داخلی سازمان</label>
+                                <input type="number" required #internalCode="ngModel" name="internalCode"
+                                    [(ngModel)]="grade.internalCode" placeholder="کد داخلی سازمان" class="form-control">
+                                <div *ngIf="(internalCode.touched || internalCode.dirty) &&
+                                    internalCode.invalid">
+                                    <p *ngIf="internalCode.hasError('required')" class="error">
+                                        وارد کردن کد داخلی سازمان الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6 b-r-r">
+
+
+                            <div class="form-group">
+                                <label>انتخاب آموزشگاه</label>
+                                <ng-select #tituteselect="ngModel" name="titute" [(ngModel)]="grade.tituteId" required>
+                                    <ng-option *ngFor="let tit of titutes" [value]="tit.id">{{tit.name}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="tituteselect.hasError('required')">
+                                    انتخاب آموزشگاه الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب سال تحصیلی</label>
+                                <ng-select #yearselect="ngModel" [activeyear]="isEdit" name="year"
+                                    [(ngModel)]="grade.yeareducationId" required>
+                                    <ng-option *ngFor="let year of yeareducations" [value]="year.id">{{year.name}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="yearselect.hasError('required')">
+                                    انتخاب سال تحصیلی الزامی است
+                                </mat-error>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>ظرفیت پذیرش</label>
+                                <input type="number" required #capasity="ngModel" name="capasity"
+                                    [(ngModel)]="grade.capasity" placeholder="ظرفیت پذیرش" class="form-control">
+                                <div *ngIf="(capasity.touched || capasity.dirty) &&
+                                    capasity.invalid">
+                                    <p *ngIf="capasity.hasError('required')" class="error">
+                                        وارد کردن ظرفیت پذیرش الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>ترتیب</label>
+                                <input type="number" required #order="ngModel" name="order" [(ngModel)]="grade.order"
+                                    placeholder="ترتیب" class="form-control">
+                                <div *ngIf="(order.touched || order.dirty)  && order.invalid">
+                                    <p *ngIf="order.hasError('required')" class="error">
+                                        وارد کردن ترتیب الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>توضیحات </label>
+                                <input type="text" name="desc" [(ngModel)]="grade.desc" placeholder="توضیحات"
+                                    class="form-control">
+                            </div>
+
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-12">
+                            <a mat-raised-button color="warn" style="margin:
+                                5px;" routerLink="/dashboard/grade">لغو</a>
+                            <button type="submit" mat-raised-button color="primary" [disabled]="!fm1.valid"
+                                (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

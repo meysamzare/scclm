@@ -1,0 +1,78 @@
+<app-toolbar [Title]="'مکاتبات'">
+    <app-toolbar-item-left>
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item>
+                <mat-slide-toggle name="unreads" [(ngModel)]="onlyShowUnreads" (change)="refreshTickets(true)">
+                    فقط نمایش خوانده نشده ها
+                </mat-slide-toggle>
+            </button>
+            <button [routerLink]="['./view/0']" mat-menu-item>
+                <mat-icon>send</mat-icon>
+                <span>ارسال مکاتبه</span>
+            </button>
+        </mat-menu>
+    </app-toolbar-item-left>
+</app-toolbar>
+
+<div class="row">
+    <div class="col-sm-12">
+        <input name="search" class="form-control block" [(ngModel)]="search" placeholder="جستجو"
+            (input)="searchChange()">
+    </div>
+</div>
+
+<div class="row margin-top-10">
+    <div class="col-sm-12">
+
+        <ng-container *ngIf="isAnyTickets()">
+
+            <div class="card" *ngFor="let i of tickets" [class.card-new]="i.newConversations != 0"
+                [routerLink]="['./view/' + i.id]" style="margin-top: 3px;" matRipple>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-7">
+                            {{ i.subject }}
+                        </div>
+                        <div class="col-sm-5">
+                            <small> فوریت : {{ getTicketOrderString(i.order) }} </small>
+                            <br>
+                            <small> وضعیت : {{ getTicketStateString(i.state) }} </small>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <small>
+                                <mat-icon class="small">call_made</mat-icon>
+                                {{ detectIsUserSender(i) ? 'شما' : getTicketTypeString(i.senderType) + ' ' + i.senderName  }}
+                            </small>
+                        </div>
+                        <div class="col-sm-6">
+                            <small>
+                                <mat-icon class="small">call_received</mat-icon>
+                                {{ !detectIsUserSender(i) ? 'شما' : getTicketTypeString(i.reciverType) + ' ' + i.reciverName  }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row margin-top-10" *ngIf="canShowMoreButton()">
+                <div class="col-sm-12">
+                    <button (click)="nextPage()" class="btn btn-block btn-outline-info">نمایش بیشتر</button>
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="!isAnyTickets()">
+            <div class="center">
+                <b>موردی یافت نشد</b>
+            </div>
+        </ng-container>
+
+    </div>
+</div>

@@ -1,0 +1,166 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <form #fm1="ngForm" id="fm11">
+                        <div class="col-sm-6 ">
+
+                            <div class="form-group">
+                                <label>عنوان سوال</label>
+                                <input type="text" required #name="ngModel" name="name" [(ngModel)]="question.name"
+                                    placeholder="عنوان سوال" class="form-control">
+                                <div *ngIf="(name.touched || name.dirty) && name.invalid">
+                                    <p *ngIf="name.hasError('required')" class="error">
+                                        وارد کردن عنوان سوال الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب نوع سوال</label>
+                                <ng-select #typeselect="ngModel" name="type" [(ngModel)]="question.type" required>
+                                    <ng-option [value]="1">تشریحی</ng-option>
+                                    <ng-option [value]="2">تستی</ng-option>
+                                    <ng-option [value]="3">جایگزینی</ng-option>
+                                    <ng-option [value]="4">صحیح / غلط</ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="typeselect.hasError('required')">
+                                    انتخاب نوع سوال الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب سطح سوال</label>
+                                <ng-select #defactselect="ngModel" name="defact" [(ngModel)]="question.defact" required>
+                                    <ng-option [value]="1">سخت</ng-option>
+                                    <ng-option [value]="2">متوسط</ng-option>
+                                    <ng-option [value]="3">آسان</ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="defactselect.hasError('required')">
+                                    انتخاب سطح سوال الزامی است
+                                </mat-error>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>صورت سوال</label>
+                                <input type="text" required #title="ngModel" name="title" [(ngModel)]="question.title"
+                                    placeholder="صورت سوال" class="form-control">
+                                <div *ngIf="(title.touched || title.dirty) && title.invalid">
+                                    <p *ngIf="title.hasError('required')" class="error">
+                                        وارد کردن صورت سوال الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>پاسخ سوال</label>
+                                <input type="text" required #answer="ngModel" name="answer"
+                                    [(ngModel)]="question.answer" placeholder="پاسخ سوال" class="form-control">
+                                <div *ngIf="(answer.touched || answer.dirty) && answer.invalid">
+                                    <p *ngIf="answer.hasError('required')" class="error">
+                                        وارد کردن پاسخ سوال الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>منبع، آدرس، سرفصل</label>
+                                <input type="text" required #source="ngModel" name="source"
+                                    [(ngModel)]="question.source" placeholder="منبع، آدرس، سرفصل" class="form-control">
+                                <div *ngIf="(source.touched || source.dirty) && source.invalid">
+                                    <p *ngIf="source.hasError('required')" class="error">
+                                        وارد کردن منبع، آدرس، سرفصل الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="col-sm-6 b-r-r">
+
+
+                            <div class="form-group">
+                                <label>انتخاب پایه تحصیلی</label>
+                                <ng-select #gradeselect="ngModel" name="grade" [(ngModel)]="question.gradeId" required>
+                                    <ng-option *ngFor="let gr of grades" [value]="gr.id">{{gr.name}}</ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="gradeselect.hasError('required')">
+                                    انتخاب پایه تحصیلی الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب درس</label>
+                                <ng-select #courseselect="ngModel" name="course" [(ngModel)]="question.courseId"
+                                    required>
+                                    <ng-option *ngFor="let cor of courses" [value]="cor.id">{{cor.name}}</ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="courseselect.hasError('required')">
+                                    انتخاب درس الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>طراح سوال</label>
+                                <mat-form-field class="example-full-width">
+                                    <input type="text" placeholder="طراح سوال" #person="ngModel" name="person"
+                                        [(ngModel)]="question.person" required matInput [matAutocomplete]="auto">
+                                    <mat-autocomplete #auto="matAutocomplete">
+                                        <mat-option *ngFor="let i of filteredPerson | async" [value]="i">
+                                            {{i}}
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                    <mat-error *ngIf="person.hasError('required')">
+                                        وارد کردن طراح سوال الزامی است
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>نمره سوال</label>
+                                <input type="number" min="0" (keyup)="checkForTrueMark()" required #mark="ngModel"
+                                    name="mark" [(ngModel)]="question.mark" placeholder="نمره سوال"
+                                    class="form-control">
+                                <div *ngIf="(mark.touched || mark.dirty) && mark.invalid">
+                                    <p *ngIf="mark.hasError('required')" class="error">
+                                        وارد کردن نمره سوال الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>توضیح سوال</label>
+                                <input type="text" name="desc1" [(ngModel)]="question.desc1" placeholder="توضیح سوال"
+                                    class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <label>شرح سوال</label>
+                                <input type="text" name="desc2" [(ngModel)]="question.desc2" placeholder="شرح سوال"
+                                    class="form-control">
+                            </div>
+
+
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-12">
+                            <a mat-raised-button color="warn" style="margin: 5px;"
+                                routerLink="/dashboard/question">لغو</a>
+                            <button type="submit" mat-raised-button color="primary" [disabled]="!fm1.valid"
+                                (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

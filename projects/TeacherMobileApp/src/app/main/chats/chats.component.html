@@ -1,0 +1,79 @@
+<app-toolbar [Title]="'گفتگوها'"></app-toolbar>
+
+<!-- <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar> -->
+
+<div class="row">
+    <div class="col-sm-12">
+
+        <ng-container *ngFor="let i of let i of conversations">
+
+            <div class="card" style="border: unset;"
+                [routerLink]="['./view/'+ i.clientId + '/' + i.clientType + '/' + i.clientName]" matRipple>
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-3 auto-margin">
+                            <img *ngIf="i.clientImg" [src]="tchAuth.auth.getFileUrl(i.clientImg)" class="img-circle-50">
+                            <image-icon *ngIf="!i.clientImg" icon="student" [height]="60"></image-icon>
+                        </div>
+                        <div class="col-9">
+
+                            <div class="row">
+                                <div class="col-8">
+                                    <small>
+                                        {{ getTypeString(i.clientType) }}
+                                    </small>
+                                    <b>
+                                        {{ i.clientName }}
+                                    </b>
+                                </div>
+                                <div class="col-3 al-left" style="padding: 0;" *ngIf="i.unreadCount != 0">
+                                    <span class="badge badge-pill badge-info">{{ i.unreadCount }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <small
+                                        style="opacity: 0.8;">{{ i.lastChatText.length > 30 ? i.lastChatText.substr(0, 30) + '...' : i.lastChatText }}</small>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12 al-left">
+                                    <small>
+                                        {{ i.lastChatDate }}
+                                    </small>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <hr>
+        </ng-container>
+
+        <ng-container *ngIf="conversations.length == 0 && !isLoading">
+            <div class="al-center margin-top-10">
+                <image-icon icon="no-chat" [height]="70"></image-icon>
+                <br>
+                <br>
+                <b>
+                    شما تا کنون گفتگویی را آغاز ننموده اید! برای این امر از لیست کلاسی یک گفتگو را
+                    آغاز نمایید
+                </b>
+            </div>
+        </ng-container>
+
+
+    </div>
+</div>
+
+<div class="row" *ngIf="canShowMoreButton()">
+    <div class="col-12">
+        <button class="btn btn-primary btn-block" (click)="nextPage()">نمایش بیشتر</button>
+    </div>
+</div>

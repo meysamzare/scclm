@@ -1,0 +1,33 @@
+<div class="field is-horizontal margin-bot">
+    <div *ngIf="showLabelSection" class="field-label is-normal">
+        <label class="label">{{ label }}</label>
+    </div>
+    <div class="field-body" dir="rtl">
+        <mat-form-field [matTooltip]="hint" style="width: 100%;">
+            <mat-label>{{ Placeholder ? Placeholder : label }}</mat-label>
+            <mat-select #select [disabled]="disabled" (selectionChange)="onChange($event.value)"
+                [required]="required">
+                <mat-option>
+                    <ngx-mat-select-search [(ngModel)]="searchText" [placeholderLabel]="'جستجو'"
+                        [noEntriesFoundLabel]="'موردی یافت نشد'"></ngx-mat-select-search>
+                </mat-option>
+
+                <mat-option>---</mat-option>
+
+                <mat-option *ngFor="let option of getFiltredOptions()" [value]="option.value"
+                    [disabled]="option.disabled">
+                    {{option.label}}
+                </mat-option>
+            </mat-select>
+
+            <!-- <ng-container *ngIf="controlDir"> -->
+            <mat-hint *ngIf="!isValid() && controlDir.control.touched" style="color: red;">
+                {{ getInvalidMessage() }}
+            </mat-hint>
+            <!-- </ng-container> -->
+
+            <!-- <mat-hint *ngIf="hint">{{ hint }}</mat-hint> -->
+        </mat-form-field>
+
+    </div>
+</div>

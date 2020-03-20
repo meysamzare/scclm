@@ -1,0 +1,11 @@
+.message-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    min-width: 450px;
+    z-index: 99999999999;
+}
+
+.notification {
+    margin: 5px !important;
+}

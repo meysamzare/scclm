@@ -1,0 +1,384 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <form #fm1="ngForm" id="fm11">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>نام</label>
+                                <input type="text" required #name="ngModel" name="name" [(ngModel)]="Role.name" placeholder="نام سطح دسترسی" class="form-control">
+                                <div *ngIf="(name.touched || name.dirty)  && name.invalid">
+                                    <p *ngIf="name.hasError('required')" class="error">
+                                        وارد کردن نام سطح دسترسی الزامی است
+                                    </p>
+                                </div>
+							</div>
+							
+							<p>انواع قرارداد</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_ContractType">افزودن انواع قرارداد</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_ContractType">ویرایش انواع قرارداد</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_ContractType">حذف انواع قرارداد</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_ContractType">مشاهده انواع قرارداد</mat-checkbox>
+							
+							<p> قرارداد</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Contract">افزودن  قرارداد</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Contract">ویرایش  قرارداد</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Contract">حذف  قرارداد</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Contract">مشاهده  قرارداد</mat-checkbox>
+							
+							
+							<p> انواع پرداخت</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_PaymentType">افزودن انواع پرداخت</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_PaymentType">ویرایش انواع پرداخت</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_PaymentType">حذف انواع پرداخت</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_PaymentType">مشاهده انواع پرداخت</mat-checkbox>
+							
+							<p>پرداخت دانش آموز</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_StdPayment">افزودن پرداخت دانش آموز</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_StdPayment">ویرایش پرداخت دانش آموز</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_StdPayment">حذف پرداخت دانش آموز</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_StdPayment">مشاهده پرداخت های دانش آموز</mat-checkbox>
+							
+							
+							<p>دفتر کلاسی</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_ClassBook">افزودن دفتر کلاسی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_ClassBook">ویرایش دفتر کلاسی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_ClassBook">حذف دفتر کلاسی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_ClassBook">مشاهده دفتر کلاسی</mat-checkbox>
+
+                            <hr>
+                            
+                            <p>محصولات</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Product">افزودن محصول</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Product">ویرایش محصول</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Product">حذف محصول</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Product">مشاهده محصول</mat-checkbox>
+                            
+                            <p>آموزش مجازی</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_VirtualTeaching">افزودن آموزش مجازی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_VirtualTeaching">ویرایش آموزش مجازی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_VirtualTeaching">حذف آموزش مجازی</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_VirtualTeaching">مشاهده آموزش مجازی</mat-checkbox>
+							
+                            <p>دسته بندی محصولات</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_ProductCategory">افزودن دسته بندی محصول</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_ProductCategory">ویرایش دسته بندی محصول</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_ProductCategory">حذف دسته بندی محصول</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_ProductCategory">مشاهده دسته بندی محصول</mat-checkbox>
+							
+                            <p>نویسندگان</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Writer">افزودن نویسنده</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Writer">ویرایش نویسنده</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Writer">حذف نویسنده</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Writer">مشاهده نویسنده</mat-checkbox>
+							
+                            <p>لینک های دانلود</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Link">افزودن لینک دانلود</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Link">ویرایش لینک دانلود</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Link">حذف لینک دانلود</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Link">مشاهده لینک دانلود</mat-checkbox>
+							
+                            <p>شابلون امتیازات</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_ScoreThemplate">افزودن شابلون امتیاز</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_ScoreThemplate">ویرایش شابلون امتیاز</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_ScoreThemplate">حذف شابلون امتیاز</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_ScoreThemplate">مشاهده شابلون امتیاز</mat-checkbox>
+							
+                            <p>امتیازات دانش آموزان</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_StudentScore">افزودن امتیاز دانش آموز</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_StudentScore">ویرایش امتیاز دانش آموز</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_StudentScore">حذف امتیاز دانش آموز</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_StudentScore">مشاهده امتیاز دانش آموز</mat-checkbox>
+							
+                            <p>لاگ ها</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Log">مشاهده لاگ ها</mat-checkbox>
+							
+							
+							<hr>
+
+														
+							<p>پست</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Post">افزودن پست</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Post">ویرایش پست</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Post">حذف پست</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Post">مشاهده پست</mat-checkbox>
+							
+							<p>نوع های پست</p>
+
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_feed">{{ getPostTypeString(1) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_post">{{ getPostTypeString(2) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_fadak">{{ getPostTypeString(3) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_amoozesh">{{ getPostTypeString(4) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_enzebati">{{ getPostTypeString(5) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_parvaresh">{{ getPostTypeString(6) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_mali">{{ getPostTypeString(7) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_it">{{ getPostTypeString(8) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_moshaver">{{ getPostTypeString(9) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_voroodBeSystem">{{ getPostTypeString(10) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_sabteNam">{{ getPostTypeString(11) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_mokatebat">{{ getPostTypeString(12) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_ghesmathayeSamane">{{ getPostTypeString(13) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_faq">{{ getPostTypeString(14) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_ehrazeHoviat">{{ getPostTypeString(15) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_sharayetSabteNam">{{ getPostTypeString(16) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_darkhastTajdidNazar">{{ getPostTypeString(17) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_enteghadVaPishnahad">{{ getPostTypeString(18) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_daneshAmoozan">{{ getPostTypeString(19) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_daneshAmookhtegan">{{ getPostTypeString(20) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_forsatHayeShoghli">{{ getPostTypeString(21) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_tamasBaTaha">{{ getPostTypeString(22) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_darbareTaha">{{ getPostTypeString(23) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_dabirKhaneBargozidegan">{{ getPostTypeString(24) }}</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [disabled]="!Role.add_Post" [(ngModel)]="Role.post_hedayatTahsil">{{ getPostTypeString(25) }}</mat-checkbox>
+
+														
+							<p>نظرات پست</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Comment">افزودن نطر پست</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Comment">ویرایش نظر پست</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Comment">حذف نظر پست</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Comment">مشاهده نظرات پست</mat-checkbox>
+
+							<p>اسلاید شو اصلی</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_MainSlideShow">افزودن اسلاید شو اصلی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_MainSlideShow">ویرایش اسلاید شو اصلی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_MainSlideShow">حذف اسلاید شو اصلی</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_MainSlideShow">مشاهده اسلاید شو اصلی</mat-checkbox>
+
+							<p>رویداد ها</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Schedule">افزودن رویداد</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Schedule">ویرایش رویداد</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Schedule">حذف رویداد</mat-checkbox>
+							<mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Schedule">مشاهده رویداد</mat-checkbox>
+
+							<p>تبلیغ ها</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Advertising">افزودن تبلیغ</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Advertising">ویرایش تبلیغ</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Advertising">حذف تبلیغ</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Advertising">مشاهده تبلیغ</mat-checkbox>
+                            
+							<p>گالری ها</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_PictureGallery">افزودن گالری</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_PictureGallery">ویرایش گالری</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_PictureGallery">حذف گالری</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_PictureGallery">مشاهده گالری</mat-checkbox>
+                            
+							<p>تصاویر</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Picture">افزودن تصویر</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Picture">ویرایش تصویر</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Picture">حذف تصویر</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Picture">مشاهده تصویر</mat-checkbox>
+                            
+							<p>دانش آموزان برتر</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_BestStudent">افزودن دانش آموزان برتر</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_BestStudent">ویرایش دانش آموزان برتر</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_BestStudent">حذف دانش آموزان برتر</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_BestStudent">مشاهده دانش آموزان برتر</mat-checkbox>
+                            
+                            
+                            <hr>
+                            
+                            <p> گزارشات نموداری </p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_ExamAnalize">مشاهده تحلیل آزمون ها</mat-checkbox>
+                            
+                            <p>پیام ها</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Notification">افزودن پیام</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Notification">ویرایش پیام</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Notification">حذف پیام</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Notification">مشاهده پیام</mat-checkbox>
+                            
+							
+                        </div>
+                        <div class="col-sm-6 b-r-r">
+                            <p>کاربران</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_User">افزودن کاربر</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_User">ویرایش کاربر</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_User">مشاهده کاربر</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_User">حذف کاربر</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.validation_User">تایید کاربر</mat-checkbox>
+
+                            <p>سطوح دسترسی</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Role">افزودن سطح دسترسی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Role">ویرایش سطح دسترسی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Role">مشاهده سطح دسترسی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Role">حذف سطح دسترسی</mat-checkbox>
+
+                            <p>نمون برگ سفارشی ها</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Category">افزودن نمون برگ سفارشی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Category">ویرایش نمون برگ سفارشی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Category">حذف نمون برگ سفارشی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Category">مشاهده نمون برگ سفارشی</mat-checkbox>
+
+                            <p>اطلاعات</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Item">افزودن اطلاعات</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Item">ویرایش اطلاعات</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Item">حذف اطلاعات</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Item">مشاهده اطلاعات</mat-checkbox>
+
+                            <p>فیلد ها</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Attribute">افزودن فیلد</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Attribute">ویرایش فیلد</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Attribute">حذف فیلد</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Attribute">مشاهده فیلد</mat-checkbox>
+
+                            <p>واحد ها</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Unit">افزودن واحد</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Unit">ویرایش واحد</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Unit">حذف واحد</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Unit">مشاهده واحد</mat-checkbox>
+
+                            <p>آموزشگاه ها</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_InsTitute">افزودن آموزشگاه</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_InsTitute">ویرایش آموزشگاه</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_InsTitute">حذف آموزشگاه</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_InsTitute">مشاهده آموزشگاه ها</mat-checkbox>
+
+                            <p>سال تحصیلی</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Yeareducation">افزودن سال تحصیلی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Yeareducation">ویرایش سال تحصیلی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Yeareducation">حذف سال تحصیلی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Yeareducation">مشاهده سالهای تحصیلی</mat-checkbox>
+
+                            <p>مقاطع تحصیلی</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Grade">افزودن پایه تحصیلی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Grade">ویرایش پایه تحصیلی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Grade">حذف پایه تحصیلی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Grade">مشاهده مقاطع تحصیلی</mat-checkbox>
+
+                            <p>کلاس و شعب</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Class">افزودن کلاس و شعب</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Class">ویرایش کلاس و شعب</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Class">حذف کلاس و شعب</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Class">مشاهده کلاس ها و شعب</mat-checkbox>
+
+                            <p>چارت سازمانی</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_OrgChart">افزودن چارت سازمانی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_OrgChart">ویرایش چارت سازمانی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_OrgChart">حذف چارت سازمانی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_OrgChart">مشاهده چارت های سازمانی</mat-checkbox>
+
+                            <p>بیمه</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Insurance">افزودن بیمه</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Insurance">ویرایش بیمه</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Insurance">حذف بیمه</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Insurance">مشاهده بیمه ها</mat-checkbox>
+
+                            <p>مدارک تحصیلی</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Education">افزودن مدرک تحصیلی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Education">ویرایش مدرک تحصیلی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Education">حذف مدرک تحصیلی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Education">مشاهده مدارک تحصیلی</mat-checkbox>
+
+                            <p>حکم های کارگزینی</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Salary">افزودن حکم کارگزینی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Salary">ویرایش حکم کارگزینی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Salary">حذف حکم کارگزینی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Salary">مشاهده حکم های کارگزینی</mat-checkbox>
+
+                            <p>پرسنل سازمانی</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_OrgPerson">افزودن پرسنل سازمانی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_OrgPerson">ویرایش پرسنل سازمانی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_OrgPerson">حذف پرسنل سازمانی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_OrgPerson">مشاهده پرسنل های سازمانی</mat-checkbox>
+
+                            <p>ایام هفته</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_TimeandDays">افزودن ایام هفته</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_TimeandDays">ویرایش ایام هفته</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_TimeandDays">حذف ایام هفته</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_TimeandDays">مشاهده ایام هفته</mat-checkbox>
+
+                            <p>برنامه زمانبندی</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_TimeSchedule">افزودن برنامه زمانبندی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_TimeSchedule">ویرایش برنامه زمانبندی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_TimeSchedule">حذف برنامه زمانبندی</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_TimeSchedule">مشاهده برنامه های زمانبندی</mat-checkbox>
+
+                            <p>دبیران</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Teacher">افزودن دبیر</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Teacher">ویرایش دبیر</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Teacher">حذف دبیر</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Teacher">مشاهده دبیران</mat-checkbox>
+
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_TeacherPassword">تغییر کلمه عبور دبیران</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_TeacherAllAccess">تغییر دسترسی ویژه دبیر</mat-checkbox>
+
+                            <p>دروس</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Course">افزودن درس</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Course">ویرایش درس</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Course">حذف درس</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Course">مشاهده دروس</mat-checkbox>
+
+                            <p>دانش آموزان</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Student">افزودن دانش آموز</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Student">ویرایش دانش آموز</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Student">حذف دانش آموز</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Student">مشاهده دانش آموزان</mat-checkbox>
+
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_StudentStudyRecord">مشاهده پرونده تحصیلی دانش آموزان</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_StudentWorkbook">مشاهده کارنامه دانش آموز</mat-checkbox>
+
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_StudentFinancialWidget">مشاهده ویجت مالی دانش آموز</mat-checkbox>
+
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_StudentPassword">تغییر کلمه عبور دانش آموز</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_StudentParentPassword">تغییر کلمه عبور والدین دانش آموز</mat-checkbox>
+
+                            
+                            <p>کارنامه ها</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Workbook">افزودن کارنامه</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Workbook">ویرایش کارنامه</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Workbook">حذف کارنامه</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Workbook">مشاهده کارنامه</mat-checkbox>
+
+                            <p>گروه بندی دانش آموزان</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_StudentType">افزودن گروه دانش آموز</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_StudentType">ویرایش گروه دانش آموز</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_StudentType">حذف گروه دانش آموز</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_StudentType">مشاهده گروهای دانش آموزان</mat-checkbox>
+
+
+                            <p> آزمون</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Exam">افزودن آزمون</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Exam">ویرایش آزمون</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Exam">حذف آزمون</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Exam">مشاهده آزمون ها</mat-checkbox>
+
+                            <p>نوع آزمون</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_ExamType">افزودن نوع آزمون</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_ExamType">ویرایش نوع آزمون</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_ExamType">حذف نوع آزمون</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_ExamType">مشاهده نوع آزمون</mat-checkbox>
+
+                            <p>ثبت نمرات</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_ExamScore">افزودن نمره</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_ExamScore">ویرایش نمره</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_ExamScore">حذف نمره</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_ExamScore">مشاهده نمرات</mat-checkbox>
+
+                            <p>سوالات</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_Question">افزودن سوال</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_Question">ویرایش سوال</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_Question">حذف سوال</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_Question">مشاهده سوالات</mat-checkbox>
+
+                            <p>گزینه های سوال</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.add_QuestionOption">افزودن گزینه سوال</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.edit_QuestionOption">ویرایش گزینه سوال</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.remove_QuestionOption">حذف گزینه سوال</mat-checkbox>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="Role.view_QuestionOption">مشاهده گزینه های سوالات</mat-checkbox>
+
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-12">
+                            <button mat-raised-button color="warn" style="margin: 5px;" routerLink="/dashboard/role">لغو</button>
+                            <button autofocus mat-raised-button color="primary" [disabled]="!fm1.valid" (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

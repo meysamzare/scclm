@@ -1,0 +1,27 @@
+<app-sidebar-user-info></app-sidebar-user-info>
+
+<bu-menu>
+
+    <bu-menu-label>
+        منو اصلی
+    </bu-menu-label>
+
+    <ul class="menu-list" style="min-width: 190px;">
+        <app-menu-item-parent>
+
+            <app-menu-item title="داشبورد" icon="home">
+                <app-menu-list-item link="/" [exact]="true" title="خانه" role="1"></app-menu-list-item>
+                <app-menu-list-item title="آموزش 2"></app-menu-list-item>
+            </app-menu-item>
+
+            <app-menu-item title="آموزش">
+                <app-menu-list-item link="/a" title="آموزش 1" role="1"></app-menu-list-item>
+                <app-menu-list-item title="آموزش 2"></app-menu-list-item>
+            </app-menu-item>
+
+            <app-menu-item title="اداری فرهنگی"></app-menu-item>
+
+        </app-menu-item-parent>
+    </ul>
+
+</bu-menu>

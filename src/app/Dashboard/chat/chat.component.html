@@ -1,0 +1,95 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+
+            <div class="ibox chat-view">
+
+                <div class="ibox-title">
+                    <small class="pull-right text-muted">آخرین پیام: {{ lastMessageDate }}</small> گفتگو ها
+                </div>
+
+                <div class="ibox-content">
+
+                    <div class="row">
+
+                        <div class="col-md-3">
+                            <div class="chat-users">
+                                <div class="users-list">
+
+                                    <div *ngIf="isLoading" class="sk-spinner sk-spinner-rotating-plane"></div>
+
+                                    <div style="cursor: pointer;" class="chat-user" matRipple *ngFor="let u of users"
+                                        (click)="refreshChats(u.id, u.username, true)"
+                                        [class.active]="activeUserId == u.id">
+                                        <img class="chat-avatar" *ngIf="u.picUrl" [src]="auth.getFileUrl(u.picUrl)">
+                                        <div class="chat-user-name">
+                                            {{ u.firstname + ' ' + u.lastname }}
+                                            &nbsp;
+                                            <span *ngIf="getUserUnReadMessagesInt(u.id) != 0 "
+                                                class="label label-warning-light float-right">{{ getUserUnReadMessagesInt(u.id) }}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="chat-discussion" (scroll)="onDivScroll($event)" id="chatcon"
+                                *ngIf="activeUserId != 0">
+
+                                <ng-container *ngFor="let ch of chats; let index = index;">
+                                    <div class="chat-message"
+                                        [ngClass]="{ 'left': ch.senderId == auth.getUser().id, 'right': ch.reciverId == auth.getUser().id }">
+                                        <!-- <img class="message-avatar"
+											[src]="auth.getUserProfilePic(ch.senderUser.profilePic)" alt=""> -->
+                                        <div class="message" matRipple
+                                            [ngStyle]="{ 'background-color': ch.senderId == auth.getUser().id ? '#c5e6df' : '' }">
+                                            <a class="message-author">
+                                                {{ ch.senderFullName }} </a>
+                                            <span class="message-date"> {{ ch.sendDateString }} </span>
+                                            <span class="message-content"
+                                                style="font-size: 17px; white-space: pre-line;" *ngIf="!ch.fileStatus">
+                                                {{ ch.text }}
+                                            </span>
+                                            <span class="message-content" *ngIf="ch.fileStatus">
+                                                Have File...
+                                            </span>
+                                        </div>
+                                    </div>
+                                </ng-container>
+
+                                <span *ngIf="chats.length == 0">هنوز پیامی تبادل نگردیده است</span>
+
+                            </div>
+                            <div class="chat-discussion" id="chatcon" *ngIf="activeUserId == 0">
+                                <span>لطفا کاربری را برای نمایش گفتگو ها انتخاب نمایید</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <form #fm1="ngForm" (ngSubmit)="clearDraft()">
+                        <div class="row" style="text-align: center;">
+                            <div class="col-lg-12">
+                                <div class="form-group" (keydown.control.enter)="sendMessage()">
+                                    <textarea [disabled]="activeUserId == 0" rows="4" class="form-control" id="textmsg"
+                                        name="text" [(ngModel)]="chat.text" required
+                                        placeholder="متن پیام خود را وارد کنید (Ctrl+Enter برای ارسال پیام)"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row margin-top-10">
+                            <div class="col-lg-12">
+                                <div class="form-group" style="padding: 5px;">
+                                    <button type="submit" [disabled]="activeUserId == 0 || chat.text.length == 0"
+                                        (click)="sendMessage()" mat-stroked-button color="primary"
+                                        class="btn-block">ارسال</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

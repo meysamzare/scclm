@@ -1,0 +1,176 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <form #fm1="ngForm" id="fm11">
+                    <div class="row">
+                        <div class="col-sm-6 b-r">
+
+                            <div class="form-group">
+                                <label>انتخاب آزمون</label>
+                                <ng-select [disabled]="isEdit" (change)="onExamSelect(u.selectedValues[0])" #u
+                                    #examselect="ngModel" name="exam" [(ngModel)]="examscore.examId" required>
+                                    <ng-option *ngFor="let i of exams" [value]="i.id">{{i.name}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="examselect.hasError('required')">
+                                    انتخاب آزمون الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب دانش آموز</label>
+                                <ng-select [disabled]="isEdit" #studentselect="ngModel" name="student"
+                                    [(ngModel)]="examscore.studentId" required>
+                                    <ng-option *ngFor="let i of students" [value]="i.id">
+                                        {{i.name + ' ' + i.lastName}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-hint> با کلید های کنترل و جهت راست یا چپ میتوانید بین دانش آموزان جا به جا شوید
+                                </mat-hint>
+                                <mat-error *ngIf="studentselect.hasError('required')">
+                                    انتخاب دانش آموز الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>ملاک نمره آزمون</label>
+                                <input type="number" required min="0" readonly #topScore="ngModel" name="topScore"
+                                    [(ngModel)]="examscore.topScore" placeholder="ملاک نمره" class="form-control">
+                                <div *ngIf="(topScore.touched || topScore.dirty) &&
+                                        topScore.invalid">
+                                    <p *ngIf="topScore.hasError('required')" class="error">
+                                        وارد کردن ملاک نمره آزمون الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>تعداد سوالات آزمون</label>
+                                <input type="number" required min="0" readonly #number="ngModel" name="number"
+                                    [(ngModel)]="examscore.numberQ" placeholder="تعداد سوالات آزمون"
+                                    class="form-control">
+                                <div *ngIf="(number.touched || number.dirty) &&
+                                        number.invalid">
+                                    <p *ngIf="number.hasError('required')" class="error">
+                                        وارد کردن تعداد سوالات آزمون الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6 ">
+
+
+                            <div class="form-group">
+                                <label>تعداد سوالات درست</label>
+                                <input type="number" min="0" [disabled]="!exam && !isEdit" (keyup)="getBlankAnswers()"
+                                    tabindex="3" (keydown.enter)="moveNextTabIndex($event)" id="trueAnswerinput"
+                                    #trueAnswer="ngModel" name="trueAnswer" [(ngModel)]="examscore.trueAnswer"
+                                    placeholder="تعداد سوالات درست" class="form-control">
+                                <div *ngIf="(trueAnswer.touched || trueAnswer.dirty) &&
+                                trueAnswer.invalid">
+                                    <p *ngIf="trueAnswer.hasError('required')" class="error">
+                                        وارد کردن تعداد سوالات درست الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>تعداد سوالات غلط</label>
+                                <input type="number" min="0" [disabled]="!exam && !isEdit" tabindex="4"
+                                    (keyup)="getBlankAnswers()" (keydown.enter)="moveNextTabIndex($event)"
+                                    #falseAnswer="ngModel" name="falseAnswer" [(ngModel)]="examscore.falseAnswer"
+                                    placeholder="تعداد سوالات غلط" class="form-control">
+                                <div *ngIf="(falseAnswer.touched || falseAnswer.dirty) &&
+                                falseAnswer.invalid">
+                                    <p *ngIf="falseAnswer.hasError('required')" class="error">
+                                        وارد کردن تعداد سوالات غلط الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>تعداد سوالات بی پاسخ</label>
+                                <input type="number" min="0" [disabled]="!exam && !isEdit" tabindex="5"
+                                    (keydown.enter)="moveNextTabIndex($event)" #blankAnswer="ngModel" name="blankAnswer"
+                                    [(ngModel)]="examscore.blankAnswer" placeholder="تعداد سوالات بی پاسخ"
+                                    class="form-control">
+                                <div *ngIf="(blankAnswer.touched || blankAnswer.dirty) && blankAnswer.invalid">
+                                    <p *ngIf="blankAnswer.hasError('required')" class="error">
+                                        وارد کردن تعداد سوالات بی پاسخ الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>وضعیت دانش آموز</label>
+                                <br>
+                                <mat-button-toggle-group [disabled]="!exam && !isEdit" name="state"
+                                    [(ngModel)]="examscore.state">
+                                    <mat-button-toggle [value]="0">حاضر</mat-button-toggle>
+                                    <mat-button-toggle [value]="1">غائب و موجه</mat-button-toggle>
+                                    <mat-button-toggle [value]="2">غائب و غیرموجه</mat-button-toggle>
+                                </mat-button-toggle-group>
+                            </div>
+
+                            <p *ngIf="!checkForTrueAnswers()" class="error">
+                                مجموع تعداد سوالات وارد شده بیش از تعداد سوالات آزمون است
+                            </p>
+
+                            <h4 *ngIf="!exam && !isEdit" class="error">
+                                لطفا آزمون مورد نظر را انتخاب نمایید
+                            </h4>
+
+
+                        </div>
+                        <br>
+                        <br>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div class="form-group">
+                                <label>نمره</label>
+                                <input style="font-size: 16px;" min="0" [max]="examscore.topScore" id="scoreTxt"
+                                    [disabled]="(!exam && !isEdit) || examscore.state != 0" (keydown.enter)="sts()"
+                                    type="number" (input)="checkForScore(score.value)" tabindex="6" required
+                                    #score="ngModel" name="score" [(ngModel)]="examscore.score"
+                                    placeholder="نمره دانش آموز '{{ getStudentNameById(studentselect.value) }}' برای '{{ getSelectedExamName() }}'"
+                                    class="form-control">
+                                <br>
+                                <mat-hint style="padding: 10px;">نمره با دو رقم اعشار (اعشار را با "." جدا کنید)
+                                </mat-hint>
+                                <div *ngIf="(score.touched || score.dirty) && (score.invalid || !isScoreValid)">
+                                    <p *ngIf="score.hasError('required')" class="error">
+                                        وارد کردن نمره الزامی است
+                                    </p>
+                                    <p *ngIf="!isScoreValid" class="error">
+                                        لطفا در وارد نمودن نمره دقت فرمایید
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <a mat-raised-button color="warn" style="margin: 5px;"
+                                routerLink="/dashboard/examscore">لغو</a>
+                            <button type="button" matTooltip=" ctrl + enter " autofocus mat-raised-button
+                                color="primary"
+                                [disabled]="!fm1.valid || (examscore.state == 0 && examscore.score > examscore.topScore) || !checkForTrueAnswers()"
+                                (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

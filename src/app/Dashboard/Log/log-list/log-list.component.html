@@ -1,0 +1,181 @@
+<span class="fa fa-refresh fa-spin spinner" *ngIf="isLoading"></span>
+<div class="row animated fadeInRight">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>لیست {{ PAGE_TITLES }}</h5>
+                <div class="ibox-tools">
+                    <a (click)="refreshDataSource()" matmatTooltip="بارگذاری مجدد">
+                        <i class="fa fa-refresh"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+
+                <div style="text-align: center;" *ngIf="!haveAnyData() && !isLoading">
+                    <b>موردی یافت نشد</b>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>نوع</label>
+                            <ng-select name="event" [(ngModel)]="selectedEvent" (change)="refreshDataSource()">
+                                <ng-option [value]="'Add'">افزودن</ng-option>
+                                <ng-option [value]="'Edit'">ویرایش</ng-option>
+                                <ng-option [value]="'Delete'">حذف</ng-option>
+                                <ng-option [value]="'View'">مشاهده</ng-option>
+                                <ng-option [value]="'System Crash Report'">خطای داخلی سیستم</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>منبع</label>
+                            <ng-select name="source" [(ngModel)]="selectedLogSource" (change)="refreshDataSource()">
+                                <ng-option [value]="'dashboard'">پرتال آموزشی</ng-option>
+                                <ng-option [value]="'TMA'">نرم افزار دبیران</ng-option>
+                                <ng-option [value]="'PMA'">نرم افزار والدین</ng-option>
+                                <ng-option [value]="'Index'">ایندکس</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>نوع کاربر</label>
+                            <ng-select name="agent" [(ngModel)]="selectedAgentType" (change)="refreshDataSource()">
+                                <ng-option [value]="'User'">کاربر پرتال</ng-option>
+                                <ng-option [value]="'Teacher'">دبیر</ng-option>
+                                <ng-option [value]="'StudentParent'">والدین دانش آموز</ng-option>
+                                <ng-option [value]="'Other'">افراد متفرقه (ایندکس)</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div dir="rtl">
+                        <input type="text" id="text1" (input)="applyFilter($event.target.value)" [(ngModel)]="txtSearch"
+                            placeholder="جستجو" class="form-control">
+                    </div>
+                    <br>
+                    <div class="example-container mat-elevation-z8">
+                        <div class="example-loading-shade" *ngIf="isLoadingResults">
+                            <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+                        </div>
+                        <div class="mat-elevation-z8">
+                            <table style="width: 1200px;" mat-table [dataSource]="dataSource" matSort>
+
+                                <!-- <ng-container matColumnDef="id">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>&nbsp; ردیف </th>
+                                    <td mat-cell *matCellDef="let row"> &nbsp; {{row.id}} </td>
+                                </ng-container> -->
+
+                                <ng-container matColumnDef="event">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> نوع </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <button mat-icon-button>
+                                            <mat-icon [matTooltip]="'افزودن'" *ngIf="row.event == 'Add'">library_add
+                                            </mat-icon>
+                                            <mat-icon [matTooltip]="'ویرایش'" *ngIf="row.event == 'Edit'">edit</mat-icon>
+                                            <mat-icon [matTooltip]="'حذف'" *ngIf="row.event == 'Delete'">delete_outline
+                                            </mat-icon>
+                                            <mat-icon [matTooltip]="'مشاهده'" *ngIf="row.event == 'View'">remove_red_eye
+                                            </mat-icon>
+                                            <mat-icon style="color: red;" [matTooltip]="'خطای داخلی سیستم'"
+                                                *ngIf="row.event == 'System Crash Report'">
+                                                error
+                                            </mat-icon>
+                                        </button>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="logSource">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> منبع </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <button mat-icon-button>
+                                            <mat-icon [matTooltip]="'پرتال آموزشی'" *ngIf="row.logSource == 'dashboard'">
+                                                desktop_mac
+                                            </mat-icon>
+                                            <mat-icon [matTooltip]="'نرم افزار دبیران'" *ngIf="row.logSource == 'TMA'">
+                                                phone_iphone
+                                            </mat-icon>
+                                            <mat-icon [matTooltip]="'نرم افزار والدین'" *ngIf="row.logSource == 'PMA'">
+                                                tablet_mac
+                                            </mat-icon>
+                                            <mat-icon [matTooltip]="'ایندکس'" *ngIf="row.logSource == 'Index'">cast
+                                            </mat-icon>
+                                            <mat-icon *ngIf="row.logSource == 'Api' || row.logSource == ''">cloud
+                                            </mat-icon>
+                                        </button>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="agentType">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> نوع کاربر </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <button mat-icon-button>
+                                            <mat-icon [matTooltip]="'کاربر پرتال'" *ngIf="row.agnetType == 'User'">
+                                                perm_identity
+                                            </mat-icon>
+                                            <mat-icon [matTooltip]="'دبیر'" *ngIf="row.agnetType == 'Teacher'">
+                                                record_voice_over
+                                            </mat-icon>
+                                            <mat-icon [matTooltip]="'والدین دانش آموز'"
+                                                *ngIf="row.agnetType == 'StudentParent'">wc
+                                            </mat-icon>
+                                            <mat-icon [matTooltip]="'افراد متفرقه (ایندکس)'"
+                                                *ngIf="row.agnetType == 'Other'">
+                                                emoji_people</mat-icon>
+                                            <mat-icon *ngIf="row.agnetType == 'Api' || row.agnetType == '---'">cloud
+                                            </mat-icon>
+                                        </button>
+                                    </td>
+                                </ng-container>
+
+
+                                <ng-container matColumnDef="agent">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> کاربر </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <b>{{ row.agentName + ' (' + row.agentId + ') ' }}</b>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="ip">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> آدرس آیپی </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        {{ row.ip }}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="date">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> تاریخ </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        {{ row.dateString }}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="desc">
+                                    <th mat-header-cell *matHeaderCellDef> توضیحات لاگ </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <button mat-flat-button color="primary"
+                                            (click)="viewLogDesc(row.id)">مشاهده</button>
+                                    </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+                                </tr>
+                            </table>
+
+                            <div dir="ltr">
+                                <mat-paginator [length]="itemLength" [pageSizeOptions]="[5, 10, 15, 20, 25]"
+                                    (page)="resetSelection($event)" showFirstLastButtons></mat-paginator>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

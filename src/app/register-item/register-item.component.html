@@ -1,0 +1,61 @@
+<body class="gray-bg">
+    <div class="middle-box text-center loginscreen ">
+        <div class="row">
+            <h4 style="color: green">
+                {{ cat.desc }}
+            </h4>
+            <br>
+            <form [formGroup]="group">
+                <div class="form-group" *ngFor="let i of attrs; let r = index">
+                    <label *ngIf="i.attrTypeInt != 4">{{i.title}}</label>
+
+                    <input *ngIf="i.attrTypeInt == 1" (blur)="i.isUniq ? checkForUniqValue($event, i.id) : null" [formControlName]="'p' + r" required type="text" class="form-control" placeholder="{{i.title}}" [matTooltip]="i.desc" (change)="setItemAttr($event, i.id)" />
+
+                    <input *ngIf="i.attrTypeInt == 2" (blur)="i.isUniq ? checkForUniqValue($event, i.id) : null" [formControlName]="'p' + r" required type="number" class="form-control" placeholder="{{i.title}}" [matTooltip]="i.desc" (change)="setItemAttr($event, i.id)" />
+
+                    <mat-form-field class="example-full-width" *ngIf="i.attrTypeInt == 3">
+                        <input required matInput required [formControlName]="'p' + r" readonly (click)="openc(picker)" [matTooltip]="i.desc" (dateChange)="setItemAttr($event, i.id)" [matDatepicker]="picker" placeholder="{{i.title}}">
+                        <mat-datepicker-toggle style="font-size: 25px;" matTooltip="باز کردن تقویم" matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker touchUi="true"></mat-datepicker>
+                    </mat-form-field>
+
+                    <mat-checkbox *ngIf="i.attrTypeInt == 4" [formControlName]="'p' + r" [matTooltip]="i.desc" (change)="setItemAttr($event, i.id)">{{i.title}}</mat-checkbox>
+
+                    <input *ngIf="i.attrTypeInt == 5" [formControlName]="'p' + r" required class="form-control" type="password" (change)="setItemAttr($event, i.id)" placeholder="{{i.title}}" [matTooltip]="i.desc" />
+
+                    <mat-form-field *ngIf="i.attrTypeInt == 6">
+                        <mat-label>{{i.title}}</mat-label>
+                        <mat-select style="direction: ltr" required [formControlName]="'p' + r" (valueChange)="setItemAttrforselect($event, i.id)">
+                            <mat-option *ngFor="let v of getShiftedItem(i.values)" [value]="v">{{v}}</mat-option>
+                        </mat-select>
+                        <mat-hint>{{i.desc}}</mat-hint>
+                    </mat-form-field>
+
+                    <input type="file" *ngIf="i.attrTypeInt == 7" required [matTooltip]="i.desc" [formControlName]="'p' + r" accept="image/x-png,image/jpeg" class="form-control" (change)="setItemAttrforPic($event, i.id, 'pic')" />
+
+                    <input type="file" *ngIf="i.attrTypeInt == 8" required [matTooltip]="i.desc" [formControlName]="'p' + r" class="form-control" (change)="setItemAttrforPic($event, i.id, 'file')" />
+
+                    <textarea *ngIf="i.attrTypeInt == 9" [formControlName]="'p' + r" required type="text" class="form-control" placeholder="{{i.title}}" [matTooltip]="i.desc" (change)="setItemAttr($event, i.id)"></textarea>
+
+
+
+                    <p *ngIf="group.get('p'+r).hasError('required') && i.attrTypeInt != 4 && (group.get('p'+r).touched || group.get('p'+r).dirty)  && group.get('p'+r).invalid" class="error">
+                        وارد کردن {{i.title}} الزامی است
+                    </p>
+
+                    <p *ngIf="isAtrrUniqExsist(i.id)" class="error">
+                        این {{i.title}} قبلا وارد شده است
+                    </p>
+
+                    <p *ngIf="isFileExist(i.id)" class="error">
+                        وارد کردن {{i.title}} الزامی است
+                    </p>
+                </div>
+                <div class="col-md-12">
+                    <a mat-raised-button color="warn" style="margin: 5px;" routerLink="/">لغو</a>
+                    <button type="button" autofocus mat-raised-button color="primary" [disabled]="!group.valid || attrUniqList.length != 0 || reqfilesAttrint.length != 0 || disableButton" (click)="sts()">ثبت نام</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>

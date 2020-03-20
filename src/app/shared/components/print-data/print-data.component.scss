@@ -1,0 +1,31 @@
+@media print {
+    body{
+        width: 21cm;
+        height: 29.7cm;
+        margin: 30mm 45mm 30mm 45mm;
+
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #table {
+        max-width: 2480px;
+        width:100%;
+    }
+    
+    #table td {
+        width: auto;
+        overflow: hidden;
+        word-wrap: break-word;
+    }
+
+    .ng-progress-bar {
+        display: none;
+    }
+
+    app-root > * { display: none; }
+
+    app-root app-print-data {
+        display: block;
+    }
+}

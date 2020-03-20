@@ -1,0 +1,64 @@
+<body class="gray-bg">
+
+    <div class="loginColumns animated fadeInDown">
+        <div class="row">
+
+            <div class="col-md-6">
+                <h2 class="font-bold">پرتال مجتمع آموزشی طاها</h2>
+                <app-login-messages [Type]="5"></app-login-messages>
+            </div>
+            <div class="col-md-6">
+                <div class="ibox-content">
+                    <form class="m-t" #fm1="ngForm">
+                        <div class="form-group">
+                            <input type="text" required name="username" [(ngModel)]="user.username" #username="ngModel"
+                                class="form-control" placeholder="نام کاربری" />
+                            <p *ngIf="username.hasError('required') && (username.touched || username.dirty)  && username.invalid"
+                                class="error">
+                                وارد کردن نام کاربری الزامی است
+                            </p>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" required name="password" [(ngModel)]="user.password"
+                                #password="ngModel" class="form-control" placeholder="کلمه عبور" />
+                            <p *ngIf="password.hasError('required') && (password.touched || password.dirty)  && password.invalid"
+                                class="error">
+                                وارد کردن رمز عبور الزامی است
+                            </p>
+                        </div>
+                        <div class="form-group">
+                            <ngx-invisible-recaptcha *ngIf="auth.showRecaptcha" [hl]="'fa'" #captchaElem
+                                [siteKey]="auth.dashboardRecapchaSiteKey">
+                            </ngx-invisible-recaptcha>
+                        </div>
+                        <button (click)="Login()" type="submit" [disabled]="!fm1.valid"
+                            class="btn btn-primary block full-width m-b">
+                            ورود
+                        </button>
+                        <button routerLink="/login-student" class="btn btn-info block full-width m-b">
+                            ورود دانش آموزان
+                        </button>
+                        <button (click)="back()" class="btn btn-warning block full-width m-b">
+                            بازگشت به صفحه اصلی
+                        </button>
+
+                        <a><small>رمز عبور خود را فراموش کرده اید؟</small></a>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row margin-top-10">
+            <!-- <div class="col-md-6">
+                طراحی و توسعه یافته توسط میثم زارع
+            </div> -->
+            <div class="col-md-12 text-center">
+                <b>طراحی و توسعه : شرکت نو آوران هوشمند سیناپس</b>
+
+                <p style="font-family: Arial, Helvetica, sans-serif !important; margin-top: 5px;"> Version: {{ auth.DASHBOARD_VERSION }}</p>
+            </div>
+        </div>
+    </div>
+
+</body>

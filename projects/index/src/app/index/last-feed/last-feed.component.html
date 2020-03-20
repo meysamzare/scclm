@@ -1,0 +1,10 @@
+<div *ngIf="lastFeeds.length != 0" class="widget-suggestion widget card" style="padding:0 0 15px;border-color: #88070b">
+	<header class="card-header" style="color: white;background-color:#88070b">
+		<h3 class="card-title" style="padding: 10px"> <i class="fa fa-book"></i> آخرین اخبار</h3>
+	</header>
+	<ng-container *ngFor="let i of lastFeeds">
+		<div style="margin-bottom: 15px; padding: 15px;">
+			<a routerLink="/post/{{i.id}}/{{i.url}}">{{i.title}}</a>
+		</div>
+	</ng-container>
+</div>

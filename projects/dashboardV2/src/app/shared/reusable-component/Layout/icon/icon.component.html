@@ -1,0 +1,8 @@
+<ng-container *ngIf="type == 'fa'">
+    <span class="icon has-text-{{ color }}">
+        <i class="fas fa-{{ icon }}"></i>
+    </span>
+</ng-container>
+<ng-container *ngIf="type == 'mat'">
+    <mat-icon>{{ icon }}</mat-icon>
+</ng-container>

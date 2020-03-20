@@ -1,0 +1,24 @@
+@font-face {
+    font-family: iran;
+    font-style: normal;
+    font-weight: 300;
+    src: url('fonts/IRANSansWeb(FaNum)_Light.eot');
+    src: url('fonts/IRANSansWeb(FaNum)_Light.eot?#iefix') format('embedded-opentype'), /* IE6-8 */
+    url('fonts/IRANSansWeb(FaNum)_Light.woff2') format('woff2'), /* FF39+,Chrome36+, Opera24+*/
+    url('fonts/IRANSansWeb(FaNum)_Light.woff') format('woff'), /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+    url('fonts/IRANSansWeb(FaNum)_Light.ttf') format('truetype');
+}
+
+
+/* mat-icon material-icons */
+
+*:not(.fa):not(.icon):not(.ico):not(.mat-icon):not(.material-icons):not(.glyphicon):not(.now-ui-icons) {
+    font-family: iran !important;
+    -webkit-touch-callout: none; 
+    -webkit-user-select: none; 
+     -khtml-user-select: none; 
+       -moz-user-select: none; 
+        -ms-user-select: none; 
+            user-select: none; 
+                                 
+}

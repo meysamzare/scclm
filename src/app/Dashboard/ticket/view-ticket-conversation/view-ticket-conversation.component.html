@@ -1,0 +1,206 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+
+
+                <div class="row" *ngIf="!isNew">
+                    <div class="col-lg-12">
+                        <div>
+                            <button mat-icon-button routerLink="/dashboard/ticket/conversations">
+                                <mat-icon>arrow_forward</mat-icon>
+                            </button>
+                            <button class="btn btn-block" [class.btn-danger]="Ticket.state == 0 || Ticket.state == 2"
+                                [class.btn-success]="Ticket.state == 1"
+                                (click)="changeTicketState(Ticket.state == 1 ? 0 : 1)">
+                                {{ (Ticket.state == 0 || Ticket.state == 2) ? 'بستن مکاتبه' : 'باز کردن مکاتبه' }}
+                            </button>
+                        </div>
+                        <div class="margin-top-10">
+                            <p>موضوع : <label>{{ Ticket.subject }}</label></p>
+                            <p>وضعیت : <label>{{ getTicketStateString() }}</label></p>
+                            <p>فوریت : <label>{{ getTicketOrderString() }}</label></p>
+                            <p>ارسال کننده : <label>{{ getSenderNameAndType() }}</label></p>
+                            <p>دریافت کننده : <label>{{ getReciverNameAndType() }}</label></p>
+                        </div>
+                    </div>
+                </div>
+
+                <mat-accordion>
+                    <mat-expansion-panel [expanded]="isNew" [disabled]="canUserRelpay() == false || Ticket.state == 1">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{ isNew ? 'مکاتبه جدید' : 'پاسخ' }}
+                            </mat-panel-title>
+                            <mat-panel-description></mat-panel-description>
+                        </mat-expansion-panel-header>
+
+                        <form #fm1="ngForm">
+
+                            <div *ngIf="isNew">
+
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="row">
+                                            <div class="col-lg-8">
+                                                <label>انتخاب گیرنده از لیست : </label>
+                                                <mat-radio-group style="margin-right: 5px;" name="type"
+                                                    [(ngModel)]="reciverType">
+                                                    <mat-radio-button [value]="0">دانش آموزان</mat-radio-button>
+                                                    <mat-radio-button [value]="1">اولیای دانش آموزان</mat-radio-button>
+                                                    <mat-radio-button [value]="2">کاربران</mat-radio-button>
+                                                    <mat-radio-button [value]="3">دبیران</mat-radio-button>
+                                                </mat-radio-group>
+                                            </div>
+
+                                            <div class="col-lg-4">
+                                                <button (click)="openSelectionModal()"
+                                                    class="btn btn-primary btn-block">+ انتخاب گیرندگان</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="row" *ngIf="recivers.length != 0">
+                                            <div class="col-lg-12 al-center">
+                                                <mat-chip-list>
+                                                    <mat-chip *ngFor="let i of recivers" [selectable]="true"
+                                                        [removable]="true" (removed)="removeReciver(i)">
+                                                        {{i.reciverFullName}} &nbsp;
+                                                        <mat-icon matChipRemove>cancel</mat-icon>
+                                                    </mat-chip>
+                                                </mat-chip-list>
+                                            </div>
+                                        </div>
+                                        <mat-error *ngIf="recivers.length == 0">
+                                            انتخاب گیرنده الزامی است
+                                        </mat-error>
+                                    </div>
+                                </div>
+                                <br>
+
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <div class="form-group">
+                                            <label>موضوع</label>
+                                            <input type="text" required #subject="ngModel" name="subject"
+                                                [(ngModel)]="Ticket.subject" placeholder="موضوع" class="form-control">
+                                            <div *ngIf="(subject.touched || subject.dirty) && subject.invalid">
+                                                <p *ngIf="subject.hasError('required')" class="error">
+                                                    وارد کردن موضوع الزامی است
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4"
+                                        style="text-align: center; margin-top: 12px; font-size: 12px; font-weight: bold;">
+                                        <div class="form-group" dir="rtl">
+                                            <mat-button-toggle-group name="order" #order="ngModel"
+                                                [(ngModel)]="Ticket.order" required>
+                                                <mat-button-toggle *ngFor="let i of [0,1,2,3,4]" [value]="i">
+                                                    {{ getOrderString(i) }}
+                                                </mat-button-toggle>
+                                            </mat-button-toggle-group>
+                                            <mat-error *ngIf="order.hasError('required')">
+                                                انتخاب فوریت الزامی است
+                                            </mat-error>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <br>
+
+                            <div class="row" style="margin-top: 10px;">
+                                <div class="col-lg-12">
+                                    <!-- <textarea class="form-control" required name="content" placeholder="متن" rows="5"
+                                        [(ngModel)]="Conversation.content"></textarea> -->
+
+                                    <ckeditor name="content" [editor]="Editor" required placeholder="متن"
+                                        [(ngModel)]="Conversation.content" [config]="config">
+                                    </ckeditor>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 10px;">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label>فایل پیوست</label>
+                                        <br>
+                                        <button (click)="removeFile()" [disabled]="Conversation.fileData.length == 0"
+                                            mat-raised-button> حذف فایل </button>
+
+                                        <ngx-dropzone #d1 [disabled]="Conversation.fileData.length != 0"
+                                            (filesRejected)="removeFile()" (filesAdded)="setFile($event)"
+                                            [multiple]="false" [showPreviews]="true"
+                                            [label]="'فایل خود را اینجا رها کنید یا کلیک کنید'">
+                                        </ngx-dropzone>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <a mat-raised-button color="warn" style="margin: 5px;"
+                                        (click)="goBack()">انصراف</a>
+
+                                    <button type="submit" mat-raised-button color="primary" (click)="sts()"
+                                        [disabled]="fm1.invalid || (isNew && recivers.length == 0)">ارسال</button>
+                                </div>
+                            </div>
+
+                            <div class="row" *ngIf="isSending">
+                                <div class="col-lg-12">
+                                    <progressbar [animate]="true" [max]="100" [value]="precentSended" [striped]="true">
+                                        <b>{{ sendedCount }} / {{ allSendingCount }}</b>
+                                    </progressbar>
+                                </div>
+                            </div>
+
+
+                        </form>
+
+                    </mat-expansion-panel>
+                </mat-accordion>
+
+                <ng-container *ngFor="let i of conversations">
+
+                    <div class="row margin-top-10">
+                        <div class="col-lg-12">
+                            <div class="panel" [class.panel-default]="!i.isSender" [class.panel-primary]="i.isSender">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-lg-8" style="text-align: right">
+                                            <small class="margin-left-5">{{ i.dateString }}</small>
+                                            <label>{{ getNameAndTypeByConversation(i) }}</label>
+                                        </div>
+                                        <div class="col-lg-4" style="text-align: left;"
+                                            *ngIf="detectIsUserSender() == i.isSender">
+                                            <label [ngStyle]="{ 'color' : i.isSeen ? 'greenyellow' : 'darkred' }">
+                                                {{ i.isSeen ? 'خوانده شده' : 'خوانده نشده' }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-body" style="white-space: pre-wrap;" [innerHTML]="i.trustedContent">
+                                </div>
+                                <div class="panel-footer" *ngIf="i.fileUrl">
+                                    <label>فایل ضمیمه</label>
+
+                                    <a class="margin-right-5" target="_blank"
+                                        [href]="auth.getFileUrl(i.fileUrl)">دانلود</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </ng-container>
+
+
+            </div>
+        </div>
+    </div>
+</div>

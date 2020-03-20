@@ -1,0 +1,114 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <form #fm1="ngForm" id="fm11">
+                        <div class="col-sm-6 b-r">
+
+                            <div class="form-group">
+                                <label>شماره فیش / شماره پرداخت / شماره چک</label>
+                                <input type="text" required #refNum="ngModel" name="refNum"
+                                    [(ngModel)]="stdpayment.refNum" placeholder="شماره فیش / شماره پرداخت / شماره چک"
+                                    class="form-control">
+                                <div *ngIf="(refNum.touched || refNum.dirty) && refNum.invalid">
+                                    <p *ngIf="refNum.hasError('required')" class="error">
+                                        وارد کردن شماره فیش / شماره پرداخت / شماره چک الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>مبلغ پرداخت</label>
+                                <input type="text" required #price="ngModel" name="price" [(ngModel)]="stdpayment.price"
+                                    placeholder="قیمت پرداخت" class="form-control">
+                                <div *ngIf="(price.touched || price.dirty) && price.invalid">
+                                    <p *ngIf="price.hasError('required')" class="error">
+                                        وارد کردن قیمت پرداخت الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>حساب</label>
+                                <input type="text" #hesab="ngModel" name="hesab" [(ngModel)]="stdpayment.hesab"
+                                    placeholder="حساب" class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <label>بانک</label>
+                                <input type="text" #bank="ngModel" name="bank" [(ngModel)]="stdpayment.bank"
+                                    placeholder="بانک" class="form-control">
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>شعبه</label>
+                                <input type="text" #shobe="ngModel" name="shobe" [(ngModel)]="stdpayment.shobe"
+                                    placeholder="شعبه" class="form-control">
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6">
+
+
+                            <div class="form-group">
+                                <label>انتخاب نوع پرداخت</label>
+
+                                <ng-select style="direction: ltr" #paymentTypeId="ngModel" name="paymentTyp"
+                                    [(ngModel)]="stdpayment.paymentTypeId" required>
+                                    <ng-option *ngFor="let i of paymentTypes" [value]="i.id">{{i.title}}</ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="paymentTypeId.hasError('required')">
+                                    انتخاب نوع پرداخت الزامی است
+                                </mat-error>
+
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>انتخاب دانش آموز</label>
+
+                                <ng-select style="direction: ltr" #std="ngModel" name="std"
+                                    [(ngModel)]="stdpayment.studentId" required>
+                                    <ng-option *ngFor="let i of students" [value]="i.id">{{i.name}}</ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="std.hasError('required')">
+                                    انتخاب دانش آموز الزامی است
+                                </mat-error>
+
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>انتخاب قرارداد</label>
+
+                                <ng-select style="direction: ltr" #contractId="ngModel" name="contract"
+                                    [(ngModel)]="stdpayment.contractId" required>
+                                    <ng-option *ngFor="let i of contracts" [value]="i.id">{{i.title}}</ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="contractId.hasError('required')">
+                                    انتخاب قرارداد الزامی است
+                                </mat-error>
+
+                            </div>
+
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-12">
+                            <a mat-raised-button color="warn" style="margin:
+                                5px;" routerLink="/dashboard/stdpayment">لغو</a>
+                            <button type="submit" mat-raised-button color="primary" [disabled]="!fm1.valid"
+                                (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

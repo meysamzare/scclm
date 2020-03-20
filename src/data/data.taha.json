@@ -1,0 +1,17 @@
+{
+    "apiUrl": "https://api.taha.sch.ir/",
+    "dashboardUrl": "https://portal.taha.sch.ir/",
+    "indexUrl": "https://d1.taha.sch.ir/",
+    "parentMobileAppUrl": "https://taha.sch.ir/apk1/mabna.apk",
+    "teacherMobileAppUrl": "https://mobile.taha.sch.ir/",
+    "showRecaptcha": false,
+    
+    "dashboardRecapchaSiteKey": "6LecS6wUAAAAACsPJz0urUJQixobhLkupEU4fgV5",
+    "dashboardRecapchaSecretKey": "6LecS6wUAAAAAIOgrk7YkAoxvyELcMaic0_kaUUi",
+    
+    "pushNotificationPublicKeyPMA": "BJE5ulTwB9r9FUNm9REgPKEmNdxF_N6mgQgY3hr-Hr5nFqsN2xqTFnAEHjXjXsVnrk7onGRRG--RWTAkD1mu4oo",
+    "pushNotificationPrivateKeyPMA": "yxt5g-x_fPfB-hNmFlDD95kfNBiSciMK3xcPniQ8K6Q",
+    
+    "pushNotificationPublicKeyTMA": "BJE5ulTwB9r9FUNm9REgPKEmNdxF_N6mgQgY3hr-Hr5nFqsN2xqTFnAEHjXjXsVnrk7onGRRG--RWTAkD1mu4oo",
+    "pushNotificationPrivateKeyTMA": "yxt5g-x_fPfB-hNmFlDD95kfNBiSciMK3xcPniQ8K6Q"
+}

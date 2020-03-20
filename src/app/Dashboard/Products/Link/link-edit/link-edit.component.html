@@ -1,0 +1,138 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <form #fm1="ngForm" id="fm11">
+                        <div class="col-sm-6 b-r">
+
+                            <div class="form-group">
+                                <label>عنوان {{ PAGE_TITLE }}</label>
+                                <input type="text" required #name="ngModel" name="name" [(ngModel)]="PAGE_Data.title"
+                                    placeholder="عنوان" class="form-control">
+                                <div *ngIf="(name.touched || name.dirty) && name.invalid">
+                                    <p *ngIf="name.hasError('required')" class="error">
+                                        وارد کردن عنوان {{ PAGE_TITLE }} الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>قیمت (ريال)</label>
+                                <input type="text" required #totalPrice="ngModel" name="totalPrice"
+                                    [(ngModel)]="PAGE_Data.price" placeholder="قیمت (ريال)" class="form-control">
+                                <p>
+                                    {{ getSlicedPrice() }}
+                                </p>
+                                <div *ngIf="(totalPrice.touched || totalPrice.dirty) && totalPrice.invalid">
+                                    <p *ngIf="totalPrice.hasError('required')" class="error">
+                                        وارد کردن قیمت (ريال) {{ PAGE_TITLE }} الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>توضیحات</label>
+                                <textarea type="text" #desc="ngModel" name="desc" [(ngModel)]="PAGE_Data.desc"
+                                    placeholder="توضیحات" class="form-control"></textarea>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6 ">
+
+
+                            <div class="form-group">
+                                <label>انتخاب {{ productTitle }}</label>
+                                <ng-select #catselect="ngModel" name="cat" [(ngModel)]="PAGE_Data.productId"
+                                    (change)="onProductSelect()" required>
+                                    <ng-option *ngFor="let i of products" [value]="i.id">{{i.title}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="catselect.hasError('required')">
+                                    انتخاب {{ productTitle }} الزامی است
+                                </mat-error>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>{{ valueTitle }}</label>
+                                <input [disabled]="!PAGE_Data.productId" type="number" required #value="ngModel"
+                                    name="value" [(ngModel)]="PAGE_Data.value" placeholder="{{ valueTitle }}"
+                                    class="form-control">
+                                <div *ngIf="(value.touched || value.dirty) && value.invalid">
+                                    <p *ngIf="value.hasError('required')" class="error">
+                                        وارد کردن {{ valueTitle }} {{ PAGE_TITLE }} الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label>فایل</label>
+                                    <br>
+
+                                    <button mat-mini-fab style="margin-right: 5px;" (click)="removeFile()"
+                                        [disabled]="!_file" matTooltip="حذف فایل فعلی">
+                                        <mat-icon>clear</mat-icon>
+                                    </button>
+                                    <button mat-fab style="margin: 5px;" color="primary" [disabled]="_file"
+                                        matTooltip="بارگذاری فایل جدید"
+                                        onclick="document.getElementById('file1').click()">
+                                        <mat-icon>add</mat-icon>
+                                    </button>
+                                    <strong *ngIf="_file">{{ _file.name }}</strong>
+
+                                    <a mat-raised-button style="margin: 5px;" *ngIf="PAGE_Data.fileUrl && isEdit"
+                                        [href]="auth.getFileUrl(PAGE_Data.fileUrl)">دانلود فایل</a>
+
+
+                                    <input type="file" style="display: none;" id="file1" #file1 class="form-control"
+                                        name="file" (change)="setFile($event)" />
+
+                                    <mat-error *ngIf="!isEdit && !_file">
+                                        انتخاب فایل الزامی است
+                                    </mat-error>
+                                    <br>
+
+                                    <div style="direction: ltr; text-align: center;" *ngIf="isUploading">
+
+                                        <progressbar max="100" [value]="uploaded_PS" type="success" [striped]="true"
+                                            [animate]="true">
+                                            <b>{{ uploaded_MB.toFixed(2) }} / {{ fileSize_MB.toFixed(2) }} (mb)</b>
+                                        </progressbar>
+                                        <p>
+                                            <b tooltip="{{ uploaded_MB.toFixed(2) }} / {{ fileSize_MB.toFixed(2) }} (mb)">
+                                                {{ uploaded_PS.toFixed(3) }} %
+                                            </b>
+                                        </p>
+                                        <p>
+                                            در حال بارگذاری، لطفا شکیبا باشید
+                                        </p>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-12">
+                            <a mat-raised-button color="warn" style="margin: 5px;"
+                                [routerLink]="'/dashboard/' + PAGE_URL">لغو</a>
+                            <button type="submit" mat-raised-button color="primary"
+                                [disabled]="!fm1.valid || (!isEdit && !_file) || isUploading"
+                                (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,68 @@
+<div dir="rtl" style="min-width: 650px;">
+    <h1 mat-dialog-title>تلنگر پیام ({{selectedAgentsIds.length}} مورد انتخاب شده است)</h1>
+    <div mat-dialog-content>
+        <div class="row">
+            <div class="col-lg-12">
+                <p style="color: orange;">تلنگر پیام ممکن است (بسته به تعداد نفرات انتخابی) دقایقی به طول بینجامد</p>
+                <input type="text" class="form-control" [(ngModel)]="search" placeholder="جستجو">
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>انتخاب پایه</label>
+
+                    <ng-select (change)="onGradeSelected()" #grade="ngModel" name="grade" [(ngModel)]="selectedGrade">
+                        <ng-option *ngFor="let i of grades" [value]="i.id">{{ i.name }}</ng-option>
+                    </ng-select>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>انتخاب کلاس</label>
+
+                    <ng-select (change)="onClassSelected()" [disabled]="!selectedGrade" #class="ngModel" name="class"
+                        [(ngModel)]="selectedClass">
+                        <ng-option *ngFor="let i of classesByGrade" [value]="i.id">{{ i.name }}</ng-option>
+                    </ng-select>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <button mat-stroked-button style="width: 100%; margin-top: 28px; margin-bottom: 10px;"
+                    [disabled]="!selectedGrade && !selectedClass" (click)="clearGradeAndClass()">
+                    پاک کردن
+                </button>
+            </div>
+        </div>
+        <hr>
+        <ng-container *ngFor="let i of getFiltredAgents()">
+            <div class="row" matRipple style="padding: 10px; margin-top: 5px; cursor: pointer;"
+                (click)="ToggleSelectedAgent(i.id)">
+                <div class="col-lg-8">
+                    {{ i.studentFullNameAndType }}
+                </div>
+                <div class="col-lg-4" style="text-align: left;">
+                    <mat-checkbox [checked]="IsIdContainesSelectedAgents(i.id)" [disabled]="true">
+                    </mat-checkbox>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+    <div mat-dialog-actions>
+        <div class="row" style="width: 100%;">
+            <div class="col-lg-6">
+                <button mat-stroked-button (click)="sts()" color="primary"
+                    [disabled]="selectedAgentsIds.length == 0">تلنگر</button>
+                <button mat-stroked-button color="warn" style="margin-right: 5px;"
+                    [mat-dialog-close]="false">لغو</button>
+            </div>
+            <div class="col-lg-6" style="text-align: left;">
+                <mat-checkbox [checked]="isAllSelected()"
+                    [indeterminate]="selectedAgentsIds.length != 0 && !isAllSelected()"
+                    (change)="$event ? masterToggle() : null"
+                    [matTooltip]="isAllSelected() ? 'پاک کردن لیست انتخاب شده' : 'انتخاب همه'">انتخاب همه</mat-checkbox>
+            </div>
+        </div>
+    </div>
+</div>

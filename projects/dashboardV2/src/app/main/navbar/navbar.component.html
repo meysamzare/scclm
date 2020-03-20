@@ -1,0 +1,56 @@
+<mat-toolbar color="primary" class="ex-toolbar" [class.iss-mobile]="navbar.isMobile">
+    <button mat-icon-button *ngIf="showSidebarToggleButton" (click)="navbar.toggleNavbar()">
+        <mat-icon *ngIf="navbar.state == false">menu</mat-icon>
+        <mat-icon *ngIf="navbar.state == true">arrow_forward</mat-icon>
+    </button>
+    <h2 class="ex-app-name" *ngIf="showTitle">{{ Title }}</h2>
+
+    <span class="ex-spacer"></span>
+
+    <div class="level is-mobile" style="display: flex; margin-bottom: 0;">
+        <div class="level-right">
+            <ng-container *ngFor="let i of items">
+                <div class="level-item">
+                    <ng-container *ngTemplateOutlet="i.tempRef"></ng-container>
+                </div>
+            </ng-container>
+
+            <div class="level-item">
+                <button *ngIf="showRefresh" (click)="refresh$.next()" mat-icon-button>
+                    <mat-icon>refresh</mat-icon>
+                </button>
+            </div>
+
+            <div class="level-item">
+                <button [disabled]="!locationService.canGoBack()" (click)="locationService.back()" mat-icon-button>
+                    <mat-icon>keyboard_arrow_left</mat-icon>
+                </button>
+            </div>
+
+            <div class="level-item">
+                <button *ngIf="showColorButton" mat-icon-button [matMenuTriggerFor]="colorMenu">
+                    <mat-icon>format_color_fill</mat-icon>
+                </button>
+                <mat-menu #colorMenu="matMenu">
+                    <button mat-menu-item [disabled]="themeSrv.getCurrentTheme() == 'default'"
+                        (click)="themeSrv.setThemeColor('default')">
+                        <mat-icon>wb_incandescent</mat-icon>
+                        <span>پیش فرض</span>
+                    </button>
+                    <!-- 
+                        <button mat-menu-item [disabled]="themeSrv.getCurrentTheme() == 'light'"
+                            (click)="themeSrv.setThemeColor('light')">
+                            <mat-icon>brightness_5</mat-icon>
+                            <span>روشن</span>
+                        </button> 
+                    -->
+                    <button mat-menu-item [disabled]="themeSrv.getCurrentTheme() == 'dark'"
+                        (click)="themeSrv.setThemeColor('dark')">
+                        <mat-icon>brightness_2</mat-icon>
+                        <span>تاریک</span>
+                    </button>
+                </mat-menu>
+            </div>
+        </div>
+    </div>
+</mat-toolbar>

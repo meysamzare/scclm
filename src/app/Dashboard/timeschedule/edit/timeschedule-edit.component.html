@@ -1,0 +1,120 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <ng-template #cancelBtn>
+                <button mat-button color="warn" style="margin-right: 10px;">لغو</button>
+            </ng-template>
+            <ng-template #confirmBtn>
+                <button mat-button color="primary">تایید</button>
+            </ng-template>
+            <div class="ibox-content">
+                <div class="row" style="padding: 10px;">
+                    <mat-form-field>
+                        <mat-label>انتخاب زمانبندی مورد نظر</mat-label>
+                        <mat-select [disabled]="isEdit" style="direction: ltr" #u
+                            (valueChange)="copySelectedData(u.value)" name="class">
+                            <mat-option selected="selected" value="0">-- موردی را انتخاب نمایید --</mat-option>
+                            <mat-option *ngFor="let tsch of timeschs" [value]="tsch.id">{{tsch.name}}</mat-option>
+                        </mat-select>
+                        <mat-hint>کپی کردن داده های مورد انتخاب شده در صفحه جاری</mat-hint>
+                    </mat-form-field>
+                </div>
+                <hr>
+                <div class="row">
+                    <form #fm1="ngForm" id="fm11">
+                        <div class="col-sm-6">
+
+                            <div class="form-group">
+                                <label>عنوان درس، روز و یا دبیر</label>
+                                <input type="text" required #name="ngModel" name="name" [(ngModel)]="timesch.name"
+                                    placeholder="عنوان" class="form-control">
+                                <div *ngIf="(name.touched || name.dirty) &&
+                                    name.invalid">
+                                    <p *ngIf="name.hasError('required')" class="error">
+                                        وارد کردن عنوان درس، روز و یا دبیر الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>زمان شروع</label>
+                                <input class="form-control" [ngxTimepicker]="pickerTime1" name="timeSt" readonly
+                                    [format]="24" [(ngModel)]="timesch.timeStart" placeholder="زمان شروع" required
+                                    #timeSt>
+                                <ngx-material-timepicker [cancelBtnTmpl]="cancelBtn" [confirmBtnTmpl]="confirmBtn"
+                                    #pickerTime1></ngx-material-timepicker>
+                                <div *ngIf="timeSt.touched && timeSt.invalid" class="error">
+                                    <div>
+                                        وارد کردن زمان شروع الزامی است
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>زمان پایان</label>
+                                <input class="form-control" [ngxTimepicker]="pickerTime2" name="timeEd" readonly
+                                    [format]="24" [(ngModel)]="timesch.timeEnd" placeholder="زمان پایان" required
+                                    #timeEd>
+                                <ngx-material-timepicker [cancelBtnTmpl]="cancelBtn" [confirmBtnTmpl]="confirmBtn"
+                                    #pickerTime2></ngx-material-timepicker>
+                                <div *ngIf="timeSt.touched && timeSt.invalid" class="error">
+                                    <div>
+                                        وارد کردن زمان پایان الزامی است
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6 b-r-r">
+
+                            <div class="form-group">
+                                <label>انتخاب درس</label>
+                                <ng-select #courseselect="ngModel" name="course" [(ngModel)]="timesch.courseId"
+                                    required>
+                                    <ng-option *ngFor="let cor of courses" [value]="cor.id">{{cor.name}}</ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="courseselect.hasError('required')">
+                                    انتخاب درس الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب دبیر</label>
+                                <ng-select #teacherselect="ngModel" name="teacher" [(ngModel)]="timesch.teacherId"
+                                    required>
+                                    <ng-option *ngFor="let tch of teacher" [value]="tch.id">{{tch.name}}</ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="teacherselect.hasError('required')">
+                                    انتخاب دبیر الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب ایام هفته</label>
+                                <ng-select #timeandDaysselect="ngModel" name="timeandday"
+                                    [(ngModel)]="timesch.timeandDaysId" required>
+                                    <ng-option *ngFor="let tds of timeanddays" [value]="tds.id">{{tds.name}}</ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="timeandDaysselect.hasError('required')">
+                                    انتخاب ایام هفته الزامی است
+                                </mat-error>
+                            </div>
+
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-12">
+                            <a mat-raised-button color="warn" style="margin: 5px;"
+                                routerLink="/dashboard/timesch">لغو</a>
+                            <button type="submit" mat-raised-button color="primary" [disabled]="!fm1.valid"
+                                (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

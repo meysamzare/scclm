@@ -1,0 +1,85 @@
+
+.comments-area ol.comment-list {
+    list-style: none;
+    float: right;
+}
+
+.comments-area ol.comment-list li .comment-body {
+    font-size: 14px;
+    margin-top: 50px;
+    padding: 20px 40px 20px 20px;
+    line-height: 30px;
+    position: relative;
+}
+
+.comments-area ol.comment-list li .comment-author {
+    display: inline-block;
+}
+
+.comments-area ol.comment-list li img.avatar {
+    position: absolute;
+    top: 4px;
+    right: -40px;
+    left: auto;
+    width: 60px;
+    height: 60px;
+    border: none;
+    border-radius: 50%;
+    padding: 0;
+    z-index: 999;
+    background: #fff;
+    -webkit-box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+}
+
+.comments-area ol.comment-list li .fn {
+    font-size: 13px;
+    margin-left: 0;
+    float: right;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.comments-area ol.comment-list li .says {
+    margin-left: 15px;
+    margin-right: 5px;
+}
+
+.comments-area ol.comment-list li .commentmetadata {
+    display: inline-block;
+}
+
+.comments-area ol.comment-list li .commentmetadata a {
+    color: #03A9F4;
+    font-size: 13px;
+}
+
+.comments-area ol.comment-list li .comment-body p {
+    text-align: justify;
+}
+
+.comments-area ol.comment-list li .comment-body .reply a.comment-reply-link {
+    display: inline-block;
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+    padding: 0;
+    text-align: center;
+    white-space: nowrap;
+    color: #1ca2bd;
+    padding: 0;
+    line-height: 2;
+    font-size: 14px;
+}
+
+.comments-area ol.comment-list li .comment-body .reply a.comment-reply-link::before {
+    left: 0;
+    right: 0;
+    top: 50%;
+    margin-top: .85em;
+    content: "";
+    position: absolute;
+    border-bottom: 1px dashed #1ca2bd;
+}

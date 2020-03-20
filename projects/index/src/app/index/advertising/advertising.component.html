@@ -1,0 +1,19 @@
+<div class="row banner-ads">
+    <div class="col-12">
+        <div class="row">
+
+            <ng-container *ngFor="let ad of ads">
+
+                <div [class.col-lg-6]="Type == 2" [class.col-lg-12]="Type != 2">
+                    <div class="widget-banner card">
+                        <a target="_blank" [href]="ad.url">
+                            <img class="img-fluid" [src]="auth.getFileUrl(ad.picUrl)">
+                        </a>
+                    </div>
+                </div>
+
+            </ng-container>
+
+        </div>
+    </div>
+</div>

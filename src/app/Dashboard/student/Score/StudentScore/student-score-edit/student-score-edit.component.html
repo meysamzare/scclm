@@ -1,0 +1,78 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <form #fm1="ngForm" id="fm11">
+                        <div class="col-sm-12">
+
+                            <div class="form-group">
+                                <label>انتخاب دانش آموز</label>
+                                <ng-select (change)="onStudentSelect()" #student="ngModel" name="student"
+                                    [(ngModel)]="PAGE_Data.studentId" required>
+                                    <ng-option *ngFor="let i of students" [value]="i.id">
+                                        {{i.name + ' ' + i.lastName + ' (' + i.fatherName + ') '}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="student.hasError('required')">
+                                    انتخاب دانش آموز الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب سال ثبت نامی دانش آموز</label>
+                                <ng-select [disabled]="!PAGE_Data.studentId" #stdclass="ngModel" name="stdclass"
+                                    [(ngModel)]="PAGE_Data.stdClassMngId" required>
+                                    <ng-option *ngFor="let i of stdClassMngByStudent" [value]="i.id">
+                                        {{ i.yeareducationName + ' (' + i.gradeName + ' - ' + i.className + ') ' }}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="stdclass.hasError('required')">
+                                    انتخاب سال ثبت نامی دانش آموز الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب دبیر</label>
+                                <ng-select #teacher="ngModel" name="teacher" [(ngModel)]="PAGE_Data.teacherId" required>
+                                    <ng-option *ngFor="let i of teachers" [value]="i.id">
+                                        {{ i.name }}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="teacher.hasError('required')">
+                                    انتخاب دبیر الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب شابلون امتیاز</label>
+                                <ng-select [disabled]="!PAGE_Data.stdClassMngId" (change)="onScoreThemplateSelect()"
+                                    #scorethemp="ngModel" name="scorethemp" [(ngModel)]="selectedScoreThemplate"
+                                    required>
+                                    <ng-option *ngFor="let i of scoreThemplates" [value]="i.id">
+                                        {{ i.title + ' (' + i.type + ' - ' + i.subject + ' - ' + i.value + ') ' }}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="scorethemp.hasError('required')">
+                                    انتخاب شابلون امتیاز الزامی است
+                                </mat-error>
+                            </div>
+
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-12">
+                            <a mat-raised-button color="warn" style="margin: 5px;"
+                                [routerLink]="'/dashboard/' + PAGE_URL">لغو</a>
+                            <button type="submit" mat-raised-button color="primary" [disabled]="!fm1.valid"
+                                (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,58 @@
+<div dir="rtl" style="min-width: 650px;">
+
+    <h1 mat-dialog-title>
+        {{ Title }}
+    </h1>
+    <div mat-dialog-content>
+        <input class="form-control" placeholder="جستجو" name="search" [(ngModel)]="search"
+            (input)="(Type == 0 || Type == 1) ? refreshStudents() : null">
+        <div class="row margin-top-10" *ngIf="Type == 0 || Type == 1">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>انتخاب پایه</label>
+
+                    <ng-select (change)="onGradeSelected()" #grade="ngModel" name="grade" [(ngModel)]="selectedGrade">
+                        <ng-option *ngFor="let i of grades" [value]="i.id">{{ i.name }}</ng-option>
+                    </ng-select>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>انتخاب کلاس</label>
+
+                    <ng-select (change)="refreshStudents()" [disabled]="!selectedGrade" #class="ngModel" name="class"
+                        [(ngModel)]="selectedClass">
+                        <ng-option *ngFor="let i of classes" [value]="i.id">{{ i.name }}</ng-option>
+                    </ng-select>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <button mat-stroked-button style="width: 100%; margin-top: 28px; margin-bottom: 10px;"
+                    [disabled]="!selectedGrade && !selectedClass" (click)="clearGradeAndClass()">
+                    پاک کردن
+                </button>
+            </div>
+        </div>
+        <hr>
+        <mat-list>
+            <ng-container *ngIf="Type == 0 || Type == 1">
+                <mat-list-item class="pointer" (click)="returnSelectedItem(i.id, i.name)" *ngFor="let i of Students"
+                    matRipple>{{ i.name }}</mat-list-item>
+                <mat-divider></mat-divider>
+            </ng-container>
+            <ng-container *ngIf="Type == 2">
+                <mat-list-item class="pointer" (click)="returnSelectedItem(i.id, i.fullName)"
+                    *ngFor="let i of getFiltredUsers()" matRipple>{{ i.fullName }}</mat-list-item>
+                <mat-divider></mat-divider>
+            </ng-container>
+            <ng-container *ngIf="Type == 3">
+                <mat-list-item class="pointer" (click)="returnSelectedItem(i.id, i.name)"
+                    *ngFor="let i of getFiltredTeachers()" matRipple>{{ i.name }}</mat-list-item>
+                <mat-divider></mat-divider>
+            </ng-container>
+        </mat-list>
+    </div>
+    <div mat-dialog-actions>
+        <button mat-stroked-button color="warn" style="margin-right: 5px;" [mat-dialog-close]="">لغو</button>
+    </div>
+</div>

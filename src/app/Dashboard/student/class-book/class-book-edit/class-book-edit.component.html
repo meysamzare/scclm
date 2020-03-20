@@ -1,0 +1,263 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+
+                <div class="row">
+                    <div class="col-lg-12">
+
+                        <div class="form-group">
+                            <label style="font-size: 17px;">انتخاب دانش آموز</label>
+                            <ng-select #studentselect="ngModel" name="student" [(ngModel)]="PAGE_Data.studentId"
+                                required (change)="onStudentSelected()">
+                                <ng-option *ngFor="let student of students" [value]="student.id">
+                                    {{student.name + ' ' + student.lastName}}
+                                </ng-option>
+                            </ng-select>
+                            <mat-error *ngIf="studentselect.hasError('required')">
+                                انتخاب دانش آموز الزامی است
+                            </mat-error>
+                        </div>
+
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="row">
+                    <div class="col-lg-3">
+
+                        <div class="form-group">
+                            <label>انتخاب آموزشگاه</label>
+                            <ng-select #tituteS="ngModel" name="titute" [(ngModel)]="PAGE_Data.insTituteId" required>
+                                <ng-option *ngFor="let titute of titutes" [value]="titute.id">{{titute.name}}
+                                </ng-option>
+                            </ng-select>
+                            <mat-error *ngIf="tituteS.hasError('required')">
+                                انتخاب آموزشگاه الزامی است
+                            </mat-error>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+
+
+                        <div class="form-group">
+                            <label>انتخاب سال تحصیلی</label>
+                            <ng-select #yearselect="ngModel" [activeyear]="isEdit" name="year"
+                                [(ngModel)]="PAGE_Data.yeareducationId" required>
+                                <ng-option *ngFor="let year of yeareducations" [value]="year.id">{{year.name}}
+                                </ng-option>
+                            </ng-select>
+                            <mat-error *ngIf="yearselect.hasError('required')">
+                                انتخاب سال تحصیلی الزامی است
+                            </mat-error>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+
+                        <div class="form-group">
+                            <label>انتخاب پایه تحصیلی</label>
+                            <ng-select #gradeselect="ngModel" name="grade" [(ngModel)]="PAGE_Data.gradeId" required>
+                                <ng-option *ngFor="let gr of grades" [value]="gr.id">{{gr.name}}
+                                </ng-option>
+                            </ng-select>
+                            <mat-error *ngIf="gradeselect.hasError('required')">
+                                انتخاب پایه تحصیلی الزامی است
+                            </mat-error>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-3">
+
+
+                        <div class="form-group">
+                            <label>انتخاب کلاس</label>
+                            <ng-select #classselect="ngModel" name="class" [(ngModel)]="PAGE_Data.classId" required>
+                                <ng-option *ngFor="let cls of classes" [value]="cls.id">{{cls.name}}
+                                </ng-option>
+                            </ng-select>
+                            <mat-error *ngIf="classselect.hasError('required')">
+                                انتخاب کلاس الزامی است
+                            </mat-error>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">
+
+                        <div class="form-group">
+                            <label>انتخاب درس</label>
+                            <ng-select #courseselect="ngModel" name="course" (change)="setTeacherIdByCourse()"
+                                [(ngModel)]="PAGE_Data.courseId" required>
+                                <ng-option *ngFor="let cor of courses" [value]="cor.id">{{cor.name}}
+                                </ng-option>
+                            </ng-select>
+                            <mat-error *ngIf="courseselect.hasError('required')">
+                                انتخاب درس الزامی است
+                            </mat-error>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-6">
+
+
+                        <div class="form-group">
+                            <label>انتخاب دبیر</label>
+                            <ng-select #teacherselect="ngModel" name="teacher" [(ngModel)]="PAGE_Data.teacherId"
+                                required>
+                                <ng-option *ngFor="let i of teachers" [value]="i.id">{{i.name}}
+                                </ng-option>
+                            </ng-select>
+                            <mat-error *ngIf="teacherselect.hasError('required')">
+                                انتخاب دبیر الزامی است
+                            </mat-error>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="row">
+                    <form #fm1="ngForm" id="fm11">
+                        <div class="col-sm-6 b-r">
+
+                            <div class="form-group">
+                                <label>انتخاب نوع {{ PAGE_TITLE }}</label>
+                                <ng-select [disabled]="!PAGE_Data.teacherId" #typeselect="ngModel" name="type"
+                                    [(ngModel)]="PAGE_Data.type" required (change)="onTypeChaneg()">
+                                    <ng-option [value]="0">{{ getClassBookTypeString(0) }}</ng-option>
+                                    <ng-option [value]="1">{{ getClassBookTypeString(1) }}</ng-option>
+                                    <ng-option [value]="2">{{ getClassBookTypeString(2) }}</ng-option>
+                                    <ng-option [value]="3">{{ getClassBookTypeString(3) }}</ng-option>
+                                    <ng-option [value]="4">{{ getClassBookTypeString(4) }}</ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="typeselect.hasError('required')">
+                                    انتخاب نوع {{ PAGE_TITLE }} الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>تاریخ</label>
+                                <mat-form-field class="example-full-width">
+                                    <input [disabled]="!PAGE_Data.teacherId" #dateS="ngModel" (click)="openc(picker1)"
+                                        readonly name="date" matInput [matDatepicker]="picker1"
+                                        [(ngModel)]="PAGE_Data.date" placeholder="تاریخ">
+                                    <mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker1">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #picker1 touchUi="true"></mat-datepicker>
+                                    <mat-hint *ngIf="!isEdit">در صورت انتخاب نکردن، تاریخ امروز ثبت خواهد شد</mat-hint>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group" *ngIf="PAGE_Data.type == 2">
+                                <label>نتیجه {{ getClassBookTypeString(2) }}</label>
+                                <input type="text" required #classAsk="ngModel" name="classAsk"
+                                    [(ngModel)]="PAGE_Data.value" placeholder="نتیجه {{ getClassBookTypeString(2) }}"
+                                    class="form-control">
+                                <div *ngIf="(classAsk.touched || classAsk.dirty) && classAsk.invalid">
+                                    <p *ngIf="classAsk.hasError('required')" class="error">
+                                        وارد کردن نتیجه {{ getClassBookTypeString(2) }} الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group" *ngIf="PAGE_Data.type == 4">
+
+                                <div class="form-group">
+                                    <label>انتخاب {{ getClassBookTypeString(4) }}</label>
+                                    <ng-select (change)="onExamSelect()" #desiplineS="ngModel" name="desipline"
+                                        [(ngModel)]="disiplineTypeSelected" required>
+                                        <ng-option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12,13]" [value]="i">
+                                            {{ getDesiplineTypeString(i) }}
+                                        </ng-option>
+                                    </ng-select>
+                                    <mat-error *ngIf="desiplineS.hasError('required')">
+                                        انتخاب {{ getClassBookTypeString(4) }} الزامی است
+                                    </mat-error>
+                                </div>
+
+                                <div class="form-group" *ngIf="disiplineTypeSelected">
+                                    <label>توضیحات</label>
+                                    <input type="text" name="desc" [(ngModel)]="disiplineText" placeholder="توضیحات"
+                                        class="form-control">
+                                </div>
+                            </div>
+
+                            <div *ngIf="PAGE_Data.type == 0">
+                                <mat-radio-group #p_a="ngModel" required name="pa" [(ngModel)]="PAGE_Data.value">
+                                    <mat-radio-button color="primary" [value]="'P'"> حاضر </mat-radio-button>
+                                    <mat-radio-button color="warn" [value]="'A'"> غائب </mat-radio-button>
+                                </mat-radio-group>
+                                <p *ngIf="p_a.hasError('required')" class="error">
+                                    وارد کردن {{ getClassBookTypeString(0) }} الزامی است
+                                </p>
+                            </div>
+
+                            <div *ngIf="PAGE_Data.type == 3">
+                                <mat-radio-group #p_a="ngModel" required name="pa" [(ngModel)]="PAGE_Data.value">
+                                    <mat-radio-button color="primary" [value]="'1'"> + </mat-radio-button>
+                                    <mat-radio-button color="warn" [value]="'-1'"> - </mat-radio-button>
+                                </mat-radio-group>
+                                <p *ngIf="p_a.hasError('required')" class="error">
+                                    وارد کردن {{ getClassBookTypeString(3) }} الزامی است
+                                </p>
+                            </div>
+
+                            <div *ngIf="PAGE_Data.type == 1">
+
+                                <div class="form-group">
+                                    <label>انتخاب آزمون</label>
+                                    <ng-select (change)="onExamSelect()" #examselect="ngModel" name="exam"
+                                        [(ngModel)]="PAGE_Data.examId" required>
+                                        <ng-option *ngFor="let i of exams" [value]="i.id">{{i.name}}</ng-option>
+                                    </ng-select>
+                                    <mat-error *ngIf="examselect.hasError('required')">
+                                        انتخاب آزمون الزامی است
+                                    </mat-error>
+                                </div>
+
+                                <div *ngIf="PAGE_Data.examId">
+
+                                    <p>ملاک آزمون : <label>{{ getSelectedExam()?.topScore }}</label></p>
+
+                                    <div class="form-group">
+                                        <label>نمره</label>
+                                        <input type="number" required #score="ngModel" name="score"
+                                            [(ngModel)]="PAGE_Data.value" min="0" placeholder="نمره"
+                                            class="form-control">
+                                        <div *ngIf="(score.touched || score.dirty) && score.invalid">
+                                            <p *ngIf="score.hasError('required')" class="error">
+                                                وارد کردن نمره الزامی است
+                                            </p>
+                                        </div>
+                                        <p *ngIf="!isScoreValid()" class="error">
+                                            نمره را به درستی وارد نمایید
+                                        </p>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-12">
+                            <a mat-raised-button color="warn" style="margin: 5px;"
+                                [routerLink]="'/dashboard/' + PAGE_URL">لغو</a>
+                            <button type="submit" mat-raised-button color="primary"
+                                [disabled]="!fm1.valid || !isScoreValid()" (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

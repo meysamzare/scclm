@@ -1,0 +1,146 @@
+.chat-action-toolbar {
+    position: fixed;
+    min-height: 40px;
+    bottom: 0;
+    z-index: 99;
+    margin-bottom: 60px;
+}
+
+.chat-action-row {
+    padding: 0;
+}
+
+.chat-content {
+    margin-bottom: 60px;
+}
+
+.full-wigth {
+    width: 100%;
+}
+
+.chat-text {
+    max-height: 40px;
+    border-radius: 10px;
+    resize: none;
+}
+
+.mat-mini-fab {
+    width: 45px !important;
+    height: 45px !important;
+}
+
+.right {
+    text-align: right;
+    margin-left: 30px;
+}
+
+.left {
+    text-align: left;
+    margin-right: 30px;
+}
+
+.card {
+    margin-top: 5px;
+}
+
+.card-body {
+    padding: 15px !important;
+}
+
+
+
+$green: #86BB71;
+$blue: #94C2ED;
+$orange: #E38968;
+$gray: #92959E;
+
+
+
+.chat-history {
+    
+    .message-data {
+      margin-bottom: 15px;
+    }
+    
+    .message-data-time {
+      color: lighten($gray, 8%);
+      padding-left: 6px;
+    }
+    
+    .message {      
+      color: white;
+      padding: 18px 20px;
+      line-height: 26px;
+      font-size: 16px;
+      border-radius: 7px;
+      margin-bottom: 30px;
+      width: 90%;
+      position: relative;
+      
+      &:after {
+        bottom: 100%;
+        left: 7%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+        border-bottom-color: $green;
+        border-width: 10px;
+        margin-left: -10px;
+      }
+    }
+    
+    .my-message {
+      background: $green;
+    }
+    
+    .other-message {
+      background: $blue;
+      
+      &:after {
+        border-bottom-color: $blue;
+        left: 93%;
+      }
+    }
+}
+
+
+.online, .offline, .me {
+    margin-right: 3px;
+    font-size: 10px;
+  }
+  
+.online {
+  color: $green;
+}
+  
+.offline {
+  color: $orange;
+}
+
+.me {
+  color: $blue;
+}
+
+.align-left {
+  text-align: left;
+}
+
+.align-right {
+  text-align: right;
+}
+
+.float-right {
+  float: right;
+}
+
+.clearfix:after {
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+}

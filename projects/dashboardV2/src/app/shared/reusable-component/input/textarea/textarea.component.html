@@ -1,0 +1,37 @@
+<div class="field is-horizontal margin-bot">
+    <div *ngIf="showLabelSection" class="field-label is-normal">
+        <label class="label">{{ label }}</label>
+    </div>
+    <div class="field-body">
+
+        <div class="field">
+            <div class="control has-icons-right" [class.has-icons-left]="canShowClearButton()"
+                [class.is-loading]="Loading">
+
+                <textarea #input class="textarea padding-R-L" (input)="onChange($event.target.value)" (blur)="onTouched()"
+                    [class.is-success]="isValid()" [class.is-danger]="!isValid()"
+                    [placeholder]="Placeholder ? Placeholder : label" [disabled]="disabled" [readOnly]="readonly"
+                    [class.is-small]="Size == 'small'" [class.is-medium]="Size == 'medium'"
+                    [class.is-large]="Size == 'large'"></textarea>
+
+                <span *ngIf="canShowClearButton()" class="icon is-small is-left">
+                    <p tabindex="-1" class="delete is-small tooltip-right" (click)="clearValue()"
+                        [attr.data-tooltip]="'پاکسازی'"></p>
+                </span>
+
+                <span *ngIf="isValid()" class="icon is-small is-right has-text-success">
+                    <i class="fas fa-check"></i>
+                </span>
+
+                <span *ngIf="!isValid()" class="icon is-small is-right has-text-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </span>
+            </div>
+
+            <ng-container *ngIf="controlDir">
+                <span *ngIf="!isValid() && controlDir.control.touched"
+                    class="has-text-danger">{{ getInvalidMessage() }}</span>
+            </ng-container>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,82 @@
+<app-toolbar [showToolbar]="false" [Title]="'سایر گزینه ها'"></app-toolbar>
+<div class="row" style="text-align: center;">
+    <div class="col-sm-12">
+        <div class="row">
+            <div class="col-sm-4">
+                <mat-card class="item-card">
+                    <div [routerLink]="['/chats']" matRipple>
+                        <p class="icon" style="color: darkorange">
+                            <mat-icon>chat</mat-icon>
+                        </p>
+                        <p class="title">گفتگوها</p>
+                    </div>
+                </mat-card>
+            </div>
+            <div class="col-sm-4">
+                <mat-card class="item-card">
+                    <div [routerLink]="['/tickets']" matRipple>
+                        <p class="icon" style="color: #00a788">
+                            <mat-icon>question_answer</mat-icon>
+                        </p>
+                        <p class="title">مکاتبات</p>
+                    </div>
+                </mat-card>
+            </div>
+            <div class="col-sm-4">
+                <mat-card class="item-card">
+                    <div [routerLink]="['./change-password']" matRipple>
+                        <p class="icon" style="color: #00b1b1">
+                            <mat-icon>fingerprint</mat-icon>
+                        </p>
+                        <p class="title">تغییر کلمه عبور</p>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-4">
+                <mat-card class="item-card">
+                    <div [routerLink]="['./settings']" matRipple>
+                        <p class="icon" style="color: #8bc0cc">
+                            <mat-icon>settings</mat-icon>
+                        </p>
+                        <p class="title">تنظیمات</p>
+                    </div>
+                </mat-card>
+            </div>
+            <div class="col-sm-4">
+                <mat-card class="item-card">
+                    <div (click)="tchAuth.logout(true)" matRipple>
+                        <p class="icon" style="color: #e10000">
+                            <mat-icon>power_settings_new</mat-icon>
+                        </p>
+                        <p class="title">خروج</p>
+                    </div>
+                </mat-card>
+            </div>
+            <div class="col-sm-4">
+                <mat-card class="item-card">
+                    <div (click)="reload()" matRipple>
+                        <p class="icon" style="color: #dae501">
+                            <mat-icon>refresh</mat-icon>
+                        </p>
+                        <p class="title">بازنشانی برنامه</p>
+                    </div>
+                </mat-card>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12" style="margin-top: 30px;">
+                <img class="company" src="/assets/img/synapce.png">
+                <p>طراحی و توسعه : شرکت نو آوران هوشمند سیناپس</p>
+                <p style="font-family: Arial, Helvetica, sans-serif !important;">
+                    Version: {{ tchAuth.auth.TMA_VERSION }}
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div>

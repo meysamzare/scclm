@@ -1,0 +1,39 @@
+<div class="widget-suggestion widget card" *ngIf="bestStudents.length != 0">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-12">
+                    <owl-carousel id="suggestion-slider" [options]="owlOption" [carouselClasses]="['owl-theme']">
+                        <div class="item" *ngFor="let i of bestStudents">
+                            <header class="card-header">
+                                <h3 class="card-title">{{ i.title }}</h3>
+                            </header>
+                            <a>
+                                <img [src]="auth.getFileUrl(i.picUrl)" class="w-100">
+                            </a>
+                            <h3 class="product-title">
+                                <a>
+                                    <span class="price">{{ i.fullName }}</span> {{ i.class }}
+                                    <br>
+                                    {{ i.desc }}
+                                </a>
+                            </h3>
+                        </div>
+                    </owl-carousel>
+                    <div id="progressBar">
+                        <div class="slide-progress"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div style="text-align: center;">
+                        <img style="width: max-content;" src="/assets/img/logo.jpg">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>

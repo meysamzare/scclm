@@ -1,0 +1,265 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row" style="padding: 10px;">
+                    <mat-form-field>
+                        <mat-label>انتخاب پرسنل مورد نظر</mat-label>
+                        <mat-select [disabled]="isEdit" style="direction: ltr" #u
+                            (valueChange)="copySelectedData(u.value)" name="class">
+                            <mat-option selected="selected" value="0">-- موردی را انتخاب نمایید --</mat-option>
+                            <mat-option *ngFor="let per of orgpersons" [value]="per.id">{{per.name}}</mat-option>
+                        </mat-select>
+                        <mat-hint>کپی کردن داده های مورد انتخاب شده در صفحه جاری</mat-hint>
+                    </mat-form-field>
+                </div>
+                <hr>
+                <div class="row">
+                    <form #fm1="ngForm" id="fm11">
+                        <div class="col-sm-6">
+
+                            <div class="form-group">
+                                <label>کد پرسنلی</label>
+                                <input type="text" required #code="ngModel" name="code" [(ngModel)]="orgperson.code"
+                                    placeholder="کد پرسنلی" class="form-control">
+                                <div *ngIf="(code.touched || code.dirty) &&
+                                    code.invalid">
+                                    <p *ngIf="code.hasError('required')" class="error">
+                                        وارد کردن کد پرسنلی الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>نام پرسنل</label>
+                                <input type="text" required #name="ngModel" name="name" [(ngModel)]="orgperson.name"
+                                    placeholder="نام" class="form-control">
+                                <div *ngIf="(name.touched || name.dirty) &&
+                                    name.invalid">
+                                    <p *ngIf="name.hasError('required')" class="error">
+                                        وارد کردن نام پرسنل الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>نام خانوادگی</label>
+                                <input type="text" required #lastName="ngModel" name="lastName"
+                                    [(ngModel)]="orgperson.lastName" placeholder="نام خانوادگی" class="form-control">
+                                <div *ngIf="(lastName.touched || lastName.dirty) &&
+                                    lastName.invalid">
+                                    <p *ngIf="lastName.hasError('required')" class="error">
+                                        وارد کردن نام خانوادگی الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>نام پدر</label>
+                                <input type="text" required #fatherName="ngModel" name="fatherName"
+                                    [(ngModel)]="orgperson.fatherName" placeholder="نام پدر" class="form-control">
+                                <div *ngIf="(fatherName.touched || fatherName.dirty) &&
+                                fatherName.invalid">
+                                    <p *ngIf="fatherName.hasError('required')" class="error">
+                                        وارد کردن نام پدر الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب جنسیت پرسنل</label>
+                                <ng-select #psex="ngModel" name="pse" [(ngModel)]="orgperson.sex" required>
+                                    <ng-option [value]="1">مرد</ng-option>
+                                    <ng-option [value]="2">زن</ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="psex.hasError('required')">
+                                    انتخاب جنسیت پرسنل الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>کد ملی</label>
+                                <input type="number" required #codemeli="ngModel" name="codemeli"
+                                    [(ngModel)]="orgperson.idNum" placeholder="کد ملی" class="form-control">
+                                <div *ngIf="(codemeli.touched || codemeli.dirty) &&
+                                codemeli.invalid">
+                                    <p *ngIf="codemeli.hasError('required')" class="error">
+                                        وارد کردن کد ملی الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>تاریخ تولد</label>
+                                <mat-form-field class="example-full-width">
+                                    <input tabindex="7" #dateStart="ngModel" (click)="openc(picker1)" readonly
+                                        name="dateStart" required matInput [matDatepicker]="picker1"
+                                        [(ngModel)]="orgperson.birthDate" placeholder="تاریخ تولد">
+                                    <mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker1">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #picker1 touchUi="true"></mat-datepicker>
+                                </mat-form-field>
+                                <div *ngIf="dateStart.touched && dateStart.invalid" class="error">
+                                    <div>
+                                        وارد کردن تاریخ تولد الزامی است
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>شماره شناسنامه</label>
+                                <input type="number" required #shenasname="ngModel" name="shenasname"
+                                    [(ngModel)]="orgperson.idNumber" placeholder="شماره شناسنامه" class="form-control">
+                                <div *ngIf="(shenasname.touched || shenasname.dirty) &&
+                                shenasname.invalid">
+                                    <p *ngIf="shenasname.hasError('required')" class="error">
+                                        وارد کردن شماره شناسنامه الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>سریال شناسنامه</label>
+                                <input type="text" name="serial" [(ngModel)]="orgperson.idSerial"
+                                    placeholder="سریال شناسنامه" class="form-control">
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6 b-r-r">
+                            <p>آیا متاهل است؟</p>
+                            <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="orgperson.marrage">متاهل ؟
+                            </mat-checkbox>
+
+                            <div class="form-group">
+                                <label>تعداد فرزند</label>
+                                <input type="number" [disabled]="!orgperson.marrage" required #child="ngModel"
+                                    name="child" [(ngModel)]="orgperson.child" placeholder="تعداد فرزند"
+                                    class="form-control">
+                                <div *ngIf="(child.touched || child.dirty) &&
+                                child.invalid">
+                                    <p *ngIf="child.hasError('required')" class="error">
+                                        وارد کردن تعداد فرزند الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب نوع بیمه</label>
+                                <ng-select #insuranceselect="ngModel" name="insurance"
+                                    [(ngModel)]="orgperson.insuranceId" required>
+                                    <ng-option *ngFor="let ins of insurances" [value]="ins.id">{{ins.name}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="insuranceselect.hasError('required')">
+                                    انتخاب نوع بیمه الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>شماره بیمه</label>
+                                <input type="text" name="insucode" [(ngModel)]="orgperson.insuranceCode"
+                                    placeholder="شماره بیمه" class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <label>نوع سنوات خدمت</label>
+                                <input type="text" required #type="ngModel" name="type" [(ngModel)]="orgperson.type"
+                                    placeholder="نوع سنوات خدمت" class="form-control">
+                                <div *ngIf="(type.touched || type.dirty) &&
+                                    type.invalid">
+                                    <p *ngIf="type.hasError('required')" class="error">
+                                        وارد کردن نوع سنوات خدمت الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>تعداد سال های خدمت</label>
+                                <input type="number" required #typeyear="ngModel" name="typeyear"
+                                    [(ngModel)]="orgperson.typeYear" placeholder="تعداد سال های خدمت"
+                                    class="form-control">
+                                <div *ngIf="(typeyear.touched || typeyear.dirty) &&
+                                typeyear.invalid">
+                                    <p *ngIf="typeyear.hasError('required')" class="error">
+                                        وارد کردن تعداد سال های خدمت الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب مدرک تحصیلی</label>
+                                <ng-select #eduselect="ngModel" name="edu" [(ngModel)]="orgperson.educationId" required>
+                                    <ng-option *ngFor="let edu of educations" [value]="edu.id">{{edu.name}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="eduselect.hasError('required')">
+                                    انتخاب مدرک تحصیلی الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب پست سازمانی</label>
+                                <ng-select #orgchselect="ngModel" name="orgch" [(ngModel)]="orgperson.orgChartId"
+                                    required>
+                                    <ng-option *ngFor="let och of orgcharts" [value]="och.id">{{och.name}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="orgchselect.hasError('required')">
+                                    انتخاب پست سازمانی الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب نوع کارگزینی</label>
+                                <ng-select #salselect="ngModel" name="sal" [(ngModel)]="orgperson.salaryId" required>
+                                    <ng-option *ngFor="let sal of salaries" [value]="sal.id">{{sal.name}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="salselect.hasError('required')">
+                                    انتخاب نوع کارگزینی الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>نشانی پستی</label>
+                                <textarea type="text" name="address" [(ngModel)]="orgperson.address"
+                                    placeholder="نشانی پستی" class="form-control"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>شماره تماس ثابت</label>
+                                <input type="tel" name="tell" [(ngModel)]="orgperson.tell" placeholder="شماره تماس ثابت"
+                                    class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <label>شماره تماس همراه</label>
+                                <input type="number" name="phone" [(ngModel)]="orgperson.phone"
+                                    placeholder="شماره تماس همراه" class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <label>ایمیل</label>
+                                <input type="email" name="email" [(ngModel)]="orgperson.email" placeholder="ایمیل"
+                                    class="form-control">
+                            </div>
+
+
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-12">
+                            <a mat-raised-button color="warn" style="margin: 5px;"
+                                routerLink="/dashboard/orgperson">لغو</a>
+                            <button type="submit" mat-raised-button color="primary" [disabled]="!fm1.valid"
+                                (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

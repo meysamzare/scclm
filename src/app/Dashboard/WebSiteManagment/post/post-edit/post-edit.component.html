@@ -1,0 +1,381 @@
+<form #fmTotal="ngForm">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>{{ Title }}</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <form #fm1="ngForm" id="fm11">
+                            <div class="col-sm-6 b-r">
+
+                                <div class="form-group">
+                                    <label>نام پست</label>
+                                    <input type="text" required #name="ngModel" name="name" [(ngModel)]="post.name"
+                                        placeholder="نام" class="form-control">
+                                    <div *ngIf="(name.touched || name.dirty) && name.invalid">
+                                        <p *ngIf="name.hasError('required')" class="error">
+                                            وارد کردن نام پست الزامی است
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>عنوان پست</label>
+                                    <input type="text" required #title="ngModel" name="title" [(ngModel)]="post.title"
+                                        placeholder="عنوان پست" class="form-control">
+                                    <div *ngIf="(title.touched || title.dirty) && title.invalid">
+                                        <p *ngIf="title.hasError('required')" class="error">
+                                            وارد کردن عنوان پست الزامی است
+                                        </p>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="form-group">
+                                    <label>آدرس پست</label>
+                                    <input type="text" required #url="ngModel" name="url" [(ngModel)]="post.url"
+                                        placeholder="آدرس پست، مثال: پست-شماره-1" class="form-control">
+                                    <div *ngIf="(url.touched || url.dirty) && url.invalid">
+                                        <p *ngIf="url.hasError('required')" class="error">
+                                            وارد کردن آدرس پست الزامی است
+                                        </p>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label>تگ ها</label>
+                                    <mat-form-field class="example-chip-list">
+                                        <mat-chip-list #chipList>
+                                            <mat-chip *ngFor="let i of tags" [selectable]="true" [removable]="true"
+                                                (removed)="remove(i)">
+                                                {{i.name}}
+                                                <mat-icon matChipRemove>delete</mat-icon>
+                                            </mat-chip>
+                                            <input placeholder="تگ ها را با Enter جدا کنید" [matChipInputFor]="chipList"
+                                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="add($event)">
+                                        </mat-chip-list>
+                                    </mat-form-field>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label> آیا کاربران بتوانند برای این پست نظر ارسال کنند؟ </label>
+                                    <mat-slide-toggle [ngModelOptions]="{standalone: true}"
+                                        [(ngModel)]="post.haveComment">
+                                        نظر
+                                    </mat-slide-toggle>
+                                </div>
+
+                                <div class="form-group">
+                                    <label> آیا این پست فعال است؟ </label>
+                                    <mat-slide-toggle [ngModelOptions]="{standalone: true}" [(ngModel)]="post.isActive">
+                                        فعال
+                                    </mat-slide-toggle>
+                                </div>
+
+                                <div class="form-group">
+                                    <label> آیا این پست ویژه است؟ </label>
+                                    <mat-slide-toggle [ngModelOptions]="{standalone: true}"
+                                        [(ngModel)]="post.isHighLight">
+                                        ویژه
+                                    </mat-slide-toggle>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>اولویت</label>
+                                    <input type="number" required #order="ngModel" name="order" [(ngModel)]="post.order"
+                                        placeholder="اولویت" class="form-control">
+                                    <div *ngIf="(order.touched || order.dirty)  && order.invalid">
+                                        <p *ngIf="order.hasError('required')" class="error">
+                                            وارد کردن اولویت الزامی است
+                                        </p>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="form-group">
+                                    <label>انتخاب نوع</label>
+                                    <ng-select #type="ngModel" name="type" [(ngModel)]="post.type" required>
+
+                                        <ng-container
+                                            *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]">
+
+                                            <ng-option *ngIf="auth.isUserAccess(getPostTypeRoleString(i), false)"
+                                                [value]="i">
+                                                {{ getPostTypeString(i) }}</ng-option>
+
+                                        </ng-container>
+
+                                    </ng-select>
+                                    <mat-error *ngIf="type.hasError('required')">
+                                        انتخاب نوع الزامی است
+                                    </mat-error>
+                                </div>
+
+
+                            </div>
+
+                            <div class="col-md-12">
+
+                                <div class="form-group">
+                                    <label>متن پست</label>
+                                    <ckeditor [editor]="Editor" name="content" [(ngModel)]="post.content"
+                                        [config]="config">
+                                    </ckeditor>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>متن کوتاه پست</label>
+                                    <textarea type="text" required #shortContent="ngModel" name="shortContent"
+                                        [(ngModel)]="post.shortContent" placeholder="متن کوتاه پست"
+                                        class="form-control"></textarea>
+                                    <div *ngIf="(shortContent.touched || shortContent.dirty) && shortContent.invalid">
+                                        <p *ngIf="shortContent.hasError('required')" class="error">
+                                            وارد کردن متن کوتاه پست الزامی است
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+
+
+                                <div class="form-group">
+                                    <label> آیا این پست دارای ویدئو است؟ </label>
+                                    <mat-checkbox [disabled]="isEdit || post.headerPicData.length != 0"
+                                        [ngModelOptions]="{standalone: true}" [(ngModel)]="post.haveVideo"> ویدئو
+                                    </mat-checkbox>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>{{ post.haveVideo ? 'ویدئو' : 'تصویر' }} پست</label>
+                                    <br>
+                                    <button (click)="removePic()" [disabled]="post.headerPicData.length == 0"
+                                        mat-raised-button> حذف {{ post.haveVideo ? 'ویدئو' : 'تصویر' }} پست </button>
+
+                                    <a target="_blank" mat-raised-button style="margin: 5px;"
+                                        *ngIf="post.headerPicUrl && isEdit" [href]="getFileUrl(post.headerPicUrl)">نمایش
+                                        {{ post.haveVideo ? 'ویدئو' : 'تصویر' }} پست</a>
+
+                                    <ngx-dropzone #d1 [disabled]="post.headerPicData.length != 0"
+                                        (filesRejected)="removePic()" (filesAdded)="setPic($event)" [multiple]="false"
+                                        [showPreviews]="true" [accept]="getAcceptFileFormat()"
+                                        [label]="'فایل خود را اینجا رها کنید یا کلیک کنید'">
+                                    </ngx-dropzone>
+
+                                    <mat-error *ngIf="!isEdit && post.headerPicData.length == 0">
+                                        انتخاب {{ post.haveVideo ? 'ویدئو' : 'تصویر' }} پست الزامی است
+                                    </mat-error>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <mat-card class="margin-top-10" *ngIf="additionalOptions">
+        <mat-card-content>
+            <div class="row">
+                <div class="col-md-12">
+                    <mat-slide-toggle [ngModelOptions]="{standalone: true}" [(ngModel)]="showAddMainSlideShow">
+                        دارای اسلاید شو
+                    </mat-slide-toggle>
+
+                    <mat-slide-toggle style="margin-right: 10px;" [ngModelOptions]="{standalone: true}"
+                        [(ngModel)]="showAddSchedule">
+                        دارای رویداد
+                    </mat-slide-toggle>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+
+    <mat-card class="margin-top-10" *ngIf="showAddMainSlideShow">
+
+        <mat-card-content>
+            <label>اسلایدشو اصلی</label>
+            <mat-divider></mat-divider>
+            <form #fm2="ngForm">
+
+                <div class="row margin-top-10">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>تاریخ نمایش</label>
+                            <mat-form-field class="example-full-width">
+                                <input #datePublish="ngModel" (click)="openc(picker1)" readonly name="datePublish"
+                                    required matInput [matDatepicker]="picker1" [(ngModel)]="mainslideshow.datePublish"
+                                    placeholder="تاریخ نمایش">
+                                <mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker1">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #picker1 touchUi="true"></mat-datepicker>
+                            </mat-form-field>
+                            <div *ngIf="datePublish.touched && datePublish.invalid" class="error">
+                                <div>
+                                    وارد کردن تاریخ نمایش الزامی است
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>تاریخ انقضا</label>
+                            <mat-form-field class="example-full-width">
+                                <input #dateExpire="ngModel" (click)="openc(picker2)" readonly name="dateExpire"
+                                    required matInput [matDatepicker]="picker2" [(ngModel)]="mainslideshow.dateExpire"
+                                    placeholder="تاریخ انقضا">
+                                <mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker2">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #picker2 touchUi="true"></mat-datepicker>
+                            </mat-form-field>
+                            <div *ngIf="dateExpire.touched && dateExpire.invalid" class="error">
+                                <div>
+                                    وارد کردن تاریخ انقضا الزامی است
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label>تصویر اسلاید</label>
+                            <br>
+                            <button (click)="removePic('mainSlideShow')" [disabled]="mainslideshow.imgData.length == 0"
+                                mat-raised-button>
+                                حذف تصویر
+                            </button>
+
+                            <ngx-dropzone #d2 [disabled]="mainslideshow.imgData.length != 0"
+                                (filesRejected)="removePic('mainSlideShow')"
+                                (filesAdded)="setPic($event, 'mainSlideShow')" [multiple]="false" [showPreviews]="true"
+                                [accept]="'image/png,image/jpeg'" [label]="'تصویر خود را اینجا رها کنید یا کلیک کنید'">
+                            </ngx-dropzone>
+
+                            <mat-error *ngIf="!isEdit && mainslideshow.imgData.length == 0">
+                                انتخاب تصویر اسلاید الزامی است
+                            </mat-error>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="margin-top-10" *ngIf="showAddSchedule">
+        <mat-card-content>
+            <label>رویداد</label>
+            <mat-divider></mat-divider>
+            <form #fm3="ngForm">
+                <div class="row margin-top-10">
+                    <div class="col-lg-12">
+
+                        <div class="form-group">
+                            <label>متن</label>
+                            <textarea type="text" required #content="ngModel" name="content"
+                                [(ngModel)]="Schedule.content" placeholder="متن" class="form-control"></textarea>
+                            <div *ngIf="(content.touched || content.dirty) && content.invalid">
+                                <p *ngIf="content.hasError('required')" class="error">
+                                    وارد کردن متن الزامی است
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>تاریخ شروع</label>
+                            <mat-form-field class="example-full-width">
+                                <input #datePublishSchedule="ngModel" (click)="openc(picker3)" readonly
+                                    name="datePublishSchedule" required matInput [matDatepicker]="picker3"
+                                    [(ngModel)]="Schedule.dateStart" placeholder="تاریخ شروع">
+                                <mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker3">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #picker3 touchUi="true"></mat-datepicker>
+                            </mat-form-field>
+                            <div *ngIf="datePublishSchedule.touched && datePublishSchedule.invalid" class="error">
+                                <div>
+                                    وارد کردن تاریخ شروع الزامی است
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>تاریخ پایان</label>
+                            <mat-form-field class="example-full-width">
+                                <input #dateEndSchedule="ngModel" (click)="openc(picker4)" readonly
+                                    name="dateEndSchedule" required matInput [matDatepicker]="picker4"
+                                    [(ngModel)]="Schedule.dateEnd" placeholder="تاریخ پایان">
+                                <mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker4">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #picker4 touchUi="true"></mat-datepicker>
+                            </mat-form-field>
+                            <div *ngIf="dateEndSchedule.touched && dateEndSchedule.invalid" class="error">
+                                <div>
+                                    وارد کردن تاریخ پایان الزامی است
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label>تصویر رویداد</label>
+                            <br>
+                            <button (click)="removePic('schedule')" [disabled]="Schedule.picData.length == 0"
+                                mat-raised-button> حذف تصویر </button>
+
+                            <ngx-dropzone #d1 [disabled]="Schedule.picData.length != 0"
+                                (filesRejected)="removePic('schedule')" (filesAdded)="setPic($event, 'schedule')"
+                                [multiple]="false" [showPreviews]="true" [accept]="'image/png,image/jpeg'"
+                                [label]="'تصویر خود را اینجا رها کنید یا کلیک کنید'">
+                            </ngx-dropzone>
+
+                            <mat-error *ngIf="!isEdit && Schedule.picData.length == 0">
+                                انتخاب تصویر رویداد الزامی است
+                            </mat-error>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="margin-top-10">
+        <mat-card-content>
+            <div class="row">
+                <div class="col-md-12">
+                    <a mat-raised-button color="warn" style="margin: 5px;" routerLink="/dashboard/post">لغو</a>
+                    <button type="submit" mat-raised-button color="primary"
+                        [disabled]="(this.fm1.invalid || (!this.isEdit && this.post.headerPicData.length == 0)) ||
+                    (this.showAddMainSlideShow && (this.fm2_AddMainSlideShow?.invalid || (!this.isEdit && this.mainslideshow.imgData.length == 0))) ||
+                    (this.showAddSchedule && (this.fm3_AddSchedule?.invalid || (!this.isEdit && this.Schedule.picData.length == 0)))"
+                        (click)="sts()">{{ btnTitle }}</button>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</form>

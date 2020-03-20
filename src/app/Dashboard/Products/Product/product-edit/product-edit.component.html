@@ -1,0 +1,181 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <form #fm1="ngForm" id="fm11">
+                    <div class="row">
+                        <div class="col-lg-12">
+
+                            <div class="row">
+                                <div class="col-sm-6 b-r">
+
+                                    <div class="form-group">
+                                        <label>عنوان {{ PAGE_TITLE }}</label>
+                                        <input type="text" required #name="ngModel" name="name"
+                                            [(ngModel)]="PAGE_Data.title" placeholder="عنوان" class="form-control">
+                                        <div *ngIf="(name.touched || name.dirty) && name.invalid">
+                                            <p *ngIf="name.hasError('required')" class="error">
+                                                وارد کردن عنوان {{ PAGE_TITLE }} الزامی است
+                                            </p>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label>نوع {{ PAGE_TITLE }}</label>
+                                        <ng-select #type="ngModel" name="type" [(ngModel)]="PAGE_Data.type"
+                                            (change)="onProductTypeChange()" required>
+                                            <ng-option *ngFor="let i of [0,1,2,3]"
+                                                [disabled]="(i == 0 || i == 1) && TYPE == 1" [value]="i">
+                                                {{ getProductTypeString(i) }}
+                                            </ng-option>
+                                        </ng-select>
+                                        <mat-error *ngIf="type.hasError('required')">
+                                            انتخاب نوع {{ PAGE_TITLE }} الزامی است
+                                        </mat-error>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label>انتخاب دسته بندی {{ PAGE_TITLE }}</label>
+                                        <ng-select #catselect="ngModel" name="cat"
+                                            [(ngModel)]="PAGE_Data.productCategoryId" required>
+                                            <ng-option *ngFor="let i of productCategories" [value]="i.id">{{i.title}}
+                                            </ng-option>
+                                        </ng-select>
+                                        <mat-error *ngIf="catselect.hasError('required')">
+                                            انتخاب دسته بندی {{ PAGE_TITLE }} الزامی است
+                                        </mat-error>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label>تگ ها</label>
+                                        <mat-form-field class="example-chip-list">
+                                            <mat-chip-list #chipList>
+                                                <mat-chip *ngFor="let i of tags" [selectable]="true" [removable]="true"
+                                                    (removed)="remove(i)">
+                                                    {{i.name}}
+                                                    <mat-icon matChipRemove>delete</mat-icon>
+                                                </mat-chip>
+                                                <input placeholder="تگ ها را با Enter جدا کنید"
+                                                    [matChipInputFor]="chipList"
+                                                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                    [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="add($event)">
+                                            </mat-chip-list>
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                                <div class="col-sm-6">
+
+
+                                    <div class="form-group">
+                                        <label> آیا کاربران بتوانند برای این {{ PAGE_TITLE }} نظر ارسال کنند؟ </label>
+                                        <mat-slide-toggle [ngModelOptions]="{standalone: true}"
+                                            [(ngModel)]="PAGE_Data.haveComment">
+                                            &nbsp;
+                                            نظر
+                                        </mat-slide-toggle>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>{{ valueTitle }}</label>
+                                        <input [disabled]="PAGE_Data.type == null" type="number" required
+                                            #value="ngModel" name="value" [(ngModel)]="PAGE_Data.value"
+                                            placeholder="{{ valueTitle }}" class="form-control">
+                                        <div *ngIf="(value.touched || value.dirty) && value.invalid">
+                                            <p *ngIf="value.hasError('required')" class="error">
+                                                وارد کردن {{ valueTitle }} {{ PAGE_TITLE }} الزامی است
+                                            </p>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label>انتخاب {{ writerTitle }}</label>
+                                        <ng-select [disabled]="PAGE_Data.type == null" #writerselect="ngModel"
+                                            name="writer" [(ngModel)]="PAGE_Data.writerId" required>
+                                            <ng-option *ngFor="let i of writers" [value]="i.id">{{i.fullName}}
+                                            </ng-option>
+                                        </ng-select>
+                                        <mat-error *ngIf="writerselect.hasError('required')">
+                                            انتخاب {{ writerTitle }} الزامی است
+                                        </mat-error>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>قیمت کل (ريال)</label>
+                                        <input type="numebr" required #totalPrice="ngModel" name="totalPrice"
+                                            [(ngModel)]="PAGE_Data.totalPrice" placeholder="قیمت کل (ريال)"
+                                            class="form-control">
+                                        <p>
+                                            {{ getSlicedPrice() }}
+                                        </p>
+                                        <div *ngIf="(totalPrice.touched || totalPrice.dirty) && totalPrice.invalid">
+                                            <p *ngIf="totalPrice.hasError('required')" class="error">
+                                                وارد کردن قیمت کل (ريال) {{ PAGE_TITLE }} الزامی است
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label>توضیحات {{ PAGE_TITLE }}</label>
+                                        <ckeditor [editor]="Editor" name="desc" [(ngModel)]="PAGE_Data.desc"
+                                            [config]="config">
+                                        </ckeditor>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label>تصویر {{ PAGE_TITLE }}</label>
+                                        <br>
+                                        <button (click)="removePic()" [disabled]="PAGE_Data.picData.length == 0"
+                                            mat-raised-button> حذف تصویر </button>
+
+                                        <a target="_blank" mat-raised-button style="margin: 5px;"
+                                            *ngIf="PAGE_Data.picUrl && isEdit"
+                                            [href]="auth.getFileUrl(PAGE_Data.picUrl)">نمایش
+                                            تصویر {{ PAGE_TITLE }}</a>
+
+                                        <ngx-dropzone #d1 [disabled]="PAGE_Data.picData.length != 0"
+                                            (filesRejected)="removePic()" (filesAdded)="setPic($event)"
+                                            [multiple]="false" [showPreviews]="true" [accept]="'image/png,image/jpeg'"
+                                            [label]="'تصویر خود را اینجا رها کنید یا کلیک کنید'">
+                                        </ngx-dropzone>
+
+                                        <mat-error *ngIf="!isEdit && PAGE_Data.picData.length == 0">
+                                            انتخاب تصویر {{ PAGE_TITLE }} الزامی است
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a mat-raised-button color="warn" style="margin: 5px;"
+                                    [routerLink]="'/dashboard/' + PAGE_URL">لغو</a>
+                                <button type="submit" mat-raised-button color="primary"
+                                    [disabled]="!fm1.valid || !isEdit && PAGE_Data.picData.length == 0"
+                                    (click)="sts()">{{ btnTitle }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

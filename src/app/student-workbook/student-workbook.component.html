@@ -1,0 +1,760 @@
+<body class="hold-transition skin-blue layout-top-nav">
+    <div class="">
+
+        <header class="main-header">
+            <nav class="navbar navbar-static-top">
+                <div class="container">
+                    <div class="collapse navbar-collapse pull-right" id="navbar-collapse">
+                        <ul class="nav navbar-nav">
+                            <li class=""><a>داشبورد دانش آموزی <span class="sr-only">(current)</span></a>
+                            </li>
+
+                        </ul>
+                    </div>
+                    <div class="navbar-custom-menu">
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown messages-menu">
+                                <a class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-envelope-o"></i>
+                                    <span class="label label-success">0</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="header">0 - پیام خوانده نشده</li>
+                                    <li>
+                                        <ul class="menu">
+                                        </ul>
+                                    </li>
+                                    <li class="footer"><a>نمایش تمام پیام ها</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown notifications-menu">
+                                <a class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-bell-o"></i>
+                                    <span class="label label-warning">0</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="header">0 - اعلان جدید</li>
+                                    <li>
+                                        <ul class="menu">
+                                        </ul>
+                                    </li>
+                                    <li class="footer"><a>نمایش همه</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown tasks-menu">
+                                <a class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-flag-o"></i>
+                                    <span class="label label-danger">0</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="header">0 - کار برای انجام دارید</li>
+                                    <li>
+                                        <ul class="menu">
+
+                                        </ul>
+                                    </li>
+                                    <li class="footer">
+                                        <a>نمایش همه</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown user user-menu">
+                                <a class="dropdown-toggle" data-toggle="dropdown">
+                                    <img src="assets/user2.jpg" class="user-image" alt="User Image">
+                                    <span class="hidden-xs"> {{ studentServer.name + ' ' + studentServer.lastName }} </span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="user-header">
+                                        <img src="assets/user2.jpg" class="img-circle" alt="User Image">
+
+                                        <p>
+                                            {{ studentServer.name + ' ' + studentServer.lastName }}
+                                        </p>
+                                    </li>
+                                    <li class="user-body">
+                                        <div class="row">
+                                            <div class="col-xs-4 text-center">
+                                                <a>میز کار من</a>
+                                            </div>
+                                            <div class="col-xs-4 text-center">
+                                                <a>صفحه من</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="user-footer">
+                                        <div class="pull-right">
+                                            <a class="btn btn-default btn-flat">پروفایل</a>
+                                        </div>
+                                        <div class="pull-left">
+                                            <a (click)="exit()" class="btn btn-default btn-flat">خروج</a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <!-- Full Width Column -->
+        <div class="content-wrapper">
+            <div class="container">
+                <section class="content-header">
+                    <h1>
+                        صفحه شخصی دانش آموز
+                        <small>کارنامه سال تحصیلی 98-97</small>
+                    </h1>
+                    <ol class="breadcrumb" *ngIf="!isInRegister">
+                        <li><a><i class="fa fa-dashboard"></i> کارنامه</a></li>
+                        <li><a>ریزنمرات</a></li>
+                        <li class="active">کارنامه پایان سال</li>
+                    </ol>
+                </section>
+
+                <section *ngIf="!isInRegister" class="content">
+                    <div *ngIf="isRegisterSuccessfull" class="callout callout-success">
+                        <h4>ثبت نام شما با موفقیت انجام شد</h4>
+
+                        <p>
+                            لطفا برای تکمیل ثبت نام خود از تاریخ  
+							1398/04/09
+                            تا تاریخ  
+							1398/04/12
+                            به مجتمع آموزشی مراجعه فرمایید
+                        </p>
+                        <br>
+                    </div>
+                    <div class="callout callout-success" *ngIf="studentServer.studentState == 1">
+                        <h4>مجوز ثبت نام</h4>
+
+                        <p>
+                            مجوز ثبت نام صادر شد
+                            <br>
+                            احتراما نظر به احراز شرایط لازم آموزشی ، پرورشی و انضباطی توسط آقای
+                            {{ studentServer.name + ' ' + studentServer.lastName }} دانش آموز پایه در سال تحصیلی 99-1398 ، لطفا نسبت به ثبت نام
+                            ایشان در زمان تعیین شده اقدام فرمایید .
+                            <br>
+                            بدیهی است این مجوز از تاریخ 1398/04/09 لغایت 1398/04/12 جهت ثبت نام معتبر خواهد بود .
+                            عدم حضور به موقع به منزله انصراف قطعی حضرتعالی است.
+                            <br>
+                            <br>
+                            <button class="btn btn-primary" *ngIf="!studentServer.isStudentInfoComplated"
+                                (click)="isInRegister = true;"> پیش ثبت نام</button>
+                        </p>
+                    </div>
+                    <div class="callout callout-warning" *ngIf="studentServer.studentState == 4">
+                        <h4>مشروط</h4>
+
+                        <p>ولی محترم و همراه گرامی
+                            <br>
+                            با درود ، به آگاهی می رساند با توجه به بررسی های انجام شده در مورد وضعیت و شرایط تحصیلی
+                            گذشته فرزندمان و نیاز به تلاش بیشتر برای موفقیت ایشان ، خواهشمند است جهت تعیین وضعیت از
+                            تاریخ 1398/04/09 لغایت 1398/04/12 به واحد معاونت اجرایی مراجعه فرمائید.
+                        </p>
+                    </div>
+                    <div class="callout callout-danger" *ngIf="studentServer.studentState == 5">
+                        <h4>خروج</h4>
+                        <p>ولی محترم و همراه گرامی
+                            <br>
+                            با احترام و عرض معذرت ،
+                            با عنایت به تنگنــاهای موجود آموزشـگاه و شـرایط ویژه تحصیـلی فرزندمـان در سال تحصیلی 98-
+                            1397 جهت ارتقاء بیشتر ایشان در امور آموزشی ، پرورشی و انضباطی و برابر تعهد ابتدای سال خودتان
+                            بر مبنای آیین نامه آموزشی مجتمع طاها ، لطفا نسبت به دریافت مدارک و ثبت نام ایشان در یک فضای
+                            آموزشی دیگر اقدام فرمائید.
+
+                        </p>
+                    </div>
+                    <div class="callout callout-danger" *ngIf="studentServer.studentState == 6">
+                        <h4>نقص پرونده</h4>
+                        <p>
+                            ولی محترم و گرامی
+                            <br>
+                            با توجه به اینکه اطلاعات فرزند شما در سیستم جدید بارگذاری شده است، امکان رویداد این خطا می
+                            باشد . از جمله این موارد :
+                            <br>
+                            1-ناقص بودن اطلاعات پرونده دانش آموزی
+                            <br>
+                            2-ناقص بودن نمرات ثبت شده
+                            <br>
+                            3-ناقص بودن اطلاعات آموزشی
+                            <br>
+                            4-ناقص بودن اطلاعات حسابداری
+                            <br>
+                            <br>
+                            لطفا برای برطرف کردن این موارد به آموزشگاه مراجعه فرمائید
+                        </p>
+                    </div>
+                    <div class="callout callout-info" *ngIf="studentServer.studentState != 5">
+                        <h4>ارسال درخواست تجدید نظر</h4>
+
+                        <p>
+                            برای ارسال درخواست تجدید نظر از قسمت سمت راست هر درس، آن درس را انتخاب کنید و سپس روی دکمه
+                            ارسال درخواست
+                            تجدید نظر پایین صفحه کلیک فرمایید.
+                            <br>
+                            لطفا توجه فرمایید که شما تنها مجاز به ارسال درخواست تجدید نظر برای <strong>چهار درس</strong>
+                            هستید.
+                        </p>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h3 class="box-title">کارنامه پایان سال (نوبت دوم)</h3>
+
+                                    <div class="box-tools">
+
+                                    </div>
+                                </div>
+                                <div class="box-body table-responsive no-padding" *ngIf="studentServer.studentState != 5">
+                                    <table class="table table-hover">
+                                        <tr style="background-color:lightblue;border: 2px solid rgb(132, 164, 175)">
+                                            <th style="font-size:x-small">تجدید نظر</th>
+                                            <th style="font-size:x-small">ردیف</th>
+                                            <th style="font-size:x-small">نام درس</th>
+                                            <th style="font-size:x-small">نمره مستمر اول</th>
+                                            <th style="font-size:x-small">نمره پایانی اول</th>
+                                            <th style="font-size:x-small">نمره مستمر دوم</th>
+                                            <th style="font-size:x-small">نمره پایانی دوم</th>
+                                            <th style="font-size:x-small">نمره نوبت اول</th>
+                                            <th style="font-size:x-small">نمره نوبت دوم</th>
+                                            <th style="font-size:x-small">جمع نمرات سالانه</th>
+                                            <th style="text-shadow: gray">نمره سالانه</th>
+                                            <th style="font-size:x-small">کمترین در کلاس</th>
+                                            <th style="font-size:x-small">بیشترین در کلاس</th>
+                                            <th style="font-size:x-small">میانگین در کلاس</th>
+                                            <th style="font-size:x-small">نمره به درصد</th>
+                                            <th style="font-size:x-small">رتبه در کلاس</th>
+                                            <th style="font-size:x-small">رتبه در پایه</th>
+                                        </tr>
+                                        <tr *ngFor="let i of stdWorkBookDetails">
+                                            <td class="tabletd">
+                                                <mat-checkbox
+                                                    [disabled]="(selectedForRequest.length == 4 && !isSelectedForRequest(i.id)) || i.haveRequestToReview"
+                                                    (click)="$event.stopPropagation()"
+                                                    (change)="$event ? toggleSelection(i.id) : null"
+                                                    [checked]="isSelectedForRequest(i.id) || i.haveRequestToReview">
+                                                </mat-checkbox>
+                                            </td>
+                                            <td class="tabletd"> {{ i.colRow }} </td>
+                                            <td class="tabletd"> {{ i.colCourseName }} </td>
+
+                                            <td class="tabletd"> {{ i.colExam1 }} </td>
+                                            <td class="tabletd"> {{ i.colExam2 }} </td>
+                                            <td style="font: bold;background-color:rgb(199, 223, 231);" class="tabletd">
+                                                {{ i.colExam3 }} </td>
+                                            <td style="font: bold;background-color:rgb(199, 223, 231);" class="tabletd">
+                                                {{ i.colExam4 }} </td>
+                                            <td class="tabletd"> {{ i.colExam12 }} </td>
+                                            <td class="tabletd"> {{ i.colExam34 }} </td>
+                                            <td class="tabletd"> {{ i.colSumExam }} </td>
+                                            <td class="tabletd" style="background-color:whitesmoke;font-style: unset">
+                                                {{ i.colYearExam }}
+                                            </td>
+                                            <td style="font-size:x-small" class="tabletd"> {{ i.colMinInClass }} </td>
+                                            <td style="font-size:x-small" class="tabletd"> {{ i.colMaxInClass }} </td>
+                                            <td style="font-size:x-small" class="tabletd"> {{ i.colAvgExam }} </td>
+                                            <td style="font-size:x-small" class="tabletd"> {{ i.colExamPercent }} </td>
+                                            <td style="font-size:x-small" class="tabletd"> {{ i.colScoreInClass }} </td>
+                                            <td style="font-size:x-small" class="tabletd"> {{ i.colScoreInGrade }} </td>
+                                        </tr>
+                                        <tr style="background-color:beige">
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td style="font-size:x-small">معدل نوبت اول</td>
+                                            <td> {{ nobat1Avg }} </td>
+                                            <td style="font-size:x-small">معدل نوبت دوم</td>
+                                            <td> {{ nobat2Avg }} </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>معدل کل</td>
+                                            <td> {{ stdWorkBookHeader.moadelkol }} </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td style="font-size:xx-small">رتبه در کلاس</td>
+                                            <td> {{ stdWorkBookHeader.rotbeclass }} </td>
+                                            <td style="font-size:xx-small">رتبه در پایه</td>
+                                            <td> {{ stdWorkBookHeader.rotbepayeh }} </td>
+                                        </tr>
+                                    </table>
+
+                                </div>
+                            </div>
+
+                            <div class="box box-default" *ngIf="isShowBtnRequest()">
+                                <div class="box-body">
+                                    <button class="btn btn-warning" style="width: 100%;"
+                                        (click)="setRequested()">درخواست تجدید نظر به نمره دروس انتخاب شده</button>
+                                </div>
+                            </div>
+
+                            <div class="box box-default" *ngIf="studentServer.studentState != 5">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">انضباط</h3>
+                                </div>
+                                <div class="box-body">
+                                    <table class="table table-hover">
+                                        <tbody>
+                                            <tr style="background-color:whitesmoke">
+                                                <th>نوبت اول</th>
+                                                <th>{{ stdWorkBookHeader.enzebat1 }}</th>
+                                                <th>نوبت دوم</th>
+                                                <th>{{ stdWorkBookHeader.enzebat2 }}</th>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+                <section *ngIf="isInRegister" class="content">
+                    <div class="callout callout-info">
+                        <h4>فرم پیش ثبت نام</h4>
+
+                        <p>
+                            لطفا برای تکمیل پیش ثبت نام خود، فرم زیر را که مربوط به اطلاعات فرزند شما است را با دقت
+                            تکمیل نمایید و سپس، از دریافت پیام تایید
+                            پیش ثبت نام خود
+                            اطمینان حاصل فرمایید.
+                        </p>
+                    </div>
+                    <div class="callout callout-warning">
+                        <p>
+                            لطفا از بازنشانی (refresh) صفحه جدا خودداری فرمایید، در صورتی که اطلاعات خود را اشتباه وارد
+                            کرده اید از دکمه های قبل و بعد استفاده نمایید و اطلاعات خود را ویرایش کنید
+                        </p>
+                    </div>
+                    <div>
+                        <mat-horizontal-stepper [linear]="true" #stepper>
+                            <mat-step tooltip="اطلاعات فردی دانش آموز" [stepControl]="StudentFormGroup">
+                                <form [formGroup]="StudentFormGroup">
+                                    <ng-template matStepLabel> &nbsp; اطلاعات فردی دانش آموز </ng-template>
+
+                                    <div class="col-lg-6">
+
+                                        <div class="form-group">
+                                            <input type="text" required name="name" [(ngModel)]="student.name"
+                                                formControlName="name" class="form-control" placeholder="نام" />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <input type="text" required name="lastName" [(ngModel)]="student.lastName"
+                                                formControlName="lastName" class="form-control"
+                                                placeholder="نام خانوادگی" />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <input type="text" required name="fatherName"
+                                                [(ngModel)]="student.fatherName" formControlName="fatherName"
+                                                class="form-control" placeholder="نام پدر" />
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-lg-6">
+
+
+
+                                        <div class="form-group">
+                                            <input type="text" required name="birthLocation"
+                                                [(ngModel)]="student.birthLocation" formControlName="birthLocation"
+                                                class="form-control" placeholder="محل تولد" />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <input type="text" required name="idCardSerial"
+                                                [(ngModel)]="student.idCardSerial" formControlName="idCardSerial"
+                                                class="form-control" placeholder="شماره سریال شناسنامه" />
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <mat-form-field class="example-full-width">
+                                                <input (click)="openc(picker1)" readonly name="birthDate" matInput
+                                                    [matDatepicker]="picker1" [(ngModel)]="student.birthDate"
+                                                    placeholder="تاریخ تولد" formControlName="birthDate">
+                                                <mat-datepicker-toggle style="font-size: 25px;" matSuffix
+                                                    [for]="picker1"></mat-datepicker-toggle>
+                                                <mat-datepicker #picker1 touchUi="true"></mat-datepicker>
+                                            </mat-form-field>
+                                        </div>
+
+                                    </div>
+
+
+
+                                    <div>
+                                        <button mat-raised-button color="primary" matStepperNext>بعد</button>
+                                    </div>
+                                </form>
+                            </mat-step>
+                            <mat-step tooltip="اطلاعات پدر دانش آموز" [stepControl]="StudentFatherFormGroup">
+                                <form [formGroup]="StudentFatherFormGroup">
+                                    <ng-template matStepLabel> &nbsp; اطلاعات پدر دانش آموز </ng-template>
+
+                                    <div class="col-lg-6">
+
+                                        <div class="form-group">
+                                            <input type="text" required name="fatherName"
+                                                [(ngModel)]="studentInfo.fatherName" formControlName="fatherName"
+                                                class="form-control" placeholder="نام و نام خانوادگی پدر" />
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <input type="text" required name="fatherEdu"
+                                                [(ngModel)]="studentInfo.fatherEdu" formControlName="fatherEdu"
+                                                class="form-control" placeholder="تحصیلات پدر" />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <input type="number" required name="fatherPhone"
+                                                [(ngModel)]="studentInfo.fatherPhone" formControlName="fatherPhone"
+                                                class="form-control" placeholder="تلفن همراه پدر" />
+                                        </div>
+
+
+                                    </div>
+                                    <div class="col-lg-6">
+
+                                        <div class="form-group">
+                                            <input type="text" required name="fatherJob"
+                                                [(ngModel)]="studentInfo.fatherJob" formControlName="fatherJob"
+                                                class="form-control" placeholder="شغل پدر" />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <input type="number" required name="fatherJobPhone"
+                                                [(ngModel)]="studentInfo.fatherJobPhone"
+                                                formControlName="fatherJobPhone" class="form-control"
+                                                placeholder="تلفن محل کار پدر" />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <input type="text" required name="fatherJobAddress"
+                                                [(ngModel)]="studentInfo.fatherJobAddress"
+                                                formControlName="fatherJobAddress" class="form-control"
+                                                placeholder="آدرس محل کار پدر" />
+                                        </div>
+                                    </div>
+
+
+                                    <div>
+                                        <button mat-raised-button color="accent" matStepperPrevious>قبل</button>
+                                        <button mat-raised-button style="margin-right: 5px;" color="primary"
+                                            matStepperNext>بعد</button>
+                                    </div>
+                                </form>
+                            </mat-step>
+                            <mat-step tooltip="اطلاعات مادر دانش آموز" [stepControl]="StudentMomFormGroup">
+                                <form [formGroup]="StudentMomFormGroup">
+                                    <ng-template matStepLabel> &nbsp; اطلاعات مادر دانش آموز </ng-template>
+
+                                    <div class="col-lg-6">
+
+                                        <div class="form-group">
+                                            <input type="text" required name="momName" [(ngModel)]="studentInfo.momName"
+                                                formControlName="momName" class="form-control"
+                                                placeholder="نام و نام خانوادگی مادر" />
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <input type="text" required name="momEdu" [(ngModel)]="studentInfo.momEdu"
+                                                formControlName="momEdu" class="form-control"
+                                                placeholder="تحصیلات مادر" />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <input type="number" required name="momPhone"
+                                                [(ngModel)]="studentInfo.momPhone" formControlName="momPhone"
+                                                class="form-control" placeholder="تلفن همراه مادر" />
+                                        </div>
+
+
+                                    </div>
+                                    <div class="col-lg-6">
+
+                                        <div class="form-group">
+                                            <input type="text" required name="momJob" [(ngModel)]="studentInfo.momJob"
+                                                formControlName="momJob" class="form-control" placeholder="شغل مادر" />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <input type="number" required name="momJobPhone"
+                                                [(ngModel)]="studentInfo.momJobPhone" formControlName="momJobPhone"
+                                                class="form-control" placeholder="تلفن محل کار مادر" />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <input type="text" required name="momJobAddress"
+                                                [(ngModel)]="studentInfo.momJobAddress" formControlName="momJobAddress"
+                                                class="form-control" placeholder="آدرس محل کار مادر" />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <button mat-raised-button color="accent" matStepperPrevious>قبل</button>
+                                        <button mat-raised-button style="margin-right: 5px;" color="primary"
+                                            matStepperNext>بعد</button>
+                                    </div>
+                                </form>
+                            </mat-step>
+                            <mat-step tooltip="اطلاعات خانوادگی دانش آموز" [stepControl]="StudentFamilyFormGroup">
+                                <form [formGroup]="StudentFamilyFormGroup">
+                                    <ng-template matStepLabel>&nbsp; اطلاعات خانوادگی دانش آموز </ng-template>
+
+                                    <div class="col-lg-6">
+
+                                        <div class="form-group">
+                                            <input type="text" required name="homeAddress"
+                                                [(ngModel)]="studentInfo.homeAddress" formControlName="homeAddress"
+                                                class="form-control" placeholder="آدرس منزل" />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <input type="number" required name="homePhone"
+                                                [(ngModel)]="studentInfo.homePhone" formControlName="homePhone"
+                                                class="form-control" placeholder="تلفن ثابت منزل" />
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <input type="text" required name="familyState"
+                                                [(ngModel)]="studentInfo.familyState" formControlName="familyState"
+                                                class="form-control" placeholder="وضعیت خانوادگی" />
+                                        </div>
+
+                                    </div>
+                                    <div class="col-lg-6">
+
+                                        <div class="form-group">
+                                            <input type="text" required name="religion"
+                                                [(ngModel)]="studentInfo.religion" formControlName="religion"
+                                                class="form-control" placeholder="دین، مذهب" />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <input type="number" required name="socialNet"
+                                                [(ngModel)]="studentInfo.socialNet" formControlName="socialNet"
+                                                class="form-control" placeholder="شماره شبکه اجتماعی" />
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <input type="email" required name="email" [(ngModel)]="studentInfo.email"
+                                                formControlName="email" class="form-control"
+                                                placeholder="پست الکترونیک" />
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <input type="text" required name="desc" [(ngModel)]="studentInfo.desc"
+                                                formControlName="desc" class="form-control" placeholder="توضیحات" />
+                                        </div>
+
+                                    </div>
+
+                                    <div>
+                                        <button mat-raised-button color="accent" matStepperPrevious>قبل</button>
+                                        <button mat-raised-button style="margin-right: 5px;" color="primary"
+                                            matStepperNext>بعد</button>
+                                    </div>
+                                </form>
+                            </mat-step>
+                            <mat-step>
+                                <ng-template matStepLabel>&nbsp; تکمیل پیش ثبت نام </ng-template>
+                                <div class="callout callout-success">
+                                    <p>
+                                        شما تمامی اطلاعات را وارد کردید.
+                                        <br>
+                                        در صورتی که اطلاعات نمایش داده شده صحیح است، لطفا بر روی دکمه تکمیل پیش ثبت نام
+                                        کلیک فرمایید.
+                                        <br>
+                                        در غیر اینصورت لطفا اطلاعات خود را ویرایش کنید.
+                                    </p>
+                                </div>
+                                <div class="col-lg-12">
+
+                                    <div class="ibox float-e-margins animated fadeInRight">
+                                        <div class="ibox-content" id="prt">
+                                            <div class="row">
+                                                <div class="col-lg-4">
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                            اطلاعات دانش آموز
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <div>
+                                                                <strong> نام : </strong>
+                                                                <b> {{ student.name }} </b>
+                                                            </div>
+                                                            <div>
+                                                                <strong> نام خانوادگی : </strong>
+                                                                <b> {{ student.lastName }} </b>
+                                                            </div>
+                                                            <div>
+                                                                <strong> نام پدر : </strong>
+                                                                <b> {{ student.fatherName }} </b>
+                                                            </div>
+                                                            <div>
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input required matInput readonly
+                                                                        [matDatepicker]="picker"
+                                                                        [value]="student.birthDate"
+                                                                        placeholder="تاریخ تولد">
+                                                                    <mat-datepicker #picker touchUi="true">
+                                                                    </mat-datepicker>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div>
+                                                                <strong> شماره سریال شناسنامه : </strong>
+                                                                <b> {{ student.idCardSerial }} </b>
+                                                            </div>
+                                                            <div>
+                                                                <strong> محل تولد : </strong>
+                                                                <b> {{ student.birthLocation }} </b>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-4">
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                            اطلاعات پدر دانش آموز
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <div>
+                                                                <strong> نام پدر : </strong>
+                                                                <b> {{ studentInfo.fatherName }} </b>
+                                                            </div>
+                                                            <div>
+                                                                <strong> تحصیلات پدر : </strong>
+                                                                <b> {{ studentInfo.fatherEdu }} </b>
+                                                            </div>
+                                                            <div>
+                                                                <strong> شغل پدر : </strong>
+                                                                <b> {{ studentInfo.fatherJob }} </b>
+                                                            </div>
+                                                            <div>
+                                                                <strong> تلفن همراه پدر : </strong>
+                                                                <b> {{ studentInfo.fatherPhone }} </b>
+                                                            </div>
+                                                            <div>
+                                                                <strong> تلفن محل کار پدر : </strong>
+                                                                <b> {{ studentInfo.fatherJobPhone }} </b>
+                                                            </div>
+                                                            <div>
+                                                                <strong> آدرس محل کار پدر : </strong>
+                                                                <b> {{ studentInfo.fatherJobAddress }} </b>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="col-lg-4">
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                            اطلاعات مادر دانش آموز
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <div>
+                                                                <strong> نام و نام خانوادگی مادر : </strong>
+                                                                <b> {{ studentInfo.momName }} </b>
+                                                            </div>
+                                                            <div>
+                                                                <strong> تحصیلات مادر : </strong>
+                                                                <b> {{ studentInfo.momEdu }} </b>
+                                                            </div>
+                                                            <div>
+                                                                <strong> شغل مادر : </strong>
+                                                                <b> {{ studentInfo.momJob }} </b>
+                                                            </div>
+                                                            <div>
+                                                                <strong> تلفن همراه مادر : </strong>
+                                                                <b> {{ studentInfo.momPhone }} </b>
+                                                            </div>
+                                                            <div>
+                                                                <strong> تلفن محل کار مادر : </strong>
+                                                                <b> {{ studentInfo.momJobPhone }} </b>
+                                                            </div>
+                                                            <div>
+                                                                <strong> آدرس محل کار مادر : </strong>
+                                                                <b> {{ studentInfo.momJobAddress }} </b>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-4">
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                            اطلاعات خانوادگی دانش آموز
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <div>
+                                                                <strong> وضعیت خانوادگی : </strong>
+                                                                <b> {{ studentInfo.familyState }} </b>
+                                                            </div>
+                                                            <div>
+                                                                <strong> آدرس منزل : </strong>
+                                                                <b> {{ studentInfo.homeAddress }} </b>
+                                                            </div>
+                                                            <div>
+                                                                <strong> تلفن ثابت منزل : </strong>
+                                                                <b> {{ studentInfo.homePhone }} </b>
+                                                            </div>
+                                                            <div>
+                                                                <strong> دین، مذهب : </strong>
+                                                                <b> {{ studentInfo.religion }} </b>
+                                                            </div>
+                                                            <div>
+                                                                <strong> شماره شبکه اجتماعی : </strong>
+                                                                <b> {{ studentInfo.socialNet }} </b>
+                                                            </div>
+                                                            <div>
+                                                                <strong> آدرس پست الکترونیک : </strong>
+                                                                <b> {{ studentInfo.email }} </b>
+                                                            </div>
+                                                            <div>
+                                                                <strong> توضیحات : </strong>
+                                                                <b> {{ studentInfo.desc }} </b>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <button mat-raised-button color="accent" matStepperPrevious>قبل</button>
+                                    <button mat-raised-button style="margin-right: 5px;" color="primary"
+                                        (click)="finish()">تکمیل پیش ثبت نام</button>
+                                </div>
+                            </mat-step>
+                        </mat-horizontal-stepper>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+        <footer class="main-footer text-center">
+            <strong>مالکیت حقوق مادی و معنوی &copy; 1397-1398 <a>مجتمع آموزشی طاها</a> </strong>
+            <br>
+            <span style="font-size: x-small">
+                <a>شرکت توسعه هوشمند سیناپس</a>
+            </span>
+        </footer>
+    </div>
+
+</body>

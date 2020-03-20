@@ -1,0 +1,6 @@
+{
+	"editor.detectIndentation": false,
+	"editor.renderLineHighlight": "all",
+    "editor.renderIndentGuides": false,
+    "explorer.compactFolders": false
+}

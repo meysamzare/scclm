@@ -1,0 +1,271 @@
+<nav class="navbar-default navbar-static-side tse-scrollable" role="navigation" style="transition: 1s;">
+	<div class="sidebar-collapse">
+		<ul class="nav metismenu tse-content" id="side-menu">
+			<li class="nav-header">
+				<div class="dropdown profile-element"> <span>
+						<img alt="image" style="width: 75px; height: 75px;" class="img-circle"
+							[src]="auth.getUserProfilePic()" />
+					</span>
+					<a data-toggle="dropdown" class="dropdown-toggle">
+						<span class="clear"> <span class="block m-t-xs"> <strong
+									class="font-bold">{{auth.getUser().fullName}}</strong>
+							</span> <span class="text-muted text-xs block">
+								{{auth.getUserRole().name}} <b class="caret"></b></span>
+						</span>
+					</a>
+					<ul class="dropdown-menu animated fadeInRight m-t-xs">
+						<!-- <li><a>پروفایل</a></li> -->
+						<!-- routerLink="/dashboard/chat" -->
+						<!-- <li class="divider"></li> -->
+                        <li><a (click)="lockUser()">قفل کردن صفحه</a></li>
+						<li class="divider"></li>
+                        <li><a (click)="Logout()">خروج</a></li>
+						<li class="divider"></li>
+						<li><a *ngIf="auth.isUserAccess('view_Log', false)" routerLink="/dashboard/Log"> لاگ های سیستم </a></li>
+					</ul>
+				</div>
+				<div class="logo-element">
+					سیستم آموزشی
+				</div>
+			</li>
+<!-- [routerLinkActiveOptions]="{ exact: true }" -->
+			<li routerLinkActive="" >
+				<a><i class="fa fa-th-large"></i> <span class="nav-label">داشبورد</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+					<li routerLinkActive="active"><a routerLink="/dashboard">خانه</a></li>
+                    <li routerLinkActive="active"><a routerLink="/dashboard/chat" >گفتگو ها</a></li>
+                    <li routerLinkActive="active"><a routerLink="/dashboard/ticket/conversations" >مکاتبات</a></li>
+                    <li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Notification', false)" routerLink="/dashboard/notification"> اعلامیه ها </a></li>
+				</ul>
+			</li>
+
+			<li *ngIf="auth.isUserAccessGroup(['view_InsTitute', 'view_Yeareducation', 'view_Grade', 'view_Class', 'view_TimeandDays', 'view_TimeSchedule', 'view_Teacher', 'view_Course'])" routerLinkActive="">
+				<a><i class="fa fa-map-o"></i> <span class="nav-label">مدیریت آموزش</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_InsTitute', false)" routerLink="/dashboard/titute"> آموزشگاه </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Yeareducation', false)" routerLink="/dashboard/yeareducation"> سال تحصیلی </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Grade', false)" routerLink="/dashboard/grade"> مقاطع تحصیلی </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Class', false)" routerLink="/dashboard/class"> کلاس ها و شعب </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_TimeandDays', false)" routerLink="/dashboard/dayofweek"> ایام هفته </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_TimeSchedule', false)" routerLink="/dashboard/timesch"> زمانبندی </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Teacher', false)" routerLink="/dashboard/teacher"> دبیران </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Course', false)" routerLink="/dashboard/course"> دروس </a></li>
+
+				</ul>
+			</li>
+			<li *ngIf="auth.isUserAccessGroup(['view_Student', 'view_StudentStudyRecord', 'view_StudentWorkbook', 'view_StudentType', 'view_ClassBook'])" routerLinkActive="">
+				<a><i class="fa fa-users"></i> <span class="nav-label">مدیریت دانش آموز</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+					<li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><a *ngIf="auth.isUserAccess('view_Student', false)" routerLink="/dashboard/student"> دانش آموزان </a></li>
+					<li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><a *ngIf="auth.isUserAccess('view_StudentType', false)" routerLink="/dashboard/student/student-type"> گروه های دانش آموزان </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_StudentStudyRecord', false)" routerLink="/dashboard/student/study-record"> پرونده تحصیلی دانش آموزان </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_StudentWorkbook', false)" routerLink="/dashboard/student/workbook"> کارنامه دانش آموز </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_ClassBook', false)" routerLink="/dashboard/student/class-book"> دفتر کلاسی الکترونیک </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Workbook', false)" routerLink="/dashboard/workbook"> کارنامه ها </a></li>
+				</ul>
+			</li>
+			<li *ngIf="auth.isUserAccessGroup(['view_ScoreThemplate', 'view_StudentScore'])" routerLinkActive="">
+				<a><i class="fa fa-star"></i> <span class="nav-label">سیستم امتیازی</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_ScoreThemplate', false)" routerLink="/dashboard/student/score-themplate"> شابلون امتیازات </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_StudentScore', false)" routerLink="/dashboard/student/student-score"> امتیازات دانش آموزان </a></li>
+				</ul>
+			</li>
+			<li *ngIf="auth.isUserAccessGroup(['view_OrgChart','view_Insurance','view_Education','view_Salary','view_OrgPerson'])" routerLinkActive="">
+				<a><i class="fa fa-user-plus"></i> <span class="nav-label">مدیریت منابع انسانی</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_OrgChart', false)" routerLink="/dashboard/orgchart"> چارت سازمانی </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Insurance', false)" routerLink="/dashboard/insurance"> بیمه ها </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Education', false)" routerLink="/dashboard/education"> مدارک تحصیلی </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Salary', false)" routerLink="/dashboard/salary"> حکم های کارگزینی </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_OrgPerson', false)" routerLink="/dashboard/orgperson"> پرسنل </a></li>
+
+				</ul>
+			</li>
+			<li *ngIf="auth.isUserAccessGroup(['view_Exam','view_ExamType','view_ExamScore'])" routerLinkActive="">
+				<a><i class="fa fa-paper-plane-o"></i> <span class="nav-label">مدیریت آزمون</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Exam', false)" routerLink="/dashboard/exam"> آزمون ها</a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_ExamType', false)" routerLink="/dashboard/examtype"> نوع آزمون </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_ExamScore', false)" routerLink="/dashboard/examscore"> نمرات </a></li>
+
+				</ul>
+			</li>
+			<li *ngIf="auth.isUserAccessGroup(['view_Question','view_QuestionOption'])" routerLinkActive="">
+				<a><i class="fa fa-arrow-circle-o-up"></i> <span class="nav-label">بانک سوالات</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Question', false)" routerLink="/dashboard/question"> سوالات </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_QuestionOption', false)" routerLink="/dashboard/questionoption"> گزینه های سوالات </a></li>
+
+				</ul>
+			</li>
+			<li *ngIf="false" routerLinkActive="">
+				<a><i class="fa fa-newspaper-o"></i> <span class="nav-label">آزمون آنلاین</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+				</ul>
+			</li>
+			<li *ngIf="auth.isUserAccessGroup(['view_ContractType','view_Contract','view_PaymentType','view_StdPayment'])" routerLinkActive="">
+				<a><i class="fa fa-money"></i> <span class="nav-label">امور مالی</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_ContractType', false)" routerLink="/dashboard/contracttype"> نوع های قرارداد </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Contract', false)" routerLink="/dashboard/contract"> قراردادها </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_PaymentType', false)" routerLink="/dashboard/paymenttype"> نوع های پرداخت </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_StdPayment', false)" routerLink="/dashboard/stdpayment"> پرداخت های دانش آموزان </a>
+					</li>
+				</ul>
+			</li>
+			<li *ngIf="false" routerLinkActive="">
+				<a><i class="fa fa-comments-o"></i> <span class="nav-label">پیام کوتاه</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+
+
+				</ul>
+			</li>
+			<li *ngIf="false" routerLinkActive="">
+				<a><i class="fa fa-phone"></i> <span class="nav-label">مدیریت تماس</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+
+
+				</ul>
+			</li>
+			<li *ngIf="false" routerLinkActive="active">
+				<a><i class="fa fa-hand-paper-o"></i> <span class="nav-label">مدیریت حضور و غیاب</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+
+
+				</ul>
+			</li>
+			<li *ngIf="auth.isUserAccessGroup(['view_Product','view_ProductCategory','view_Writer','view_Link'])" routerLinkActive="active">
+				<a><i class="fa fa-book"></i> <span class="nav-label">کتب و جزوات</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+                    <li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Writer', false)" routerLink="/dashboard/writer"> نویسندگان </a></li>
+                    <li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_ProductCategory', false)" routerLink="/dashboard/product-category"> دسته بندی </a></li>
+                    <li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Product', false)" routerLink="/dashboard/product"> محصولات </a></li>
+                    <li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Link', false)" routerLink="/dashboard/link"> لینک ها </a></li>
+				</ul>
+			</li>
+			<li *ngIf="auth.isUserAccessGroup(['view_VirtualTeaching', 'view_Comment'])" routerLinkActive="active">
+				<a><i class="fa fa-sitemap"></i> <span class="nav-label">شبکه آموزش مجازی</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+                    <li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_VirtualTeaching', false)" routerLink="/dashboard/virtual-teaching/offline"> آفلاین </a></li>
+                    <li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Comment', false)" routerLink="/dashboard/virtual-teaching/comments"> نظرات </a></li>
+				</ul>
+			</li>
+			<li *ngIf="auth.isUserAccessGroup(['view_Post','view_MainSlideShow','view_Schedule','view_Advertising','view_Comment','view_PictureGallery','view_Picture','view_BestStudent'])" routerLinkActive="">
+				<a><i class="fa fa-internet-explorer"></i> <span class="nav-label">مدیریت وب سایت</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Post', false)" routerLink="/dashboard/post"> پست ها </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Comment', false)" routerLink="/dashboard/comment"> نظرات </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_MainSlideShow', false)" routerLink="/dashboard/mainslideshow"> اسلاید شو اصلی </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Schedule', false)" routerLink="/dashboard/schedule"> رویداد ها </a></li>
+                    <li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Advertising', false)" routerLink="/dashboard/advertising"> تبلیغ ها </a></li>
+                    
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_PictureGallery', false)" routerLink="/dashboard/picture-gallery"> گالری تصاویر </a></li>
+                    <li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Picture', false)" routerLink="/dashboard/picture"> تصاویر </a></li>
+                    
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_BestStudent', false)" routerLink="/dashboard/best-student"> دانش آموزان برتر </a></li>
+				</ul>
+			</li>
+			<li *ngIf="auth.isUserAccessGroup(['view_ExamAnalize'])" routerLinkActive="active">
+				<a><i class="fa fa-pie-chart"></i> <span class="nav-label">گزارش ها</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+                    
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_ExamAnalize', false)" routerLink="/dashboard/chart-report/exam-analize"> تحلیل آزمون ها </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_ExamAnalize', false)" routerLink="/dashboard/chart-report/exam-analize-stdtype"> تحلیل آزمون ها براساس گروه </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_StudentWorkbook', false)" routerLink="/dashboard/chart-report/workbook/by-class"> جزئیات کارنامه براساس کلاس </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_StudentWorkbook', false)" routerLink="/dashboard/chart-report/workbook/comparison"> کارنامه قیاسی </a></li>
+
+				</ul>
+			</li>
+			<li *ngIf="false" routerLinkActive="active">
+				<a><i class="fa fa-desktop"></i> <span class="nav-label">تکالیف الکترونیک</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+
+
+				</ul>
+			</li>
+			<li *ngIf="false" routerLinkActive="active">
+				<a><i class="fa fa-user-secret"></i> <span class="nav-label">ارزشیابی اساتید</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+
+
+				</ul>
+			</li>
+			<li *ngIf="false" routerLinkActive="active">
+				<a><i class="fa fa-book"></i> <span class="nav-label">دفتر کلاسی الکترونیک</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+
+
+				</ul>
+			</li>
+			<li *ngIf="false" routerLinkActive="active">
+				<a><i style="font-size: 21px;" class="fa fa-mobile"></i> <span class="nav-label">سامانه همراه</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+
+
+				</ul>
+			</li>
+			<li *ngIf="false" routerLinkActive="active">
+				<a><i class="fa fa-apple"></i> <span class="nav-label">مدیریت تغذیه و بوفه</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+
+
+				</ul>
+			</li>
+			<li *ngIf="false" routerLinkActive="active">
+				<a><i class="fa fa-map-signs"></i> <span class="nav-label">امضای دیجیتال</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+
+
+				</ul>
+			</li>
+
+			<li *ngIf="auth.isUserAccessGroup(['view_User','view_Role'])" routerLinkActive="">
+				<a><i class="fa fa-users"></i> <span class="nav-label">کاربران</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_User', false)" routerLink="/dashboard/user">فهرست کاربران</a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Role', false)" routerLink="/dashboard/role"> سطوح دسترسی</a></li>
+
+				</ul>
+			</li>
+
+			<li *ngIf="auth.isUserAccessGroup(['view_Item','view_Category','view_Attribute','view_Unit'])" routerLinkActive="">
+				<a><i class="fa fa-tasks"></i> <span class="nav-label">نمون برگ های سفارشی</span> <span
+						class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Item', false)" routerLink="/dashboard/item">فهرست اطلاعات</a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Category', false)" routerLink="/dashboard/category">فهرست نمون برگ ها</a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Attribute', false)" routerLink="/dashboard/attribute">فهرست فیلد ها</a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Unit', false)" routerLink="/dashboard/unit">فهرست واحد ها</a></li>
+
+				</ul>
+			</li>
+
+		</ul>
+
+	</div>
+</nav>

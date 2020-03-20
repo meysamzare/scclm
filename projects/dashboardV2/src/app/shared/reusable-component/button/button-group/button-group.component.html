@@ -1,0 +1,6 @@
+<div class="buttons field" [class.is-grouped]="grouped" [class.has-addons]="addons"
+    [class.is-grouped-centered]="center">
+    <p class="control" *ngFor="let button of buttons">
+        <ng-container *ngTemplateOutlet="button.tempRef"></ng-container>
+    </p>
+</div>

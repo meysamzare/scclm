@@ -1,0 +1,149 @@
+<div class="row">
+
+    <div class="col-12">
+        <div class="row">
+
+            <aside class="sidebar-page col-12 ">
+                <div class="box">
+                    <div class="box-header">جستجو در نتایج</div>
+                    <div class="box-content">
+                        <div class="ui-input ui-input--quick-search">
+                            <input type="text" class="ui-input-field ui-input-field--cleanable" name="search"
+                                placeholder="عبارت مورد نظر خود را وارد کنید..." [(ngModel)]="txtSearch"
+                                (input)="page = 1; refreshProducts();">
+                            <span class="ui-input-cleaner"></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="box">
+                        <div class="box-header">
+                            <div class="box-toggle" data-toggle="collapse" href="#collapseExample1" role="button"
+                                aria-expanded="true" aria-controls="collapseExample1">
+                                دسته بندی محصولات
+                                <i class="now-ui-icons arrows-1_minimal-down"></i>
+                            </div>
+                        </div>
+                        <div class="box-content">
+                            <div class="collapse show" id="collapseExample1">
+                                <div class="ui-input ui-input--quick-search">
+                                    <input type="text" class="ui-input-field ui-input-field--cleanable" name="catSearch"
+                                        placeholder="نام دسته بندی مورد نظر را وارد کنید...">
+                                    <span class="ui-input-cleaner"></span>
+                                </div>
+                                <div class="filter-option">
+                                    <div class="checkbox">
+                                        <input id="checkbox1" type="checkbox">
+                                        <label for="checkbox1">
+                                            ریمکس
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+            </aside>
+        </div>
+
+        <div class="row">
+
+            <div class="col-12">
+
+
+                <div class="breadcrumb-section default">
+                    <ul class="breadcrumb-list">
+                        <li>
+                            <a>
+                                <span>فروشگاه اینترنتی</span>
+                            </a>
+                        </li>
+                        <li><span>{{ productTitle }}</span></li>
+                    </ul>
+                </div>
+                <div class="listing default">
+                    <div class="listing-counter">{{ totalCount }} مورد</div>
+                    <div class="listing-header default">
+                        <ul class="listing-sort nav nav-tabs justify-content-center" role="tablist"
+                            data-label="مرتب‌ سازی بر اساس :">
+                            <li>
+                                <a style="cursor: pointer;" [class.active]="sort == 'new'"
+                                    (click)="setSort('new')">جدیدترین</a>
+                            </li>
+                            <li>
+                                <a style="cursor: pointer;" [class.active]="sort == 'like'"
+                                    (click)="setSort('like')">محبوب ترین</a>
+                            </li>
+                            <li>
+                                <a style="cursor: pointer;" [class.active]="sort == 'lowPrice'"
+                                    (click)="setSort('lowPrice')">ارزان ترین</a>
+                            </li>
+                            <li>
+                                <a style="cursor: pointer;" [class.active]="sort == 'highPrice'"
+                                    (click)="setSort('highPrice')">گران ترین</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tab-content default text-center">
+
+                        <mat-progress-bar *ngIf="isLoading" [mode]="'buffer'"></mat-progress-bar>
+
+                        <div class="tab-pane active" id="related" role="tabpanel" aria-expanded="true">
+                            <div class="container no-padding-right">
+                                <ul class="row listing-items">
+
+                                    <li class="col-xl-3 col-lg-4 col-md-6 col-12 no-padding" *ngFor="let i of products">
+                                        <div class="product-box" style="cursor: pointer;"
+                                            [routerLink]="['/'+ url +'/'+ i.id +'/'+ i.title]">
+                                            <div class="product-seller-details product-seller-details-item-grid">
+                                                <span class="product-main-seller">
+                                                    {{ getProductWriterString(i.type, i.writerString) }}
+                                                </span>
+                                                <span class="product-seller-details-badge-container"></span>
+                                            </div>
+                                            <a class="product-box-img">
+                                                <img [src]="auth.getFileUrl(i.picUrl)" alt="">
+                                            </a>
+                                            <div class="product-box-content">
+                                                <div class="product-box-content-row">
+                                                    <div class="product-box-title">
+                                                        <a>
+                                                            {{ i.title.length > 50 ? i.title.substr(0, 50) + '...' : i.title }}
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="product-box-row product-box-row-price">
+                                                    <div class="price">
+                                                        <div class="price-value">
+                                                            <div *ngIf="i.totalPrice != 0" class="price-value-wrapper">
+                                                                {{ i.totalPrice }} <span
+                                                                    class="price-currency">ریال</span>
+                                                            </div>
+                                                            <div *ngIf="i.totalPrice == 0" class="price-value-wrapper">
+                                                                <span class="price-currency">رایگان</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <p>
+                                                        {{ getProductTypeString(i.type, i.value) }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pager default text-center">
+                        <pagination (pageChanged)="setPage($event)" [totalItems]="totalCount"
+                            [pageBtnClass]="'pager-item'" [nextText]="'صفحه بعد'" [previousText]="'صفحه قبل'"
+                            [itemsPerPage]="pageSize" [(ngModel)]="page">
+                        </pagination>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>

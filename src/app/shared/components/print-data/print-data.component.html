@@ -1,0 +1,23 @@
+<ng-container *ngIf="printDataService.Type == 1">
+
+    <h3>{{ printDataService.printTitle }}</h3>
+
+    <br>
+
+    <table id="table" class="table table-bordered">
+        <thead>
+            <tr>
+                <th *ngFor="let i of printDataService.tableHeaders">{{ i }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let row of printDataService.tabledData">
+                <td *ngFor="let item of row">{{ item }}</td>
+            </tr>
+        </tbody>
+    </table>
+</ng-container>
+
+<ng-container *ngIf="printDataService.Type == 2">
+    <div [innerHTML]="printDataService.getSerializeHtmlContent()"></div>
+</ng-container>

@@ -1,0 +1,101 @@
+<div dir="rtl">
+    <h1 mat-dialog-title> ویرایش {{ data.stdName }}</h1>
+    <div mat-dialog-content>
+
+        <form #fm1="ngForm" id="fm11" style="padding: 10px;">
+
+            <div class="form-group">
+                <label>نام </label>
+                <input type="text" required #name="ngModel" name="name" [(ngModel)]="student.name" placeholder="نام"
+                    class="form-control">
+                <div *ngIf="(name.touched || name.dirty) &&
+                        name.invalid">
+                    <p *ngIf="name.hasError('required')" class="error">
+                        وارد کردن نام الزامی است
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>نام خانوادگی </label>
+                <input type="text" required #lastName="ngModel" name="lastName" [(ngModel)]="student.lastName"
+                    placeholder="نام خانوادگی" class="form-control">
+                <div *ngIf="(lastName.touched || lastName.dirty) &&
+                    lastName.invalid">
+                    <p *ngIf="lastName.hasError('required')" class="error">
+                        وارد کردن نام خانوادگی الزامی است
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>تاریخ تولد</label>
+                <mat-form-field class="example-full-width">
+                    <input tabindex="7" #dateStart="ngModel" (click)="openc(picker1)" readonly name="dateStart" required
+                        matInput [matDatepicker]="picker1" [(ngModel)]="student.birthDate" placeholder="تاریخ تولد">
+                    <mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1 touchUi="true"></mat-datepicker>
+                </mat-form-field>
+                <div *ngIf="dateStart.touched && dateStart.invalid" class="error">
+                    <div>
+                        وارد کردن تاریخ تولد الزامی است
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>نام پدر </label>
+                <input type="text" required #fatherName="ngModel" name="fatherName" [(ngModel)]="student.fatherName"
+                    placeholder="نام پدر" class="form-control">
+                <div *ngIf="(fatherName.touched || fatherName.dirty) &&
+            fatherName.invalid">
+                    <p *ngIf="fatherName.hasError('required')" class="error">
+                        وارد کردن نام پدر الزامی است
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>شماره شناسنامه</label>
+                <input type="number" required #idNumber="ngModel" name="idNumber" [(ngModel)]="student.idNumber"
+                    placeholder="شماره شناسنامه" class="form-control">
+                <div *ngIf="(idNumber.touched || idNumber.dirty) &&
+            idNumber.invalid">
+                    <p *ngIf="idNumber.hasError('required')" class="error">
+                        وارد کردن شماره شناسنامه الزامی است
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>شماره ملی</label>
+                <input type="number" required #idNumber2="ngModel" name="idNumber2" [(ngModel)]="student.idNumber2"
+                    placeholder="شماره ملی" class="form-control">
+                <div *ngIf="(idNumber2.touched || idNumber2.dirty) &&
+            idNumber2.invalid">
+                    <p *ngIf="idNumber2.hasError('required')" class="error">
+                        وارد کردن شماره ملی الزامی است
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>کد دانش آموز</label>
+                <input type="number" required #code="ngModel" name="code" [(ngModel)]="student.code"
+                    placeholder="کد دانش آموز" class="form-control">
+                <div *ngIf="(code.touched || code.dirty) &&
+                code.invalid">
+                    <p *ngIf="code.hasError('required')" class="error">
+                        وارد کردن کد دانش آموز الزامی است
+                    </p>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+    <div mat-dialog-actions>
+        <button mat-stroked-button [disabled]="fm1.invalid" (click)="sts()" >ویرایش</button>
+        <button mat-stroked-button color="warn" style="margin-right: 5px;" [mat-dialog-close]="false">لغو</button>
+    </div>
+</div>

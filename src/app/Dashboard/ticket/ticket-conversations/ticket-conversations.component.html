@@ -1,0 +1,199 @@
+<span class="fa fa-refresh fa-spin spinner" *ngIf="isLoading"></span>
+<div class="row">
+    <div class="col-lg-3">
+        <div>
+            <div>
+                <div class="file-manager">
+                    <button class="btn btn-block btn-primary compose-mail font-11" type="button"
+                        [routerLink]="['/dashboard/'+ PAGE_URL +'/view/0']"
+                        [matTooltip]="'ارسال '+ PAGE_TITLE +' جدید'"><i class="fa fa-plus"></i>&nbsp;
+                        ارسال {{ PAGE_TITLE }}</button>
+                    <div class="space-25"></div>
+                    <h3>فهرست</h3>
+                    <ul class="folder-list m-b-md" style="padding: 0">
+                        <li>
+                            <a [class.active]="Type == 'inbox'" (click)="setType('inbox')">
+                                <i class="fa fa-inbox "></i> دریافتی
+                                <span *ngIf="inboxCount != 0"
+                                    class="label label-success float-right">{{ inboxCount }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a [class.active]="Type == 'sendbox'" (click)="setType('sendbox')">
+                                <i class="fa fa-envelope-o"></i> ارسالی
+                                <span *ngIf="sendboxCount != 0"
+                                    class="label label-primary float-right">{{ sendboxCount }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a [class.active]="Type == 'import'" (click)="setType('import')">
+                                <i class="fa fa-certificate"></i> مهم
+                                <span *ngIf="importCount != 0"
+                                    class="label label-danger float-right">{{ importCount }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a [class.active]="Type == 'draft'" (click)="setType('draft')">
+                                <i class="fa fa-trash"></i> زباله
+                                <span *ngIf="draftCount != 0"
+                                    class="label label-info float-right">{{ draftCount }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-9 animated fadeInRight">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>لیست {{ PAGE_TITLES }}</h5>
+                <div class="ibox-tools">
+                    <a (click)="refreshDataSource()" matTooltip="بارگذاری مجدد">
+                        <i class="fa fa-refresh"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+
+                <div style="text-align: center;" *ngIf="!haveAnyData() && !isLoading">
+                    <b>موردی یافت نشد</b>
+                </div>
+
+                <div>
+                    <div dir="rtl">
+                        <div class="row">
+                            <div class="col-lg-8">
+
+                                <button class="btn btn-danger font-11" type="button"
+                                    [matTooltip]="'حذف '+ PAGE_TITLES +' انتخاب شده'"
+                                    [disabled]="selection.selected.length < 1" [swal]="deleteSwal"><i
+                                        class="fa fa-trash"></i>&nbsp;حذف {{ PAGE_TITLES }}</button>
+
+                                <button class="btn btn-warning font-11 mg-r" type="button"
+                                    [matTooltip]="'بستن '+ PAGE_TITLES +' انتخاب شده'"
+                                    [disabled]="selection.selected.length < 1" (click)="closeSelected()"><i
+                                        class="fa fa-stop-circle"></i>&nbsp;بستن {{ PAGE_TITLES }}</button>
+
+
+                                <swal #deleteSwal [confirmButtonText]="'بله'" [cancelButtonText]="'خیر'"
+                                    title="آیا اطمینان دارید؟" text="آیا از حذف تیکت های انتخابی اطمینان دارید؟"
+                                    type="question" [showCancelButton]="true" [focusCancel]="true"
+                                    (confirm)="deleteSelected()">
+                                </swal>
+                            </div>
+                            <div class="col-lg-4" style="text-align: left">
+                                <mat-slide-toggle (change)="refreshDataSource()" [(ngModel)]="onlyShowUnreads"
+                                    name="unreads">فقط نمایش موارد خوانده نشده
+                                </mat-slide-toggle>
+                            </div>
+                        </div>
+
+                        <input type="text" id="text1" (input)="applyFilter($event.target.value)" [(ngModel)]="txtSearch"
+                            placeholder="جستجو" class="form-control">
+                    </div>
+                    <br>
+                    <div class="example-container mat-elevation-z8">
+                        <div class="example-loading-shade" *ngIf="isLoadingResults">
+                            <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+                        </div>
+                        <div class="mat-elevation-z8">
+                            <table style="width: 800px;" mat-table [dataSource]="dataSource" matSort>
+                                <ng-container matColumnDef="select">
+                                    <th mat-header-cell *matHeaderCellDef>
+                                        <mat-checkbox [disabled]="!haveAnyData() || getRowCanSelected() == 0"
+                                            matTooltipPosition="before"
+                                            matTooltip="تعداد {{ selection.selected.length }} مورد انتخاب شده است"
+                                            (change)="$event ?  masterToggle() : null"
+                                            [checked]="selection.hasValue() && isAllSelected()"
+                                            [indeterminate]="selection.hasValue() && !isAllSelected()">
+                                        </mat-checkbox>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <mat-checkbox matTooltipPosition="before" matTooltip="انتخاب برای بستن"
+                                            (click)="$event.stopPropagation()"
+                                            (change)="$event ? selection.toggle(row) : null"
+                                            [checked]="selection.isSelected(row)">
+                                        </mat-checkbox>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="id">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> ردیف </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.id}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="subject">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> موضوع </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.subject}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="order">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> فوریت </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <mat-chip-list>
+                                            <mat-chip [style.background-color]="getTicketOrderColor(row.order)">
+                                                {{ getTicketOrderString(row.order) }}
+                                            </mat-chip>
+                                        </mat-chip-list>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="state">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> وضعیت </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <mat-chip-list>
+                                            <mat-chip>
+                                                {{ getTicketStateString(row.state) }}
+                                            </mat-chip>
+                                        </mat-chip-list>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="sender">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> ارسال کننده </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        {{ getTicketTypeString(row.senderType) + ' ' + row.senderName }}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="reciver">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> دریافت کننده </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        {{ getTicketTypeString(row.reciverType) + ' ' + row.reciverName }}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="action">
+                                    <th mat-header-cell *matHeaderCellDef> عملیات </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <button matTooltip="مشاهده مکاتبه" [routerLink]="['./view/' + row.id]"
+                                            matTooltipPosition="before" mat-icon-button>
+                                            <mat-icon
+                                                [matBadge]="row.newConversations == 0 ? null : row.newConversations">
+                                                speaker_notes</mat-icon>
+                                        </button>
+                                    </td>
+
+                                </ng-container>
+
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                                    [routerLink]="['./view/' + row.id]" style="cursor: pointer;"
+                                    [style.background-color]="row.newConversations == 0 ? 'unset' : 'aliceblue'">
+                                </tr>
+                            </table>
+
+                            <div dir="ltr">
+                                <mat-paginator [length]="itemLength" [pageSizeOptions]="[5, 10, 15, 20, 25]"
+                                    (page)="resetSelection($event)" showFirstLastButtons></mat-paginator>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

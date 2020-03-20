@@ -1,0 +1,39 @@
+<div class="margin-top-10 margin-down-10" *ngIf="posts.length != 0">
+    <div class="row">
+        <div class="col-8 al-right">
+            <p>
+                {{ Title }}
+            </p>
+        </div>
+        <div class="col-4 al-left">
+            <a target="_blank" [href]="auth.indexUrl + '#/posts?type=0'">
+                <p class="more-link">
+                    بیشتر
+                    <mat-icon>keyboard_arrow_left</mat-icon>
+                </p>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 hscroll">
+            <mat-card matRipple *ngFor="let i of posts">
+                <a target="_blank" [href]="auth.indexUrl + '#/post/' + i.id + '/' + i.url" style="color: black;">
+                    <div class="row">
+                        <div class="col-12">
+                            <img [src]="auth.getFileUrl(i.headerPicUrl)" width="230" class="header-image">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 al-right">
+                            <b class="title">{{ i.title }}</b>
+
+                            <p class="content">
+                                {{ i.shortContent.length > 40 ? i.shortContent.substr(0, 40) + '...' : i.shortContent}}
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </mat-card>
+        </div>
+    </div>
+</div>

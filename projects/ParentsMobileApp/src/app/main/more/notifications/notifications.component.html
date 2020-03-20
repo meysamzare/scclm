@@ -1,0 +1,59 @@
+<app-toolbar [Title]="'اعلامیه ها'" [showBackButton]="false" (RefreshClick)="refreshNotifications(true)">
+    <app-toolbar-item-left>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item>
+                <mat-slide-toggle [checked]="mainSW.isPushNorificationSubscribed" [labelPosition]="'before'"
+                    (change)="mainSW.toggleSubscription()">
+                    نمایش نوتیفیکیشن
+                </mat-slide-toggle>
+            </button>
+        </mat-menu>
+    </app-toolbar-item-left>
+</app-toolbar>
+
+<mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+<div class="row">
+    <div class="col-sm-12">
+        <input name="search" class="form-control block" [(ngModel)]="search" placeholder="جستجو"
+            (input)="refreshNotifications(true)">
+    </div>
+</div>
+
+<div class="row margin-top-10">
+    <div class="col-sm-12">
+
+        <div *ngFor="let i of notifications"
+            class="card border-{{ getNotificationClassByType(i.notiifcationType) }} margin-top-10">
+
+            <div class="card-header">
+                <image-icon icon="read_notification" *ngIf="moreService.isNotificationContainsReads(i.id)"></image-icon>
+                <image-icon icon="unread_notification" *ngIf="!moreService.isNotificationContainsReads(i.id)">
+                </image-icon>
+                {{ i.title }}
+            </div>
+            <div class="card-body text-{{ getNotificationClassByType(i.notiifcationType) }}">
+                <p class="card-text" style="white-space: pre-wrap;">{{ i.content }}</p>
+            </div>
+            <div class="card-footer">
+                {{ i.createDateString }}
+            </div>
+        </div>
+
+        <div class="row margin-top-10" *ngIf="canShowMoreButton()">
+            <div class="col-sm-12">
+                <button (click)="nextPage()" class="btn btn-block btn-outline-info">نمایش بیشتر</button>
+            </div>
+        </div>
+
+        <ng-container *ngIf="notifications.length == 0">
+            <div class="center">
+                <b>موردی یافت نشد</b>
+            </div>
+        </ng-container>
+
+    </div>
+</div>

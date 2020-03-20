@@ -1,0 +1,100 @@
+<app-feed></app-feed>
+
+<div class="row">
+    <!-- <aside class="sidebar col-12 col-lg-3 order-2 order-lg-1">
+		<div class="sidebar-inner default">
+
+
+			<app-last-feed></app-last-feed>
+	</aside> -->
+    <div class="col-12 col-lg-12 order-1 order-lg-2">
+
+        <div class="row">
+            <aside class="sidebar col-12 col-lg-3 order-2 order-lg-1">
+                <div class="sidebar-inner default">
+                    <app-best-in-week #bestInWeek></app-best-in-week>
+                </div>
+            </aside>
+
+            <div [class.col-lg-12]="!bestInWeek.isAnyBestStudent()" [class.col-lg-9]="bestInWeek.isAnyBestStudent()">
+                <app-slider></app-slider>
+            </div>
+        </div>
+
+
+        <div class="row banner-ads">
+            <div class="col-12">
+                <div class="row">
+
+                    <ng-container *ngFor="let i of getCatByRow(1)">
+
+                        <div class="col-6 col-lg-3" *ngIf="isValidToShow(i)">
+                            <div class="widget-banner card">
+                                <a routerLink="/register-item/{{i.id}}">
+                                    <img class="img-fluid" [src]="getFileUrl(i.registerPicUrl)">
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-lg-3" *ngIf="isValidToShowForInfo(i)">
+                            <div class="widget-banner card">
+                                <a routerLink="/login-item/{{i.id}}/1">
+                                    <img class="img-fluid" [src]="getFileUrl(i.showInfoPicUrl)">
+                                </a>
+                            </div>
+                        </div>
+
+                    </ng-container>
+
+                </div>
+            </div>
+        </div>
+
+        <advertising [Type]="3"></advertising>
+
+        <app-amazing-slider></app-amazing-slider>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <app-last-in-site></app-last-in-site>
+            </div>
+        </div>
+
+        <advertising [Type]="2"></advertising>
+
+        <app-last-in-fadak></app-last-in-fadak>
+
+
+    </div>
+</div>
+
+<div class="row banner-ads">
+    <div class="col-12">
+        <div class="row">
+
+
+            <ng-container *ngFor="let i of getCatByRow(2)">
+
+
+                <div class="col-6 col-lg-3" *ngIf="isValidToShow(i)">
+                    <div class="widget-banner card">
+                        <a routerLink="/register-item/{{i.id}}">
+                            <img class="img-fluid" [src]="getFileUrl(i.registerPicUrl)">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-6 col-lg-3" *ngIf="isValidToShowForInfo(i)">
+                    <div class="widget-banner card">
+                        <a routerLink="/login-item/{{i.id}}/1">
+                            <img class="img-fluid" [src]="getFileUrl(i.showInfoPicUrl)">
+                        </a>
+                    </div>
+                </div>
+
+            </ng-container>
+
+
+        </div>
+    </div>
+</div>

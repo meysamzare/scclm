@@ -1,0 +1,266 @@
+<body class="top-navigation">
+	<div class="row border-bottom white-bg">
+	</div>
+	<div id="wrapper">
+		<div id="page-wrapper" class="gray-bg">
+			<div class="row border-bottom white-bg">
+				<nav class="navbar navbar-static-top" role="navigation">
+					<div class="navbar-header">
+						<button aria-controls="navbar" aria-expanded="false" data-target="#navbar"
+							data-toggle="collapse" class="navbar-toggle collapsed" type="button">
+							<i class="fa fa-reorder"></i>
+						</button>
+						<a style="color: black;" class="navbar-brand">مجتمع آموزشی طاها</a>
+					</div>
+
+
+
+					<div class="navbar-collapse collapse" id="navbar">
+						<div class="col-lg-4">
+							<div class="search-form">
+								<form>
+									<div class="input-group">
+										<input type="text"
+											placeholder="عنوان مقاله ، اخبار و رویداد های مورد نظر خود را جستجو کنید"
+											name="search" class="form-control input-sm">
+										<div class="input-group-btn">
+											<button class="btn btn-sm btn-primary " type="submit">
+												<a style="color: black;" class="fa fa-search"></a>
+											</button>
+										</div>
+									</div>
+
+								</form>
+							</div>
+						</div>
+						<ul class="nav navbar-top-links navbar-left" style="display: inline-flex">
+							<li>
+								<a routerLink="/login-student" *ngIf="isLoginStdValid()">
+									<i class="fa fa-sign-in"></i> ورود دانش آموز
+								</a>
+							</li>
+							<li>
+								<a routerLink="/login">
+									<i class="fa fa-sign-in"></i> ورود
+								</a>
+							</li>
+						</ul>
+					</div>
+				</nav>
+			</div>
+			<div class="wrapper wrapper-content">
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="ibox float-e-margins animated fadeInDown">
+
+								<div class="carousel slide" id="carousel2">
+									<div class="carousel-inner">
+										<div class="item active">
+											<img alt="image" class="img-responsive" src="/assets/img/BigBanner2.jpg">
+										</div>
+									</div>
+									<a data-slide="prev" href="#carousel2" class="right carousel-control">
+										<span class="icon-prev"></span>
+									</a>
+									<a data-slide="next" href="#carousel2" class="left carousel-control">
+										<span class="icon-next"></span>
+									</a>
+								</div>
+
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="ibox float-e-margins animated fadeInDown">
+								<div class="ibox-content">
+									<div class="alert alert-success">
+										<h4 class="font-bold m-b-xs" style="color: midnightblue">
+											اطلاعیه آزمون مجدد
+										</h4>
+										<p>
+											اولیا و دانش آموزان گرامی
+											<br>
+											با سلام
+											<br>
+											با عرض خوش آمد و خیرمقدم به عزیزانی که با شرکت در آزمون ورودی و مراحل گزینشی
+											دبیرستان دوره دوم طاها، به جمع خانواده بزرگ طاها پیوستند، و پوزش از عزیزانی
+											که سعادت خدمت به این عزیزان را در سال آتی نداشتیم؛ به این وسیله به اطلاع می
+											رسد که جهت دانش آموزانی که به هر دلیل (از جمله غیبت در آزمون ورودی،‌ عدم
+											اطلاع از ثبت نام آزمون و...) موفق به شرکت در آزمون ورودی نشدند، در روز ۱۶
+											تیرماه آزمون ورودی مجدد پایه دهم برگزار خواهد شد. این آزمون از درس‌های
+											ریاضی، فارسی، و علوم سال نهم خواهد بود.
+											برای ثبت نام در این آزمون <a href="/#/register-item/1015"> اینجا را کلیک </a> کنید.
+										</p>
+									</div>
+									<div class="alert alert-success" tooltip="کارنامه دانش آموزی">
+										<h3 class="font-bold m-b-xs" style="color: midnightblue">
+											اطلاعیه دریافت کارنامه دانش آموزی
+										</h3>
+										<h4>
+											برای دریافت کارنامه فرزند خود لطفا به <a routerLink="/login-student">این
+												لینک</a> مراجعه فرمایید
+										</h4>
+									</div>
+									<div class="alert alert-info">
+										<h4 class="font-bold m-b-xs" style="color: midnightblue">
+											اطلاعیه ثبت نام پایه هفتم
+										</h4>
+										<p>
+											با تشکر از حسن اعتماد شما ، با توجه به اینکه آزمون ورودی مدارس تیزهوشان در
+											تاریخ
+											1398/03/31 برگزار می شود ، زمان اردوی آشنایی بعدی پایه هفتم بعد از این تاریخ
+											اعلام
+											می گردد
+										</p>
+									</div>
+									<div class="alert alert-info">
+
+										<h4 class="font-bold m-b-xs" style="color: midnightblue">
+											اطلاعیه آزمون ورودی پایه دهم
+										</h4>
+										<p>
+											آزمون ورودی پایه دهم در تاریخ 1398/03/26 ساعت 9 صبح برگزار می شود ، برای
+											دریافت
+											کارت
+											ورود به جلسه از طریق لینک پایین همین صفحه اقدام گردد
+										</p>
+									</div>
+									<div class="alert alert-info">
+
+										<h4 class="font-bold m-b-xs" style="color: midnightblue">
+											اطلاعیه قبول شدگان آزمون علمی پایه دهم
+										</h4>
+										<p>
+											به دوستانی که موفق به پذیرش یا اخذ موقعیت ذخیره شده اند تبریک می‌گوییم.
+											منتظر دیدار شما در اردوی آشنایی هستیم.
+											<br>
+											لطفا شنبه مورخ ۱ تیرماه راس ساعت ۸ به همراه کارت شناسایی در محل اردوگاه
+											«شهید
+											سعیدی» به آدرس خیابان گلخون(قصرالدشت) - کوچه ی ۱ - انتهای کوچه مراجعه
+											فرمایید.
+											<br>
+											<br>
+											اطلاعات اردو:
+											<br>
+											پذیرش: راس ساعت ۸ صبح (لازم است ربع ساعت قبل در محل حضور داشته باشید.)
+											<br>
+											پایان اردو: ۱۲:۰۰ ظهر (لازم است والدین محترم ربع ساعت قبل در محل حضور داشته
+											باشند.)
+											<br>
+											لوازم و وسایل لازم: لباس راحتی، کفش مناسب و راحت، حوله، تغذیه میان روز
+											<br>
+											<br>
+											چنانچه در فعالیت های مختلف علمی، فرهنگی، هنری و مسابقات شرکت داشته اید، کپی
+											مدارک مرتبطه(نظیر کپی تقدیرنامه و ...) را به همراه داشته باشید.
+										</p>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+
+						<div class="col-lg-5">
+							<div class="ibox product-detail float-e-margins animated fadeInDown">
+								<div class="ibox-content">
+									<div class="row">
+										<div class="form-group" *ngFor="let i of categorys">
+											<div *ngIf="isValidToShow(i)">
+												<a class="btn btn-primary btn-sm" routerLink="/register-item/{{i.id}}">
+													<i class="fa fa-edit"></i>
+													<small
+														style="font-size: 13px; padding-right: 5px;">{{i.btnTitle}}</small></a>
+											</div>
+											<div *ngIf="isValidToShowForInfo(i)">
+												<a class="btn btn-info btn-sm" routerLink="/login-item/{{i.id}}/1">
+													<i class="fa fa-check"></i> <small
+														style="font-size: 13px; padding-right: 5px;">نتایج
+														{{i.btnTitle}}</small></a>
+											</div>
+											<div *ngIf="isValidToShowForEntringCard(i)">
+												<a class="btn btn-info btn-sm" routerLink="/login-item/{{i.id}}/2">
+													<i class="fa fa-table"></i> <small
+														style="font-size: 13px; padding-right: 5px;">کارت ورود
+														به جلسه {{i.btnTitle}}</small></a>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-lg-7">
+							<div class="ibox product-detail float-e-margins animated fadeInDown">
+								<div class="ibox-content">
+
+									<div class="row">
+										<div class="col-lg-12">
+
+											<h2 class="font-bold m-b-xs">
+												مجتمع آموزشی طاها
+											</h2>
+											<small>اطلاعیه ثبت نام و پیش ثبت نام مجتمع آموزشی طاها</small>
+											<hr>
+
+											<h3>پیش ثبت نام</h3>
+
+											<div class="small text-muted">
+												<p style="text-align: justify; font-size: 13px;">
+													طاها به دنبال گزینش دانش آموزان برتر اخلاقی و درسی است . طاها به
+													دنبال انتخاب دانش آموزانی است که تحت هدایت و نظارت خانواده ، ضمن
+													تسلط بر مطالب علمی و داشتن استعداد ویژه در زمینه دریافت آموزش های
+													برتر ، دغدغه ی مهم خانواده و مدرسه را در کسب فضایل اخلاقی
+													و دینی به خوبی پاسخ می دهند و در راستای حفظ ارزش های الهی و معنوی
+													تلاش و حرکت می نمایند . به این ترتیب ما به دنبال انتخاب دانش آموزانی
+													شاخص هستیم که از صمیم قلب خود و خانواده شان طاها را دوست داشته باشند
+													نه این که اسیر نام های فریبنده و تبلیغات گوناگون باشند و تلاش های ما
+													را در نیمه راه ابتر گذارند . آنها که طاها را عشق اول خود جهت تحصیل
+													می دانند در انتخاب ( گزینش ) ما موفق ترند .
+												</p>
+
+											</div>
+											<div style="text-align: center; vertical-align: middle;">
+												<dl class="small m-t-md">
+													<dt>شماره های تماس مجتمع آموزشی طاها</dt>
+													<dd style="color: orange; font-size: 12px;">
+														<br> 071-36334574
+														<br> 071-36334576
+														<br> 071-36334578
+														<br>
+													</dd>
+													<br>
+													<dt>راهنمایی و پشتیبان وب سایت</dt>
+													<dd style=" font-size: 15px;">
+														<a href="tel:09981102860" style="color: orange;">
+															<br> 09981102860
+														</a>
+													</dd>
+												</dl>
+											</div>
+										</div>
+									</div>
+
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div class="footer">
+				<div class="pull-left">
+					<p>طراحی و توسعه توسط <strong> توسعه هوشمند سیناپس </strong></p>
+				</div>
+				<div>
+					<p>تمامی حقوق مادی و معنوی این درگاه اینترنتی متعلق به <strong> مجتمع آموزشی طاها </strong> می باشد
+					</p>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</body>

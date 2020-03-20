@@ -1,0 +1,67 @@
+<bu-columns>
+    <bu-column>
+        <article class="tile is-child notification is-primary">
+            <p class="title">Vertical...</p>
+            <p class="subtitle">Top tile</p>
+        </article>
+    </bu-column>
+    <bu-column>
+        <div class="box">
+
+            <app-data-form #fm1>
+                <app-input [(ngModel)]="username" name="us" [label]="'نام کاربری'"></app-input>
+
+                <app-input [(ngModel)]="password" name="pass" [label]="'کلمه عبور'" [Type]="'password'"></app-input>
+
+                <app-button-group [center]="true">
+                    <app-button *button (onClick)="doLogin()" text="ورود" [disabled]="!fm1.isFormValid"
+                        [loading]="isLoading" color="primary" [fullWidth]="true"></app-button>
+                    <app-button *button text="خروج" [light]="true" [fullWidth]="true"></app-button>
+                </app-button-group>
+
+            </app-data-form>
+        </div>
+    </bu-column>
+</bu-columns>
+
+<app-data-form>
+    <bu-columns>
+        <bu-column>
+            <app-select label="آپشن ها" name="select1" [(ngModel)]="selectVal" hint="لطفا توجه داشته باشید">
+                <app-select-option title="آپشن 1" [value]="1" disabled></app-select-option>
+                <app-select-option title="آپشن 2" [value]="2"></app-select-option>
+            </app-select>
+        </bu-column>
+        <bu-column>
+            <app-select label="گزینه ها" name="select2" [(ngModel)]="selectVal">
+                <app-select-option title="گزینه 1" [value]="1"></app-select-option>
+                <app-select-option title="گزینه 2" [value]="2"></app-select-option>
+            </app-select>
+        </bu-column>
+        <bu-column>
+            <app-textarea [(ngModel)]="textAreaVal" name="longText" required label="متن بلند"></app-textarea>
+        </bu-column>
+
+    </bu-columns>
+    <bu-columns>
+        <bu-column>
+            <app-checkbox [(ngModel)]="checkboxVal" name="check" required label="نظر"
+                desc="آیا کاربر بتواند برای این پست نظر ارسال کند"></app-checkbox>
+        </bu-column>
+        <bu-column>
+            <app-radio-group [(ngModel)]="selectVal" name="radio1" label="آپشن های جدید">
+                <app-radio-button title="گزینه 1" [value]="1"></app-radio-button>
+                <app-radio-button title="گزینه 2" [value]="2"></app-radio-button>
+            </app-radio-group>
+        </bu-column>
+    </bu-columns>
+</app-data-form>
+
+<app-data-form>
+    <bu-columns>
+        <bu-column>
+            <app-file [(ngModel)]="file" [fileUrl]="textAreaVal" name="fileInput" label="تصویر ابتدای صفحه"
+                [returnBinery]="true" (fileChange)="onFileChange($event)"></app-file>
+        </bu-column>
+    </bu-columns>
+</app-data-form>

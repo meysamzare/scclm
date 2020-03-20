@@ -1,0 +1,678 @@
+<span class="fa fa-refresh fa-spin spinner" *ngIf="isLoading"></span>
+<div class="row animated fadeInRight">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>لیست دانش آموزان</h5>
+                    <div class="ibox-tools">
+                        <a (click)="refreshDataSource()" matTooltip="بارگذاری مجدد">
+                            <i class="fa fa-refresh"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+
+                    <div class="row">
+
+                        <div class="col-lg-4">
+
+                            <div class="form-group">
+                                <label>انتخاب پایه تحصیلی</label>
+                                <ng-select [clearable]="false" #g #grade="ngModel" name="grade"
+                                    [(ngModel)]="selectedGradeId" (change)="getClassbyGrade(g.selectedValues[0])">
+                                    <ng-option *ngFor="let u of grades" [value]="u.id">{{u.name}}</ng-option>
+                                </ng-select>
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-lg-4">
+
+                            <div class="form-group">
+                                <label>انتخاب کلاس</label>
+                                <ng-select [clearable]="false" [disabled]="!g.selectedValues[0]" #c #class="ngModel"
+                                    name="class" [(ngModel)]="selectedClassId"
+                                    (change)="setSelectedClassId(c.selectedValues[0])">
+                                    <ng-option *ngFor="let u of classes" [value]="u.id">{{u.name}}</ng-option>
+                                </ng-select>
+                            </div>
+
+                        </div>
+
+                        <div class="col-lg-4">
+                            <button mat-stroked-button style="width: 100%; margin-top: 28px; margin-bottom: 10px;"
+                                [disabled]="!selectedGradeId && !selectedClassId && !selectedStudentState && !selectedStdStudyState && !selectedStdBehaveState && !selectedStdPayrollState"
+                                (click)="clearSearch()">
+                                پاک کردن
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+
+                            <div class="form-group">
+                                <label>وضعیت کلی</label>
+                                <ng-select name="studentState" [(ngModel)]="selectedStudentState"
+                                    (change)="refreshDataSource()">
+                                    <ng-option *ngFor="let i of [0,1,2,3,4]" [value]="i">
+                                        {{ getStudentStateString(i) }}
+                                    </ng-option>
+                                </ng-select>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-3">
+
+                            <div class="form-group">
+                                <label>وضعیت آموزشی</label>
+                                <ng-select name="studentState" [(ngModel)]="selectedStdStudyState"
+                                    (change)="refreshDataSource()">
+                                    <ng-option *ngFor="let i of [0,1,2,3,4,5,6,7]" [value]="i">
+                                        {{ getStdStudyStateString(i) }}
+                                    </ng-option>
+                                </ng-select>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-3">
+
+
+                            <div class="form-group">
+                                <label>وضعیت انضباطی</label>
+                                <ng-select name="studentState" [(ngModel)]="selectedStdBehaveState"
+                                    (change)="refreshDataSource()">
+                                    <ng-option *ngFor="let i of [0,1,2,3]" [value]="i">
+                                        {{ getStdBehaveStateString(i) }}
+                                    </ng-option>
+                                </ng-select>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-3">
+
+                            <div class="form-group">
+                                <label>وضعیت مالی</label>
+                                <ng-select name="studentState" [(ngModel)]="selectedStdPayrollState"
+                                    (change)="refreshDataSource()">
+                                    <ng-option *ngFor="let i of [0,1,2,3]" [value]="i">
+                                        {{ getStdPayrollStateString(i) }}
+                                    </ng-option>
+                                </ng-select>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="row al-center" style="margin-bottom: 10px;">
+                        <div class="col-lg-12 al-center">
+                            <p>دسترسی اولیا</p>
+                            <mat-button-toggle-group name="access" [(ngModel)]="parentAccess"
+                                (ngModelChange)="refreshDataSource();">
+                                <mat-button-toggle value="all">همه</mat-button-toggle>
+                                <mat-button-toggle value="access">دارای دسترسی</mat-button-toggle>
+                                <mat-button-toggle value="block">مسدود شده</mat-button-toggle>
+                            </mat-button-toggle-group>
+                        </div>
+                    </div>
+
+                    <div *ngIf="!haveAnyData() && !isLoading">
+                        <P>موردی یافت نشد</P>
+                    </div>
+
+                    <div>
+                        <div dir="rtl">
+
+                            <div class="row">
+                                <div class="col-lg-10">
+
+                                    <button class="btn btn-primary font-11" type="button"
+                                        [routerLink]="['/dashboard/student/edit/0']"
+                                        matTooltip="افزودن دانش آموز جدید"><i class="fa fa-plus"></i>&nbsp;افزودن دانش
+                                        آموز</button>
+
+                                    <button class="btn btn-danger font-11 mg-r" type="button"
+                                        matTooltip="حذف دانش آموزان انتخاب شده"
+                                        [disabled]="selection.selected.length < 1" [swal]="deleteSwal"><i
+                                            class="fa fa-trash"></i>&nbsp;حذف دانش آموزان</button>
+
+                                    <button class="btn btn-info font-11 mg-r" [disabled]="selection.selected.length < 2"
+                                        type="button" matTooltip="افزودن به لیست انتخاب شده ها"
+                                        (click)="addGroupToSelectedList()"><i class="fa fa-check"></i>&nbsp;افزودن به
+                                        لیست
+                                        انتخاب شده ها</button>
+
+                                    <button class="btn btn-info font-11 mg-r" type="button"
+                                        matTooltip="دریافت نمونه فایل اکسل برای ورود داده"
+                                        (click)="getExcelExample()"><i class="fa fa-file"></i>&nbsp;دریافت نمونه فایل
+                                        اکسل</button>
+
+                                    <label for="file" class="btn btn-primary font-11 mg-r" type="button"
+                                        matTooltip="ورود داده با اکسل"><i class="fa fa-file"></i>&nbsp; ورود داده با
+                                        اکسل
+                                    </label>
+                                    <input type="file" id="file" style="display: none;"
+                                        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                        (change)="handleFileExcelForImport($event.target.files)">
+
+                                    <swal #deleteSwal [confirmButtonText]="'بله'" [cancelButtonText]="'خیر'"
+                                        title="آیا اطمینان دارید؟" text="حذف کردن این موارد قابل بازگشت نمی باشد"
+                                        type="question" [showCancelButton]="true" [focusCancel]="true"
+                                        (confirm)="deleteSelected()"></swal>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div style="float: left;">
+                                        <button class="btn btn-white btn-sm " (click)="printData()"
+                                            matTooltip="چاپ اطلاعات"><i class="fa fa-print"></i> </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <input type="text" id="text1" (keyup)="applyFilter($event.target.value)"
+                                        [(ngModel)]="txtSearch" placeholder="جستجو" class="form-control">
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <br>
+                        <div class="example-container mat-elevation-z8">
+                            <div class="example-loading-shade" *ngIf="isLoadingResults">
+                                <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+                            </div>
+                            <div class="mat-elevation-z8">
+                                <table mat-table [dataSource]="dataSource" matSort style="width: 1100px;">
+                                    <ng-container matColumnDef="select">
+                                        <th mat-header-cell *matHeaderCellDef>
+                                            <mat-checkbox [disabled]="!haveAnyData() || getRowCanSelected() == 0"
+                                                matTooltipPosition="before"
+                                                matTooltip="تعداد {{ selection.selected.length }} مورد انتخاب شده است"
+                                                (change)="$event ? masterToggle() : null"
+                                                [checked]="selection.hasValue() && isAllSelected()"
+                                                [indeterminate]="selection.hasValue() && !isAllSelected()">
+                                            </mat-checkbox>
+                                        </th>
+                                        <td mat-cell *matCellDef="let row">
+                                            <mat-checkbox matTooltipPosition="before"
+                                                matTooltip="{{  'انتخاب برای حذف' }}" (click)="$event.stopPropagation()"
+                                                (change)="$event ? selection.toggle(row) : null"
+                                                [checked]="selection.isSelected(row)">
+                                            </mat-checkbox>
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="id">
+                                        <th mat-header-cell *matHeaderCellDef> </th>
+                                        <td mat-cell *matCellDef="let row">
+
+                                            <button matRippleDisabled="true" (click)="onEdit(row.id)" mat-icon-button
+                                                *ngIf="row.isStudentInfoComplated == false"
+                                                matTooltip="برخی از اطلاعات تکمیلی دانش آموز وارد نشده است">
+                                                <span class="bell fa fa-bell"></span>
+                                            </button>
+
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="code">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> کد دانش آموزی </th>
+                                        <td mat-cell *matCellDef="let row">
+                                            {{row.code}}
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="namelast">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> نام و نام خانوادگی </th>
+                                        <td mat-cell *matCellDef="let row" style="cursor: pointer;"
+                                            (click)="ViewStudent(row)" matRipple>
+                                            {{row.name + ' ' + row.lastName}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="fatherName">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> نام پدر </th>
+                                        <td mat-cell *matCellDef="let row">
+                                            {{row.fatherName}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="idNumber">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> کد ملی </th>
+                                        <td mat-cell *matCellDef="let row">
+                                            {{row.idNumber2}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="state">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> وضعیت </th>
+                                        <td mat-cell *matCellDef="let row">
+                                            <mat-chip-list>
+                                                <ng-container *ngFor="let i of [0,1,2,3,4]">
+                                                    <mat-chip
+                                                        (click)="openStdChangeStateSheet(row.id, row.studentState)"
+                                                        [style.background-color]="getStudentStateColorString(i)"
+                                                        selected *ngIf="row.studentState == i">
+                                                        {{ getStudentStateString(i) }}
+                                                    </mat-chip>
+                                                </ng-container>
+
+                                            </mat-chip-list>
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="action">
+                                        <th mat-header-cell *matHeaderCellDef>
+                                            عملیات
+                                        </th>
+                                        <td mat-cell *matCellDef="let row">
+
+
+                                            <button mat-icon-button matTooltip="افزودن به لیست انتخاب شده ها"
+                                                [disabled]="isItemExistInSelectedItemList(row)"
+                                                (click)="addToSelectedList(row)">
+                                                <mat-icon>done_all</mat-icon>
+                                            </button>
+
+
+                                            <button *ngIf="!row.haveStdClassMng"
+                                                matTooltip="ثبت نام {{row.name + ' ' + row.lastName}}"
+                                                matTooltipPosition="before" mat-icon-button
+                                                (click)="registerStudent(row.id, row.name + ' ' + row.lastName)">
+                                                <mat-icon>playlist_add</mat-icon>
+                                            </button>
+
+                                            <button *ngIf="row.haveStdClassMng"
+                                                matTooltip="لیست ثبت نامی  {{row.name + ' ' + row.lastName}}"
+                                                matTooltipPosition="before" mat-icon-button
+                                                (click)="showRegisteredList(row.id, row.name + ' ' + row.lastName)">
+                                                <mat-icon [matBadge]="row.stdClassMngNumber" matBadgeColor="accent"
+                                                    style="color: limegreen;">verified_user</mat-icon>
+                                            </button>
+
+                                            <button
+                                                *ngIf="auth.isUserAccessGroup(['edit_StudentPassword', 'edit_StudentParentPassword'])"
+                                                mat-icon-button matTooltip="دسترسی ها" [matMenuTriggerFor]="menu">
+                                                <mat-icon>fingerprint</mat-icon>
+                                            </button>
+                                            <mat-menu #menu="matMenu">
+                                                <button *ngIf="auth.isUserAccess('edit_StudentPassword', false)"
+                                                    (click)="openChangePasswordDialog(row.id, row.name + ' ' + row.lastName, 1)"
+                                                    mat-menu-item>
+                                                    <mat-icon>tag_faces</mat-icon>
+                                                    <span>تغییر کلمه عبور دانش آموز</span>
+                                                </button>
+                                                <button mat-menu-item>
+                                                    <mat-slide-toggle color="primary"
+                                                        (change)="toggleAccessByType(row.id, 1, $event)"
+                                                        [checked]="row.studentAccess">
+                                                        دسترسی دانش آموز
+                                                    </mat-slide-toggle>
+                                                </button>
+                                                <button *ngIf="auth.isUserAccess('edit_StudentParentPassword', false)"
+                                                    (click)="openChangePasswordDialog(row.id, row.name + ' ' + row.lastName, 2)"
+                                                    mat-menu-item>
+                                                    <mat-icon>face</mat-icon>
+                                                    <span>تغییر کلمه عبور اولیا</span>
+                                                </button>
+                                                <button mat-menu-item [role]="'menuitemradio'">
+                                                    <mat-slide-toggle color="primary"
+                                                        (change)="toggleAccessByType(row.id, 2, $event)"
+                                                        [checked]="row.parentAccess">
+                                                        دسترسی اولیا
+                                                    </mat-slide-toggle>
+                                                </button>
+                                            </mat-menu>
+
+                                            <button matTooltip="مشاهده {{row.name + ' ' + row.lastName}}"
+                                                matTooltipPosition="before" mat-icon-button (click)="ViewStudent(row)">
+                                                <mat-icon>remove_red_eye</mat-icon>
+                                            </button>
+
+                                            <button matTooltip="ویرایش سریع {{row.name + ' ' + row.lastName}}"
+                                                matTooltipPosition="before" mat-icon-button (click)="onFastEdit(row)">
+                                                <mat-icon>edit_location</mat-icon>
+                                            </button>
+
+                                            <button matTooltip="ویرایش {{row.name + ' ' + row.lastName}}"
+                                                matTooltipPosition="before" mat-icon-button (click)="onEdit(row.id)">
+                                                <mat-icon>edit</mat-icon>
+                                            </button>
+
+
+
+                                        </td>
+
+                                    </ng-container>
+
+
+                                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                    <tr mat-row *matRowDef="let row; columns:  displayedColumns;">
+                                    </tr>
+                                </table>
+
+                                <div dir="ltr">
+                                    <mat-paginator [length]="itemLength" [pageSizeOptions]="[5, 10, 15, 20, 25]"
+                                        (page)="resetSelection($event)" showFirstLastButtons></mat-paginator>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-12">
+
+            <div class="ibox float-e-margins animated fadeInRight" *ngIf="showSelectedStudentList">
+                <div class="ibox-title">
+                    <h5> لیست انتخاب شده ها </h5>
+                    <div class="ibox-tools">
+                        <span>
+                            <b> تعداد : {{ selectedStudentList.length }} </b>
+                        </span>
+                        &nbsp;&nbsp;
+                        <a class="close-link" matTooltip="بستن" (click)="closeSelectedList()">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+
+                    <button class="btn btn-primary font-11" type="button" (click)="groupRegisteration()"
+                        matTooltip="ثبت نام گروهی لیست انتخاب شده"><i class="fa fa-plus"></i>&nbsp;ثبت نام گروهی
+                    </button>
+
+
+                    <div class="btn-group mg-r">
+                        <button data-toggle="dropdown" class="btn btn-warning dropdown-toggle font-11 ">وضعیت</button>
+                        <ul class="dropdown-menu">
+                            <li *ngFor="let i of [1,2,3,4,5,6]"><a class="dropdown-item"
+                                    matTooltip="تغییر وضعیت موارد انتخابی به {{ getStudentStateString(i) }}"
+                                    (click)="setState(i)">{{ getStudentStateString(i) }}</a></li>
+                        </ul>
+                    </div>
+
+                    <button style="margin-right: 10px;" class="btn btn-danger font-11" type="button"
+                        (click)="resetPassword(1)" matTooltip="تغییر کلمه عبور اولیا به 1"><i
+                            class="fa fa-key"></i>&nbsp;بازنشانی کلمه عبور اولیا
+                    </button>
+
+
+                    <div class="btn-group mg-r">
+                        <button data-toggle="dropdown" class="btn btn-info dropdown-toggle font-11 ">
+                            دسترسی اولیا
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" matTooltip="تغییر دسترسی اولیا به فعال"
+                                    (click)="changeAccess(1, true)">فعال</a></li>
+                            <li><a class="dropdown-item" matTooltip="تغییر دسترسی اولیا به مسدود"
+                                    (click)="changeAccess(1, false)">مسدود</a></li>
+                        </ul>
+                    </div>
+
+                    <button style="margin-right: 10px;" class="btn btn-danger font-11" type="button"
+                        (click)="resetPassword(2)" matTooltip="تغییر کلمه عبور دانش آموز به 1"><i
+                            class="fa fa-key"></i>&nbsp;بازنشانی کلمه عبور
+                        دانش آموز
+                    </button>
+
+
+                    <div class="btn-group mg-r">
+                        <button data-toggle="dropdown" class="btn btn-info dropdown-toggle font-11 ">
+                            دسترسی دانش آموزان
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" matTooltip="تغییر دسترسی دانش آموزان به فعال"
+                                    (click)="changeAccess(2, true)">فعال</a></li>
+                            <li><a class="dropdown-item" matTooltip="تغییر دسترسی دانش آموزان به مسدود"
+                                    (click)="changeAccess(2, false)">مسدود</a></li>
+                        </ul>
+                    </div>
+
+                    <br>
+                    <br>
+                    <div class="mat-elevation-z8">
+                        <table class="pad-td" mat-table [dataSource]="selectedStudentdataSource">
+
+                            <ng-container matColumnDef="id">
+                                <th style="padding: 15px !important; " mat-header-cell *matHeaderCellDef> ردیف </th>
+                                <td style="padding: 15px !important; " mat-cell *matCellDef="let row">
+                                    {{ selectedStudentList.indexOf(row) + 1 }}
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="code">
+                                <th mat-header-cell *matHeaderCellDef> کد دانش آموزی </th>
+                                <td mat-cell *matCellDef="let row">
+                                    {{row.code}}
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="namelast">
+                                <th mat-header-cell *matHeaderCellDef> نام و نام خانوادگی </th>
+                                <td mat-cell *matCellDef="let row">
+                                    {{row.name + ' ' + row.lastName}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="fatherName">
+                                <th mat-header-cell *matHeaderCellDef> نام پدر </th>
+                                <td mat-cell *matCellDef="let row">
+                                    {{row.fatherName}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="idNumber">
+                                <th mat-header-cell *matHeaderCellDef> کد ملی </th>
+                                <td mat-cell *matCellDef="let row">
+                                    {{row.idNumber}} </td>
+                            </ng-container>
+
+
+                            <ng-container matColumnDef="action">
+                                <th mat-header-cell *matHeaderCellDef> عملیات </th>
+                                <td mat-cell *matCellDef="let row">
+                                    <button mat-icon-button matTooltip="حذف {{ row.title }} از لیست"
+                                        (click)="deleteSelectedListRow(row)">
+                                        <mat-icon>delete_sweep</mat-icon>
+                                    </button>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedSelectedStudentColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedSelectedStudentColumns;"></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+
+            <div class="ibox float-e-margins animated fadeInRight" *ngIf="showStudentDetail">
+                <div class="ibox-title">
+                    <h5>اطلاعات دانش آموز : <strong> {{ studentDetail.name + ' ' + studentDetail.lastName }}
+                        </strong></h5>
+                    <!-- <button style="float: left;" matTooltip="بستن" (click)="showDietaledBox = false;" mat-icon-button><mat-icon>close</mat-icon></button> -->
+                    <div class="ibox-tools">
+                        <a class="close-link" matTooltip="بستن" (click)="showStudentDetail = false;">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    اطلاعات دانش آموز
+                                </div>
+                                <div class="panel-body">
+                                    <div>
+                                        <strong> کد دانش آموزی : </strong>
+                                        <b> {{ studentDetail.code }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> کد دانش آموزی آموزش و پرورش : </strong>
+                                        <b> {{ studentDetail.orgCode }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> نام : </strong>
+                                        <b> {{ studentDetail.name }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> نام خانوادگی : </strong>
+                                        <b> {{ studentDetail.lastName }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> نام پدر : </strong>
+                                        <b> {{ studentDetail.fatherName }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> کد ملی : </strong>
+                                        <b> {{ studentDetail.idNumber }} </b>
+                                    </div>
+                                    <div>
+                                        <mat-form-field class="example-full-width">
+                                            <input required matInput readonly [matDatepicker]="picker"
+                                                [value]="studentDetail.birthDate" placeholder="تاریخ تولد">
+                                            <mat-datepicker #picker touchUi="true"></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+                                    <div>
+                                        <strong> شماره شناسنامه : </strong>
+                                        <b> {{ studentDetail.idNumber2 }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> شماره سریال شناسنامه : </strong>
+                                        <b> {{ studentDetail.idCardSerial }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> محل تولد : </strong>
+                                        <b> {{ studentDetail.birthLocation }} </b>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    اطلاعات پدر دانش آموز
+                                </div>
+                                <div class="panel-body">
+                                    <div>
+                                        <strong> نام پدر : </strong>
+                                        <b> {{ studentInfoDetail.fatherName }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> تحصیلات پدر : </strong>
+                                        <b> {{ studentInfoDetail.fatherEdu }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> شغل پدر : </strong>
+                                        <b> {{ studentInfoDetail.fatherJob }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> تلفن همراه پدر : </strong>
+                                        <b> {{ studentInfoDetail.fatherPhone }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> تلفن محل کار پدر : </strong>
+                                        <b> {{ studentInfoDetail.fatherJobPhone }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> آدرس محل کار پدر : </strong>
+                                        <b> {{ studentInfoDetail.fatherJobAddress }} </b>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    اطلاعات مادر دانش آموز
+                                </div>
+                                <div class="panel-body">
+                                    <div>
+                                        <strong> نام و نام خانوادگی مادر : </strong>
+                                        <b> {{ studentInfoDetail.momName }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> تحصیلات مادر : </strong>
+                                        <b> {{ studentInfoDetail.momEdu }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> شغل مادر : </strong>
+                                        <b> {{ studentInfoDetail.momJob }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> تلفن همراه مادر : </strong>
+                                        <b> {{ studentInfoDetail.momPhone }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> تلفن محل کار مادر : </strong>
+                                        <b> {{ studentInfoDetail.momJobPhone }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> آدرس محل کار مادر : </strong>
+                                        <b> {{ studentInfoDetail.momJobAddress }} </b>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    اطلاعات خانوادگی دانش آموز
+                                </div>
+                                <div class="panel-body">
+                                    <div>
+                                        <strong> وضعیت خانوادگی : </strong>
+                                        <b> {{ studentInfoDetail.familyState }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> آدرس منزل : </strong>
+                                        <b> {{ studentInfoDetail.homeAddress }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> تلفن ثابت منزل : </strong>
+                                        <b> {{ studentInfoDetail.homePhone }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> دین، مذهب : </strong>
+                                        <b> {{ studentInfoDetail.religion }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> شماره شبکه اجتماعی : </strong>
+                                        <b> {{ studentInfoDetail.socialNet }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> آدرس پست الکترونیک : </strong>
+                                        <b> {{ studentInfoDetail.email }} </b>
+                                    </div>
+                                    <div>
+                                        <strong> توضیحات : </strong>
+                                        <b> {{ studentInfoDetail.desc }} </b>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
