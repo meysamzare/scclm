@@ -36,6 +36,8 @@ import { MatPaginatorIntlCro } from 'src/app/shared/paginationInit';
 import { MatDatePickerInit, MaterialPersianDateAdapter, PERSIAN_DATE_FORMATS } from 'src/app/shared/persianDateInit';
 import { HaveAccessDirective } from './directives/have-access.directive';
 import { DataListFilterItemDirective } from './data/data-list/data-list-filter-item.directive';
+import { DataIntroComponent } from './data/data-intro/data-intro.component';
+import { DataIntroItemDirective } from './data/data-intro/data-intro-item.directive';
 
 
 @NgModule({
@@ -68,7 +70,9 @@ import { DataListFilterItemDirective } from './data/data-list/data-list-filter-i
         ColComponent,
         IconComponent,
         HaveAccessDirective,
-        DataListFilterItemDirective
+        DataListFilterItemDirective,
+        DataIntroComponent,
+        DataIntroItemDirective
     ],
     imports: [
         CommonModule,
@@ -108,7 +112,9 @@ import { DataListFilterItemDirective } from './data/data-list/data-list-filter-i
         ColComponent,
         IconComponent,
         HaveAccessDirective,
-        DataListFilterItemDirective
+        DataListFilterItemDirective,
+        DataIntroComponent,
+        DataIntroItemDirective
     ],
     providers: [
         { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },

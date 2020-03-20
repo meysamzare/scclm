@@ -11,6 +11,8 @@ export class IconComponent implements OnInit {
 
     @Input() icon = "";
 
+    @Input() size = "";
+
     @Input() color: "info" | "success" | "warning" | "danger" | "" = "";
 
     constructor() { }
