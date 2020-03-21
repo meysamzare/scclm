@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { AuthService } from 'src/app/shared/Auth/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -9,6 +9,7 @@ import { IProductComment } from 'src/app/Dashboard/WebSiteManagment/comment/prod
 import { finalize, debounceTime } from 'rxjs/operators';
 import { LinkService } from '../link.service';
 import { Subject } from 'rxjs/internal/Subject';
+import { MediaMatcher } from '@angular/cdk/layout';
 
 declare var $: any;
 
@@ -17,7 +18,7 @@ declare var $: any;
     templateUrl: './view-virtual-teaching.component.html',
     styleUrls: ['./view-virtual-teaching.component.scss']
 })
-export class ViewVirtualTeachingComponent implements OnInit {
+export class ViewVirtualTeachingComponent implements OnInit, OnDestroy {
 
     product: IProduct = new IProduct();
     writer: IWriter = new IWriter();
@@ -35,15 +36,28 @@ export class ViewVirtualTeachingComponent implements OnInit {
 
     isLoading = true;
 
+    mobileQuery: MediaQueryList;
+    private _mobileQueryListener: () => void;
+
     constructor(
         public auth: AuthService,
         private router: Router,
         private activeRoute: ActivatedRoute,
         private sanitizer: DomSanitizer,
-        private link: LinkService
-    ) { }
+        private link: LinkService,
+        changeDetectorRef: ChangeDetectorRef,
+        media: MediaMatcher,
+    ) { 
+        this.mobileQuery = media.matchMedia('(max-width: 600px)');
+        this._mobileQueryListener = () => changeDetectorRef.detectChanges();
+        this.mobileQuery.addListener(this._mobileQueryListener);
+    }
 
-    setLike$ = new Subject<{id: any, like: boolean}>();
+    ngOnDestroy(): void {
+        this.mobileQuery.removeListener(this._mobileQueryListener);
+    }
+
+    setLike$ = new Subject<{ id: any, like: boolean }>();
 
     ngOnInit() {
         this.auth.post("/api/Product/getProductIndex", this.activeRoute.snapshot.params["id"])
@@ -79,18 +93,24 @@ export class ViewVirtualTeachingComponent implements OnInit {
             }).subscribe(jdata => {
                 if (jdata.success) {
                     let link = this.links.find(c => c.id == data.id);
-            
+
                     if (data.like) {
-                       this.link.removeLiked(data.id);
-                       link.like += -1;
+                        this.link.removeLiked(data.id);
+                        link.like += -1;
                     } else {
-                       this.link.addLiked(data.id);
-                       link.like += 1;
+                        this.link.addLiked(data.id);
+                        link.like += 1;
                     }
                 }
             });
 
         });
+    }
+
+    getImgBackground() {
+        let style = 'linear-gradient(#004092, #020202, transparent), url(' + this.auth.getFileUrl(this.product.picUrl) + ') no-repeat center';
+
+        return this.sanitizer.bypassSecurityTrustStyle(style)
     }
 
     getLikeCount(link: ILink) {
@@ -114,7 +134,7 @@ export class ViewVirtualTeachingComponent implements OnInit {
             like: this.isLiked(id)
         });
     }
-    
+
     commentCancel() {
         this.isCommentPanelExpend = false;
 

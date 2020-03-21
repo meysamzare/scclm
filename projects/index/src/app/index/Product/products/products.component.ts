@@ -17,7 +17,7 @@ export class ProductsComponent implements OnInit {
     productCategories: IProductCategory[] = [];
 
     isLoading = false;
-    
+
     products: IProduct[] = [];
     totalCount = 0;
     sort = "new";
@@ -29,15 +29,19 @@ export class ProductsComponent implements OnInit {
     productTitle = "کتب و جزوات کمک آموزشی";
     url = "products";
 
+    selectedCats: IProductCategory[] = [];
+
+    searchCats = "";
+
     constructor(
         public auth: AuthService,
         private message: MessageService,
         private router: Router,
         private activeRoute: ActivatedRoute,
-    ) { 
+    ) {
         this.activeRoute.data.subscribe(data => {
             this.TYPE = data["type"];
-            
+
 
             if (this.TYPE == 1) {
                 this.productTitle = "آموزش های مجازی آفلاین";
@@ -47,8 +51,53 @@ export class ProductsComponent implements OnInit {
         });
     }
 
-    ngOnInit() { 
+    ngOnInit() {
         this.refreshProducts();
+
+        
+        this.auth.post("/api/ProductCategory/getAll").subscribe(data => {
+            if (data.success) {
+                this.productCategories = data.data;
+            } else {
+                this.auth.message.showMessageforFalseResult(data);
+            }
+        }, er => {
+            this.auth.handlerError(er);
+        });
+    }
+    
+    toggleCatFilter(category: IProductCategory, checked: boolean) {
+        let cat = this.selectedCats.find(c => c.id == category.id);
+
+        if (checked) {
+            if (!cat) {
+                this.selectedCats.push(category);
+            }
+        } else {
+            if (cat) {
+                this.selectedCats.splice(this.selectedCats.indexOf(cat), 1);
+            }
+        }
+
+        this.refreshProducts();
+    }
+
+    isCatSelected(id: number): boolean {
+        let cat = this.selectedCats.find(c => c.id == id);
+
+        return cat ? true : false;
+    }
+
+    getFiltredCats() {
+        if (this.searchCats) {
+            return this.productCategories.filter(c => c.title.includes(this.searchCats));
+        }
+
+        return this.productCategories;
+    }
+
+    getProductWriterPic(product) {
+        return this.auth.getFileUrl(product.writerPic);
     }
 
     getProductWriterString(type, writer) {
@@ -60,7 +109,7 @@ export class ProductsComponent implements OnInit {
             return `مدرس: ${writer}`;
         }
     }
-    
+
     getProductTypeString(type, value) {
         if (type == 0 || type == 1) {
             return `${value} صفحه`;
@@ -79,7 +128,7 @@ export class ProductsComponent implements OnInit {
         this.refreshProducts();
     }
 
-    
+
     setPage(event) {
         this.page = event.page;
 
@@ -95,7 +144,8 @@ export class ProductsComponent implements OnInit {
             page: this.page,
             sort: this.sort,
             searchText: this.txtSearch,
-            totalType: this.TYPE
+            totalType: this.TYPE,
+            cats: this.selectedCats.map(c => c.id)
         }).subscribe(data => {
             if (data.success) {
                 this.products = data.data.products;
