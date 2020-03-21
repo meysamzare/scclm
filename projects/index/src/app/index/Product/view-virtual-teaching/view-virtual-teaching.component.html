@@ -1,8 +1,8 @@
 <mat-progress-bar *ngIf="isLoading" [mode]="'buffer'"></mat-progress-bar>
 <ng-container *ngIf="!isLoading">
 
-    <div class="faded faded-bottom">
-        <img [src]="auth.getFileUrl(product?.picUrl)" />
+    <div class="faded faded-bottom full-wigth">
+        <img [src]="auth.getFileUrl(product?.picUrl)" class="full-wigth" />
 
         <div style="text-align: right;" class="faded-content">
             <div class="row" *ngIf="!mobileQuery.matches">
