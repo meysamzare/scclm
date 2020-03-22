@@ -54,7 +54,7 @@ export class ProductsComponent implements OnInit {
     ngOnInit() {
         this.refreshProducts();
 
-        
+
         this.auth.post("/api/ProductCategory/getAll").subscribe(data => {
             if (data.success) {
                 this.productCategories = data.data;
@@ -65,7 +65,7 @@ export class ProductsComponent implements OnInit {
             this.auth.handlerError(er);
         });
     }
-    
+
     toggleCatFilter(category: IProductCategory, checked: boolean) {
         let cat = this.selectedCats.find(c => c.id == category.id);
 
@@ -99,6 +99,21 @@ export class ProductsComponent implements OnInit {
     getProductWriterPic(product) {
         return this.auth.getFileUrl(product.writerPic);
     }
+
+    getColor() {
+        if (this.TYPE == 1) {
+            return "#4c97e5";
+        }
+
+        if (this.TYPE == 2) {
+            return "#08679482";
+        }
+    }
+
+    getGradentOfTop() {
+        return 'linear-gradient(to bottom, ' + this.getColor() + ', #f4f4f4)';
+    }
+
 
     getProductWriterString(type, writer) {
         if (type == 0 || type == 1) {

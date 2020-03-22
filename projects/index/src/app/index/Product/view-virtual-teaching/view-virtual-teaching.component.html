@@ -1,7 +1,7 @@
 <mat-progress-bar *ngIf="isLoading" [mode]="'buffer'"></mat-progress-bar>
 <ng-container *ngIf="!isLoading">
 
-    <div class="faded faded-bottom full-wigth">
+    <div class="faded faded-bottom full-wigth {{ mobileQuery.matches ? 'mobile' : 'desktop' }}">
         <img [src]="auth.getFileUrl(product?.picUrl)" class="full-wigth" />
 
         <div style="text-align: right;" class="faded-content">
@@ -50,7 +50,7 @@
     <hr>
 
     <div class="row margin-top-10">
-        <div class="col-lg-3 margin-top-10" *ngFor="let link of links; let index = index;">
+        <div class="col-lg-4 margin-top-10" *ngFor="let link of links; let index = index;">
             <mat-card>
                 <mat-card-header style="padding: 10px;"><b>{{ index + 1 }}. {{ link.title }}</b></mat-card-header>
                 <mat-card-content>

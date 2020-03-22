@@ -84,12 +84,6 @@
 }
 
 
-
-
-$faded-offset: 250px !default;
-$faded-blur-radius: 200px !default;
-$faded-spread-radius: 10px !default;
-
 $faded-narrow-offset: 20px !default;
 $faded-narrow-blur-radius: 20px !default;
 $faded-narrow-spread-radius: 10px !default;
@@ -114,7 +108,14 @@ $faded-wide-spread-radius: 28px !default;
         border-collapse: separate;
     }
 
-    @include faded($faded-offset, $faded-blur-radius, $faded-spread-radius);
+    &.mobile {
+        @include faded(20px, 20px, 10px);
+    }
+
+    &.desktop {
+        @include faded(250px, 250px, 10px);
+    }
+
 
     // &.faded-narrow {
     //     @include faded($faded-narrow-offset, $faded-narrow-blur-radius, $faded-narrow-spread-radius);
