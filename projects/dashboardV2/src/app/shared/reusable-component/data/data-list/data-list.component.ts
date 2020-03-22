@@ -1,12 +1,12 @@
-import { Component, OnInit, ViewChild, AfterViewInit, ContentChildren, QueryList, AfterContentInit, Input, Output, EventEmitter } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatSort, PageEvent } from '@angular/material';
+import { Component, OnInit, ViewChild, AfterViewInit, ContentChildren, QueryList, AfterContentInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatSortHeader } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/shared/Auth/auth.service';
 import { MessageService } from 'src/app/shared/services/message.service';
 import { DataListItemDirective } from './data-list-item.directive';
 import { merge } from 'rxjs/internal/observable/merge';
-import { finalize, debounceTime } from 'rxjs/operators';
+import { finalize, debounceTime, take } from 'rxjs/operators';
 import { Subject } from 'rxjs/internal/Subject';
 import { DataListFilterItemDirective } from './data-list-filter-item.directive';
 import { Location } from '@angular/common';
@@ -36,6 +36,7 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
     @Input() pageSizeOptions = [5, 10, 15, 20, 25];
 
 
+    @Input() introUrl = "../";
 
     @Output() editClick = new EventEmitter<any>();
     @Output() deleteClick = new EventEmitter<any>();
@@ -72,13 +73,14 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
         title: string,
         name: string,
         value: any
-    }[] = []
+    }[] = [];
 
     constructor(
         private router: Router,
         private auth: AuthService,
         private message: MessageService,
-        public location: Location
+        public location: Location,
+        private activeroute: ActivatedRoute,
     ) {
         this.txtSearch$.pipe(
             debounceTime(500)
@@ -103,6 +105,23 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
 
     ngAfterViewInit(): void {
 
+        this.activeroute.queryParams.subscribe(qparam => {
+            this.paginator.pageSize =
+                this.activeroute.snapshot.queryParams["pagesize"] || 5;
+            this.paginator.pageIndex =
+                this.activeroute.snapshot.queryParams["page"] || 0;
+            this.sort.direction =
+                this.activeroute.snapshot.queryParams["dir"] || "";
+            this.sort.active =
+                this.activeroute.snapshot.queryParams["sort"] || "";
+            this.txtSearch = this.activeroute.snapshot.queryParams["q"] || "";
+
+            if (this.txtSearch) {
+                this.showSearch = true;
+            }
+
+            this.sort.sortChange.next();
+        });
     }
 
     ngAfterContentInit(): void {
@@ -145,13 +164,14 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
         if (this.filters) {
             this.filters.forEach(filter => {
                 this.filterDatas.push({
-                    name: filter.name,
+                    name: filter.model.name,
                     title: filter.title,
                     value: null
                 });
 
                 filter.modelValue$.subscribe(value => {
                     this.filterDatas.find(c => c.name == filter.model.name).value = value;
+                    this.paginator.firstPage();
                     this.refreshDataSource();
                 });
             });
@@ -193,7 +213,7 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
     isAnyAppliedFilter(): boolean {
         return this.filterDatas.some(c => c.value);
     }
-    
+
     clearFilterValue(name: string) {
         this.filterDatas.find(c => c.name == name).value = null;
 
@@ -222,6 +242,7 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
         return this.displayedColumns;
     }
 
+    @HostListener("document:keydown.esc")
     toggleSearch() {
         this.showSearch = !this.showSearch;
 
@@ -310,7 +331,7 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
     }
 
     deleteSelected() {
-        if (this.auth.isUserAccess("remove_" + this.PAGE_ROLE)) {
+        if (this.auth.isUserAccess("remove_" + this.PAGE_ROLE) && this.selection.selected.length != 0) {
             if (this.selection.selected.length != 0) {
                 let ids: number[] = [];
                 this.selection.selected.forEach(row => ids.push(row.id));
@@ -348,7 +369,39 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
         }
     }
 
+    @HostListener("document:keydown.arrowright")
+    nextPage() {
+        this.paginator.nextPage();
+    }
+
+    @HostListener("document:keydown.arrowleft")
+    prevPage() {
+        this.paginator.previousPage();
+    }
+
+    @HostListener("document:keydown.control.arrowright")
+    lastPage() {
+        this.paginator.lastPage();
+    }
+
+    @HostListener("document:keydown.control.arrowleft")
+    firstPage() {
+        this.paginator.firstPage();
+    }
+
     refreshDataSource() {
+
+        this.router.navigate(["."], {
+            relativeTo: this.activeroute,
+            queryParams: {
+                pagesize: this.paginator.pageSize,
+                page: this.paginator.pageIndex,
+                dir: this.sort.direction,
+                sort: this.sort.active,
+                q: this.txtSearch
+            }
+        });
+
         this.isLoadingResults = true;
 
         this.selection.clear();

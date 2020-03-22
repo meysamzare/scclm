@@ -8,7 +8,7 @@
                 <div class="level">
                     <div class="level-left" style="width: 50%;">
                         <ng-container *ngIf="!showSearch">
-                            <button mat-icon-button (click)="location.back()" matTooltip="بازگشت">
+                            <button mat-icon-button [routerLink]="introUrl" matTooltip="بازگشت">
                                 <mat-icon>keyboard_arrow_right</mat-icon>
                             </button>
                             <b>{{ PAGE_TITLES }}</b>
@@ -28,6 +28,9 @@
                     <div class="level-right">
                         <button mat-icon-button (click)="toggleSearch()" matTooltip="جستجو">
                             <mat-icon>search</mat-icon>
+                        </button>
+                        <button mat-icon-button (click)="refreshDataSource()" matTooltip="بارگذاری مجدد">
+                            <mat-icon>refresh</mat-icon>
                         </button>
                         <button mat-icon-button [matMenuTriggerFor]="viewCols" matTooltip="نمایش ستون ها">
                             <mat-icon>view_column</mat-icon>
@@ -94,8 +97,7 @@
                 <th mat-header-cell *matHeaderCellDef>
                     <mat-checkbox [disabled]="!haveAnyData() || getRowCanSelected() == 0" matTooltipPosition="before"
                         matTooltip="تعداد {{ selection.selected.length }} مورد انتخاب شده است"
-                        [matTooltipHideDelay]="1700" (change)="$event ?  masterToggle() : null"
-                        [checked]="selection.hasValue() && isAllSelected()"
+                        (change)="$event ?  masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
                         [indeterminate]="selection.hasValue() && !isAllSelected()">
                     </mat-checkbox>
                 </th>
@@ -144,8 +146,8 @@
 
 
             <tr mat-header-row *matHeaderRowDef="this.getDisplayedCols()"></tr>
-            <tr mat-row *matRowDef="let row; columns: this.getDisplayedCols();"
-                [style.backgroundColor]="isRowSelected(row) ? '#c6c6c630': 'unset'"></tr>
+            <tr mat-row *matRowDef="let row; columns: this.getDisplayedCols();" class="data-row"
+                [style.backgroundColor]="isRowSelected(row) ? '#7d8ebe1f': 'unset'"></tr>
         </table>
 
         <div dir="ltr">
