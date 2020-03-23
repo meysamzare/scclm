@@ -100,7 +100,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
             }
         }
 
-        
+
         this.attrs = this.activeRoute.snapshot.data.attrs;
         this.units = this.activeRoute.snapshot.data.units;
 
@@ -321,8 +321,8 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
     setItemAttrforPic(event, attrId, type) {
         let reader = new FileReader();
-        var size = type == "file" ? 10 : 1;
-        var sizeText = size == 10 ? "ده مگابایت" : "یک مگابایت";
+        var size = type == "file" ? 15 : 10;
+        var sizeText = size == 10 ? "پانزده مگابایت" : "ده مگابایت";
         if (event.target.files && event.target.files.length > 0) {
             let file = event.target.files[0];
             var fi = this.reqfilesAttrint.find(c => c == attrId);
@@ -337,10 +337,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                         this.reqfilesAttrint.push(attrId);
                     }
                 }
-                return this.message.showWarningAlert(
-                    "حجم فایل باید کمتر از " + sizeText + " باشد",
-                    "اخطار"
-                );
+                return this.message.showWarningAlert("حجم فایل باید کمتر از " + sizeText + " باشد");
             }
             if (fi) {
                 var indexOf = this.reqfilesAttrint.indexOf(attrId, 0);
