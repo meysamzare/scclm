@@ -65,7 +65,8 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
     isLoadingResults = false;
 
     txtSearch: string = "";
-    txtSearch$ = new Subject();
+
+    filter$ = new Subject();
 
     itemLength = null;
 
@@ -82,7 +83,7 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
         public location: Location,
         private activeroute: ActivatedRoute,
     ) {
-        this.txtSearch$.pipe(
+        this.filter$.pipe(
             debounceTime(500)
         ).subscribe(() => this.applyFilter());
     }
@@ -172,7 +173,7 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
                 filter.modelValue$.subscribe(value => {
                     this.filterDatas.find(c => c.name == filter.model.name).value = value;
                     this.paginator.firstPage();
-                    this.refreshDataSource();
+                    this.filter$.next();
                 });
             });
         }
@@ -192,14 +193,11 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
         } else {
             if (displayCol) {
                 if (this.displayedColumns.length == 2) {
-                    return this.auth.message.showInfoAlert("دو ستون آخز نمیتوانند حذف شوند");
+                    return this.auth.message.showInfoAlert("دو ستون آخر نمیتوانند حذف شوند");
                 }
                 this.displayedColumns.splice(this.displayedColumns.indexOf(displayCol), 1);
             }
         }
-
-        // console.log({ displayCols: this.getDisplayedCols(), def: def, displayCol: displayCol, show: show, index: index });
-
     }
 
     getFiltersByType(type: string) {
@@ -219,9 +217,21 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
 
         this.filters.find(c => c.name == name).clearValue();
 
-        this.refreshDataSource();
+        this.filter$.next();
     }
 
+    @HostListener("document:keydown.alt.c")
+    clearAllFilters() {
+        this.filterDatas.map(data => {
+            data.value = null;
+        });
+
+        this.filters.map(filter => {
+            filter.clearValue();
+        });
+
+        this.filter$.next();
+    }
     isLastItemInDisplayCol(def: string): boolean {
         if (this.displayedColumns.length == 2) {
             let item = this.displayedColumns.find(c => c == def);
@@ -253,7 +263,7 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
 
     clearSearch() {
         this.txtSearch = '';
-        this.txtSearch$.next();
+        this.filter$.next();
     }
 
     isRowSelected(row): boolean {
@@ -389,6 +399,7 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
         this.paginator.firstPage();
     }
 
+    @HostListener("document:keydown.alt.r")
     refreshDataSource() {
 
         this.router.navigate(["."], {
@@ -461,11 +472,11 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
 
 
     applyFilter() {
-        this.refreshDataSource();
-
-        if (this.dataSource.paginator) {
-            this.dataSource.paginator.firstPage();
+        if (this.paginator) {
+            this.paginator.firstPage();
         }
+
+        this.refreshDataSource();
     }
 
 }

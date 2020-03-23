@@ -15,6 +15,7 @@ import { Angular2BulmaModule } from 'angular2-bulma';
 import { TestComponent } from './test/test.component';
 import { SidebarUserInfoComponent } from './sidebar/sidebar-user-info/sidebar-user-info.component';
 
+import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 
 @NgModule({
     declarations: [
@@ -33,7 +34,8 @@ import { SidebarUserInfoComponent } from './sidebar/sidebar-user-info/sidebar-us
         MaterialModule,
         BrowserAnimationsModule,
         ReusableComponentModule,
-        Angular2BulmaModule
+        Angular2BulmaModule,
+        PerfectScrollbarModule
     ]
 })
 export class MainModule { }

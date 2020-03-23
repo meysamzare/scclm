@@ -17,7 +17,7 @@
                             <mat-form-field style="width: 100%; text-align: right; font-size: 13px;">
                                 <mat-label>جستجو</mat-label>
                                 <input matInput placeholder="موردی را جستجو کنید" [(ngModel)]="txtSearch" name="search"
-                                    (input)="txtSearch$.next()">
+                                    (input)="filter$.next()">
                             </mat-form-field>
                             <button mat-icon-button (click)="showSearch = false; clearSearch()"
                                 matTooltip="پاکسازی جستجو">

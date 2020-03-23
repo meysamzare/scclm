@@ -1,4 +1,4 @@
-<li *ngIf="ShowByRole">
+<li *ngIf="ShowByRole" style="margin-right: 5px;">
     <a (click)="toggleSubMenu()" class="menuItem level no-margin" style="display: flex;"
         [class.hovered-menu]="haveAnyItemActive()">
         <div class="level-left">
@@ -22,7 +22,7 @@
     </a>
     <ul class="menu-list" [ngStyle]="{ 'display': Show ? 'block' : 'none'}">
         <li *ngFor="let item of menuItems">
-            <a (click)="item.onClick()" [class.is-active]="item.isActiveRoute()">
+            <a (click)="item.onClick()" style="font-size: 14px;" [class.is-active]="item.isActiveRoute()">
                 {{ item.title }}
             </a>
         </li>

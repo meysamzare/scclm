@@ -1,27 +1,117 @@
-<app-sidebar-user-info></app-sidebar-user-info>
+<perfect-scrollbar>
+    <app-sidebar-user-info></app-sidebar-user-info>
 
-<bu-menu>
+    <bu-menu>
 
-    <bu-menu-label>
-        منو اصلی
-    </bu-menu-label>
+        <bu-menu-label>
+            منو اصلی
+        </bu-menu-label>
 
-    <ul class="menu-list" style="min-width: 190px;">
-        <app-menu-item-parent>
+        <ul class="menu-list" style="min-width: 200px;">
+            <app-menu-item-parent>
 
-            <app-menu-item title="داشبورد" icon="home">
-                <app-menu-list-item link="/" [exact]="true" title="خانه" role="1"></app-menu-list-item>
-                <app-menu-list-item title="آموزش 2"></app-menu-list-item>
-            </app-menu-item>
+                <app-menu-item title="داشبورد" icon="home">
+                    <app-menu-list-item title="خانه" link="/" [exact]="true"></app-menu-list-item>
+                    <app-menu-list-item title="گفتگو ها"></app-menu-list-item>
+                    <app-menu-list-item title="مکاتبات"></app-menu-list-item>
+                    <app-menu-list-item title="اعلامیه ها"></app-menu-list-item>
+                </app-menu-item>
 
-            <app-menu-item title="آموزش">
-                <app-menu-list-item link="/a" title="آموزش 1" role="1"></app-menu-list-item>
-                <app-menu-list-item title="آموزش 2"></app-menu-list-item>
-            </app-menu-item>
+                <app-menu-item title="مدیریت آموزش" icon="graduation-cap">
+                    <app-menu-list-item title="آموزشگاه ها"></app-menu-list-item>
+                    <app-menu-list-item title="سال های تحصیلی"></app-menu-list-item>
+                    <app-menu-list-item title="مقاطع تحصیلی"></app-menu-list-item>
+                    <app-menu-list-item title="کلاس ها و شعب"></app-menu-list-item>
+                    <app-menu-list-item title="ایام هفته"></app-menu-list-item>
+                    <app-menu-list-item title="زمان بندی ها"></app-menu-list-item>
+                    <app-menu-list-item title="دبیران"></app-menu-list-item>
+                    <app-menu-list-item title="دروس"></app-menu-list-item>
+                </app-menu-item>
 
-            <app-menu-item title="اداری فرهنگی"></app-menu-item>
+                <app-menu-item title="مدیریت دانش آموز" icon="user-graduate">
+                    <app-menu-list-item title="دانش آموزان"></app-menu-list-item>
+                    <app-menu-list-item title="گروه های دانش آموزان"></app-menu-list-item>
+                    <app-menu-list-item title="پرونده تحصیلی"></app-menu-list-item>
+                    <app-menu-list-item title="کارنامه دانش آموز"></app-menu-list-item>
+                    <app-menu-list-item title="دفتر کلاسی الکترونیک"></app-menu-list-item>
+                    <app-menu-list-item title="کارنامه ها"></app-menu-list-item>
+                </app-menu-item>
 
-        </app-menu-item-parent>
-    </ul>
+                <app-menu-item title="سیستم امتیازات" icon="splotch">
+                    <app-menu-list-item title="شابلون امتیازات"></app-menu-list-item>
+                    <app-menu-list-item title="امتیازات دانش آموز"></app-menu-list-item>
+                </app-menu-item>
 
-</bu-menu>
+                <app-menu-item title="مدیریت منابع انسانی" icon="male">
+                    <app-menu-list-item title="چارت سازمانی"></app-menu-list-item>
+                    <app-menu-list-item title="بیمه ها"></app-menu-list-item>
+                    <app-menu-list-item title="مدارک تحصیلی"></app-menu-list-item>
+                    <app-menu-list-item title="حکم های کارگزینی"></app-menu-list-item>
+                    <app-menu-list-item title="پرسنل"></app-menu-list-item>
+                </app-menu-item>
+
+                <app-menu-item title="مدیریت آزمون" icon="file-alt">
+                    <app-menu-list-item title="نوع آزمون"></app-menu-list-item>
+                    <app-menu-list-item title="آزمون ها"></app-menu-list-item>
+                    <app-menu-list-item title="نمرات"></app-menu-list-item>
+                </app-menu-item>
+
+                <app-menu-item title="بانک سوالات" icon="question">
+                    <app-menu-list-item title="سوالات"></app-menu-list-item>
+                    <app-menu-list-item title="گزینه های سوال"></app-menu-list-item>
+                </app-menu-item>
+
+                <app-menu-item title="امور مالی" icon="money-bill-alt">
+                    <app-menu-list-item title="انواع قرارداد"></app-menu-list-item>
+                    <app-menu-list-item title="قرارداد ها"></app-menu-list-item>
+                    <app-menu-list-item title="انواع پرداخت"></app-menu-list-item>
+                    <app-menu-list-item title="پرداخت های دانش آموزان"></app-menu-list-item>
+                </app-menu-item>
+
+                <app-menu-item title="کتب و جزوات" icon="book">
+                    <app-menu-list-item title="نویسندگان"></app-menu-list-item>
+                    <app-menu-list-item title="دسته بندی"></app-menu-list-item>
+                    <app-menu-list-item title="محصولات"></app-menu-list-item>
+                    <app-menu-list-item title="لینک ها"></app-menu-list-item>
+                </app-menu-item>
+
+                <app-menu-item title="شبکه آموزش مجازی" icon="play">
+                    <app-menu-list-item title="آفلاین"></app-menu-list-item>
+                    <app-menu-list-item title="نظرات"></app-menu-list-item>
+                </app-menu-item>
+
+                <app-menu-item title="مدیریت وب سایت" icon="blog">
+                    <app-menu-list-item title="پست ها"></app-menu-list-item>
+                    <app-menu-list-item title="نظرات"></app-menu-list-item>
+                    <app-menu-list-item title="اسلاید شو اصلی"></app-menu-list-item>
+                    <app-menu-list-item title="رویداد ها"></app-menu-list-item>
+                    <app-menu-list-item title="تبلیغ ها"></app-menu-list-item>
+                    <app-menu-list-item title="گالری تصاویر"></app-menu-list-item>
+                    <app-menu-list-item title="تصاویر"></app-menu-list-item>
+                    <app-menu-list-item title="دانش آموزان برتر"></app-menu-list-item>
+                </app-menu-item>
+
+                <app-menu-item title="گزارش ها" icon="chart-pie">
+                    <app-menu-list-item title="تحلیل آزمون ها"></app-menu-list-item>
+                    <app-menu-list-item title="جزئیات کارنامه"></app-menu-list-item>
+                    <app-menu-list-item title="کارنامه قیاسی"></app-menu-list-item>
+                </app-menu-item>
+
+                <app-menu-item title="کاربران" icon="users">
+                    <app-menu-list-item title="فهرست کاربران"></app-menu-list-item>
+                    <app-menu-list-item title="سطوح دسترسی"></app-menu-list-item>
+                </app-menu-item>
+
+                <app-menu-item title="نمون برگ های سفارشی" icon="database">
+                    <app-menu-list-item title="اطلاعات"></app-menu-list-item>
+                    <app-menu-list-item title="نمون برگ ها"></app-menu-list-item>
+                    <app-menu-list-item title="فیلد ها"></app-menu-list-item>
+                    <app-menu-list-item title="واحد ها"></app-menu-list-item>
+                </app-menu-item>
+
+
+            </app-menu-item-parent>
+        </ul>
+
+    </bu-menu>
+</perfect-scrollbar>
