@@ -38,6 +38,8 @@ import { HaveAccessDirective } from './directives/have-access.directive';
 import { DataListFilterItemDirective } from './data/data-list/data-list-filter-item.directive';
 import { DataIntroComponent } from './data/data-intro/data-intro.component';
 import { DataIntroItemDirective } from './data/data-intro/data-intro-item.directive';
+import { NavbarComponent, NavbarItemDirective } from '../../main/navbar/navbar.component';
+import { MenuIntroComponent } from './data/data-intro/menu-intro/menu-intro.component';
 
 
 @NgModule({
@@ -72,7 +74,10 @@ import { DataIntroItemDirective } from './data/data-intro/data-intro-item.direct
         HaveAccessDirective,
         DataListFilterItemDirective,
         DataIntroComponent,
-        DataIntroItemDirective
+        DataIntroItemDirective,
+        NavbarComponent,
+        NavbarItemDirective,
+        MenuIntroComponent
     ],
     imports: [
         CommonModule,
@@ -114,7 +119,10 @@ import { DataIntroItemDirective } from './data/data-intro/data-intro-item.direct
         HaveAccessDirective,
         DataListFilterItemDirective,
         DataIntroComponent,
-        DataIntroItemDirective
+        DataIntroItemDirective,
+        NavbarComponent,
+        NavbarItemDirective,
+        MenuIntroComponent
     ],
     providers: [
         { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },

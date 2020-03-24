@@ -2,12 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { MenuService } from '../../shared/services/menu/menu.service';
 
 @Component({
-    selector: 'app-sidebar',
-    templateUrl: './sidebar.component.html',
-    styleUrls: ['./sidebar.component.scss']
+    selector: 'app-training-management',
+    templateUrl: './training-management.component.html',
+    styleUrls: ['./training-management.component.scss']
 })
-export class SidebarComponent implements OnInit {
-
+export class TrainingManagementComponent implements OnInit {
 
     constructor(
         public menu: MenuService
@@ -15,5 +14,4 @@ export class SidebarComponent implements OnInit {
 
     ngOnInit() {
     }
-
 }

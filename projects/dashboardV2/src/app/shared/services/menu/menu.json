@@ -1,0 +1,527 @@
+[
+    {
+        "title": "داشبورد",
+        "icon": "home",
+        "desc": "",
+        "link": "/",
+        "childrens": [
+            {
+                "title": "خانه",
+                "titles": "خانه",
+                "icon": "home",
+                "desc": "بخش های مختلف سیستم در یک صفحه با توجه به سطح دسترسی شما، به صورت مختصر نمایش داده می شود",
+                "link": "/",
+                "exactLink": true
+            },
+            {
+                "title": "گفتگو ها",
+                "titles": "گفتگو ها",
+                "icon": "comments",
+                "desc": "همانند پیام رسان های مختلف، شما نیز میتوانید به صورت درون شبکه با کاربران مختلف بدون محدودیت، به گفتگو بپردازید",
+                "link": "/chats"
+            },
+            {
+                "title": "مکاتبات",
+                "titles": "مکاتبات",
+                "icon": "comment-alt",
+                "desc": "با کاربران، دبیران، اولیا یا دانش آموزان به صورت رسمی به گفتگو بپردازید",
+                "link": "/tickets"
+            },
+            {
+                "title": "اعلامیه ها",
+                "titles": "اعلامیه ها",
+                "icon": "bell",
+                "desc": "به کاربران، دبیران و اولیا به صورت عمومی اعلامیه ارسال کنید",
+                "link": "/notifications"
+            }
+        ]
+    },
+    {
+        "title": "مدیریت آموزش",
+        "titles": "مدیریت آموزش",
+        "icon": "graduation-cap",
+        "desc": "",
+        "link": "/training-management",
+        "childrens": [
+            {
+                "title": "آموزشگاه",
+                "titles": "آموزشگاه ها",
+                "icon": "school",
+                "desc": "مدیریت آموزشگاه های موجود در مجتمع آموزشی",
+                "link": "/TrainingManagement/"
+            },
+            {
+                "title": "سال تحصیلی",
+                "titles": "سال های تحصیلی",
+                "icon": "calendar-alt",
+                "desc": "مدیریت سال های تحصیلی که شامل آرشیو داده ها می شود",
+                "link": "/TrainingManagement/"
+            },
+            {
+                "title": "پایه تحصیلی",
+                "titles": "پایه های تحصیلی",
+                "icon": "stop",
+                "desc": "مدیریت پایه های تحصیلی موجود در سال تحصیلی جاری",
+                "link": "/TrainingManagement/"
+            },
+            {
+                "title": "کلاس",
+                "titles": "کلاس ها و شعب",
+                "icon": "project-diagram",
+                "desc": "مدیریت کلاس ها و شعب مختلف موجود در پایه های تحصیلی",
+                "link": "/TrainingManagement/"
+            },
+            {
+                "title": "ایام هفته",
+                "titles": "ایام هفته",
+                "icon": "calendar-day",
+                "desc": "مدیریت ایام هفته",
+                "link": "/TrainingManagement/"
+            },
+            {
+                "title": "زمان بندی",
+                "titles": "زمان بندی ها",
+                "icon": "clock",
+                "desc": "مدیریت زمان بندی ها",
+                "link": "/TrainingManagement/"
+            },
+            {
+                "title": "دبیر",
+                "titles": "دبیران",
+                "icon": "user-tie",
+                "desc": "مدیریت دبیران براساس پرسنل",
+                "link": "/TrainingManagement/"
+            },
+            {
+                "title": "درس",
+                "titles": "دروس",
+                "icon": "book",
+                "desc": "مدیریت دروس مربوط به هر پایه",
+                "link": "/TrainingManagement/"
+            }
+        ]
+    },
+    {
+        "title": "مدیریت دانش آموز",
+        "titles": "مدیریت دانش آموز",
+        "icon": "user-graduate",
+        "desc": "",
+        "link": "/student-management",
+        "childrens": [
+            {
+                "title": "دانش آموز",
+                "titles": "دانش آموزان",
+                "icon": "user-graduate",
+                "desc": "به طور کلی مدیریت دانش آموزان اعم از ثبت نام و ثبت وضعیت های مختلف آن ها",
+                "link": "/student-management/students"
+            },
+            {
+                "title": "گروه دانش آموزان",
+                "titles": "گروه های دانش آموزان",
+                "icon": "user-tag",
+                "desc": "تقسیم بندی دانش آموزان",
+                "link": "/student-management/students"
+            },
+            {
+                "title": "پرونده تحصیلی",
+                "titles": "پرونده تحصیلی",
+                "icon": "stream",
+                "desc": "مشاهده سوابق دانش آموز در طول یک سال تحصیلی",
+                "link": "/student-management/students"
+            },
+            {
+                "title": "کارنامه دانش آموز",
+                "titles": "کارنامه دانش آموز",
+                "icon": "chart-bar",
+                "desc": "مشاهده آزمون های مربوط به هر درس در طول یک سال تحصیلی",
+                "link": "/student-management/students"
+            },
+            {
+                "title": "دفتر کلاسی الکترونیک",
+                "titles": "دفتر کلاسی الکترونیک",
+                "icon": "hand-paper",
+                "desc": "ثبت حضور و غیاب و انواع مورد انضباطی برای دانش آموزان",
+                "link": "/student-management/students"
+            },
+            {
+                "title": "کارنامه",
+                "titles": "کارنامه ها",
+                "icon": "list-ul",
+                "desc": "تعریف انواع مختلف کارنامه در طول سال تحصیلی",
+                "link": "/student-management/students"
+            }
+        ]
+    },
+    {
+        "title": "سیستم امتیازات",
+        "titles": "سیستم امتیازات",
+        "icon": "star",
+        "desc": "",
+        "link": "/student-management",
+        "childrens": [
+            {
+                "title": "شابلون امتیاز",
+                "titles": "شابلون امتیازات",
+                "icon": "star-half",
+                "desc": "ثبت پایه ای برای امتیاز دهی به دانش آموزان",
+                "link": "/student-management/students"
+            },
+            {
+                "title": "امتیاز دانش آموز",
+                "titles": "امتیازات دانش آموز",
+                "icon": "star",
+                "desc": "مدیریت امتیازات دانش آموزان",
+                "link": "/student-management/students"
+            }
+        ]
+    },
+    {
+        "title": "مدیریت منابع انسانی",
+        "titles": "مدیریت منابع انسانی",
+        "icon": "male",
+        "desc": "",
+        "link": "/student-management",
+        "childrens": [
+            {
+                "title": "چارت سازمانی",
+                "titles": "چارت سازمانی",
+                "icon": "sort-amount-down",
+                "desc": "مدیریت سمت های موجود در مجموعه",
+                "link": "/student-management"
+            },
+            {
+                "title": "بیمه",
+                "titles": "بیمه ها",
+                "icon": "seedling",
+                "desc": "مدیریت انواع بیمه ها",
+                "link": "/student-management"
+            },
+            {
+                "title": "مدرک تحصیلی",
+                "titles": "مدارک تحصیلی",
+                "icon": "university",
+                "desc": "مدیریت انواع مدارک تحصیلی",
+                "link": "/student-management"
+            },
+            {
+                "title": "حکم کارگزینی",
+                "titles": "حکم های کارگزینی",
+                "icon": "user-check",
+                "desc": "مدیریت انواع حکم های کارگزینی",
+                "link": "/student-management"
+            },
+            {
+                "title": "پرسنل",
+                "titles": "پرسنل",
+                "icon": "restroom",
+                "desc": "ثبت و مدیریت اطلاعات افراد شاغل در مجموعه",
+                "link": "/student-management"
+            }
+        ]
+    },
+    {
+        "title": "مدیریت آزمون",
+        "titles": "مدیریت آزمون",
+        "icon": "file-alt",
+        "desc": "",
+        "link": "/student-management",
+        "childrens": [
+            {
+                "title": "نوع آزمون",
+                "titles": "انوع آزمون",
+                "icon": "file-contract",
+                "desc": "مدیریت انواع مختلف آزمون",
+                "link": "/student-management"
+            },
+            {
+                "title": "آزمون",
+                "titles": "آزمون ها",
+                "icon": "file-alt",
+                "desc": "مدیریت و ویرایش آزمون ها در طول سال تحصیلی جاری",
+                "link": "/student-management"
+            },
+            {
+                "title": "نمره",
+                "titles": "نمرات",
+                "icon": "file-excel",
+                "desc": "ثبت نمره به صورت تکی و گروهی برای هر آزمون",
+                "link": "/student-management"
+            }
+        ]
+    },
+    {
+        "title": "بانک سوالات",
+        "titles": "بانک سوالات",
+        "icon": "question",
+        "desc": "",
+        "link": "/student-management",
+        "childrens": [
+            {
+                "title": "سوال",
+                "titles": "سوالات",
+                "icon": "question",
+                "desc": "تعریف و مدیریت سوالات",
+                "link": "/student-management"
+            },
+            {
+                "title": "گزینه سوال",
+                "titles": "گزینه های سوال",
+                "icon": "ellipsis-h",
+                "desc": "مدیریت گزینه های مربوط به هر سوال",
+                "link": "/student-management"
+            }
+        ]
+    },
+    {
+        "title": "امور مالی",
+        "titles": "امور مالی",
+        "icon": "money-bill-alt",
+        "desc": "",
+        "link": "/student-management",
+        "childrens": [
+            {
+                "title": "نوع قرارداد",
+                "titles": "انواع قرارداد",
+                "icon": "map-signs",
+                "desc": "مدیریت انواع قرارداد",
+                "link": "/student-management"
+            },
+            {
+                "title": "قرارداد",
+                "titles": "قرارداد ها",
+                "icon": "signature",
+                "desc": "ثبت و مدیریت قرارداد ها",
+                "link": "/student-management"
+            },
+            {
+                "title": "نوع پرداخت",
+                "titles": "انواع پرداخت",
+                "icon": "receipt",
+                "desc": "مدیریت انواع مختلف پرداخت ها",
+                "link": "/student-management"
+            },
+            {
+                "title": "پرداخت دانش آموزان",
+                "titles": "پرداخت های دانش آموزان",
+                "icon": "credit-card",
+                "desc": "ثبت و مدیریت پرداخت های دانش آموزان",
+                "link": "/student-management"
+            }
+        ]
+    },
+    {
+        "title": "کتب و جزوات",
+        "titles": "کتب و جزوات",
+        "icon": "book",
+        "desc": "",
+        "link": "/student-management",
+        "childrens": [
+            {
+                "title": "نویسنده",
+                "titles": "نویسندگان",
+                "icon": "pen-nib",
+                "desc": "ثبت و مدیریت نویسندگان مربوط به محصولات و آموزش های مجازی",
+                "link": "/student-management"
+            },
+            {
+                "title": "دسته بندی",
+                "titles": "دسته بندی ها",
+                "icon": "list-ul",
+                "desc": "ثبت و مدیریت دسته بندی های محصولات و آموزش های مجازی",
+                "link": "/student-management"
+            },
+            {
+                "title": "محصول",
+                "titles": "محصولات",
+                "icon": "book-open",
+                "desc": "مدیریت محصولات",
+                "link": "/student-management"
+            },
+            {
+                "title": "لینک",
+                "titles": "لینک ها",
+                "icon": "question",
+                "desc": "آپلود فایل های مربوط به هر محصول",
+                "link": "/student-management"
+            }
+        ]
+    },
+    {
+        "title": "شبکه آموزش مجازی",
+        "titles": "شبکه آموزش مجازی",
+        "icon": "play",
+        "desc": "",
+        "link": "/student-management",
+        "childrens": [
+            {
+                "title": "آفلاین",
+                "titles": "آفلاین",
+                "icon": "video",
+                "desc": "مدیریت آموزش ها و آپلود لینک ها و فایل های مربوطه",
+                "link": "/student-management"
+            },
+            {
+                "title": "نظرات",
+                "titles": "نظرات",
+                "icon": "comments",
+                "desc": "نظرات ثبت شده برای محصولات و آموزش های مجازی",
+                "link": "/student-management"
+            }
+        ]
+    },
+    {
+        "title": "مدیریت وب سایت",
+        "titles": "مدیریت وب سایت",
+        "icon": "blog",
+        "desc": "",
+        "link": "/student-management",
+        "childrens": [
+            {
+                "title": "پست",
+                "titles": "پست ها",
+                "icon": "file-word",
+                "desc": "ثبت و ویرایش حرفه ای پست ها",
+                "link": "/student-management"
+            },
+            {
+                "title": "نظرات",
+                "titles": "نظرات",
+                "icon": "comments",
+                "desc": "مدیریت نظرات ثبت شده برای پست ها",
+                "link": "/student-management"
+            },
+            {
+                "title": "اسلاید شو اصلی",
+                "titles": "اسلاید شو اصلی",
+                "icon": "image",
+                "desc": "مدیریت اسلاید شو اصلی",
+                "link": "/student-management"
+            },
+            {
+                "title": "رویداد",
+                "titles": "رویداد ها",
+                "icon": "calendar-alt",
+                "desc": "مدیریت رویداد ها در صفحه اصلی",
+                "link": "/student-management"
+            },
+            {
+                "title": "تبلیغ",
+                "titles": "تبلیغ ها",
+                "icon": "ad",
+                "desc": "مدیریت انواع تبلیغ در صفحه اصلی",
+                "link": "/student-management"
+            },
+            {
+                "title": "گالری تصویر",
+                "titles": "گالری تصاویر",
+                "icon": "images",
+                "desc": "ثبت و ویرایش گالری تصاویر",
+                "link": "/student-management"
+            },
+            {
+                "title": "تصویر",
+                "titles": "تصاویر",
+                "icon": "camera",
+                "desc": "مدیریت تصاویر مربوط به هر گالری",
+                "link": "/student-management"
+            },
+            {
+                "title": "دانش آموز برتر",
+                "titles": "دانش آموزان برتر",
+                "icon": "user-graduate",
+                "desc": "ثبت دانش آموز برتر در صفحه اصلی",
+                "link": "/student-management"
+            }
+        ]
+    },
+    {
+        "title": "گزارش ها",
+        "titles": "گزارش ها",
+        "icon": "chart-pie",
+        "desc": "",
+        "link": "/student-management",
+        "childrens": [
+            {
+                "title": "تحلیل آزمون ها",
+                "titles": "تحلیل آزمون ها",
+                "icon": "question",
+                "desc": "مشاهده داده های پیشرفته در آزمون ها",
+                "link": "/student-management"
+            },
+            {
+                "title": "جزئیات کارنامه",
+                "titles": "جزئیات کارنامه",
+                "icon": "question",
+                "desc": "نمایش ریز نمرات مربوط به هر کارنامه در کلاس و پایه",
+                "link": "/student-management"
+            },
+            {
+                "title": "کارنامه قیاسی",
+                "titles": "کارنامه قیاسی",
+                "icon": "question",
+                "desc": "مقایسه کارنامه دانش آموزان مختلف",
+                "link": "/student-management"
+            }
+        ]
+    },
+    {
+        "title": "مدیریت کاربران",
+        "titles": "مدیریت کاربران",
+        "icon": "users",
+        "desc": "",
+        "link": "/users-management",
+        "childrens": [
+            {
+                "title": "کاربر",
+                "titles": "کاربران",
+                "icon": "user",
+                "desc": "مدیریت کاربران",
+                "link": "/student-management"
+            },
+            {
+                "title": "سطح دسترسی",
+                "titles": "سطوح دسترسی",
+                "icon": "shield-alt",
+                "desc": "مدیریت دسترسی به انواع قسمت های مختلف پرتال",
+                "link": "/student-management"
+            }
+        ]
+    },
+    {
+        "title": "نمون برگ های سفارشی",
+        "titles": "نمون برگ های سفارشی",
+        "icon": "database",
+        "desc": "",
+        "link": "/users-management",
+        "childrens": [
+            {
+                "title": "اطلاعات",
+                "titles": "اطلاعات",
+                "icon": "table",
+                "desc": "نمایش داده های ثبت شده توسط کاربر در هر نمون برگ",
+                "link": "/student-management"
+            },
+            {
+                "title": "نمون برگ",
+                "titles": "نمون برگ ها",
+                "icon": "question",
+                "desc": "بستری برای ورود انواع داده ها توسط کاربر",
+                "link": "/student-management"
+            },
+            {
+                "title": "فیلد",
+                "titles": "فیلد ها",
+                "icon": "question",
+                "desc": "به طور کلی ورودی داده های کاربران که در نمون برگ ها قابل نمایش هستند",
+                "link": "/student-management"
+            },
+            {
+                "title": "واحد",
+                "titles": "واحد ها",
+                "icon": "question",
+                "desc": "تقسیم بندی مجموعه ای از فیلد ها در یک نمون برگ",
+                "link": "/student-management"
+            }
+        ]
+    }
+]
