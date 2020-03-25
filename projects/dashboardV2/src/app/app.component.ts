@@ -3,7 +3,7 @@ import { ThemeService } from './shared/services/theme.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Component({
-    selector: 'app-root',
+    selector: 'synapse-srcm',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
 })

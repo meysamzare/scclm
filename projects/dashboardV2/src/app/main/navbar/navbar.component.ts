@@ -37,7 +37,7 @@ export class NavbarComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.navbar.setTitle("پرتال مجتمع آموزشی | " + this.Title);
+        this.navbar.setTitle("پرتال آموزشی مبنا | " + this.Title);
     }
 
 }
