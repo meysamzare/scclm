@@ -41,6 +41,10 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
 
     values: ITags[] = [];
 
+    attributes: IAttr[] = [];
+
+    selectedCloneAttr: number = null;
+
     readonly separatorKeysCodes: number[] = [ENTER];
 
     parsedHtml;
@@ -76,7 +80,7 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
                                 this.Title = 'ویرایش فیلد ' + this.attr.title;
                                 this.btnTitle = 'ویرایش';
                                 this.isEdit = true;
-                                if (this.attr.attrTypeInt == 6) {
+                                if (this.attr.attrTypeInt == 6 || this.attr.attrTypeInt == 10) {
                                     this.attr.values.split(',').forEach(st => {
                                         this.values.push({ name: st });
                                     });
@@ -124,10 +128,40 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
                 this.message.showMessageforFalseResult(data);
             }
         });
+        this.auth.post('/api/Attribute/GetAll', null).subscribe((data: jsondata) => {
+            if (data.success) {
+                this.attributes = data.data;
+            } else {
+                this.message.showMessageforFalseResult(data);
+            }
+        });
 
         let title = "attribute";
         if (await this.auth.draft.isAnyDraft(title)) {
             this.attr = JSON.parse((await this.auth.draft.getDraft(title)).value);
+        }
+    }
+
+    cloneAttrChange() {
+        let selectedAttrId = this.selectedCloneAttr;
+        if (selectedAttrId) {
+            this.auth.post('/api/Attribute/getAttribute', selectedAttrId).subscribe(data => {
+                if (data.success) {
+                    this.attr = data.data;
+
+                    if (this.attr.attrTypeInt == 6 || this.attr.attrTypeInt == 10) {
+                        this.attr.values.split(',').forEach(st => {
+                            this.values.push({ name: st });
+                        });
+    
+                        this.values.splice(0, 1);
+                    }
+                } else {
+                    this.auth.message.showMessageforFalseResult(data);
+                }
+            }, er => {
+                this.auth.handlerError(er);
+            });
         }
     }
 
@@ -170,7 +204,7 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
 
     sts() {
         if (this.fm1.valid) {
-            if (this.attr.attrTypeInt == 6) {
+            if (this.attr.attrTypeInt == 6 || this.attr.attrTypeInt == 10) {
                 this.attr.values = '';
                 this.values.forEach(row => {
                     this.attr.values += ',' + row.name;

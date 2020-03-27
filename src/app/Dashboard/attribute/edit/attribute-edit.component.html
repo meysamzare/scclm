@@ -5,6 +5,15 @@
                 <h5>{{ Title }}</h5>
             </div>
             <div class="ibox-content">
+                <div class="form-group">
+                    <label>انتخاب فیلد</label>
+                    <ng-select [disabled]="isEdit" #clone="ngModel" name="attrClone" [(ngModel)]="selectedCloneAttr"
+                        (change)="cloneAttrChange()">
+                        <ng-option *ngFor="let i of attributes" [value]="i.id">{{ i.title }}</ng-option>
+                    </ng-select>
+                    <mat-hint>کپی کردن داده های مورد انتخاب شده در صفحه جاری</mat-hint>
+                </div>
+                <hr>
                 <div class="row">
                     <form #fm1="ngForm" id="fm11" (keydown.esc)="goToList()">
                         <div class="col-sm-6 b-r">
@@ -42,6 +51,7 @@
                                     <ng-option [value]="4">چک باکس</ng-option>
                                     <ng-option [value]="5">کلمه عبور</ng-option>
                                     <ng-option [value]="6">لیست</ng-option>
+                                    <ng-option [value]="10">لیست گزینشی</ng-option>
                                     <ng-option [value]="7">تصویر</ng-option>
                                     <ng-option [value]="8">فایل</ng-option>
                                 </ng-select>
@@ -50,7 +60,7 @@
                                 </mat-error>
                             </div>
 
-                            <div class="form-group" *ngIf="attr.attrTypeInt == 6">
+                            <div class="form-group" *ngIf="attr.attrTypeInt == 6 || attr.attrTypeInt == 10">
                                 <mat-form-field class="example-chip-list">
                                     <mat-chip-list #chipList>
                                         <mat-chip *ngFor="let i of values" [selectable]="true" [removable]="true"
