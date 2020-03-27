@@ -40,6 +40,7 @@ import { DataIntroComponent } from './data/data-intro/data-intro.component';
 import { DataIntroItemDirective } from './data/data-intro/data-intro-item.directive';
 import { NavbarComponent, NavbarItemDirective } from '../../main/navbar/navbar.component';
 import { MenuIntroComponent } from './data/data-intro/menu-intro/menu-intro.component';
+import { TreeComponent } from './tree/tree.component';
 
 
 @NgModule({
@@ -77,7 +78,8 @@ import { MenuIntroComponent } from './data/data-intro/menu-intro/menu-intro.comp
         DataIntroItemDirective,
         NavbarComponent,
         NavbarItemDirective,
-        MenuIntroComponent
+        MenuIntroComponent,
+        TreeComponent
     ],
     imports: [
         CommonModule,
@@ -122,7 +124,8 @@ import { MenuIntroComponent } from './data/data-intro/menu-intro/menu-intro.comp
         DataIntroItemDirective,
         NavbarComponent,
         NavbarItemDirective,
-        MenuIntroComponent
+        MenuIntroComponent,
+        TreeComponent
     ],
     providers: [
         { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },
