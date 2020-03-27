@@ -15,7 +15,21 @@ declare var $: any;
 // import * as $ from 'jquery';
 
 @Component({
-    templateUrl: "./category-edit.component.html"
+    templateUrl: "./category-edit.component.html",
+    styles: [
+        `
+            .example-radio-group {
+                display: flex;
+                flex-direction: column;
+                margin: 15px 0;
+            }
+
+            .example-radio-button {
+                margin: 5px;
+            }
+
+        `
+    ]
 })
 export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewChecked {
     Title: string;

@@ -147,13 +147,14 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
         if (selectedAttrId) {
             this.auth.post('/api/Attribute/getAttribute', selectedAttrId).subscribe(data => {
                 if (data.success) {
+                    data.data.categoryId = this.attr.categoryId;
                     this.attr = data.data;
 
                     if (this.attr.attrTypeInt == 6 || this.attr.attrTypeInt == 10) {
                         this.attr.values.split(',').forEach(st => {
                             this.values.push({ name: st });
                         });
-    
+
                         this.values.splice(0, 1);
                     }
                 } else {
@@ -308,8 +309,8 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
                 }
             }
         });
-        
-        
+
+
         $('#divtree').on('changed.jstree', (e, data) => {
             if (data.node) {
                 this.attr.categoryId = data.node.id;
