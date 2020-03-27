@@ -86,7 +86,7 @@ export class AuthService {
 
 
 
-    DASHBOARD_VERSION = "0.9.9.8.5 Build 5420";
+    DASHBOARD_VERSION = "0.9.9.8.6 Build 3260";
 
     INDEX_VERSION = "2.4.9 Build 920";
 
