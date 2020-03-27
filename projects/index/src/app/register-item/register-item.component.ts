@@ -75,31 +75,31 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                 "خطا"
             );
             this.router.navigate(["/"]);
-        }
+        } else {
 
+            if (this.cat.authorizeState != CategoryAuthorizeState.none) {
+                if (!this.loginService.isUserAccessToCat(this.catId)) {
+                    this.router.navigate([`/register-item/${this.catId}/login`], { skipLocationChange: true });
+                } else {
+                    var token = this.loginService.getLoginToken(this.catId);
 
-        if (this.cat.authorizeState != CategoryAuthorizeState.none) {
-            if (!this.loginService.isUserAccessToCat(this.catId)) {
-                this.router.navigate([`/register-item/${this.catId}/login`], { skipLocationChange: true });
-            } else {
-                var token = this.loginService.getLoginToken(this.catId);
+                    if (!token) {
+                        this.router.navigate(['/']);
+                    }
 
-                if (!token) {
-                    this.router.navigate(['/']);
+                    this.authorizedFullName = token.userFullName;
+                    this.authorizedUsername = token.username;
+                    this.authorizedType = token.userType;
                 }
-
-                this.authorizedFullName = token.userFullName;
-                this.authorizedUsername = token.username;
-                this.authorizedType = token.userType;
             }
-        }
 
-        if (this.cat.haveLicense) {
-            if (!this.licenseService.isUserAcceptTheLicense(this.catId)) {
-                this.router.navigate([`/register-item/${this.catId}/license`], { skipLocationChange: true });
+            if (this.cat.haveLicense) {
+                if (!this.licenseService.isUserAcceptTheLicense(this.catId)) {
+                    this.router.navigate([`/register-item/${this.catId}/license`], { skipLocationChange: true });
+                }
             }
-        }
 
+        }
 
         this.attrs = this.activeRoute.snapshot.data.attrs;
         this.units = this.activeRoute.snapshot.data.units;

@@ -3,3 +3,13 @@
     border-radius: 15px;
     padding: 10px;
 }
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    // margin: 15px 0;
+}
+
+.radio-button {
+    margin: 0;
+}

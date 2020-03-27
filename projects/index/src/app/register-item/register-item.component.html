@@ -11,7 +11,7 @@
                     {{ cat.desc }}
                 </h4>
                 <div style="text-align: left;">
-                    <small style="font-size: 13px;">مهلت ثبت نام تا {{ cat.dateExpireString }}</small>
+                    <small style="font-size: 13px;">مهلت {{ cat.btnTitle }} تا {{ cat.dateExpireString }}</small>
                 </div>
             </div>
             <div class="col-lg-2"></div>
@@ -33,8 +33,13 @@
 
                         <div class="bordered" *ngIf="canShowUnit(unit.id)">
 
-                            <div class="form-group" *ngFor="let i of getAttrsForUnit(unit.id)">
-                                <label *ngIf="i.attrTypeInt != 4">{{i.title}}</label>
+                            <div class="form-group" *ngFor="let i of getAttrsForUnit(unit.id); index as index"
+                                [style.margin-top.px]="index == 0 ? 0 : 35">
+                                <label *ngIf="i.attrTypeInt != 4">
+                                    <b>
+                                        {{i.title}}
+                                    </b>
+                                </label>
 
                                 <input *ngIf="i.attrTypeInt == 1"
                                     (blur)="i.isUniq ? checkForUniqValue($event, i.id) : null"
@@ -74,6 +79,13 @@
                                     </mat-select>
                                 </mat-form-field>
 
+                                <mat-radio-group *ngIf="i.attrTypeInt == 10" class="radio-group"
+                                    [formControlName]="'p' + getIndexForAttr(i.id)"
+                                    (change)="setItemAttrforselect($event.value, i.id)">
+                                    <mat-radio-button class="radio-button" *ngFor="let v of getShiftedItem(i.values)"
+                                        [value]="v">{{v}}</mat-radio-button>
+                                </mat-radio-group>
+
                                 <input type="file" *ngIf="i.attrTypeInt == 7"
                                     [formControlName]="'p' + getIndexForAttr(i.id)" accept="image/x-png,image/jpeg"
                                     class="form-control" (change)="setItemAttrforPic($event, i.id, 'pic')" />
@@ -87,7 +99,12 @@
                                     placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
                                     (change)="setItemAttr($event, i.id)"></textarea>
 
-
+                                <ng-container *ngIf="i.attrTypeInt == 10">
+                                    <p *ngIf="group.get('p'+getIndexForAttr(i.id)).hasError('required') || group.get('p'+getIndexForAttr(i.id)).invalid"
+                                        class="error">
+                                        وارد کردن {{i.title}} الزامی است
+                                    </p>
+                                </ng-container>
 
                                 <p *ngIf="group.get('p'+getIndexForAttr(i.id)).hasError('required') && i.attrTypeInt != 4 && (group.get('p'+getIndexForAttr(i.id)).touched || group.get('p'+getIndexForAttr(i.id)).dirty)  && group.get('p'+getIndexForAttr(i.id)).invalid"
                                     class="error">
@@ -103,7 +120,7 @@
                                 </p>
 
                                 <div class="row" *ngIf="canShowDesc(i.desc)">
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-1">
                                         <image-icon icon="info" [height]="15"></image-icon>
                                     </div>
                                     <div class="col-lg-10">
