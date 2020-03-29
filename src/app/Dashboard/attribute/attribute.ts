@@ -9,6 +9,8 @@ export class IAttr {
 
     attrTypeInt: number = null;
 
+    maxFileSize: number;
+
     desc: string;
 
     isUniq: boolean;

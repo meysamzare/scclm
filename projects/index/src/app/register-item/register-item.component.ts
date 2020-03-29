@@ -12,6 +12,9 @@ import Swal from "sweetalert2";
 import { IUnit } from 'src/app/Dashboard/unit/unit';
 import { RegisterItemLoginService } from './login-for-register-item/register-item-login.service';
 import { RegisterItemLicenseService } from './license-for-register-item/register-item-license.service';
+import { HttpRequest, HttpHeaders, HttpEventType, HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/internal/operators/map';
+import { last } from 'rxjs/operators';
 
 @Component({
     selector: 'app-register-item',
@@ -60,7 +63,8 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         private message: MessageService,
         private sanitizer: DomSanitizer,
         private loginService: RegisterItemLoginService,
-        private licenseService: RegisterItemLicenseService
+        private licenseService: RegisterItemLicenseService,
+        private http: HttpClient
     ) {
         this.activeRoute.params.subscribe(params => {
             this.catId = params["id"];
@@ -71,7 +75,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
         if (!this.cat.canShowByDate) {
             this.message.showWarningAlert(
-                "مهلت ثبت نام به پایان رسیده است",
+                "مهلت " + this.cat.btnTitle + " به پایان رسیده است",
                 "خطا"
             );
             this.router.navigate(["/"]);
@@ -319,18 +323,26 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         }
     }
 
+    _files: File[] = [];
+
     setItemAttrforPic(event, attrId, type) {
+        let attribute = this.attrs.find(c => c.id == attrId);
+
         let reader = new FileReader();
-        var size = type == "file" ? 15 : 10;
-        var sizeText = size == 10 ? "پانزده مگابایت" : "ده مگابایت";
+
+        var size = type == "file" ? attribute.maxFileSize : 10;
+        var sizeText = type == "file" ? `${attribute.maxFileSize} مگابایت` : `10 مگابایت`;
+
         if (event.target.files && event.target.files.length > 0) {
-            let file = event.target.files[0];
-            var fi = this.reqfilesAttrint.find(c => c == attrId);
+            let file: File = event.target.files[0];
+
+            var requiredFileAttr = this.reqfilesAttrint.find(c => c == attrId);
+
             if (file.size / 1024 / 1024 > size) {
                 event.target.value = null;
                 event.target.files = null;
-                if (fi) {
-                    fi = attrId;
+                if (requiredFileAttr) {
+                    requiredFileAttr = attrId;
                 } else {
                     var attr = this.attrs.find(c => c.id == attrId);
                     if (attr.isRequired) {
@@ -339,19 +351,44 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                 }
                 return this.message.showWarningAlert("حجم فایل باید کمتر از " + sizeText + " باشد");
             }
-            if (fi) {
+
+            if (requiredFileAttr) {
                 var indexOf = this.reqfilesAttrint.indexOf(attrId, 0);
                 if (indexOf > -1) {
                     this.reqfilesAttrint.splice(indexOf, 1);
                 }
             }
-            reader.readAsDataURL(file);
-            reader.onload = () => {
-                let result = reader.result.toString().split(",")[1];
+
+            if (attribute.attrTypeInt == 7) {
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    let result = reader.result.toString().split(",")[1];
+
+                    var itemAttr = this.itemAttrs.find(
+                        c => c.attributeId == attrId
+                    );
+
+                    if (itemAttr) {
+                        itemAttr.attrubuteValue = result;
+                        itemAttr.fileName = file.name;
+                    } else {
+                        this.itemAttrs.push({
+                            itemId: 0,
+                            attributeId: attrId,
+                            attrubuteValue: result,
+                            attributeFilePath: "1",
+                            fileName: file.name
+                        });
+                    }
+                };
+            } else {
+                this._files.push(file);
 
                 var itemAttr = this.itemAttrs.find(
                     c => c.attributeId == attrId
                 );
+
+                let result = "(binery)";
 
                 if (itemAttr) {
                     itemAttr.attrubuteValue = result;
@@ -365,7 +402,8 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                         fileName: file.name
                     });
                 }
-            };
+            }
+
         }
     }
 
@@ -377,6 +415,11 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         }
     }
 
+    isUploading = false;
+    fileSize_MB = 0;
+    uploaded_MB = 0;
+    uploaded_PS = 0;
+
     sts() {
         if (
             this.group.valid &&
@@ -384,63 +427,106 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
             this.attrUniqList.length == 0
         ) {
             this.disableButton = true;
-            this.auth
-                .post("/api/Item/SetItemeWithAttrs", {
-                    itemAttrs: this.itemAttrs,
-                    catId: this.catId,
-                    authorizedFullName: this.authorizedFullName,
-                    authorizedUsername: this.authorizedUsername,
-                    authorizedType: this.authorizedType,
-                }, {
-                    type: 'Add',
-                    agentId: this.auth.getUserId(),
-                    agentType: 'User',
-                    agentName: this.auth.getUser().fullName,
-                    tableName: 'Item Register From Index',
-                    logSource: 'dashboard',
-                    object: {
-                        itemAttrs: this.itemAttrs,
-                        catId: this.catId
-                    },
-                })
-                .subscribe(
-                    (data: jsondata) => {
-                        if (data.success) {
-                            if (!data.message) {
-                                data.message = "";
+
+            let object = {
+                itemAttrs: this.itemAttrs,
+                catId: this.catId,
+                authorizedFullName: this.authorizedFullName,
+                authorizedUsername: this.authorizedUsername,
+                authorizedType: this.authorizedType,
+            };
+
+
+            let formData = new FormData();
+
+            formData.append("object", JSON.stringify(object));
+
+            if (this._files.length != 0) {
+                this._files.forEach(file => {
+                    formData.append("files", file, file.name);
+                });
+            }
+
+            let url = this.auth.serializeUrl(`/api/Item/SetItemeWithAttrs`);
+
+            let token = this.auth.getToken();
+
+            let request = new HttpRequest('POST', url, formData, {
+                reportProgress: true,
+                headers: new HttpHeaders({
+                    Authorization: `Bearer ${token}`,
+                    "ngsw-bypass": "true"
+                }),
+            });
+
+            this.http.request(request).pipe(
+                map(event => {
+                    switch (event.type) {
+                        case HttpEventType.Sent:
+                            this.isUploading = true;
+                            break;
+                        case HttpEventType.UploadProgress || HttpEventType.DownloadProgress:
+
+                            const percentDone = (100 * event.loaded / event.total);
+
+                            this.uploaded_PS = percentDone;
+
+                            var uploadedSize = event.loaded / 1024 / 1024;
+                            this.uploaded_MB = uploadedSize;
+
+                            this.fileSize_MB = event.total / 1024 / 1024
+
+                            break;
+                        case HttpEventType.Response:
+                            var data: any = event.body;
+
+                            if (data.success) {
+                                if (!data.message) {
+                                    data.message = "";
+                                }
+
+                                this.auth.logToServer({
+                                    type: 'Add',
+                                    agentId: this.auth.getUserId(),
+                                    agentType: 'User',
+                                    agentName: this.auth.getUser().fullName,
+                                    tableName: 'Item Register From Index',
+                                    logSource: 'dashboard',
+                                    object: object
+                                });
+
+                                Swal.fire({
+                                    title: "ثبت داده ها با موفقیت انجام شد",
+                                    icon: "success",
+                                    text: data.message + " کد رهگیری شما : " + data.type,
+                                    confirmButtonText: "کد رهگیری را یادداشت کردم",
+                                    showCancelButton: false,
+                                    allowOutsideClick: false,
+                                    allowEnterKey: false,
+                                }).then(result => {
+                                    if (result.value) {
+                                        this.isFromSts = true;
+                                        this.router.navigate(["/"]);
+                                        this.loginService.removeToken(this.catId);
+                                        this.licenseService.removeLicense(this.catId);
+                                    }
+                                });
+                            } else {
+                                this.message.showWarningAlert(
+                                    "خطایی روی داده است لطفا با راهبر سیستم تماس حاصل فرمایید",
+                                    "خطا"
+                                );
+                                this.message.showMessageforFalseResult(data);
                             }
 
-                            Swal.fire({
-                                title: "ثبت نام شما با موفقیت انجام شد",
-                                icon: "success",
-                                text: data.message + " کد رهگیری شما : " + data.type,
-                                confirmButtonText: "کد رهگیری را یادداشت کردم",
-                                showCancelButton: false,
-                                allowOutsideClick: false,
-                                allowEnterKey: false,
-                            }).then(result => {
-                                if (result.value) {
-                                    this.isFromSts = true;
-                                    this.router.navigate(["/"]);
-                                    this.loginService.removeToken(this.catId);
-                                    this.licenseService.removeLicense(this.catId);
-                                }
-                            })
-                        } else {
-                            this.message.showWarningAlert(
-                                "خطایی روی داده است لطفا با راهبر سیستم تماس حاصل فرمایید",
-                                "خطا"
-                            );
-                            this.message.showMessageforFalseResult(data);
-                        }
-                    },
-                    er => {
-                        this.disableButton = false;
-                        this.auth.handlerError(er);
-                    }, () => {
-                        this.disableButton = false;
+                            this.isUploading = false;
+
+                            break;
                     }
-                );
+                }),
+                last()
+            ).subscribe();
+
         } else {
             this.message.showWarningAlert("مقادیر خواسته شده را تکمیل نمایید");
         }

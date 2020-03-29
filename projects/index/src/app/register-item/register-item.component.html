@@ -142,8 +142,27 @@
                             </div>
                             <div class="col-lg-9">
                                 <button type="button" class="btn btn-block btn-outline-success"
-                                    [disabled]="group.invalid || attrUniqList.length != 0 || reqfilesAttrint.length != 0 || disableButton"
+                                    [disabled]="group.invalid || attrUniqList.length != 0 || reqfilesAttrint.length != 0 || isUploading"
                                     (click)="sts()">{{ getRegisterBtnTitle() }}</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div style="direction: ltr; text-align: center;" *ngIf="isUploading">
+
+                                    <progressbar max="100" [value]="uploaded_PS" type="success" [striped]="true"
+                                        [animate]="true">
+                                        <b>{{ uploaded_MB.toFixed(2) }} / {{ fileSize_MB.toFixed(2) }} (mb)</b>
+                                    </progressbar>
+                                    <p>
+                                        <b tooltip="{{ uploaded_MB.toFixed(2) }} / {{ fileSize_MB.toFixed(2) }} (mb)">
+                                            {{ uploaded_PS.toFixed(3) }} %
+                                        </b>
+                                    </p>
+                                    <p>
+                                        در حال بارگذاری، لطفا شکیبا باشید
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
