@@ -4,7 +4,7 @@
 
 @import "./assets/bulma/extention/bulma-extensions.min.css";
 
-app-root.default-theme {
+synapse-srcm.default-theme {
 	.is-divider-vertical[data-content]::after,
 	.is-divider[data-content]::after {
 		background: #fff;
@@ -19,7 +19,7 @@ app-root.default-theme {
 	}
 }
 
-app-root.dark-theme {
+synapse-srcm.dark-theme {
 	.is-divider-vertical[data-content]::after,
 	.is-divider[data-content]::after {
 		background: #303030;

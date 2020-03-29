@@ -48,56 +48,56 @@
                 "titles": "آموزشگاه ها",
                 "icon": "school",
                 "desc": "مدیریت آموزشگاه های موجود در مجتمع آموزشی",
-                "link": "/TrainingManagement/"
+                "link": "/training-management/titute"
             },
             {
                 "title": "سال تحصیلی",
                 "titles": "سال های تحصیلی",
                 "icon": "calendar-alt",
                 "desc": "مدیریت سال های تحصیلی که شامل آرشیو داده ها می شود",
-                "link": "/TrainingManagement/"
+                "link": "/training-management/"
             },
             {
                 "title": "پایه تحصیلی",
                 "titles": "پایه های تحصیلی",
                 "icon": "stop",
                 "desc": "مدیریت پایه های تحصیلی موجود در سال تحصیلی جاری",
-                "link": "/TrainingManagement/"
+                "link": "/training-management/"
             },
             {
                 "title": "کلاس",
                 "titles": "کلاس ها و شعب",
                 "icon": "project-diagram",
                 "desc": "مدیریت کلاس ها و شعب مختلف موجود در پایه های تحصیلی",
-                "link": "/TrainingManagement/"
+                "link": "/training-management/"
             },
             {
                 "title": "ایام هفته",
                 "titles": "ایام هفته",
                 "icon": "calendar-day",
                 "desc": "مدیریت ایام هفته",
-                "link": "/TrainingManagement/"
+                "link": "/training-management/"
             },
             {
                 "title": "زمان بندی",
                 "titles": "زمان بندی ها",
                 "icon": "clock",
                 "desc": "مدیریت زمان بندی ها",
-                "link": "/TrainingManagement/"
+                "link": "/training-management/"
             },
             {
                 "title": "دبیر",
                 "titles": "دبیران",
                 "icon": "user-tie",
                 "desc": "مدیریت دبیران براساس پرسنل",
-                "link": "/TrainingManagement/"
+                "link": "/training-management/"
             },
             {
                 "title": "درس",
                 "titles": "دروس",
                 "icon": "book",
                 "desc": "مدیریت دروس مربوط به هر پایه",
-                "link": "/TrainingManagement/"
+                "link": "/training-management/"
             }
         ]
     },

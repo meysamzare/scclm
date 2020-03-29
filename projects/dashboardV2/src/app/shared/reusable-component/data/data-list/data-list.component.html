@@ -29,6 +29,7 @@
                         <button mat-icon-button (click)="toggleSearch()" matTooltip="جستجو">
                             <mat-icon>search</mat-icon>
                         </button>
+                        <ng-content select="app-data-list-opration"></ng-content>
                         <button mat-icon-button (click)="refreshDataSource()" matTooltip="بارگذاری مجدد">
                             <mat-icon>refresh</mat-icon>
                         </button>
@@ -68,6 +69,7 @@
                         <b>{{ selection.selected.length }} مورد انتخاب شده است</b>
                     </div>
                     <div class="level-right">
+                        <ng-content select="app-data-list-delete-opration"></ng-content>
                         <button mat-icon-button matTooltip="حذف دائمی" [swal]="deleteSwal">
                             <mat-icon>delete_forever</mat-icon>
                         </button>

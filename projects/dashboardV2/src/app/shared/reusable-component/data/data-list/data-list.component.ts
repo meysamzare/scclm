@@ -10,6 +10,7 @@ import { finalize, debounceTime, take } from 'rxjs/operators';
 import { Subject } from 'rxjs/internal/Subject';
 import { DataListFilterItemDirective } from './data-list-filter-item.directive';
 import { Location } from '@angular/common';
+import { MenuService } from '../../../services/menu/menu.service';
 
 @Component({
     selector: 'app-data-list',
@@ -82,6 +83,7 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
         private message: MessageService,
         public location: Location,
         private activeroute: ActivatedRoute,
+        private menu: MenuService
     ) {
         this.filter$.pipe(
             debounceTime(500)
@@ -89,6 +91,14 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
     }
 
     ngOnInit() {
+
+        if (!this.PAGE_TITLE) {
+            this.PAGE_TITLE = this.menu.getCurrentPureUrl().title;
+        }
+
+        if (!this.PAGE_TITLES) {
+            this.PAGE_TITLES = this.menu.getCurrentPureUrl().titles;
+        }
 
         this.paginator.pageSizeOptions = this.pageSizeOptions;
         this.paginator.pageSize = 5;

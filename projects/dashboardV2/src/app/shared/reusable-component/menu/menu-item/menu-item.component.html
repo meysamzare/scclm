@@ -21,8 +21,9 @@
         </div>
     </a>
     <ul class="menu-list" [ngStyle]="{ 'display': Show ? 'block' : 'none'}">
-        <li *ngFor="let item of menuItems">
-            <a (click)="item.onClick()" style="font-size: 14px;" [class.is-active]="item.isActiveRoute()">
+        <li *ngFor="let item of menuItems.toArray()">
+            <a (click)="item.onClick()" [routerLink]="item.link" style="font-size: 14px;"
+                [class.is-active]="item.isActiveRoute()">
                 {{ item.title }}
             </a>
         </li>

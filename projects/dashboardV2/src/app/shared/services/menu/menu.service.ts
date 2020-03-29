@@ -45,6 +45,10 @@ export class MenuService {
 
         return this.getMenu(url);
     }
+
+    getCurrentPureUrl() {
+        return this.getPureUrlMenu(this.router.url);
+    }
 }
 
 

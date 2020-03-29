@@ -65,3 +65,13 @@
         </bu-column>
     </bu-columns>
 </app-data-form>
+
+<hr>
+
+<app-button text="نمایش لیست نمون برگ ها" (onClick)="tree.openTreeDialog('Category', 'نمون برگ ها')"></app-button>
+
+<app-data-form #fm1>
+    <app-date-input label="تاریخ شروع" [(ngModel)]="dateVal" name="date1"></app-date-input>
+    {{dateVal}}
+    <app-button text="ارسال داده به سرور" [disabled]="!fm1.isFormValid" (onClick)="sendDateToServer()"></app-button>
+</app-data-form>

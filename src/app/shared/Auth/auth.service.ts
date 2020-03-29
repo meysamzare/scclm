@@ -728,7 +728,7 @@ export class AuthService {
         }
         // Params = Params.append("code", code);
 
-        return this.http.get(url2, {
+        return this.http.get<any>(url2, {
             params: Params,
             headers: new HttpHeaders({
                 "Content-Type": "application/json",

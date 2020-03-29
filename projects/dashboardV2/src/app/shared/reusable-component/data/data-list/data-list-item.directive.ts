@@ -44,3 +44,13 @@ export class DataListItemDirective implements OnInit {
     selector: 'app-data-list-actions'
 })
 export class DataListActionsDirective { }
+
+@Directive({
+    selector: 'app-data-list-opration'
+})
+export class DataListOprationDirective { }
+
+@Directive({
+    selector: 'app-data-list-delete-opration'
+})
+export class DataListDeleteOprationDirective { }

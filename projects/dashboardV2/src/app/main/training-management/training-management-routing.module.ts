@@ -7,7 +7,8 @@ const routes: Routes = [
     {
         path: '',
         component: TrainingManagementComponent
-    }
+    },
+    { path: 'titute', loadChildren: () => import('./titute/titute.module').then(m => m.TituteModule) }
 ];
 
 @NgModule({

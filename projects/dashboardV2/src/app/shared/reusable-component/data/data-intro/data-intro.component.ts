@@ -1,5 +1,6 @@
 import { Component, OnInit, ContentChildren, QueryList, Input } from '@angular/core';
 import { DataIntroItemDirective } from './data-intro-item.directive';
+import { MenuService } from '../../../services/menu/menu.service';
 
 @Component({
     selector: 'app-data-intro',
@@ -24,9 +25,17 @@ export class DataIntroComponent implements OnInit {
 
     @ContentChildren(DataIntroItemDirective) items: QueryList<DataIntroItemDirective>;
 
-    constructor() { }
+    constructor(
+        private menu: MenuService
+    ) { }
 
     ngOnInit() {
+        if (!this.dataTitle) {
+            this.dataTitle = this.menu.getCurrentUrlMenu().title;
+        }
+        if (!this.dataTitles) {
+            this.dataTitles = this.menu.getCurrentUrlMenu().titles;
+        }
     }
 
     getAddDesc(): string {

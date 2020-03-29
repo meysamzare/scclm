@@ -1,5 +1,5 @@
 <app-data-intro [showAdd]="false" [showList]="false" [dataTitles]="menu.getTitlesForCurrentUrl()">
     <app-data-intro-item *ngFor="let item of menu.getMenuChildForCurrentUrl()" [title]="item.titles" [desc]="item.desc"
-        [icon]="item.icon">
+        [icon]="item.icon" (onClick)="router.navigateByUrl(item.link)">
     </app-data-intro-item>
 </app-data-intro>

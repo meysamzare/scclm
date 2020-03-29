@@ -10,13 +10,12 @@
         <ul class="menu-list" style="min-width: 200px;">
             <app-menu-item-parent>
 
-                <app-menu-item *ngFor="let item of menu.getRootMenus()" [title]="item.title" [icon]="item.icon">
+                <app-menu-item *ngFor="let item of menu.getRootMenus()" long-press
+                    (onLongPress)="router.navigateByUrl(item.link)" [title]="item.title" [icon]="item.icon">
                     <app-menu-list-item *ngFor="let childItem of item.childrens" [title]="childItem.titles"
                         [link]="childItem.link" [exact]="childItem.exactLink" [role]="childItem.role">
                     </app-menu-list-item>
                 </app-menu-item>
-
-
 
             </app-menu-item-parent>
         </ul>

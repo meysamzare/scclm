@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Directive, ContentChildren, QueryList, Templa
 import { NavbarService } from './navbar.service';
 import { ThemeService } from '../../shared/services/theme.service';
 import { LocationService } from '../../shared/services/location.service';
+import { MenuService } from '../../shared/services/menu/menu.service';
 
 @Directive({
     selector: '[navItem]'
@@ -33,10 +34,14 @@ export class NavbarComponent implements OnInit {
     constructor(
         public navbar: NavbarService,
         public themeSrv: ThemeService,
-        public locationService: LocationService
+        public locationService: LocationService,
+        private menu: MenuService
     ) { }
 
     ngOnInit() {
+        if (!this.Title) {
+            this.Title = this.menu.getCurrentUrlMenu().title;
+        }
         this.navbar.setTitle("پرتال آموزشی مبنا | " + this.Title);
     }
 

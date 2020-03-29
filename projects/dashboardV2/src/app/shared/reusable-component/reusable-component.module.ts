@@ -10,7 +10,7 @@ import { DataListComponent } from './data/data-list/data-list.component';
 import { DataFormComponent } from './data/data-edit/data-form/data-form.component';
 import { DataFormButtonsDirective } from './data/data-edit/data-form/data-form.directive';
 import { DataEditHeaderDirective } from './data/data-edit/data-edit.directive';
-import { DataListItemDirective, DataListActionsDirective } from './data/data-list/data-list-item.directive';
+import { DataListItemDirective, DataListActionsDirective, DataListDeleteOprationDirective, DataListOprationDirective } from './data/data-list/data-list-item.directive';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { MaterialModule } from 'src/app/shared/material.module';
 import { RouterModule } from '@angular/router';
@@ -41,6 +41,9 @@ import { DataIntroItemDirective } from './data/data-intro/data-intro-item.direct
 import { NavbarComponent, NavbarItemDirective } from '../../main/navbar/navbar.component';
 import { MenuIntroComponent } from './data/data-intro/menu-intro/menu-intro.component';
 import { TreeComponent } from './tree/tree.component';
+import { LongPressDirective } from './directives/long-press.directive';
+import { TreeDialogComponent } from './tree/tree-dialog/tree-dialog.component';
+import { DateInputComponent } from './input/date-input/date-input.component';
 
 
 @NgModule({
@@ -79,7 +82,12 @@ import { TreeComponent } from './tree/tree.component';
         NavbarComponent,
         NavbarItemDirective,
         MenuIntroComponent,
-        TreeComponent
+        TreeComponent,
+        LongPressDirective,
+        TreeDialogComponent,
+        DateInputComponent,
+        DataListOprationDirective,
+        DataListDeleteOprationDirective
     ],
     imports: [
         CommonModule,
@@ -125,7 +133,12 @@ import { TreeComponent } from './tree/tree.component';
         NavbarComponent,
         NavbarItemDirective,
         MenuIntroComponent,
-        TreeComponent
+        TreeComponent,
+        LongPressDirective,
+        TreeDialogComponent,
+        DateInputComponent,
+        DataListDeleteOprationDirective,
+        DataListDeleteOprationDirective
     ],
     providers: [
         { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },
