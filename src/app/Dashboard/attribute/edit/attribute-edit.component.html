@@ -76,6 +76,17 @@
                                 </mat-form-field>
                             </div>
 
+                            <div class="form-group" *ngIf="attr.attrTypeInt == 8">
+                                <label>حداکثر حجم فایل (MB)</label>
+                                <input type="number" required #maxSize="ngModel" name="maxFileSize"
+                                    [(ngModel)]="attr.maxFileSize" placeholder="حداکثر حجم فایل" class="form-control">
+                                <div *ngIf="(maxSize.touched || maxSize.dirty)  && maxSize.invalid">
+                                    <p *ngIf="maxSize.hasError('required')" class="error">
+                                        وارد کردن حداکثر حجم فایل الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
                             <div class="form-group">
                                 <label>آیا این فیلد توسط کاربر پر میشود؟</label>
                                 <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="attr.isInClient">توسط
