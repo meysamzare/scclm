@@ -11,7 +11,7 @@
                     {{ cat.desc }}
                 </h4>
                 <div style="text-align: left;">
-                    <small style="font-size: 13px;">مهلت {{ cat.btnTitle }} تا {{ cat.dateExpireString }}</small>
+                    <small style="font-size: 13px;">مهلت {{ cat.btnTitle ? cat.btnTitle : "ثبت نام" }} تا {{ cat.dateExpireString }}</small>
                 </div>
             </div>
             <div class="col-lg-2"></div>

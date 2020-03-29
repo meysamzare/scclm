@@ -74,10 +74,8 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
 
         if (!this.cat.canShowByDate) {
-            this.message.showWarningAlert(
-                "مهلت " + this.cat.btnTitle + " به پایان رسیده است",
-                "خطا"
-            );
+            let title = `مهلت ${this.cat.btnTitle ? this.cat.btnTitle : "ثبت نام"} به پایان رسیده است`;
+            this.message.showWarningAlert(title);
             this.router.navigate(["/"]);
         } else {
 
