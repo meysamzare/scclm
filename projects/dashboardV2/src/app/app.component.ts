@@ -19,7 +19,7 @@ export class AppComponent {
             this.onSetTheme(theme + "-theme");
         });
 
-        this.themeServ.setCurrentTheme();
+        this.themeServ.setThemeByState();
     }
 
 
