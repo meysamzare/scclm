@@ -113,6 +113,10 @@ export class ThemeService {
         } else {
             this.isNightByTime = true;
         }
+
+        if (this.themeState == ThemeState.autoTime) {
+            this.setThemeByTime();
+        }
     }
 
     setThemeColor(theme: "dark" | "light" | "default" | any, saveTheme = true) {
