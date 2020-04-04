@@ -31,10 +31,10 @@ export class DataIntroComponent implements OnInit {
 
     ngOnInit() {
         if (!this.dataTitle) {
-            this.dataTitle = this.menu.getCurrentUrlMenu().title;
+            this.dataTitle = this.menu.getCurrentPureUrl().title;
         }
         if (!this.dataTitles) {
-            this.dataTitles = this.menu.getCurrentUrlMenu().titles;
+            this.dataTitles = this.menu.getCurrentPureUrl().titles;
         }
     }
 

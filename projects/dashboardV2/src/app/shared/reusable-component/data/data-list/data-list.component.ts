@@ -39,6 +39,8 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
 
     @Input() introUrl = "../";
 
+    @Input() staticData: any[] = [];
+
     @Output() editClick = new EventEmitter<any>();
     @Output() deleteClick = new EventEmitter<any>();
 
@@ -51,11 +53,10 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
 
     showSearch = false;
 
-
-    displayedColumns: string[] = [];
     columns: {
         def: string,
-        title: string
+        title: string,
+        show: boolean
     }[] = [];
 
     dataSource: MatTableDataSource<any>;
@@ -115,34 +116,35 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
     }
 
     ngAfterViewInit(): void {
+        if (this.staticData.length == 0) {
+            this.activeroute.queryParams.subscribe(qparam => {
+                this.paginator.pageSize =
+                    this.activeroute.snapshot.queryParams["pagesize"] || 5;
+                this.paginator.pageIndex =
+                    this.activeroute.snapshot.queryParams["page"] || 0;
+                this.sort.direction =
+                    this.activeroute.snapshot.queryParams["dir"] || "";
+                this.sort.active =
+                    this.activeroute.snapshot.queryParams["sort"] || "";
+                this.txtSearch = this.activeroute.snapshot.queryParams["q"] || "";
 
-        this.activeroute.queryParams.subscribe(qparam => {
-            this.paginator.pageSize =
-                this.activeroute.snapshot.queryParams["pagesize"] || 5;
-            this.paginator.pageIndex =
-                this.activeroute.snapshot.queryParams["page"] || 0;
-            this.sort.direction =
-                this.activeroute.snapshot.queryParams["dir"] || "";
-            this.sort.active =
-                this.activeroute.snapshot.queryParams["sort"] || "";
-            this.txtSearch = this.activeroute.snapshot.queryParams["q"] || "";
+                if (this.txtSearch) {
+                    this.showSearch = true;
+                }
 
-            if (this.txtSearch) {
-                this.showSearch = true;
-            }
-
-            this.sort.sortChange.next();
-        });
+                this.sort.sortChange.next();
+            });
+        }
     }
 
     ngAfterContentInit(): void {
 
         // Cols----------------------
         if (this.showSelect) {
-            this.displayedColumns.push("select");
             this.columns.push({
                 def: "select",
-                title: "انتخاب"
+                title: "انتخاب",
+                show: true
             });
         }
 
@@ -151,21 +153,19 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
             this.items.forEach(item => {
                 this.columns.push({
                     def: item._def,
-                    title: item._title
+                    title: item._title,
+                    show: item._show
                 });
-                if (item._show) {
-                    this.displayedColumns.push(item._def);
-                }
             });
 
         }
 
 
         if (this.showAction) {
-            this.displayedColumns.push("action");
             this.columns.push({
                 def: "action",
-                title: "عملیات"
+                title: "عملیات",
+                show: true
             });
         }
         // /Cols----------------------
@@ -193,21 +193,8 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
 
     }
 
-    toggleCol(def: string, show: boolean, index: number) {
-        let displayCol = this.displayedColumns.find(c => c == def);
-
-        if (show) {
-            if (!displayCol) {
-                this.displayedColumns.splice(index, 0, def);
-            }
-        } else {
-            if (displayCol) {
-                if (this.displayedColumns.length == 2) {
-                    return this.auth.message.showInfoAlert("دو ستون آخر نمیتوانند حذف شوند");
-                }
-                this.displayedColumns.splice(this.displayedColumns.indexOf(displayCol), 1);
-            }
-        }
+    toggleCol(def: string, show: boolean) {
+        this.columns.find(c => c.def == def).show = show;
     }
 
     getFiltersByType(type: string) {
@@ -243,8 +230,8 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
         this.filter$.next();
     }
     isLastItemInDisplayCol(def: string): boolean {
-        if (this.displayedColumns.length == 2) {
-            let item = this.displayedColumns.find(c => c == def);
+        if (this.columns.filter(c => c.show).length == 2) {
+            let item = this.columns.filter(c => c.show).find(c => c.def == def);
 
             return item ? true : false;
         }
@@ -252,14 +239,8 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
         return false;
     }
 
-    isOnDisplayCols(def: string): boolean {
-        let displayCol = this.displayedColumns.find(c => c == def);
-
-        return displayCol ? true : false;
-    }
-
     getDisplayedCols() {
-        return this.displayedColumns;
+        return this.columns.filter(c => c.show).map(c => c.def);
     }
 
     @HostListener("document:keydown.esc")
@@ -272,8 +253,11 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
     }
 
     clearSearch() {
-        this.txtSearch = '';
-        this.filter$.next();
+        let searchBefore = this.txtSearch;
+        if (searchBefore) {
+            this.txtSearch = '';
+            this.filter$.next();
+        }
     }
 
     isRowSelected(row): boolean {
@@ -411,72 +395,75 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
 
     @HostListener("document:keydown.alt.r")
     refreshDataSource() {
-
-        this.router.navigate(["."], {
-            relativeTo: this.activeroute,
-            queryParams: {
-                pagesize: this.paginator.pageSize,
-                page: this.paginator.pageIndex,
-                dir: this.sort.direction,
-                sort: this.sort.active,
-                q: this.txtSearch
-            }
-        });
-
-        this.isLoadingResults = true;
-
-        this.selection.clear();
-
-        var obj = null;
-
-        obj = {
-            sort: this.sort.active || "",
-            direction: this.sort.direction || "",
-            pageIndex: this.paginator.pageIndex || 0,
-            pageSize: this.paginator.pageSize || 5,
-            q: this.txtSearch
-        };
-
-        if (this.filterDatas.length != 0) {
-            obj = {
-                getparams: {
-                    sort: this.sort.active || "",
-                    direction: this.sort.direction || "",
-                    pageIndex: this.paginator.pageIndex || 0,
-                    pageSize: this.paginator.pageSize || 5,
+        if (this.staticData.length != 0) {
+            this.dataSource = new MatTableDataSource(this.staticData);
+        } else {
+            this.router.navigate(["."], {
+                relativeTo: this.activeroute,
+                queryParams: {
+                    pagesize: this.paginator.pageSize,
+                    page: this.paginator.pageIndex,
+                    dir: this.sort.direction,
+                    sort: this.sort.active,
                     q: this.txtSearch
-                },
+                }
+            });
+
+            this.isLoadingResults = true;
+
+            this.selection.clear();
+
+            var obj = null;
+
+            obj = {
+                sort: this.sort.active || "",
+                direction: this.sort.direction || "",
+                pageIndex: this.paginator.pageIndex || 0,
+                pageSize: this.paginator.pageSize || 5,
+                q: this.txtSearch
+            };
+
+            if (this.filterDatas.length != 0) {
+                obj = {
+                    getparams: {
+                        sort: this.sort.active || "",
+                        direction: this.sort.direction || "",
+                        pageIndex: this.paginator.pageIndex || 0,
+                        pageSize: this.paginator.pageSize || 5,
+                        q: this.txtSearch
+                    },
+                }
+
+                this.filterDatas.forEach(data => {
+                    obj[data.name] = data.value || "";
+                });
             }
 
-            this.filterDatas.forEach(data => {
-                obj[data.name] = data.value || "";
+            let url = `/api/${this.PAGE_APIURL}/Get`;
+
+            this.auth.post(url, obj, {
+                type: 'View',
+                agentId: this.auth.getUserId(),
+                agentType: 'User',
+                agentName: this.auth.getUser().fullName,
+                tableName: this.PAGE_APIURL + ' List Get Method',
+                logSource: 'dashboard',
+                object: obj,
+            }).pipe(
+                finalize(() => this.isLoadingResults = false)
+            ).subscribe(data => {
+                if (data.success) {
+                    this.itemLength = data.type;
+                    this.PAGE_Datas = data.data;
+
+                    this.dataSource = new MatTableDataSource(this.PAGE_Datas);
+                } else {
+                    this.message.showMessageforFalseResult(data);
+                }
+            }, er => {
+                this.auth.handlerError(er);
             });
         }
-
-        let url = `/api/${this.PAGE_APIURL}/Get`;
-
-        this.auth.post(url, obj, {
-            type: 'View',
-            agentId: this.auth.getUserId(),
-            agentType: 'User',
-            agentName: this.auth.getUser().fullName,
-            tableName: this.PAGE_APIURL + ' List Get Method',
-            logSource: 'dashboard',
-            object: obj,
-        }).pipe(
-            finalize(() => this.isLoadingResults = false)
-        ).subscribe(data => {
-            if (data.success) {
-                this.itemLength = data.type;
-                this.PAGE_Datas = data.data;
-
-                this.dataSource = new MatTableDataSource(this.PAGE_Datas);
-            } else {
-                this.message.showMessageforFalseResult(data);
-            }
-        }, er => {
-            this.auth.handlerError(er);
-        });
     }
 
 

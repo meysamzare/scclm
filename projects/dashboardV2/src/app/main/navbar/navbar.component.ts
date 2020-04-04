@@ -40,7 +40,7 @@ export class NavbarComponent implements OnInit {
 
     ngOnInit() {
         if (!this.Title) {
-            this.Title = this.menu.getCurrentUrlMenu().title;
+            this.Title = this.menu.getCurrentPureUrl().titles;
         }
         this.navbar.setTitle("پرتال آموزشی مبنا | " + this.Title);
     }

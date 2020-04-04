@@ -1,6 +1,6 @@
-<app-navbar></app-navbar>
+<app-navbar [showRefresh]="true" (refresh)="list.refreshDataSource()"></app-navbar>
 
-<app-data-list #list [PAGE_APIURL]="'Titute'" [conditionalProperty]="'haveChildren,haveGrade'"
+<app-data-list #list [PAGE_APIURL]="'Titute'" [PAGE_ROLE]="'InsTitute'" [conditionalProperty]="'haveChildren,haveGrade'"
     [conditionalTitle]="'زیرمجموعه یا مقطع تحصیلی'" (editClick)="list.onEdit($event.id)"
     (deleteClick)="list.deleteSelected()">
 
@@ -20,7 +20,7 @@
         <p>{{ row.orgSection }}</p>
     </ng-template>
 
-    <ng-template dataListItem [def]="'state'" [title]="'شهر / استان'" [show]="false" [sortHeader]="false" let-row="Row">
+    <ng-template dataListItem [def]="'state'" [title]="'استان / شهر'" [show]="false" [sortHeader]="false" let-row="Row">
         <p>{{ row.state + ' / ' + row.city }}</p>
     </ng-template>
 
@@ -28,7 +28,7 @@
         <p>{{ row.postCode }}</p>
     </ng-template>
 
-    <ng-template dataListItem [def]="'sex'" [title]="'جنسیت'" let-row="Row">
+    <ng-template dataListItem [def]="'gender'" [title]="'جنسیت'" let-row="Row">
         <mat-chip-list>
             <mat-chip color="primary" *ngIf="row.orgSex == 1" selected>
                 <mat-icon>person</mat-icon>
@@ -40,5 +40,12 @@
             </mat-chip>
         </mat-chip-list>
     </ng-template>
+
+    <app-data-list-opration>
+        <button mat-icon-button (click)="tree.openTreeDialog(list.PAGE_APIURL, list.PAGE_TITLES)"
+            matTooltip="لیست درختی">
+            <mat-icon>short_text</mat-icon>
+        </button>
+    </app-data-list-opration>
 
 </app-data-list>

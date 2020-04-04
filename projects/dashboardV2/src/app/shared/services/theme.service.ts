@@ -3,6 +3,8 @@ import { Subject } from 'rxjs/internal/Subject';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { interval } from 'rxjs/internal/observable/interval';
 
+type theme = "dark" | "light" | "default" | any;
+
 @Injectable({
     providedIn: 'root'
 })
@@ -14,14 +16,14 @@ export class ThemeService {
     themeStorageKey = "_t";
     stateStorageKey = "_st";
 
-    currentTheme: "dark" | "light" | "default" = null;
+    currentTheme: theme = null;
 
-    colorChange$ = new Subject<"dark" | "light" | "default">();
+    colorChange$ = new Subject<theme>();
 
     themeState: ThemeState = ThemeState.default;
 
     isSystemOnDarkMode = false;
-    
+
     isNightByTime = false;
 
     constructor(
@@ -38,9 +40,7 @@ export class ThemeService {
 
         this.detectIsNight();
         // every 10 min
-        interval(1000 * 60 * 10).subscribe(() => {
-            this.detectIsNight();
-        });
+        interval(1000 * 60 * 10).subscribe(() => this.detectIsNight());
     }
 
     setThemeState(state: ThemeState) {
@@ -50,6 +50,16 @@ export class ThemeService {
     }
 
     setThemeByState(save = true) {
+
+        var storeTheme = localStorage.getItem(this.themeStorageKey);
+
+        if (storeTheme) {
+            this.currentTheme = storeTheme;
+        } else {
+            this.currentTheme = "default";
+            localStorage.setItem(this.themeStorageKey, "default");
+        }
+
         let stateStore = localStorage.getItem(this.stateStorageKey);
 
         let state = 0;
@@ -119,26 +129,12 @@ export class ThemeService {
         }
     }
 
-    setThemeColor(theme: "dark" | "light" | "default" | any, saveTheme = true) {
+    setThemeColor(theme: theme, saveTheme = true) {
         (document.getElementById("bultheme") as HTMLLinkElement).href = `/assets/bulma/${theme}.css`
         this.colorChange$.next(theme);
         if (saveTheme) {
             this.currentTheme = theme;
             localStorage.setItem(this.themeStorageKey, theme);
-        }
-    }
-
-    getCurrentTheme() {
-        return this.currentTheme;
-    }
-
-    setCurrentTheme() {
-        var storeTheme = localStorage.getItem(this.themeStorageKey);
-
-        if (storeTheme) {
-            this.setThemeColor(storeTheme);
-        } else {
-            this.setThemeColor("default");
         }
     }
 

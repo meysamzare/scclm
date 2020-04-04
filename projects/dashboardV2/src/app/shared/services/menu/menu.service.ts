@@ -13,7 +13,21 @@ export class MenuService {
     ) { }
 
     getMenu(url: string) {
-        return this.menus.find(c => c.link == url);
+        let menuWithChild: IMenu[] = [];
+
+        this.menus.forEach(menu => {
+            menuWithChild.push(menu);
+
+            menu.childrens.forEach(childMenu => menuWithChild.push(childMenu));
+        });
+
+        let menu = menuWithChild.find(c => c.link == url);
+
+        if (menu) {
+            return menu;
+        }
+
+        throw new Error("Menu not Found! Please report it to owner.");
     }
 
     getMenusChild(url: string) {
@@ -41,7 +55,7 @@ export class MenuService {
     }
 
     getPureUrlMenu(url: string) {
-        url = url.replace("/edit/0", "").replace("/list", "");
+        url = url.replace(new RegExp("^\/edit\/.*$"), "").replace("/list", "").split("?")[0];
 
         return this.getMenu(url);
     }

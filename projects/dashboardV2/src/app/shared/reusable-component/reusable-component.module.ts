@@ -137,7 +137,7 @@ import { DateInputComponent } from './input/date-input/date-input.component';
         LongPressDirective,
         TreeDialogComponent,
         DateInputComponent,
-        DataListDeleteOprationDirective,
+        DataListOprationDirective,
         DataListDeleteOprationDirective
     ],
     providers: [

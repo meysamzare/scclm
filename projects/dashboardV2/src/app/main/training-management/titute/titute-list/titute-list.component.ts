@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TreeService } from 'projects/dashboardV2/src/app/shared/reusable-component/tree/tree.service';
 
 @Component({
     selector: 'app-titute-list',
@@ -7,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TituteListComponent implements OnInit {
 
-    constructor() { }
+    constructor(
+        public tree: TreeService
+    ) { }
 
     ngOnInit() {
     }
