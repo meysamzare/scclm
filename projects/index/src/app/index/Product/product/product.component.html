@@ -3,69 +3,49 @@
 <div class="row" *ngIf="!isLoading">
     <div class="col-lg-12 margin-top-10">
 
-        <div class="row">
-            <div class="col-lg-9" style="margin-top: 15px;">
-                <mat-card>
-                    <mat-card-content>
-                        <mat-tab-group mat-stretch-tabs>
-                            <mat-tab>
-                                <ng-template mat-tab-label>
-                                    <mat-icon class="example-tab-icon">import_contacts</mat-icon>
-                                    توضیحات
-                                </ng-template>
-
-                                <div style="text-align: center;">
-                                    <br>
-                                    <br>
-
-                                    <div>
-                                        <p>
-                                            <img [src]="auth.getFileUrl(product?.picUrl)"
-                                                style="height: 100%; border-radius: 10px;">
-                                        </p>
-                                    </div>
-                                    <br>
-
-                                    <h3 class="margin-top-10">{{ product.title }}</h3>
-
-                                    <b>{{ getProductTypeString(product.type, product.value) }}</b>
-                                    <br>
-                                    <b>{{ getProductWriterString(product.type, product.writerString) }}</b>
-                                    <br>
-                                    <br>
-
-                                    <div [innerHTML]="trustedProductContect"></div>
-
-                                </div>
-
-
-                            </mat-tab>
-
-                        </mat-tab-group>
-                    </mat-card-content>
-                </mat-card>
-
-            </div>
-
-            <div class="col-lg-3">
-                <mat-card style="margin-top: 15px;">
-                    <mat-card-content>
+        <div class="faded faded-bottom full-wigth {{ mobileQuery.matches ? 'mobile' : 'desktop' }}">
+            <img [src]="auth.getFileUrl(product?.picUrl)" class="full-wigth" />
+    
+            <div style="text-align: right; color: initial;" class="faded-content">
+                <div class="row" *ngIf="!mobileQuery.matches">
+                    <div class="col-lg-2">
                         <div style="text-align: center;">
-
+    
                             <p>
                                 <img [src]="auth.getFileUrl(writer?.picUrl)"
-                                    style="height: 200px; width: 200px; border-radius: 200px;">
+                                    style="height: 120px; width: 120px; border-radius: 120px;">
                             </p>
                             <b>{{ writer.fullName }}</b>
-                            <p>
-                                {{ writer.desc }}
-                            </p>
                         </div>
-
-                    </mat-card-content>
-                </mat-card>
+                    </div>
+                    <div class="col-lg-10" style="margin: auto;">
+    
+                        <h4 class="margin-top-10">{{ product.title }}</h4>
+    
+                        <b>{{ getProductTypeString(product.type, product.value) }}</b>
+                        <br>
+                        <b>{{ getProductWriterString(product.type, product.writerString) }}</b>
+                        <br>
+                        <br>
+    
+                        <div [innerHTML]="trustedProductContect"></div>
+                    </div>
+                </div>
+                <div class="row" *ngIf="mobileQuery.matches">
+                    <div class="col-lg-12" style="margin: auto;">
+    
+                        <h4 class="margin-top-10">{{ product.title }}</h4>
+    
+                        <b>{{ getProductTypeString(product.type, product.value) }}</b>
+                        <br>
+                        <b>{{ getProductWriterString(product.type, product.writerString) }}</b>
+                        <br>
+                        <br>
+    
+                        <div [innerHTML]="trustedProductContect"></div>
+                    </div>
+                </div>
             </div>
-
         </div>
 
         <div class="row">

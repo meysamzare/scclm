@@ -8,6 +8,7 @@ export class ILink {
     desc: string;
     
     fileUrl: string;
+    haveExternalUrl: boolean;
     fileData: string;
     fileName: string;
     

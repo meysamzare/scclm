@@ -4,7 +4,7 @@
     <div class="faded faded-bottom full-wigth {{ mobileQuery.matches ? 'mobile' : 'desktop' }}">
         <img [src]="auth.getFileUrl(product?.picUrl)" class="full-wigth" />
 
-        <div style="text-align: right;" class="faded-content">
+        <div style="text-align: right; color: initial;" class="faded-content">
             <div class="row" *ngIf="!mobileQuery.matches">
                 <div class="col-lg-2">
                     <div style="text-align: center;">
@@ -56,9 +56,9 @@
                 <mat-card-content>
 
                     <video controls (play)="setLinkViewed(link.id)" style="width: 100%;" *ngIf="product.type == 2"
-                        [src]="auth.getFileUrl(link.fileUrl)"></video>
+                        [src]="link.haveExternalUrl ? link.fileUrl : auth.getFileUrl(link.fileUrl)"></video>
                     <audio controls (play)="setLinkViewed(link.id)" style="width: 100%;" *ngIf="product.type == 3"
-                        [src]="auth.getFileUrl(link.fileUrl)"></audio>
+                        [src]="link.haveExternalUrl ? link.fileUrl : auth.getFileUrl(link.fileUrl)"></audio>
 
                     <hr>
 
