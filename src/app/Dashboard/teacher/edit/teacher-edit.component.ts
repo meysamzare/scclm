@@ -74,7 +74,7 @@ export class TeacherEditComponent implements AfterViewInit, OnDestroy {
     ngOnDestroy(): void {
         let title = "teacher";
         if (!this.fm1.submitted) {
-            if (this.fm1.dirty) {
+            if (this.fm1.dirty && !this.isEdit) {
                 this.auth.draft.setDraft({
                     title: title,
                     value: JSON.stringify(this.teacher)

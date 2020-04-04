@@ -74,7 +74,7 @@ export class ContractEditComponent implements OnInit, AfterViewInit, OnDestroy {
     ngOnDestroy(): void {
         let title = "Contract";
         if (!this.fm1.submitted) {
-            if (this.fm1.dirty) {
+            if (this.fm1.dirty && !this.isEdit) {
                 this.auth.draft.setDraft({
                     title: title,
                     value: JSON.stringify(this.contrct)

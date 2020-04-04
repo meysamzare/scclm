@@ -62,7 +62,7 @@ export class AdvertisingEditComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         let title = "advertising";
         if (!this.fm1.submitted) {
-            if (this.fm1.dirty) {
+            if (this.fm1.dirty && !this.isEdit) {
                 this.auth.draft.setDraft({
                     title: title,
                     value: JSON.stringify(this.advertising)

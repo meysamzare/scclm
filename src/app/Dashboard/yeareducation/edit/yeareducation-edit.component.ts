@@ -56,7 +56,7 @@ export class YeareducationEditComponent implements OnDestroy {
     ngOnDestroy(): void {
         let title = "yeareducation";
         if (!this.fm1.submitted) {
-            if (this.fm1.dirty) {
+            if (this.fm1.dirty && !this.isEdit) {
                 this.auth.draft.setDraft({
                     title: title,
                     value: JSON.stringify(this.yeareducation)

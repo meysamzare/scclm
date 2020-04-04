@@ -63,7 +63,7 @@ export class ProductCategoryEditComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         let title = this.PAGE_APIURL;
         if (!this.fm1.submitted) {
-            if (this.fm1.dirty) {
+            if (this.fm1.dirty && !this.isEdit) {
                 this.auth.draft.setDraft({
                     title: title,
                     value: JSON.stringify(this.PAGE_Data)
