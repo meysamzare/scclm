@@ -74,7 +74,7 @@
                                             <button mat-stroked-button color="primary" *ngIf="i.price > 0">{{ i.price }}
                                                 ریال</button>
                                             <a mat-stroked-button color="primary" *ngIf="i.price == 0"
-                                                [href]="auth.getFileUrl(i.fileUrl)" (click)="addDownloadCount(i.id)">
+                                                [href]="i.haveExternalUrl ? i.fileUrl : auth.getFileUrl(i.fileUrl)" (click)="addDownloadCount(i.id)">
                                                 <mat-icon>cloud_download</mat-icon> &nbsp;
                                                 رایگان
                                             </a>
