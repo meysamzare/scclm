@@ -3,9 +3,9 @@ import { ILink } from '../link';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MessageService } from 'src/app/shared/services/message.service';
-import { AuthService, jsondata } from 'src/app/shared/Auth/auth.service';
+import { AuthService } from 'src/app/shared/Auth/auth.service';
 import { IProduct } from '../../Product/product';
-import { HttpClient, HttpEvent, HttpEventType, HttpRequest, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpEventType, HttpRequest, HttpHeaders } from '@angular/common/http';
 import { map, last } from 'rxjs/operators';
 
 @Component({
@@ -46,7 +46,10 @@ export class LinkEditComponent implements OnInit, OnDestroy {
 
     _file: File = null;
 
-    constructor (
+    fileSelectState: "input" | "url" = "input";
+    fileExternalUrl = "";
+
+    constructor(
         private route: Router,
         private activeRoute: ActivatedRoute,
         private message: MessageService,
@@ -106,11 +109,11 @@ export class LinkEditComponent implements OnInit, OnDestroy {
         });
     }
 
-    
+
     ngOnDestroy(): void {
         let title = this.PAGE_APIURL;
         if (!this.fm1.submitted) {
-            if (this.fm1.dirty) {
+            if (this.fm1.dirty && !this.isEdit) {
                 this.auth.draft.setDraft({
                     title: title,
                     value: JSON.stringify(this.PAGE_Data)
@@ -121,6 +124,11 @@ export class LinkEditComponent implements OnInit, OnDestroy {
                 this.auth.draft.removeDraft(title)
             }
         }
+    }
+
+    onFileStateChange() {
+        this.fileExternalUrl = "";
+        this._file = null;
     }
 
     setFile(event) {
@@ -167,13 +175,18 @@ export class LinkEditComponent implements OnInit, OnDestroy {
     sts() {
         if (this.fm1.valid) {
 
-            if (this.isEdit == false && this._file == null) {
+            if (this.isEdit == false && this.fileSelectState == "input" && this._file == null) {
+                return;
+            }
+
+            if (this.isEdit == false && this.fileSelectState == "url" && !this.fileExternalUrl) {
                 return;
             }
 
             let formData = new FormData();
 
             formData.append("object", JSON.stringify(this.PAGE_Data));
+            formData.append("fileExternalUrl", this.fileExternalUrl);
             if (this._file) {
                 formData.append("file", this._file, this._file.name);
             }

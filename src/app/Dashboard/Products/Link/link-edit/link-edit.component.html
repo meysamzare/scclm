@@ -79,27 +79,54 @@
                                     <label>فایل</label>
                                     <br>
 
-                                    <button mat-mini-fab style="margin-right: 5px;" (click)="removeFile()"
-                                        [disabled]="!_file" matTooltip="حذف فایل فعلی">
-                                        <mat-icon>clear</mat-icon>
-                                    </button>
-                                    <button mat-fab style="margin: 5px;" color="primary" [disabled]="_file"
-                                        matTooltip="بارگذاری فایل جدید"
-                                        onclick="document.getElementById('file1').click()">
-                                        <mat-icon>add</mat-icon>
-                                    </button>
-                                    <strong *ngIf="_file">{{ _file.name }}</strong>
-
                                     <a mat-raised-button style="margin: 5px;" *ngIf="PAGE_Data.fileUrl && isEdit"
-                                        [href]="auth.getFileUrl(PAGE_Data.fileUrl)">دانلود فایل</a>
+                                        [href]="PAGE_Data.haveExternalUrl ? PAGE_Data.fileUrl :  auth.getFileUrl(PAGE_Data.fileUrl)">
+                                        دانلود فایل
+                                    </a>
 
+                                    <mat-radio-group class="radio-group" [(ngModel)]="fileSelectState" name="fileState"
+                                        (change)="onFileStateChange()">
+                                        <mat-radio-button [value]="'input'">آپلود فایل</mat-radio-button>
+                                        <mat-radio-button [value]="'url'">وارد کردن آدرس اینترنتی</mat-radio-button>
+                                    </mat-radio-group>
 
-                                    <input type="file" style="display: none;" id="file1" #file1 class="form-control"
-                                        name="file" (change)="setFile($event)" />
+                                    <ng-container *ngIf="fileSelectState == 'input'">
 
-                                    <mat-error *ngIf="!isEdit && !_file">
-                                        انتخاب فایل الزامی است
-                                    </mat-error>
+                                        <button mat-mini-fab style="margin-right: 5px;" (click)="removeFile()"
+                                            [disabled]="!_file" matTooltip="حذف فایل فعلی">
+                                            <mat-icon>clear</mat-icon>
+                                        </button>
+                                        <button mat-fab style="margin: 5px;" color="primary" [disabled]="_file"
+                                            matTooltip="بارگذاری فایل جدید"
+                                            onclick="document.getElementById('file1').click()">
+                                            <mat-icon>add</mat-icon>
+                                        </button>
+                                        <strong *ngIf="_file">{{ _file.name }}</strong>
+
+                                        <input type="file" style="display: none;" id="file1" #file1 class="form-control"
+                                            name="file" (change)="setFile($event)" />
+
+                                        <mat-error *ngIf="!isEdit && !_file">
+                                            انتخاب فایل الزامی است
+                                        </mat-error>
+                                    </ng-container>
+
+                                    <ng-container *ngIf="fileSelectState == 'url'">
+
+                                        <div class="form-group">
+                                            <label>آدرس اینترنتی {{ PAGE_TITLE }}</label>
+                                            <input type="text" [required]="isEdit ? false : true" #url="ngModel"
+                                                name="url" [(ngModel)]="fileExternalUrl" placeholder="آدرس اینترنتی"
+                                                class="form-control">
+                                            <div *ngIf="(url.touched || url.dirty) && url.invalid">
+                                                <p *ngIf="url.hasError('required')" class="error">
+                                                    وارد کردن آدرس اینترنتی {{ PAGE_TITLE }} الزامی است
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                    </ng-container>
+
                                     <br>
 
                                     <div style="direction: ltr; text-align: center;" *ngIf="isUploading">
@@ -109,7 +136,8 @@
                                             <b>{{ uploaded_MB.toFixed(2) }} / {{ fileSize_MB.toFixed(2) }} (mb)</b>
                                         </progressbar>
                                         <p>
-                                            <b tooltip="{{ uploaded_MB.toFixed(2) }} / {{ fileSize_MB.toFixed(2) }} (mb)">
+                                            <b
+                                                tooltip="{{ uploaded_MB.toFixed(2) }} / {{ fileSize_MB.toFixed(2) }} (mb)">
                                                 {{ uploaded_PS.toFixed(3) }} %
                                             </b>
                                         </p>
@@ -127,7 +155,7 @@
                             <a mat-raised-button color="warn" style="margin: 5px;"
                                 [routerLink]="'/dashboard/' + PAGE_URL">لغو</a>
                             <button type="submit" mat-raised-button color="primary"
-                                [disabled]="!fm1.valid || (!isEdit && !_file) || isUploading"
+                                [disabled]="!fm1.valid || (!isEdit && fileSelectState == 'input' && !_file) || (!isEdit && fileSelectState == 'url' && !fileExternalUrl) || isUploading"
                                 (click)="sts()">{{ btnTitle }}</button>
                         </div>
                     </form>
