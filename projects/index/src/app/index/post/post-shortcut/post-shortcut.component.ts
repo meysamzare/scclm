@@ -37,7 +37,7 @@ export class PostShortcutComponent implements OnInit {
         
         // Virtual Teaching
         if (TYPE == 1) {
-            this.auth.post("/api/Product/getProductTitle").subscribe(data => {
+            this.auth.post("/api/Product/getProductTitle", id).subscribe(data => {
                 if (data.success) {
                     this.router.navigateByUrl(`/virtual-teaching/${id}/${data.data}`);
                 } else {
@@ -50,7 +50,7 @@ export class PostShortcutComponent implements OnInit {
         
         // Product (Books)
         if (TYPE == 2) {
-            this.auth.post("/api/Product/getProductTitle").subscribe(data => {
+            this.auth.post("/api/Product/getProductTitle", id).subscribe(data => {
                 if (data.success) {
                     this.router.navigateByUrl(`/products/${id}/${data.data}`);
                 } else {
