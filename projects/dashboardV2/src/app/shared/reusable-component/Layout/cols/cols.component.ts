@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostBinding } from '@angular/core';
 
 @Component({
     selector: 'app-cols',
@@ -6,6 +6,8 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./cols.component.scss']
 })
 export class ColsComponent implements OnInit {
+
+    @HostBinding('class') componentClass = "columns";
 
     constructor() { }
 

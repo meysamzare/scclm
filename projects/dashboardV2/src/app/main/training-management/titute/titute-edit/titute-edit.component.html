@@ -1,0 +1,72 @@
+<app-navbar></app-navbar>
+
+<app-data-edit #edit>
+    <app-card [title]="edit.Title">
+        <app-data-form>
+
+            <app-cols>
+
+                <!-- Right col -->
+                <app-col>
+                    <app-input label="نام آموزشگاه" [(ngModel)]="edit.PAGE_Data.name" name="name"></app-input>
+
+                    <app-input label="کد آموزشگاه" type="number" [(ngModel)]="edit.PAGE_Data.orgCode" name="code">
+                    </app-input>
+
+                    <app-input label="ناحیه آموزش و پرورش" [(ngModel)]="edit.PAGE_Data.orgSection" name="section">
+                    </app-input>
+
+                    <app-radio-group label="نوع آموزشگاه" [(ngModel)]="edit.PAGE_Data.orgSex" name="gender">
+                        <app-radio-button label="پسرانه" [value]="1"></app-radio-button>
+                        <app-radio-button label="دخترانه" [value]="2"></app-radio-button>
+                    </app-radio-group>
+
+
+                    <app-input label="کد پستی آموزشگاه" type="number" [(ngModel)]="edit.PAGE_Data.postCode"
+                        name="postCode"></app-input>
+
+                    <app-input label="شماره تماس آموزشگاه" type="number" [(ngModel)]="edit.PAGE_Data.tell" name="tel">
+                    </app-input>
+                </app-col>
+
+                <!-- Left col -->
+                <app-col>
+
+                    <app-select label="والد" long-press
+                        (onLongPress)="tree.openTreeDialog(edit.PAGE_APIURL, edit.PAGE_TITLE)"
+                        [(ngModel)]="edit.PAGE_Data.tituteCode" name="parent">
+                        <app-select-option label="ریشه" [value]="'null'"></app-select-option>
+                        <app-select-option *ngFor="let i of titutes" [label]="i.name" [value]="i.id">
+                        </app-select-option>
+                    </app-select>
+
+                    <app-input label="استان" placeholder="سازمان آموزش و پرورش (استان)"
+                        [(ngModel)]="edit.PAGE_Data.state" name="state"></app-input>
+
+                    <app-input label="شهر" [(ngModel)]="edit.PAGE_Data.city" name="city"></app-input>
+
+                    <app-textarea label="نشانی" [(ngModel)]="edit.PAGE_Data.address" name="address"></app-textarea>
+
+                    <hr>
+
+                    <app-input label="پست الکترونیک" [required]="false" [(ngModel)]="edit.PAGE_Data.email" name="email">
+                    </app-input>
+
+                    <app-textarea label="توضیحات" [required]="false" [(ngModel)]="edit.PAGE_Data.desc" name="desc">
+                    </app-textarea>
+
+                </app-col>
+
+            </app-cols>
+
+            <app-button-group>
+                <app-button *button [text]="edit.btnTitle" [loading]="edit.isLoading" (onClick)="edit.sts()"
+                    color="primary" [fullWidth]="true" [disabled]="!edit.isAllFormValid()">
+                </app-button>
+
+                <app-button *button text="لغو" [light]="true" [fullWidth]="true" routerLink="../../"></app-button>
+            </app-button-group>
+
+        </app-data-form>
+    </app-card>
+</app-data-edit>

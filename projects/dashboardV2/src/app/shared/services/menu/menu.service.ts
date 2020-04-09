@@ -55,7 +55,7 @@ export class MenuService {
     }
 
     getPureUrlMenu(url: string) {
-        url = url.replace(new RegExp("^\/edit\/.*$"), "").replace("/list", "").split("?")[0];
+        url = url.replace(new RegExp("\/edit\/.*", "gi"), "").replace("/list", "").split("?")[0];
 
         return this.getMenu(url);
     }
@@ -76,6 +76,7 @@ export interface IMenu {
     desc: string;
 
     link: string;
+    apiUrl?: string;
 
     exactLink?: boolean;
 

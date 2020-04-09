@@ -43,6 +43,10 @@ synapse-srcm.dark-theme {
 	overflow-x: hidden !important;
 }
 
+.mat-calendar-table-header th {
+    text-align: center !important;
+}
+
 ::-webkit-scrollbar {
 	width: 5px;
 	background-color: #f5f5f5;

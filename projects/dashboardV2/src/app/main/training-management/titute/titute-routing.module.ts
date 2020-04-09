@@ -3,6 +3,9 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { TituteComponent } from './titute.component';
 import { TituteListComponent } from './titute-list/titute-list.component';
+import { TituteEditComponent } from './titute-edit/titute-edit.component';
+import { DataEditResolverService } from '../../../shared/reusable-component/data/data-edit/data-edit-resolver.service';
+import { ITitute } from 'src/app/Dashboard/titute/titute';
 
 const routes: Routes = [
     {
@@ -12,6 +15,17 @@ const routes: Routes = [
     {
         path: "list",
         component: TituteListComponent
+    },
+    {
+        path: "edit/:id",
+        component: TituteEditComponent,
+        data: {
+            newData: new ITitute,
+            apiUrl: "Titute"
+        },
+        resolve: {
+            data: DataEditResolverService
+        }
     }
 ];
 

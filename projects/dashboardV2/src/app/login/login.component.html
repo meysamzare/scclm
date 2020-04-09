@@ -11,7 +11,7 @@
             <app-data-form #fm1>
                 <app-input [(ngModel)]="username" name="us" [label]="'نام کاربری'"></app-input>
 
-                <app-input [(ngModel)]="password" name="pass" [label]="'کلمه عبور'" [Type]="'password'"></app-input>
+                <app-input [(ngModel)]="password" name="pass" [label]="'کلمه عبور'" [type]="'password'"></app-input>
 
                 <app-button-group [center]="true">
                     <app-button *button (onClick)="doLogin()" text="ورود" [disabled]="!fm1.isFormValid"

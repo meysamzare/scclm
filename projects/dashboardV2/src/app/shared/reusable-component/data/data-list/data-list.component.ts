@@ -110,8 +110,12 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
             this.refreshDataSource();
         });
 
+        if (!this.PAGE_APIURL) {
+            this.PAGE_APIURL = this.menu.getCurrentPureUrl().apiUrl;
+        }
+
         if (!this.PAGE_ROLE) {
-            this.PAGE_ROLE = this.PAGE_APIURL;
+            this.PAGE_ROLE = this.menu.getCurrentPureUrl().role;
         }
     }
 

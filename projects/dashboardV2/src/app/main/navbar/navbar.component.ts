@@ -3,6 +3,9 @@ import { NavbarService } from './navbar.service';
 import { ThemeService } from '../../shared/services/theme.service';
 import { LocationService } from '../../shared/services/location.service';
 import { MenuService } from '../../shared/services/menu/menu.service';
+import { interval } from 'rxjs/internal/observable/interval';
+import { debounceTime } from 'rxjs/internal/operators/debounceTime';
+import { take } from 'rxjs/internal/operators/take';
 
 @Directive({
     selector: '[navItem]'
@@ -39,10 +42,15 @@ export class NavbarComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        if (!this.Title) {
-            this.Title = this.menu.getCurrentPureUrl().titles;
-        }
-        this.navbar.setTitle("پرتال آموزشی مبنا | " + this.Title);
+        interval(100).pipe(
+            debounceTime(500),
+            take(1)
+        ).subscribe(() => {
+            if (!this.Title) {
+                this.Title = this.menu.getCurrentPureUrl().titles;
+            }
+            this.navbar.setTitle("پرتال آموزشی مبنا | " + this.Title);
+        })
     }
 
 }

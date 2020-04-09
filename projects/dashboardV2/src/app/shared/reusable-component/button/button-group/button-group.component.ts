@@ -10,7 +10,7 @@ export class ButtonGroupComponent implements OnInit, AfterContentInit {
 
     @Input() grouped = true;
     @Input() addons = false;
-    @Input() center = false;
+    @Input() center = true;
 
     @ContentChildren(ButtonDirective) public buttons: QueryList<ButtonDirective>;
 

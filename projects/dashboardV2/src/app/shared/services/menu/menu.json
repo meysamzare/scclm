@@ -48,7 +48,9 @@
                 "titles": "آموزشگاه ها",
                 "icon": "school",
                 "desc": "مدیریت آموزشگاه های موجود در مجتمع آموزشی",
-                "link": "/training-management/titute"
+                "link": "/training-management/titute",
+                "role": "InsTitute",
+                "apiUrl": "Titute"
             },
             {
                 "title": "سال تحصیلی",

@@ -84,7 +84,7 @@ export class RadioComponent implements OnInit, AfterViewInit, AfterContentInit, 
     ngAfterContentInit(): void {
         this.radioButtons.forEach(rbutton => {
             this.options.push({
-                label: rbutton.title,
+                label: rbutton.label,
                 value: rbutton.value,
                 disabled: rbutton.disabled
             });
