@@ -16,19 +16,50 @@ export class PostShortcutComponent implements OnInit {
     ) {
         var id = this.activeRoute.snapshot.params["id"];
 
+        let TYPE = this.activeRoute.snapshot.data["type"];
+
         if (!id) {
             this.navigateToIndex();
         }
 
-        this.auth.post("/api/Post/getPostTitle", id).subscribe(data => {
-            if (data.success) {
-                this.router.navigateByUrl(`/post/${id}/${data.data}`);
-            } else {
-                this.navigateToIndex();
-            }
-        }, er => {
-            this.auth.handlerError(er);
-        });
+        // Post
+        if (TYPE == 0) {
+            this.auth.post("/api/Post/getPostTitle", id).subscribe(data => {
+                if (data.success) {
+                    this.router.navigateByUrl(`/post/${id}/${data.data}`);
+                } else {
+                    this.navigateToIndex();
+                }
+            }, er => {
+                this.auth.handlerError(er);
+            });
+        }
+        
+        // Virtual Teaching
+        if (TYPE == 1) {
+            this.auth.post("/api/Product/getProductTitle").subscribe(data => {
+                if (data.success) {
+                    this.router.navigateByUrl(`/virtual-teaching/${id}/${data.data}`);
+                } else {
+                    this.navigateToIndex();
+                }
+            }, er => {
+                this.auth.handlerError(er);
+            })
+        }
+        
+        // Product (Books)
+        if (TYPE == 2) {
+            this.auth.post("/api/Product/getProductTitle").subscribe(data => {
+                if (data.success) {
+                    this.router.navigateByUrl(`/products/${id}/${data.data}`);
+                } else {
+                    this.navigateToIndex();
+                }
+            }, er => {
+                this.auth.handlerError(er);
+            })
+        }
     }
 
     ngOnInit() { }
