@@ -4,7 +4,7 @@ export class ITitute {
     id: number = 0;
 
     //Nullable
-    tituteCode = "";
+    tituteCode = null;
 
     name: string = "";
 

@@ -1,6 +1,6 @@
-<app-navbar></app-navbar>
-
 <app-data-edit #edit>
+    <app-navbar [Title]="edit.Title"></app-navbar>
+
     <app-card [title]="edit.Title">
         <app-data-form>
 
@@ -35,7 +35,7 @@
                     <app-select label="والد" long-press
                         (onLongPress)="tree.openTreeDialog(edit.PAGE_APIURL, edit.PAGE_TITLE)"
                         [(ngModel)]="edit.PAGE_Data.tituteCode" name="parent">
-                        <app-select-option label="ریشه" [value]="'null'"></app-select-option>
+                        <app-select-option label="ریشه" [value]="0"></app-select-option>
                         <app-select-option *ngFor="let i of titutes" [label]="i.name" [value]="i.id">
                         </app-select-option>
                     </app-select>
@@ -64,7 +64,7 @@
                     color="primary" [fullWidth]="true" [disabled]="!edit.isAllFormValid()">
                 </app-button>
 
-                <app-button *button text="لغو" [light]="true" [fullWidth]="true" routerLink="../../"></app-button>
+                <app-button *button text="لغو" [isEdit]="edit.isEdit" [backToPureMenuUrl]="true"></app-button>
             </app-button-group>
 
         </app-data-form>

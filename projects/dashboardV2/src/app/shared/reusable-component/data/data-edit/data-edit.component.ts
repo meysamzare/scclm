@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/shared/Auth/auth.service';
 import { DataFormComponent } from './data-form/data-form.component';
 import { MenuService } from '../../../services/menu/menu.service';
 import { finalize } from 'rxjs/internal/operators/finalize';
+import { Location } from '@angular/common';
 
 @Component({
     selector: 'app-data-edit',
@@ -20,7 +21,7 @@ export class DataEditComponent implements OnInit, OnDestroy {
     @Input() PAGE_Data = null;
     oldData = null;
 
-    @Input() RedirectToIndex: boolean = true;
+    @Input() RedirectToIndex: boolean = false;
 
     @Input() PAGE_TITLE = "";
     @Input() PAGE_APIURL = "";
@@ -46,7 +47,8 @@ export class DataEditComponent implements OnInit, OnDestroy {
         private activeRoute: ActivatedRoute,
         private message: MessageService,
         private auth: AuthService,
-        private menu: MenuService
+        private menu: MenuService,
+        private location: Location
     ) { }
 
     ngOnInit() {
@@ -115,6 +117,7 @@ export class DataEditComponent implements OnInit, OnDestroy {
         if (this.isAllFormValid()) {
 
             this.isLoading = true;
+            this.isSubmited = true;
 
             var isEditString = this.isEdit ? "Edit" : "Add";
 
@@ -137,8 +140,9 @@ export class DataEditComponent implements OnInit, OnDestroy {
 
                     if (this.RedirectToIndex) {
                         this.route.navigate([`/${this.PAGE_URL}`]);
+                    } else {
+                        this.location.back();
                     }
-
                 } else {
                     this.message.showMessageforFalseResult(data);
                 }

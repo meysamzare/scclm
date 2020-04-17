@@ -373,7 +373,7 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
 
     onEdit(id) {
         if (this.auth.isUserAccess("edit_" + this.PAGE_ROLE)) {
-            this.router.navigate(["/dashboard/" + this.PAGE_URL + "/edit/" + id]);
+            this.router.navigateByUrl(`${this.menu.getCurrentPureUrl().link}/edit/${id}`);
         }
     }
 

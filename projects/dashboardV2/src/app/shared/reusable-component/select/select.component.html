@@ -5,18 +5,18 @@
     <div class="field-body" dir="rtl">
         <mat-form-field [matTooltip]="hint" style="width: 100%;">
             <mat-label>{{ Placeholder ? Placeholder : label }}</mat-label>
-            <mat-select #select [disabled]="disabled" (selectionChange)="onChange($event.value)"
+            <mat-select #select [(ngModel)]="value" [disabled]="disabled" (selectionChange)="onChange($event.value)"
                 [required]="required">
                 <mat-option>
                     <ngx-mat-select-search [(ngModel)]="searchText" [placeholderLabel]="'جستجو'"
                         [noEntriesFoundLabel]="'موردی یافت نشد'"></ngx-mat-select-search>
                 </mat-option>
 
-                <mat-option>---</mat-option>
+                <mat-option *ngIf="!searchText">---</mat-option>
 
                 <mat-option *ngFor="let option of getFiltredOptions()" [value]="option.value"
                     [disabled]="option.disabled">
-                    {{option.label}}
+                    {{option.title}}
                 </mat-option>
             </mat-select>
 
