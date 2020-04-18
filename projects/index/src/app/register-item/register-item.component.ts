@@ -7,14 +7,15 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService, jsondata } from 'src/app/shared/Auth/auth.service';
 import { MessageService } from 'src/app/shared/services/message.service';
 import { DomSanitizer } from '@angular/platform-browser';
-import { interval } from 'rxjs';
 import Swal from "sweetalert2";
 import { IUnit } from 'src/app/Dashboard/unit/unit';
 import { RegisterItemLoginService } from './login-for-register-item/register-item-login.service';
 import { RegisterItemLicenseService } from './license-for-register-item/register-item-license.service';
 import { HttpRequest, HttpHeaders, HttpEventType, HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/internal/operators/map';
-import { last } from 'rxjs/operators';
+import { last, catchError } from 'rxjs/operators';
+import { of } from 'rxjs/internal/observable/of';
+import { EMPTY } from 'rxjs/internal/observable/empty';
 
 @Component({
     selector: 'app-register-item',
@@ -174,6 +175,23 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         return new FormGroup(group);
     }
 
+    clearItemAttr(attrId) {
+        let controlName = `p${this.getIndexForAttr(attrId)}`;
+        this.group.controls[controlName].reset();
+
+        let itemAttr = this.itemAttrs.find(c => c.attributeId == attrId);
+
+        if (itemAttr) {
+            itemAttr.attrubuteValue = "";
+
+
+            let fileObj = this._files.find(c => c.attrId == attrId);
+            if (fileObj) {
+                this._files.splice(this._files.indexOf(fileObj), 1);
+            }
+        }
+    }
+
     getIndexForAttr(attrId) {
         return this.attrs.findIndex(c => c.id == attrId);
     }
@@ -321,12 +339,34 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         }
     }
 
-    _files: File[] = [];
+    _files: {
+        file: File,
+        attrId: number
+    }[] = [];
 
     setItemAttrforPic(event, attrId, type) {
-        let attribute = this.attrs.find(c => c.id == attrId);
+        var requiredFileAttr = this.reqfilesAttrint.find(c => c == attrId);
+        const fileIsInvalid = (message) => {
+            event.target.value = null;
+            event.target.files = null;
+            if (requiredFileAttr) {
+                requiredFileAttr = attrId;
+            } else {
+                var attr = this.attrs.find(c => c.id == attrId);
+                if (attr.isRequired) {
+                    this.reqfilesAttrint.push(attrId);
+                }
+            }
+            return this.message.showWarningAlert(message);
+        }
 
-        let reader = new FileReader();
+
+        let fileObj = this._files.find(c => c.attrId == attrId);
+        if (fileObj) {
+            this._files.splice(this._files.indexOf(fileObj), 1);
+        }
+
+        let attribute = this.attrs.find(c => c.id == attrId);;
 
         var size = type == "file" ? attribute.maxFileSize : 10;
         var sizeText = type == "file" ? `${attribute.maxFileSize} مگابایت` : `10 مگابایت`;
@@ -334,20 +374,21 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         if (event.target.files && event.target.files.length > 0) {
             let file: File = event.target.files[0];
 
-            var requiredFileAttr = this.reqfilesAttrint.find(c => c == attrId);
+            let fileExtentions = file.name.split('.');
+
+            if (fileExtentions.length <= 1) {
+                fileIsInvalid("بارگذاری این فایل مجاز نمی باشد!");
+                return;
+            }
+
+            Object.defineProperty(file, 'name', {
+                writable: true,
+                value: `${this.getRandomFileName()}.${fileExtentions.slice(-1)[0]}`
+            });
 
             if (file.size / 1024 / 1024 > size) {
-                event.target.value = null;
-                event.target.files = null;
-                if (requiredFileAttr) {
-                    requiredFileAttr = attrId;
-                } else {
-                    var attr = this.attrs.find(c => c.id == attrId);
-                    if (attr.isRequired) {
-                        this.reqfilesAttrint.push(attrId);
-                    }
-                }
-                return this.message.showWarningAlert("حجم فایل باید کمتر از " + sizeText + " باشد");
+                fileIsInvalid("حجم فایل باید کمتر از " + sizeText + " باشد");
+                return;
             }
 
             if (requiredFileAttr) {
@@ -356,53 +397,41 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                     this.reqfilesAttrint.splice(indexOf, 1);
                 }
             }
+            
+            this._files.push({
+                file: file,
+                attrId: attrId
+            });
 
-            if (attribute.attrTypeInt == 7) {
-                reader.readAsDataURL(file);
-                reader.onload = () => {
-                    let result = reader.result.toString().split(",")[1];
+            var itemAttr = this.itemAttrs.find(
+                c => c.attributeId == attrId
+            );
 
-                    var itemAttr = this.itemAttrs.find(
-                        c => c.attributeId == attrId
-                    );
+            let result = "(binery)";
 
-                    if (itemAttr) {
-                        itemAttr.attrubuteValue = result;
-                        itemAttr.fileName = file.name;
-                    } else {
-                        this.itemAttrs.push({
-                            itemId: 0,
-                            attributeId: attrId,
-                            attrubuteValue: result,
-                            attributeFilePath: "1",
-                            fileName: file.name
-                        });
-                    }
-                };
+            if (itemAttr) {
+                itemAttr.attrubuteValue = result;
+                itemAttr.fileName = file.name;
             } else {
-                this._files.push(file);
-
-                var itemAttr = this.itemAttrs.find(
-                    c => c.attributeId == attrId
-                );
-
-                let result = "(binery)";
-
-                if (itemAttr) {
-                    itemAttr.attrubuteValue = result;
-                    itemAttr.fileName = file.name;
-                } else {
-                    this.itemAttrs.push({
-                        itemId: 0,
-                        attributeId: attrId,
-                        attrubuteValue: result,
-                        attributeFilePath: "1",
-                        fileName: file.name
-                    });
-                }
+                this.itemAttrs.push({
+                    itemId: 0,
+                    attributeId: attrId,
+                    attrubuteValue: result,
+                    attributeFilePath: "1",
+                    fileName: file.name
+                });
             }
-
         }
+    }
+
+    getRandomFileName(filelength = 10): string {
+        let result = "";
+        let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let charactersLength = characters.length;
+        for (let i = 0; i < filelength; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
     }
 
     isFileExist(attrId) {
@@ -440,7 +469,8 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
             formData.append("object", JSON.stringify(object));
 
             if (this._files.length != 0) {
-                this._files.forEach(file => {
+                this._files.forEach(fileObj => {
+                    let file = fileObj.file;
                     formData.append("files", file, file.name);
                 });
             }
@@ -477,6 +507,10 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                             break;
                         case HttpEventType.Response:
                             var data: any = event.body;
+
+                            if (!event.ok) {
+                                this.isUploading = false;
+                            }
 
                             if (data.success) {
                                 if (!data.message) {
@@ -515,12 +549,18 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                                     "خطا"
                                 );
                                 this.message.showMessageforFalseResult(data);
+                                this.isUploading = false;
                             }
-
-                            this.isUploading = false;
-
                             break;
                     }
+                }),
+                catchError(() => {
+                    this.message.showWarningAlert(
+                        "خطایی روی داده است لطفا با راهبر سیستم تماس حاصل فرمایید",
+                        "خطا"
+                    );
+                    this.isUploading = false;
+                    return of(EMPTY);
                 }),
                 last()
             ).subscribe();

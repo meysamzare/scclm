@@ -35,23 +35,34 @@
 
                             <div class="form-group" *ngFor="let i of getAttrsForUnit(unit.id); index as index"
                                 [style.margin-top.px]="index == 0 ? 0 : 35">
-                                <label *ngIf="i.attrTypeInt != 4">
-                                    <b>
-                                        {{i.title}}
-                                    </b>
-                                </label>
+                                <div class="row" style="flex-flow: row;">
+                                    <div class="col-lg-10" style="margin: auto;">
+                                        <label *ngIf="i.attrTypeInt != 4">
+                                            <b>
+                                                {{i.title}}
+                                            </b>
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2" style="text-align: left;">
+                                        <button [disabled]="!group.controls['p' + getIndexForAttr(i.id)].dirty"
+                                            mat-icon-button [matTooltip]="'پاکسازی'" style="outline: none;"
+                                            (click)="clearItemAttr(i.id)">
+                                            <mat-icon>close</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
 
                                 <input *ngIf="i.attrTypeInt == 1"
                                     (blur)="i.isUniq ? checkForUniqValue($event, i.id) : null"
                                     [formControlName]="'p' + getIndexForAttr(i.id)" type="text" class="form-control"
                                     placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
-                                    (change)="setItemAttr($event, i.id)" />
+                                    (input)="setItemAttr($event, i.id)" />
 
                                 <input *ngIf="i.attrTypeInt == 2"
                                     (blur)="i.isUniq ? checkForUniqValue($event, i.id) : null"
                                     [formControlName]="'p' + getIndexForAttr(i.id)" type="number" class="form-control"
                                     placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
-                                    (change)="setItemAttr($event, i.id)" />
+                                    (input)="setItemAttr($event, i.id)" />
 
                                 <mat-form-field class="example-full-width" *ngIf="i.attrTypeInt == 3">
                                     <input matInput [formControlName]="'p' + getIndexForAttr(i.id)" readonly
@@ -67,7 +78,7 @@
                                     (change)="setItemAttr($event, i.id)">{{i.title}}</mat-checkbox>
 
                                 <input *ngIf="i.attrTypeInt == 5" [formControlName]="'p' + getIndexForAttr(i.id)"
-                                    class="form-control" type="password" (change)="setItemAttr($event, i.id)"
+                                    class="form-control" type="password" (input)="setItemAttr($event, i.id)"
                                     placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}" />
 
                                 <mat-form-field *ngIf="i.attrTypeInt == 6">
@@ -136,17 +147,6 @@
 
                     <div class="col-md-12 margin-top-10">
                         <div class="row">
-                            <div class="col-lg-3">
-                                <button type="button" routerLink="/"
-                                    class="btn btn-block btn-outline-danger">انصراف</button>
-                            </div>
-                            <div class="col-lg-9">
-                                <button type="button" class="btn btn-block btn-outline-success"
-                                    [disabled]="group.invalid || attrUniqList.length != 0 || reqfilesAttrint.length != 0 || isUploading"
-                                    (click)="sts()">{{ getRegisterBtnTitle() }}</button>
-                            </div>
-                        </div>
-                        <div class="row">
                             <div class="col-lg-12">
                                 <div style="direction: ltr; text-align: center;" *ngIf="isUploading">
 
@@ -163,6 +163,17 @@
                                         در حال بارگذاری، لطفا شکیبا باشید
                                     </p>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <button type="button" routerLink="/" [disabled]="isUploading"
+                                    class="btn btn-block btn-outline-danger">انصراف</button>
+                            </div>
+                            <div class="col-lg-9">
+                                <button type="button" class="btn btn-block btn-outline-success"
+                                    [disabled]="group.invalid || attrUniqList.length != 0 || reqfilesAttrint.length != 0 || isUploading"
+                                    (click)="sts()">{{ getRegisterBtnTitle() }}</button>
                             </div>
                         </div>
                     </div>
