@@ -6,7 +6,7 @@ import { JwtHelperService } from "@auth0/angular-jwt";
 import { IUser } from "src/app/Dashboard/user/user";
 import { RoleClass } from "src/app/Dashboard/role/role";
 import { DomSanitizer } from "@angular/platform-browser";
-import { Observable, of } from "rxjs";
+import { Observable, of, EMPTY } from "rxjs";
 import { take, switchMap, tap, catchError } from "rxjs/operators";
 import { MatDialog } from "@angular/material";
 
@@ -188,35 +188,28 @@ export class AuthService {
             password: password
         }, log);
 
-        req.subscribe(
-            (data: jsondata) => {
-                if (data.success) {
-                    this.message.showSuccessAlert("با موفقیت وارد شدید");
+        req.subscribe(data => {
+            if (data.success) {
+                this.message.showSuccessAlert("با موفقیت وارد شدید");
 
-                    this.setUser(data.data);
-                    this.setUserRole(data.data.role);
-                    this.setToken(data.redirect);
+                this.setUser(data.data);
+                this.setUserRole(data.data.role);
+                this.setToken(data.redirect);
 
-                    this.clearLockUserState();
+                this.clearLockUserState();
 
-                    if (this.redirectUrl) {
-                        // location.href = "/#" + this.redirectUrl;
-                        this.router.navigateByUrl(this.redirectUrl);
-                    } else {
-                        // location.href = "/#" + "/dashboard";
-                        this.router.navigateByUrl(`/${redirect}`);
-                    }
-
-
-                    // location.reload();
+                if (this.redirectUrl) {
+                    // location.href = "/#" + this.redirectUrl;
+                    this.router.navigateByUrl(this.redirectUrl);
                 } else {
-                    this.message.showMessageforFalseResult(data);
+                    // location.href = "/#" + "/dashboard";
+                    this.router.navigateByUrl(`/${redirect}`);
                 }
-            },
-            er => {
-                this.handlerError(er);
+
+
+                // location.reload();
             }
-        );
+        });
 
         return req;
     }
@@ -642,12 +635,12 @@ export class AuthService {
         params = null,
         log: ILogParam = null,
         reportProgress = false
-    ): Observable<jsondata> {
+    ) {
         var url2 = this.serializeUrl(url);
 
         let content = JSON.stringify(params);
         var token = this.getToken();
-        var req: Observable<jsondata> = this.http.post(url2, content, {
+        var req = this.http.post<jsondata>(url2, content, {
             headers: new HttpHeaders({
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`
@@ -655,22 +648,19 @@ export class AuthService {
             reportProgress: reportProgress
         }).pipe(
             take(1),
-            // catchError((er, ca) => {
-            //     this.handlerError(er);
+            catchError((er, ca) => {
+                this.handlerError(er);
 
-            //     return of({
-            //         success: false,
-            //         data: null,
-            //         message: null,
-            //         type: null,
-            //         redirect: null,
-            //     })
-            // }),
+                return of(EMPTY)
+            }),
             switchMap((data: jsondata) => {
                 if (log && log.type != "none") {
                     if (data.success) {
                         this.logToServer(log, data);
                     }
+                }
+                if (data && !data.success) {
+                    this.message.showMessageforFalseResult(data);
                 }
                 return of(data);
             })

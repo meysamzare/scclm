@@ -1,21 +1,21 @@
 export class IYeareducation {
     constructor() { }
 
-    id: number = 0;
+    id = 0;
 
-    name: string;
+    name = "";
 
-    dateStart: string;
+    dateStart = "";
 
-    dateEnd: string;
+    dateEnd = "";
 
-    desc: string;
+    desc = "";
 
     isActive = false;
 
-    haveGrade: boolean = false;
+    haveGrade = false;
     haveExam = false;
 
-    dateStartPersian: string = "";
-    dateEndPersian: string = "";
+    dateStartPersian = "";
+    dateEndPersian = "";
 }

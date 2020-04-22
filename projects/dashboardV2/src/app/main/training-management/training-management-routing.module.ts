@@ -8,7 +8,8 @@ const routes: Routes = [
         path: '',
         component: TrainingManagementComponent
     },
-    { path: 'titute', loadChildren: () => import('./titute/titute.module').then(m => m.TituteModule) }
+    { path: 'titute', loadChildren: () => import('./titute/titute.module').then(m => m.TituteModule) },
+    { path: 'yeareducation', loadChildren: () => import('./yeareducation/yeareducation.module').then(m => m.YeareducationModule) }
 ];
 
 @NgModule({

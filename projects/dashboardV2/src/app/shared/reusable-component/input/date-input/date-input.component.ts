@@ -14,7 +14,7 @@ export class DateInputComponent implements OnInit, ControlValueAccessor, Validat
     @Input() label: string;
     @Input() showLabelSection: boolean = true;
     @Input() Size: "small" | "normal" | "medium" | "large" = "normal";
-    @Input() Placeholder: string = "";
+    @Input("placeholder") Placeholder: string = "";
     @Input() InvalidMessage: string = "";
     @Input() Rounded: boolean = false;
     @Input() Loading: boolean = false;

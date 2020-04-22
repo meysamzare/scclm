@@ -37,5 +37,5 @@ export function getAssinedPropNameAndValue(object: any): string {
     //     text += key + ": " + value + (objectKEYS.length - 1 == index ? "" : ", ");
     // });
 
-    return JSON.stringify(object);
+    return JSON.stringify(object, null, '\t');
 }

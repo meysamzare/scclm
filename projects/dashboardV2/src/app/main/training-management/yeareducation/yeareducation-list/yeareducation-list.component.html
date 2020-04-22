@@ -1,0 +1,28 @@
+<app-navbar [showRefresh]="true" (refresh)="list.refreshDataSource()"></app-navbar>
+
+<app-data-list #list [conditionalProperty]="'haveGrade,haveExam'" [conditionalTitle]="'مقاطع تحصیلی یا آزمون'"
+    (editClick)="list.onEdit($event.id)" (deleteClick)="list.deleteSelected()">
+
+    <ng-template dataListItem [def]="'id'" [title]="'ردیف'" [show]="false" let-row="Row">
+        <p>{{ row.id }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'isActive'" [title]="''" [showOnColsList]="false" [sortHeader]="false"
+        let-row="Row">
+        <mat-radio-button (click)="setIsActive(row.id)" [checked]="row.isActive == true">
+        </mat-radio-button>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'name'" [title]="'نام'" let-row="Row">
+        <p>{{ row.name }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'dateStart'" [title]="'تاریخ شروع'" let-row="Row">
+        <p>{{ row.dateStartPersian }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'dateEnd'" [title]="'تاریخ پایان'" let-row="Row">
+        <p>{{ row.dateEndPersian }}</p>
+    </ng-template>
+
+</app-data-list>

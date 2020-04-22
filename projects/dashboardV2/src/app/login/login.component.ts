@@ -60,7 +60,7 @@ export class LoginComponent implements OnInit {
                 username: this.username,
                 password: this.password
             },
-        }, "").pipe(finalize(() => this.isLoading = false)).subscribe();
+        }, "").pipe(finalize(() => this.isLoading = false)).toPromise();
     }
 
     sendDateToServer() {

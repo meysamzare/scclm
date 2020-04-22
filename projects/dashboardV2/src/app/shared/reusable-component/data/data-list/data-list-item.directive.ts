@@ -30,6 +30,12 @@ export class DataListItemDirective implements OnInit {
         this._show = value;
     }
 
+    public _showOnColsList = true;
+    @Input()
+    set showOnColsList(value: boolean) {
+        this._showOnColsList = value;
+    }
+
     constructor(
         public tempRef: TemplateRef<any>
     ) { }

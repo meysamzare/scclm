@@ -8,24 +8,24 @@
 
                 <!-- Right col -->
                 <app-col>
-                    <app-input label="نام آموزشگاه" [(ngModel)]="edit.PAGE_Data.name" name="name"></app-input>
+                    <app-input label="نام {{ edit.PAGE_TITLE }}" [(ngModel)]="edit.PAGE_Data.name" name="name"></app-input>
 
-                    <app-input label="کد آموزشگاه" type="number" [(ngModel)]="edit.PAGE_Data.orgCode" name="code">
+                    <app-input label="کد {{ edit.PAGE_TITLE }}" type="number" [(ngModel)]="edit.PAGE_Data.orgCode" name="code">
                     </app-input>
 
                     <app-input label="ناحیه آموزش و پرورش" [(ngModel)]="edit.PAGE_Data.orgSection" name="section">
                     </app-input>
 
-                    <app-radio-group label="نوع آموزشگاه" [(ngModel)]="edit.PAGE_Data.orgSex" name="gender">
+                    <app-radio-group label="نوع {{ edit.PAGE_TITLE }}" [(ngModel)]="edit.PAGE_Data.orgSex" name="gender">
                         <app-radio-button label="پسرانه" [value]="1"></app-radio-button>
                         <app-radio-button label="دخترانه" [value]="2"></app-radio-button>
                     </app-radio-group>
 
 
-                    <app-input label="کد پستی آموزشگاه" type="number" [(ngModel)]="edit.PAGE_Data.postCode"
+                    <app-input label="کد پستی {{ edit.PAGE_TITLE }}" type="number" [(ngModel)]="edit.PAGE_Data.postCode"
                         name="postCode"></app-input>
 
-                    <app-input label="شماره تماس آموزشگاه" type="number" [(ngModel)]="edit.PAGE_Data.tell" name="tel">
+                    <app-input label="شماره تماس {{ edit.PAGE_TITLE }}" type="number" [(ngModel)]="edit.PAGE_Data.tell" name="tel">
                     </app-input>
                 </app-col>
 

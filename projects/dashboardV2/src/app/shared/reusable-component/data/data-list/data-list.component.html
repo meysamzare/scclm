@@ -39,7 +39,7 @@
                         </button>
                         <mat-menu #viewCols="matMenu">
                             <div class="mat-menu-container" (click)="$event.stopPropagation()">
-                                <ng-container *ngFor="let i of columns">
+                                <ng-container *ngFor="let i of getShowColsList()">
                                     <mat-checkbox (change)="toggleCol(i.def, $event.checked)"
                                         [checked]="i.show" [disabled]="isLastItemInDisplayCol(i.def)">
                                         {{ i.title }}

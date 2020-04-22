@@ -57,7 +57,9 @@
                 "titles": "سال های تحصیلی",
                 "icon": "calendar-alt",
                 "desc": "مدیریت سال های تحصیلی که شامل آرشیو داده ها می شود",
-                "link": "/training-management/"
+                "link": "/training-management/yeareducation",
+                "role": "Yeareducation",
+                "apiUrl": "Yeareducation"
             },
             {
                 "title": "پایه تحصیلی",

@@ -56,7 +56,8 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
     columns: {
         def: string,
         title: string,
-        show: boolean
+        show: boolean,
+        showOnColsList: boolean
     }[] = [];
 
     dataSource: MatTableDataSource<any>;
@@ -87,7 +88,7 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
         private menu: MenuService
     ) {
         this.filter$.pipe(
-            debounceTime(500)
+            debounceTime(1000)
         ).subscribe(() => this.applyFilter());
     }
 
@@ -107,7 +108,7 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
         const changeed = merge(this.sort.sortChange, this.paginator.page);
 
         changeed.subscribe(() => {
-            this.refreshDataSource();
+            this.filter$.next();
         });
 
         if (!this.PAGE_APIURL) {
@@ -148,7 +149,8 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
             this.columns.push({
                 def: "select",
                 title: "انتخاب",
-                show: true
+                show: true,
+                showOnColsList: true
             });
         }
 
@@ -158,7 +160,8 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
                 this.columns.push({
                     def: item._def,
                     title: item._title,
-                    show: item._show
+                    show: item._show,
+                    showOnColsList: item._showOnColsList
                 });
             });
 
@@ -169,7 +172,8 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
             this.columns.push({
                 def: "action",
                 title: "عملیات",
-                show: true
+                show: true,
+                showOnColsList: true
             });
         }
         // /Cols----------------------
@@ -193,8 +197,12 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
         }
         // /Filters------------------------------
 
-        this.refreshDataSource();
+        this.filter$.next();
 
+    }
+
+    getShowColsList() {
+        return this.columns.filter(c => c.showOnColsList);
     }
 
     toggleCol(def: string, show: boolean) {
