@@ -39,6 +39,7 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
         "id",
         "title",
         "parentTitle",
+        "pin",
         "action"
     ];
     dataSource: MatTableDataSource<ICategory>;
@@ -58,12 +59,47 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
     @ViewChild(MatSort, { static: true }) sort: MatSort;
     @ViewChild("tree", { static: true }) tree: ElementRef;
 
+    Categories: ICategory[] = [];
+
+    selectedCatId = null;
+
     constructor(
         private router: Router,
         private activeroute: ActivatedRoute,
         private auth: AuthService,
         private message: MessageService
-    ) { }
+    ) {
+        this.auth.post("/api/Category/GetAll").subscribe((data: jsondata) => {
+            if (data.success) {
+                this.Categories = data.data;
+            } else {
+                this.message.showMessageforFalseResult(data);
+            }
+        });
+    }
+
+    togglePin(id) {
+        this.auth.post("/api/Category/togglePin", id).subscribe(data => {
+            if (data.success) {
+                this.refreshDataSource();
+            } else {
+                this.auth.message.showMessageforFalseResult(data);
+            }
+        }, er => {
+            this.auth.handlerError(er);
+        });
+    }
+
+    onCategorySelectChange() {
+        if (this.selectedCatId) {
+            let cat = this.Categories.find(c => c.id == this.selectedCatId);
+            this.txtSearch = cat.title;
+            this.refreshDataSource();
+        } else {
+            this.txtSearch = "";
+            this.refreshDataSource();
+        }
+    }
 
 
     getRowCanSelected(): number {
@@ -235,52 +271,7 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
     }
 
     ngAfterContentInit(): void {
-        var sanitizerUr = url => {
-            return this.auth.serializeUrl(url);
-        };
 
-        let jstree = $(this.tree.nativeElement);
-
-        jstree.jstree({
-            plugins: ["wholerow", "types"],
-            core: {
-                data: {
-                    url: function (node) {
-                        return node.id === "#"
-                            ? sanitizerUr("/api/Category/GetTreeRoot")
-                            : sanitizerUr(
-                                "/api/Category/GetTreeChildren/" + node.id
-                            );
-                    },
-                    data: function (node) {
-                        return { id: node.id };
-                    }
-                },
-                strings: {
-                    "Loading ...": "لطفا اندکی صبر نمایید"
-                },
-                multiple: false
-            },
-            types: {
-                default: {
-                    icon: "fa fa-folder"
-                }
-            }
-        });
-
-
-        $("#divtree").jstree("deselect_all");
-        $("#divtree").jstree("refresh");
-        $("#divtree").jstree("open_all");
-
-        jstree.on('ready.jstree', () => {
-            jstree.on("changed.jstree", (e, data) => {
-                if (data.node) {
-                    this.txtSearch = data.node.text;
-                    this.applyFilter(data.node.text);
-                }
-            });
-        });
     }
 
     ngAfterViewInit(): void {

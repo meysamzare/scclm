@@ -30,6 +30,8 @@ import { AttrValSearch } from "../attr-val-search";
 import { ItemEditLongTextSelectComponent } from "../edit/item-edit-long-text-select.component";
 import { ItemListExcelAttrSelectComponent } from "./item-list-excel-attr-select.component";
 import { Subject } from "rxjs/internal/Subject";
+import { ICategory } from "../../category/category";
+import { TreeService } from "src/app/shared/components/tree/tree.service";
 
 declare var $: any;
 
@@ -118,6 +120,16 @@ declare var $: any;
             .pad-td td th {
                 padding: 10px;
             }
+
+            .button-row {
+                display: table-cell;
+            }
+
+            .button-row button {
+                display: table-cell;
+                margin: 10px;
+            }
+
         `
     ]
 })
@@ -146,7 +158,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
     txtSearch: string = "";
 
     selectedCatName = "";
-    selectedCatId: number = 0;
+    selectedCatId: number = null;
 
     showDietaledBox = false;
     showDietaleItem: IItem = new IItem();
@@ -177,7 +189,6 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
 
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
-    @ViewChild("tree", { static: true }) tree: ElementRef;
 
     expandedElement: ItemList | null;
 
@@ -187,72 +198,12 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
         private auth: AuthService,
         private message: MessageService,
         private bottomSheet: MatBottomSheet,
-        public dialog: MatDialog
+        public dialog: MatDialog,
+        public tree: TreeService
     ) {
     }
 
     ngAfterContentInit(): void {
-
-        var sanitizerUr = url => {
-            return this.auth.serializeUrl(url);
-        };
-
-        let jstree = $(this.tree.nativeElement);
-
-        jstree.jstree({
-            plugins: ["wholerow", "types"],
-            core: {
-                data: {
-                    url: function (node) {
-                        return node.id === "#"
-                            ? sanitizerUr("/api/Category/GetTreeRoot")
-                            : sanitizerUr(
-                                "/api/Category/GetTreeChildren/" + node.id
-                            );
-                    },
-                    data: function (node) {
-                        return { id: node.id };
-                    }
-                },
-                strings: {
-                    "Loading ...": "لطفا اندکی صبر نمایید"
-                },
-                multiple: false
-            },
-            types: {
-                default: {
-                    icon: "fa fa-folder"
-                }
-            }
-        });
-
-        $("#divtree").jstree("deselect_all");
-        $("#divtree").jstree("refresh");
-        $("#divtree").jstree("open_all");
-
-        jstree.on('ready.jstree', () => {
-            jstree.on('changed.jstree', (e, data) => {
-                if (data.node) {
-                    this.selectedCatName = data.node.text;
-                    this.selectedCatId = data.node.id;
-                    this.searchAttrVals = [];
-
-                    this.auth
-                        .post("/api/Category/getSearchedAttrs", data.node.id)
-                        .subscribe((data: jsondata) => {
-                            if (data.success) {
-                                this.searchedAttrs = data.data;
-                            } else {
-                                this.message.showMessageforFalseResult(data);
-                            }
-                        });
-
-                    this.paginator.firstPage();
-
-                    this.refreshDataSource();
-                }
-            });
-        });
     }
 
 
@@ -465,6 +416,11 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
         return "";
     }
 
+    Categories: ICategory[] = [];
+    pinedCategories: ICategory[] = [];
+
+    selectedPinedCat = null;
+
     ngOnInit() {
         this.paginator.pageSize =
             this.activeroute.snapshot.queryParams["pagesize"] || 5;
@@ -483,7 +439,72 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
             }
         });
 
+        this.auth.post("/api/Category/GetAll").subscribe((data: jsondata) => {
+            if (data.success) {
+                this.Categories = data.data;
+            } else {
+                this.message.showMessageforFalseResult(data);
+            }
+        });
 
+        this.auth.post("/api/Category/GetAllPined").subscribe((data: jsondata) => {
+            if (data.success) {
+                this.pinedCategories = data.data;
+            } else {
+                this.message.showMessageforFalseResult(data);
+            }
+        });
+
+    }
+
+    pinedCatSelect(id: number) {
+        if (this.selectedPinedCat == id) {
+            this.selectedCatId = null;
+        } else {
+            this.selectedCatId = id;
+            this.selectedPinedCat = id;
+        }
+
+        this.onCategorySelectChange();
+    }
+
+    
+    onCategorySelectChange() {
+        if (this.selectedCatId) {
+
+            this.selectedPinedCat = this.selectedCatId;
+
+            let cat = this.Categories.find(c => c.id == this.selectedCatId);
+
+            this.selectedCatName = cat.title;
+            this.searchAttrVals = [];
+
+            this.auth
+                .post("/api/Category/getSearchedAttrs", this.selectedCatId)
+                .subscribe((data: jsondata) => {
+                    if (data.success) {
+                        this.searchedAttrs = data.data;
+                    } else {
+                        this.message.showMessageforFalseResult(data);
+                    }
+                });
+
+            this.paginator.firstPage();
+
+            this.refreshDataSource();
+        } else {
+            this.clearCatSelection();
+        }
+    }
+
+
+    clearCatSelection() {
+        this.selectedCatName = "";
+        this.selectedCatId = null;
+        this.selectedPinedCat = null;
+        this.searchedAttrs = [];
+        this.searchAttrVals = [];
+        this.refreshDataSource();
     }
 
     onEdit(id) {
@@ -602,7 +623,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
     clearSelection() {
         $("#divtree").jstree("deselect_all");
         this.selectedCatName = "";
-        this.selectedCatId = 0;
+        this.selectedCatId = null;
         this.searchedAttrs = [];
         this.searchAttrVals = [];
         this.refreshDataSource();

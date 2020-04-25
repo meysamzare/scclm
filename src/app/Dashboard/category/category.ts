@@ -26,6 +26,9 @@ export class ICategory {
     license: string;
     haveLicense: boolean = false;
 
+
+    isPined: boolean;
+
     endMessage: string;
 
     haveInfo: boolean = false;

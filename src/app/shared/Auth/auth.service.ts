@@ -86,7 +86,7 @@ export class AuthService {
 
 
 
-    DASHBOARD_VERSION = "0.9.9.8.8 Build 850";
+    DASHBOARD_VERSION = "0.9.9.8.9 Build 1854";
 
     INDEX_VERSION = "2.4.9 Build 920";
 
@@ -728,7 +728,7 @@ export class AuthService {
         }
         // Params = Params.append("code", code);
 
-        return this.http.get(url2, {
+        return this.http.get<any>(url2, {
             params: Params,
             headers: new HttpHeaders({
                 "Content-Type": "application/json",

@@ -12,6 +12,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { AuthService, jsondata } from "src/app/shared/Auth/auth.service";
 import { MessageService } from "src/app/shared/services/message.service";
 import { merge } from "rxjs";
+import { ICategory } from "../../category/category";
 
 declare var $: any;
 
@@ -56,11 +57,13 @@ export class AttributeListComponent implements OnInit, AfterViewInit, AfterConte
 
     itemLength;
 
-    selectedCatId = 0;
+    selectedCatId = null;
 
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
     @ViewChild("tree", { static: true }) tree: ElementRef;
+
+    Categories: ICategory[] = [];
 
     constructor(
         private router: Router,
@@ -68,7 +71,15 @@ export class AttributeListComponent implements OnInit, AfterViewInit, AfterConte
         private auth: AuthService,
         private message: MessageService,
         private bottomSheet: MatBottomSheet
-    ) { }
+    ) {
+        this.auth.post("/api/Category/GetAll").subscribe((data: jsondata) => {
+            if (data.success) {
+                this.Categories = data.data;
+            } else {
+                this.message.showMessageforFalseResult(data);
+            }
+        });
+    }
 
 
     isAllSelected() {
@@ -224,52 +235,7 @@ export class AttributeListComponent implements OnInit, AfterViewInit, AfterConte
     }
 
     ngAfterContentInit(): void {
-        var sanitizerUr = url => {
-            return this.auth.serializeUrl(url);
-        };
 
-        let jstree = $(this.tree.nativeElement);
-
-        jstree.jstree({
-            plugins: ["wholerow", "types"],
-            core: {
-                data: {
-                    url: function (node) {
-                        return node.id === "#"
-                            ? sanitizerUr("/api/Category/GetTreeRoot")
-                            : sanitizerUr(
-                                "/api/Category/GetTreeChildren/" + node.id
-                            );
-                    },
-                    data: function (node) {
-                        return { id: node.id };
-                    }
-                },
-                strings: {
-                    "Loading ...": "لطفا اندکی صبر نمایید"
-                },
-                multiple: false
-            },
-            types: {
-                default: {
-                    icon: "fa fa-folder"
-                }
-            }
-        });
-
-
-        $("#divtree").jstree("deselect_all");
-        $("#divtree").jstree("refresh");
-        $("#divtree").jstree("open_all");
-        
-        jstree.on('ready.jstree', () => {
-            jstree.on("changed.jstree", (e, data) => {
-                if (data.node) {
-                    this.selectedCatId = data.node.id;
-                    this.applyFilter("");
-                }
-            });
-        });
     }
 
     ngAfterViewInit(): void {

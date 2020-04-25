@@ -188,6 +188,7 @@ import { WorkbookEditComponent } from '../Dashboard/workbook/workbook-edit/workb
 import { WorkbookListComponent } from '../Dashboard/workbook/workbook-list/workbook-list.component';
 import { WorkbookReportByClassComponent } from '../Dashboard/chart-report/workbook-report-by-class/workbook-report-by-class.component';
 import { WorkbookComparisonComponent } from '../Dashboard/chart-report/workbook-comparison/workbook-comparison.component';
+import { TreeComponent, TreeDialogComponent } from '../shared/components/tree/tree.component';
 
 @NgModule({
     imports: [
@@ -348,7 +349,9 @@ import { WorkbookComparisonComponent } from '../Dashboard/chart-report/workbook-
         WorkbookEditComponent,
         WorkbookListComponent,
         WorkbookReportByClassComponent,
-        WorkbookComparisonComponent
+        WorkbookComparisonComponent,
+        TreeComponent,
+        TreeDialogComponent
     ],
     providers: [
         AuthGuardService,
@@ -402,7 +405,8 @@ import { WorkbookComparisonComponent } from '../Dashboard/chart-report/workbook-
         TeacherChangePasswordModalComponent,
         ViewLogDescComponent,
         NotificationSeenModalComponent,
-        ExamDetailsComponent
+        ExamDetailsComponent,
+        TreeDialogComponent
     ]
 })
 export class DashboardModule {}
