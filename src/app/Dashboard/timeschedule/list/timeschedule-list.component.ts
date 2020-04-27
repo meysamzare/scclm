@@ -122,6 +122,8 @@ export class TimeScheduleListComponent{
                     tableName: 'TimeSchedule',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "TimeSchedule",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -172,6 +174,7 @@ export class TimeScheduleListComponent{
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "TimeSchedule"
             })
             .subscribe(
                 (data: jsondata) => {

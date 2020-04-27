@@ -80,7 +80,9 @@ export class SalaryEditComponent implements OnDestroy {
                     tableName: 'Salary',
                     logSource: 'dashboard',
                     object: this.salary,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "Salary",
+                    tableObjectIds: [this.salary.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -104,6 +106,8 @@ export class SalaryEditComponent implements OnDestroy {
                     tableName:'Salary',
                     logSource: 'dashboard',
                     object: this.salary,
+                    table: "Salary",
+                    tableObjectIds: [this.salary.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

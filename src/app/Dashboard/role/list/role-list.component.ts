@@ -117,6 +117,8 @@ export class RoleListComponent implements OnInit, AfterViewInit {
                     tableName: 'Role',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Role",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -167,6 +169,7 @@ export class RoleListComponent implements OnInit, AfterViewInit {
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "Role"
             })
             .subscribe(
                 (data: jsondata) => {

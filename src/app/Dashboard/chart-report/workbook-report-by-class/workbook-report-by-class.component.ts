@@ -114,10 +114,21 @@ export class WorkbookReportByClassComponent implements OnInit, AfterViewInit {
 
             this.isLoading = true;
 
-            this.auth.post("/api/ExamScore/getWorkbookDetail", {
+            let obj = {
                 workbookId: this.selectedWorkbook,
                 gradeId: this.selectedGrade,
                 classId: this.selectedClass,
+            };
+
+            this.auth.post("/api/ExamScore/getWorkbookDetail", obj, {
+                type: 'View',
+                agentId: this.auth.getUserId(),
+                agentType: 'User',
+                agentName: this.auth.getUser().fullName,
+                tableName: 'Add Workbook Class Report to report list',
+                logSource: 'dashboard',
+                object: obj,
+                table: "WorkbookByClassComparison"
             }).subscribe(data => {
                 if (data.success) {
                     let courses: ICourse[] = data.data.courses;

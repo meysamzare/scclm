@@ -204,6 +204,8 @@ export class ClassBookListComponent implements OnInit {
                     tableName: 'ClassBook',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: this.PAGE_APIURL,
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -289,6 +291,7 @@ export class ClassBookListComponent implements OnInit {
             tableName: 'ClassBook List',
             logSource: 'dashboard',
             object: obj,
+            table: this.PAGE_APIURL
         }).subscribe(
             (data: jsondata) => {
                 if (data.success) {

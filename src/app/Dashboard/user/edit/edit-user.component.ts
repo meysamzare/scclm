@@ -100,7 +100,9 @@ export class EditUserComponent implements OnDestroy {
                     tableName: 'User',
                     logSource: 'dashboard',
                     object: this.User,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "User",
+                    tableObjectIds: [this.User.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -126,6 +128,8 @@ export class EditUserComponent implements OnDestroy {
                     tableName: 'User',
                     logSource: 'dashboard',
                     object: this.User,
+                    table: "User",
+                    tableObjectIds: [this.User.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

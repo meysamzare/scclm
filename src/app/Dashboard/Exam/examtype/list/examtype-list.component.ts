@@ -114,9 +114,11 @@ export class ExamTypeListComponent {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'ExamType',
+                    tableName: 'Delete ExamType(s)',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "ExamType",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -158,7 +160,7 @@ export class ExamTypeListComponent {
                 agentId: this.auth.getUserId(),
                 agentType: 'User',
                 agentName: this.auth.getUser().fullName,
-                tableName: 'ExamType List',
+                tableName: 'Get ExamType List',
                 logSource: 'dashboard',
                 object: {
                     sort: this.sort.active,
@@ -167,6 +169,7 @@ export class ExamTypeListComponent {
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "ExamType"
             })
             .subscribe(
                 (data: jsondata) => {

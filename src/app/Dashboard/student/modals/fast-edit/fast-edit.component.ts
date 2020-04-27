@@ -45,7 +45,9 @@ export class FastEditStudentModalComponent implements OnInit {
                 tableName: 'Student(Fast Edit)',
                 logSource: 'dashboard',
                 object: this.student,
-                oldObject: JSON.parse(this.oldData)
+                oldObject: JSON.parse(this.oldData),
+                table: "Student",
+                tableObjectIds: [this.student.id]
             }).subscribe((data: jsondata) => {
                 if (data.success) {
                     this.message.showSuccessAlert("با موفقیت ثبت شد");

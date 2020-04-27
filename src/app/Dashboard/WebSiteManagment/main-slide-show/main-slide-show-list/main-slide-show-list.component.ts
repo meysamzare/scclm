@@ -122,6 +122,8 @@ export class MainSlideShowListComponent implements OnInit {
                     tableName: 'MainSlideShow',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "MainSlideShow",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -172,6 +174,7 @@ export class MainSlideShowListComponent implements OnInit {
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "MainSlideShow"
             })
             .subscribe(
                 (data: jsondata) => {
@@ -216,6 +219,20 @@ export class MainSlideShowListComponent implements OnInit {
         this.auth.post("/api/MainSlideShow/changeShowState", {
             id: id,
             showState: showState
+        }, {
+            type: 'Edit',
+            agentId: this.auth.getUserId(),
+            agentType: 'User',
+            agentName: this.auth.getUser().fullName,
+            tableName: 'Change MainSlideShow show state',
+            logSource: 'dashboard',
+            object: {
+                id: id,
+                showState: showState
+            },
+            oldObject: null,
+            table: "MainSlideShow",
+            tableObjectIds: [id]
         }).subscribe(data => {
             if (data.success) {
                 this.refreshDataSource();

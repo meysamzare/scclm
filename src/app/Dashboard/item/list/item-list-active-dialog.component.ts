@@ -94,6 +94,8 @@ export class ItemListActiveDialogComponent {
                     itemId: itemId,
                     inputValue: event
                 },
+                table: "Item",
+                tableObjectIds: [itemId]
             })
             .subscribe(
                 (data: jsondata) => {
@@ -147,6 +149,8 @@ export class ItemListActiveDialogComponent {
                             fileFormat: file.type,
                             fileName: file.name
                         },
+                        table: "Item",
+                        tableObjectIds: [itemId]
                     })
                     .subscribe(
                         (data: jsondata) => {
@@ -185,6 +189,8 @@ export class ItemListActiveDialogComponent {
                     itemId: itemId,
                     inputValue: ""
                 },
+                table: "Item",
+                tableObjectIds: [itemId]
             })
             .subscribe(
                 (data: jsondata) => {
@@ -226,6 +232,8 @@ export class ItemListActiveDialogComponent {
                     itemId: itemId,
                     inputValue: inputValue
                 },
+                table: "Item",
+                tableObjectIds: [itemId]
             })
             .subscribe(
                 (data: jsondata) => {
@@ -242,12 +250,12 @@ export class ItemListActiveDialogComponent {
 
         let allInputs = $("input[tabindex]").toArray();
 
-        var nextInput = allInputs[allInputs.findIndex(c=> c.tabIndex == event.target.tabIndex) + 1];
+        var nextInput = allInputs[allInputs.findIndex(c => c.tabIndex == event.target.tabIndex) + 1];
 
         if (nextInput) {
             nextInput.focus();
         }
-        
+
     }
 
     getItemAttrVal(attrId): string {

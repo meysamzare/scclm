@@ -131,9 +131,11 @@ export class ExamScoreListComponent {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'ExamScore',
+                    tableName: 'Delete ExamScore(s)',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "ExamScore",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -198,7 +200,7 @@ export class ExamScoreListComponent {
                 agentId: this.auth.getUserId(),
                 agentType: 'User',
                 agentName: this.auth.getUser().fullName,
-                tableName: 'ExamScore List',
+                tableName: 'Get ExamScore List',
                 logSource: 'dashboard',
                 object: {
                     getparam: {
@@ -212,6 +214,7 @@ export class ExamScoreListComponent {
                     courseId: this.selectedCourseId,
                     name: this.selectedNameString
                 },
+                table: "ExamScore"
             })
             .subscribe(
                 (data: jsondata) => {

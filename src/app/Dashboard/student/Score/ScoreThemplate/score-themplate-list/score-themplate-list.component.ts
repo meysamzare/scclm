@@ -114,6 +114,8 @@ export class ScoreThemplateListComponent implements OnInit {
                     tableName: this.PAGE_APIURL,
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: this.PAGE_APIURL,
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -160,6 +162,7 @@ export class ScoreThemplateListComponent implements OnInit {
                 tableName: this.PAGE_APIURL + ' List Get Method',
                 logSource: 'dashboard',
                 object: obj,
+                table: this.PAGE_APIURL
             })
             .subscribe(
                 (data: jsondata) => {

@@ -125,6 +125,8 @@ export class UserListComponent implements OnInit, AfterViewInit {
                     tableName: 'User (Change State To Deleted)',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "User",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -194,6 +196,7 @@ export class UserListComponent implements OnInit, AfterViewInit {
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "User"
             })
             .subscribe(
                 (data: jsondata) => {
@@ -273,7 +276,9 @@ export class BottomSheetChangeState implements OnDestroy {
                 oldObject: {
                     userId: this.userId,
                     OldUserState: this.userState
-                }
+                },
+                table: "User",
+                tableObjectIds: [this.userId]
             })
             .subscribe(
                 (data: jsondata) => {

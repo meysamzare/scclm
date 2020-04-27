@@ -171,6 +171,8 @@ export class StudentListComponent implements OnInit {
                     tableName: 'Student',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Student",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -227,6 +229,8 @@ export class StudentListComponent implements OnInit {
                 object: {
                     student: row
                 },
+                table: "Student",
+                tableObjectIds: [row.id]
             }).subscribe((data: jsondata) => {
                 if (data.success) {
                     this.studentDetail = data.data.student;
@@ -295,6 +299,7 @@ export class StudentListComponent implements OnInit {
                 tableName: 'Student List Get Method',
                 logSource: 'dashboard',
                 object: obj,
+                table: "Student"
             }).subscribe(
                 (data: jsondata) => {
                     if (data.success) {
@@ -369,6 +374,7 @@ export class StudentListComponent implements OnInit {
             tableName: 'Download Excel File Example',
             logSource: 'dashboard',
             object: {},
+            table: "Student"
         }).subscribe((data: jsondata) => {
             if (data.success) {
                 var win = window.open(
@@ -405,6 +411,7 @@ export class StudentListComponent implements OnInit {
                         fileName: fileToUpload.name,
                         fileType: fileToUpload.type
                     },
+                    table: "Student"
                 }).subscribe((data: jsondata) => {
                     if (data.success) {
                         this.message.showSuccessAlert("رکورد های موجود با موفقیت ثبت شدند");
@@ -569,6 +576,8 @@ export class StudentListComponent implements OnInit {
                 ids: ids,
                 state: state
             },
+            table: "Student",
+            tableObjectIds: ids
         }).subscribe((data: jsondata) => {
             if (data.success) {
                 this.message.showSuccessAlert();
@@ -610,6 +619,7 @@ export class StudentListComponent implements OnInit {
             tableName: 'Print Student List',
             logSource: 'dashboard',
             object: null,
+            table: "Student"
         }).subscribe(data => {
             if (data.success) {
 
@@ -642,7 +652,9 @@ export class StudentListComponent implements OnInit {
                 type: type,
                 access: access,
             },
-            oldObject: null
+            oldObject: null,
+            table: "Student",
+            tableObjectIds: [stdId]
         }).subscribe(data => {
             if (data.success) {
                 this.refreshDataSource();
@@ -694,7 +706,9 @@ export class StudentListComponent implements OnInit {
                 ids: ids,
                 type: type
             },
-            oldObject: null
+            oldObject: null,
+            table: "Student",
+            tableObjectIds: ids
         }).subscribe(data => {
             if (data.success) {
                 this.refreshDataSource();
@@ -729,7 +743,9 @@ export class StudentListComponent implements OnInit {
                 type: type,
                 access: haveAccess
             },
-            oldObject: null
+            oldObject: null,
+            table: "Student",
+            tableObjectIds: ids
         }).subscribe(data => {
             if (data.success) {
                 this.refreshDataSource();

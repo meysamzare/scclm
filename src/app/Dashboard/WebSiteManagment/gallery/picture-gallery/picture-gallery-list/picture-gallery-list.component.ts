@@ -112,6 +112,8 @@ export class PictureGalleryListComponent implements OnInit {
                     tableName: 'PictureGallery',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: this.PAGE_APIURL,
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -162,6 +164,7 @@ export class PictureGalleryListComponent implements OnInit {
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: this.PAGE_APIURL
             })
             .subscribe(
                 (data: jsondata) => {

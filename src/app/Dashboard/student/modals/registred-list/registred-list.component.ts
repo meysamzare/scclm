@@ -131,6 +131,8 @@ export class RegistredListStudentModalComponent implements OnInit {
                 studentId: this.studentId,
                 stdClassMngId: id
             },
+            table: "StdClassMng",
+            tableObjectIds: [this.studentId]
         }).subscribe(data => {
             if (data.success) {
 

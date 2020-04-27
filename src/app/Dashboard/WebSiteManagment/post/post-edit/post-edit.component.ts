@@ -294,7 +294,9 @@ export class PostEditComponent implements OnInit, OnDestroy {
                     tableName: 'Post',
                     logSource: 'dashboard',
                     object: this.post,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "Post",
+                    tableObjectIds: [this.post.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -318,6 +320,8 @@ export class PostEditComponent implements OnInit, OnDestroy {
                     tableName: 'Post',
                     logSource: 'dashboard',
                     object: this.post,
+                    table: "Post",
+                    tableObjectIds: [this.post.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -340,6 +344,8 @@ export class PostEditComponent implements OnInit, OnDestroy {
                                     tableName: 'MainSlideShow_Added With Post',
                                     logSource: 'dashboard',
                                     object: this.mainslideshow,
+                                    table: "MainSlideShow",
+                                    tableObjectIds: [this.mainslideshow.id]
                                 }).subscribe(null, () => {
                                     this.message.showErrorAlert("افزودن اسلاید شو با خطا مواجه شد!")
                                 });
@@ -357,6 +363,8 @@ export class PostEditComponent implements OnInit, OnDestroy {
                                     tableName: 'Schedule_Added With Post',
                                     logSource: 'dashboard',
                                     object: this.Schedule,
+                                    table: "Schedule",
+                                    tableObjectIds: [this.Schedule.id]
                                 }).subscribe(null, () => {
                                     this.message.showErrorAlert("افزودن رویداد با خطا مواجه شد!")
                                 });

@@ -119,6 +119,8 @@ export class TimeAndDaysListComponent{
                     tableName: 'TimeAndDays',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "TimeAndDays",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -168,7 +170,8 @@ export class TimeAndDaysListComponent{
                     pageIndex: this.paginator.pageIndex,
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
-                }
+                },
+                table: "TimeAndDays"
             })
             .subscribe(
                 (data: jsondata) => {

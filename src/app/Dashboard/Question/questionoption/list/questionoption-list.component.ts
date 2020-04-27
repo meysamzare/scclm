@@ -120,6 +120,8 @@ export class QuestionOptionListComponent {
                     tableName: 'QuestionOption',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "QuestionOption",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -170,6 +172,7 @@ export class QuestionOptionListComponent {
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "QuestionOption"
             })
             .subscribe(
                 (data: jsondata) => {

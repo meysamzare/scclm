@@ -148,6 +148,8 @@ export class CommentListComponent implements OnInit {
                     tableName: 'Post Comment',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Comment",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -196,6 +198,7 @@ export class CommentListComponent implements OnInit {
             tableName: 'Post Comment',
             logSource: 'dashboard',
             object: obj,
+            table: "Comment"
         }).subscribe(
             (data: jsondata) => {
                 if (data.success) {
@@ -252,6 +255,8 @@ export class CommentListComponent implements OnInit {
                 comformed: comformed,
                 totalType: this.totalType
             },
+            table: "Comment",
+            tableObjectIds: [id]
         }).subscribe((data: jsondata) => {
             if (data.success) {
                 this.message.showSuccessAlert();

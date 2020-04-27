@@ -121,7 +121,9 @@ export class ScheduleEditComponent implements OnInit, OnDestroy {
                     tableName: 'Schedule',
                     logSource: 'dashboard',
                     object: this.schedule,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "Schedule",
+                    tableObjectIds: [this.schedule.id]
                 }).subscribe(
 					(data: jsondata) => {
 						if (data.success) {
@@ -145,6 +147,8 @@ export class ScheduleEditComponent implements OnInit, OnDestroy {
                     tableName: 'Schedule',
                     logSource: 'dashboard',
                     object: this.schedule,
+                    table: "Schedule",
+                    tableObjectIds: [this.schedule.id]
                 }).subscribe(
 					(data: jsondata) => {
 						if (data.success) {

@@ -86,6 +86,8 @@ export class ExamAnalizeStdtypeComponent implements OnInit {
                 object: {
                     selectedExam: this.selectedExam
                 },
+                table: "ExamAnalyze",
+                tableObjectIds: [this.selectedExam]
             }).subscribe(data => {
                 if (data.success) {
 

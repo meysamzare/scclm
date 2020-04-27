@@ -157,7 +157,9 @@ export class TicketConversationsComponent implements OnInit, AfterViewInit {
                 tableName: 'Close Tickets',
                 logSource: 'dashboard',
                 oldObject: deleteDatas,
-                object: null
+                object: null,
+                table: this.PAGE_APIURL,
+                tableObjectIds: ids
             }).subscribe(
                 (data: jsondata) => {
                     if (data.success) {
@@ -194,7 +196,9 @@ export class TicketConversationsComponent implements OnInit, AfterViewInit {
                 tableName: 'Remove Tickets',
                 logSource: 'dashboard',
                 oldObject: deleteDatas,
-                object: null
+                object: null,
+                table: this.PAGE_APIURL,
+                tableObjectIds: ids
             }).subscribe(
                 (data: jsondata) => {
                     if (data.success) {
@@ -247,6 +251,7 @@ export class TicketConversationsComponent implements OnInit, AfterViewInit {
                 tableName: 'Ticket Get Method',
                 logSource: 'dashboard',
                 object: obj,
+                table: this.PAGE_APIURL
             })
             .subscribe(
                 (data: jsondata) => {

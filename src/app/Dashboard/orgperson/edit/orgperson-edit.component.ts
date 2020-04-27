@@ -174,10 +174,12 @@ export class OrgPersonEditComponent implements OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'OrgPerson',
+                    tableName: 'Edit OrgPerson',
                     logSource: 'dashboard',
                     object: this.orgperson,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "OrgPerson",
+                    tableObjectIds: [this.orgperson.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -198,9 +200,11 @@ export class OrgPersonEditComponent implements OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'OrgPerson',
+                    tableName: 'Add OrgPerson',
                     logSource: 'dashboard',
                     object: this.orgperson,
+                    table: "OrgPerson",
+                    tableObjectIds: [this.orgperson.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

@@ -120,6 +120,8 @@ export class ContractTypeListComponent implements OnInit {
                     tableName: 'ConstractType',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "ContractType",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -170,6 +172,7 @@ export class ContractTypeListComponent implements OnInit {
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "ContractType"
             })
             .subscribe(
                 (data: jsondata) => {

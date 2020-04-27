@@ -19,8 +19,43 @@
                 <div class="row">
                     <div class="col-lg-4">
                         <div class="form-group">
+                            <label>تاریخ شروع</label>
+                            <mat-form-field class="example-full-width">
+                                <input tabindex="7" #dates="ngModel" (dateChange)="applyFilter()"
+                                    (click)="openc(picker1)" readonly name="dateStart" matInput
+                                    [matDatepicker]="picker1" [(ngModel)]="dateStart" placeholder="تاریخ شروع">
+                                <mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker1">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #picker1 touchUi="true"></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>تاریخ پایان</label>
+                            <mat-form-field class="example-full-width">
+                                <input tabindex="7" #datee="ngModel" (dateChange)="applyFilter()"
+                                    (click)="openc(picker2)" readonly name="dateEnd" matInput [matDatepicker]="picker2"
+                                    [(ngModel)]="dateEnd" placeholder="تاریخ پایان">
+                                <mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker2">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #picker2 touchUi="true"></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <button mat-stroked-button style="width: 100%; margin-top: 30px;"
+                            [disabled]="dateStart == '' && dateEnd == ''"
+                            (click)="dateStart = ''; dateEnd = ''; applyFilter()">پاک
+                            کردن تاریخ ها</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
                             <label>نوع</label>
-                            <ng-select name="event" [(ngModel)]="selectedEvent" (change)="refreshDataSource()">
+                            <ng-select name="event" [(ngModel)]="selectedEvent" (change)="applyFilter()">
                                 <ng-option [value]="'Add'">افزودن</ng-option>
                                 <ng-option [value]="'Edit'">ویرایش</ng-option>
                                 <ng-option [value]="'Delete'">حذف</ng-option>
@@ -32,7 +67,7 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label>منبع</label>
-                            <ng-select name="source" [(ngModel)]="selectedLogSource" (change)="refreshDataSource()">
+                            <ng-select name="source" [(ngModel)]="selectedLogSource" (change)="applyFilter()">
                                 <ng-option [value]="'dashboard'">پرتال آموزشی</ng-option>
                                 <ng-option [value]="'TMA'">نرم افزار دبیران</ng-option>
                                 <ng-option [value]="'PMA'">نرم افزار والدین</ng-option>
@@ -43,12 +78,30 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label>نوع کاربر</label>
-                            <ng-select name="agent" [(ngModel)]="selectedAgentType" (change)="refreshDataSource()">
+                            <ng-select name="agent" [(ngModel)]="selectedAgentType" (change)="applyFilter()">
                                 <ng-option [value]="'User'">کاربر پرتال</ng-option>
                                 <ng-option [value]="'Teacher'">دبیر</ng-option>
                                 <ng-option [value]="'StudentParent'">والدین دانش آموز</ng-option>
                                 <ng-option [value]="'Other'">افراد متفرقه (ایندکس)</ng-option>
                             </ng-select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>رویداد</label>
+                            <ng-select name="table" [(ngModel)]="selectedTable" (change)="applyFilter()">
+                                <ng-option *ngFor="let i of tables" [value]="i.name">{{ i.desc }}</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <label>جستجو در ردیف</label>
+                        <div class="form-group">
+                            <input type="text" name="searchId" style="margin-top: 20px;" (input)="applyFilter()" [(ngModel)]="selectedId"
+                                placeholder="جستجو در ردیف" class="form-control">
                         </div>
                     </div>
                 </div>
@@ -77,7 +130,8 @@
                                         <button mat-icon-button>
                                             <mat-icon [matTooltip]="'افزودن'" *ngIf="row.event == 'Add'">library_add
                                             </mat-icon>
-                                            <mat-icon [matTooltip]="'ویرایش'" *ngIf="row.event == 'Edit'">edit</mat-icon>
+                                            <mat-icon [matTooltip]="'ویرایش'" *ngIf="row.event == 'Edit'">edit
+                                            </mat-icon>
                                             <mat-icon [matTooltip]="'حذف'" *ngIf="row.event == 'Delete'">delete_outline
                                             </mat-icon>
                                             <mat-icon [matTooltip]="'مشاهده'" *ngIf="row.event == 'View'">remove_red_eye
@@ -94,7 +148,8 @@
                                     <th mat-header-cell *matHeaderCellDef mat-sort-header> منبع </th>
                                     <td mat-cell *matCellDef="let row">
                                         <button mat-icon-button>
-                                            <mat-icon [matTooltip]="'پرتال آموزشی'" *ngIf="row.logSource == 'dashboard'">
+                                            <mat-icon [matTooltip]="'پرتال آموزشی'"
+                                                *ngIf="row.logSource == 'dashboard'">
                                                 desktop_mac
                                             </mat-icon>
                                             <mat-icon [matTooltip]="'نرم افزار دبیران'" *ngIf="row.logSource == 'TMA'">
@@ -115,19 +170,19 @@
                                     <th mat-header-cell *matHeaderCellDef mat-sort-header> نوع کاربر </th>
                                     <td mat-cell *matCellDef="let row">
                                         <button mat-icon-button>
-                                            <mat-icon [matTooltip]="'کاربر پرتال'" *ngIf="row.agnetType == 'User'">
+                                            <mat-icon [matTooltip]="'کاربر پرتال'" *ngIf="row.agentType == 'User'">
                                                 perm_identity
                                             </mat-icon>
-                                            <mat-icon [matTooltip]="'دبیر'" *ngIf="row.agnetType == 'Teacher'">
+                                            <mat-icon [matTooltip]="'دبیر'" *ngIf="row.agentType == 'Teacher'">
                                                 record_voice_over
                                             </mat-icon>
                                             <mat-icon [matTooltip]="'والدین دانش آموز'"
-                                                *ngIf="row.agnetType == 'StudentParent'">wc
+                                                *ngIf="row.agentType == 'StudentParent'">wc
                                             </mat-icon>
                                             <mat-icon [matTooltip]="'افراد متفرقه (ایندکس)'"
-                                                *ngIf="row.agnetType == 'Other'">
+                                                *ngIf="row.agentType == 'Other'">
                                                 emoji_people</mat-icon>
-                                            <mat-icon *ngIf="row.agnetType == 'Api' || row.agnetType == '---'">cloud
+                                            <mat-icon *ngIf="row.agentType == 'Api' || row.agentType == '---'">cloud
                                             </mat-icon>
                                         </button>
                                     </td>
@@ -138,6 +193,13 @@
                                     <th mat-header-cell *matHeaderCellDef mat-sort-header> کاربر </th>
                                     <td mat-cell *matCellDef="let row">
                                         <b>{{ row.agentName + ' (' + row.agentId + ') ' }}</b>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="table">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> رویداد </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <b>{{ getTableDesc(row.table) }}</b>
                                     </td>
                                 </ng-container>
 
@@ -159,7 +221,7 @@
                                     <th mat-header-cell *matHeaderCellDef> توضیحات لاگ </th>
                                     <td mat-cell *matCellDef="let row">
                                         <button mat-flat-button color="primary"
-                                            (click)="viewLogDesc(row.id)">مشاهده</button>
+                                            (click)="viewLogDesc(row.id, row.date)">مشاهده</button>
                                     </td>
                                 </ng-container>
 

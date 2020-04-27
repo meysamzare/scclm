@@ -109,6 +109,8 @@ export class StudentWorkbookComponent implements OnInit {
                     studentId: this.selectedStudent,
                     gradeId: this.selectedGrade
                 },
+                table: "Student",
+                tableObjectIds: [this.selectedStudent]
             }).subscribe(data => {
                 if (data.success) {
                     this.coursesByGrade = data.data;

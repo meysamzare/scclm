@@ -130,9 +130,11 @@ export class LinkListComponent implements OnInit {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: this.PAGE_APIURL,
+                    tableName: `Delete ${this.PAGE_APIURL}(s)`,
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: this.PAGE_APIURL,
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -182,6 +184,7 @@ export class LinkListComponent implements OnInit {
                 tableName: this.PAGE_APIURL + ' List Get Method',
                 logSource: 'dashboard',
                 object: obj,
+                table: this.PAGE_APIURL
             })
             .subscribe(
                 (data: jsondata) => {

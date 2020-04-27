@@ -112,6 +112,8 @@ export class ViewTicketConversationComponent implements OnInit, OnDestroy {
                                     object: {
                                         ticket: this.Ticket
                                     },
+                                    table: "Ticket",
+                                    tableObjectIds: [id]
                                 }).subscribe(data => {
                                     if (data.success) {
                                         this.conversations = data.data;
@@ -283,7 +285,9 @@ export class ViewTicketConversationComponent implements OnInit, OnDestroy {
             oldObject: {
                 ticketId: this.Ticket.id,
                 oldState: this.Ticket.state
-            }
+            },
+            table: "Ticket",
+            tableObjectIds: [this.Ticket.id]
         }).subscribe(data => {
             if (data.success) {
                 this.Ticket.state = state;
@@ -354,6 +358,8 @@ export class ViewTicketConversationComponent implements OnInit, OnDestroy {
                         ticket: this.Ticket,
                         conversation: this.Conversation
                     },
+                    table: "Ticket",
+                    tableObjectIds: [this.Ticket.id]
                 }).subscribe(data => {
                     var isLastReciver = index == reciverCount;
 
@@ -386,6 +392,8 @@ export class ViewTicketConversationComponent implements OnInit, OnDestroy {
                 object: {
                     conversation: this.Conversation
                 },
+                table: "Ticket",
+                tableObjectIds: [this.Ticket.id]
             }).subscribe(data => {
                 if (data.success) {
                     this.message.showSuccessAlert();

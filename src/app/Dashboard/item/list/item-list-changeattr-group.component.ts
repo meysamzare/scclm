@@ -130,6 +130,8 @@ export class ItemListChangeAttrGroupComponent {
                     itemsIds: this.itemsIds,
                     inputValue: event
                 },
+                table: "Item",
+                tableObjectIds: this.itemsIds
             })
             .subscribe(
                 (data: jsondata) => {
@@ -181,7 +183,9 @@ export class ItemListChangeAttrGroupComponent {
                             inputValue: result,
                             fileFormat: file.type,
                             fileName: file.name
-                        }
+                        },
+                        table: "Item",
+                        tableObjectIds: this.itemsIds
                     })
                     .subscribe(
                         (data: jsondata) => {
@@ -218,7 +222,9 @@ export class ItemListChangeAttrGroupComponent {
                     attrId: attrId,
                     itemsIds: this.itemsIds,
                     inputValue: ""
-                }
+                },
+                table: "Item",
+                tableObjectIds: this.itemsIds
             })
             .subscribe(
                 (data: jsondata) => {
@@ -258,7 +264,9 @@ export class ItemListChangeAttrGroupComponent {
                     attrId: attrId,
                     itemsIds: this.itemsIds,
                     inputValue: inputValue
-                }
+                },
+                table: "Item",
+                tableObjectIds: this.itemsIds
             })
             .subscribe(
                 (data: jsondata) => {

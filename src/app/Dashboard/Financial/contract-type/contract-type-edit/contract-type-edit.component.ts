@@ -107,10 +107,12 @@ export class ContractTypeEditComponent implements OnInit, OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'ConstractType',
+                    tableName: 'Edit ConstractType',
                     logSource: 'dashboard',
                     object: this.contrcttype,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "ContractType",
+                    tableObjectIds: [this.contrcttype.id]
                 }).subscribe(
 					(data: jsondata) => {
 						if (data.success) {
@@ -131,9 +133,11 @@ export class ContractTypeEditComponent implements OnInit, OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName:'ConstractType',
+                    tableName:'Add ConstractType',
                     logSource: 'dashboard',
                     object: this.contrcttype,
+                    table: "ContractType",
+                    tableObjectIds: [this.contrcttype.id]
                 }).subscribe(
 					(data: jsondata) => {
 						if (data.success) {

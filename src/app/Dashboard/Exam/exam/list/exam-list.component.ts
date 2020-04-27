@@ -217,9 +217,11 @@ export class ExamListComponent implements OnInit, AfterViewInit {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'Exam',
+                    tableName: 'Delete Exam(s)',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Exam",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -254,9 +256,11 @@ export class ExamListComponent implements OnInit, AfterViewInit {
                 agentId: this.auth.getUserId(),
                 agentType: 'User',
                 agentName: this.auth.getUser().fullName,
-                tableName: 'Exam',
+                tableName: 'Delete Exam',
                 logSource: 'dashboard',
                 deleteObjects: deleteDatas,
+                table: "Exam",
+                tableObjectIds: ids
             }).subscribe(
                 (data: jsondata) => {
                     if (data.success) {
@@ -309,9 +313,10 @@ export class ExamListComponent implements OnInit, AfterViewInit {
                 agentId: this.auth.getUserId(),
                 agentType: 'User',
                 agentName: this.auth.getUser().fullName,
-                tableName: 'Exam List',
+                tableName: 'Get Exam List',
                 logSource: 'dashboard',
                 object: obj,
+                table: "Exam"
             })
             .subscribe(
                 (data: jsondata) => {

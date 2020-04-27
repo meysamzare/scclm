@@ -80,7 +80,9 @@ export class TimeAndDaysEditComponent implements OnDestroy {
                     tableName: 'TimeAndDays',
                     logSource: 'dashboard',
                     object: this.timeanddays,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "TimeAndDays",
+                    tableObjectIds: [this.timeanddays.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -104,6 +106,8 @@ export class TimeAndDaysEditComponent implements OnDestroy {
                     tableName: 'TimeAndDays',
                     logSource: 'dashboard',
                     object: this.timeanddays,
+                    table: "TimeAndDays",
+                    tableObjectIds: [this.timeanddays.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

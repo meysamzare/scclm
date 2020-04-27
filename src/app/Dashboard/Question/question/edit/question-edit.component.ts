@@ -149,7 +149,9 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
                     tableName: 'Question',
                     logSource: 'dashboard',
                     object: this.question,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "Question",
+                    tableObjectIds: [this.question.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -173,6 +175,8 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
                     tableName:'Question',
                     logSource: 'dashboard',
                     object: this.question,
+                    table: "Question",
+                    tableObjectIds: [this.question.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

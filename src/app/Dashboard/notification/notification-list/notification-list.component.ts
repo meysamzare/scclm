@@ -122,6 +122,8 @@ export class NotificationListComponent implements OnInit {
                     tableName: 'Notification',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: this.PAGE_APIURL,
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -180,6 +182,7 @@ export class NotificationListComponent implements OnInit {
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: this.PAGE_APIURL
             })
             .subscribe(
                 (data: jsondata) => {

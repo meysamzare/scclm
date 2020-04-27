@@ -1,4 +1,23 @@
 export class ILogParam {
+    type: "none" | "Add" | "Edit" | "Delete" | "View" = "none";
+    agentId: number = null;
+    agentType: "User" | "Teacher" | "StudentParent" | "Other" = "User";
+    agentName = "";
+    object?= null;
+    oldObject?= null;
+    deleteObjects?: any[] = null;
+    // Set to Event
+    tableName = "";
+    table? = "";
+    tableObjectIds?: any[] = [];
+    logSource: "dashboard" | "TMA" | "PMA" | "Index" = "dashboard";
+    desc?= "";
+    event?= "";
+}
+
+export class ILogServer {
+    id = 0;
+
     type: "none" | "Add" | "Edit" | "Delete" | "View" | "custom" = "none";
     agentId: number = null;
     agentType: "User" | "Teacher" | "StudentParent" | "Other" = "User";
@@ -6,10 +25,16 @@ export class ILogParam {
     object?= null;
     oldObject?= null;
     deleteObjects?: any[] = null;
-    tableName = "";
     logSource: "dashboard" | "TMA" | "PMA" | "Index" = "dashboard";
     desc?= "";
     event?= "";
+
+    date = "";
+    dateString = "";
+    table = "";
+    tableObjectIds: any[] = [];
+    responseData = "";
+    ip = "";
 }
 
 export class ILog {

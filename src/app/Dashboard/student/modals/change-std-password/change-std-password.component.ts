@@ -58,7 +58,9 @@ export class ChangeStdPasswordComponent implements OnInit {
                     stdId: this.stdId,
                     type: this.type,
                     password: this.Password
-                }
+                },
+                table: "Student",
+                tableObjectIds: [this.stdId]
             }).subscribe(data => {
                 if (data.success) {
                     this.message.showSuccessAlert();
@@ -69,7 +71,7 @@ export class ChangeStdPasswordComponent implements OnInit {
             }, er => {
                 this.auth.handlerError(er);
             });
-            
+
         }
     }
 

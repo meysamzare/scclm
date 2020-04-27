@@ -116,6 +116,8 @@ export class UnitListComponent implements OnInit, AfterViewInit {
                     tableName: 'Unit',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Unit",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -166,6 +168,7 @@ export class UnitListComponent implements OnInit, AfterViewInit {
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "Unit"
             })
             .subscribe(
                 (data: jsondata) => {

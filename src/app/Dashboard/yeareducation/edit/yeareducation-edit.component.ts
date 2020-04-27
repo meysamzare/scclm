@@ -84,7 +84,9 @@ export class YeareducationEditComponent implements OnDestroy {
                     tableName: 'Yeareducation',
                     logSource: 'dashboard',
                     object: this.yeareducation,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "Yeareducation",
+                    tableObjectIds: [this.yeareducation.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -108,6 +110,8 @@ export class YeareducationEditComponent implements OnDestroy {
                     tableName: 'Yeareducation',
                     logSource: 'dashboard',
                     object: this.yeareducation,
+                    table: "Yeareducation",
+                    tableObjectIds: [this.yeareducation.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

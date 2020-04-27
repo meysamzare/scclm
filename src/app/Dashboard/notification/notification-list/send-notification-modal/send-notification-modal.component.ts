@@ -187,6 +187,8 @@ export class SendNotificationModalComponent implements OnInit {
                     notificationId: this.notificationId,
                     agentIds: this.selectedAgentsIds
                 },
+                table: "Notification",
+                tableObjectIds: this.selectedAgentsIds
             }).subscribe(data => {
                 if (data.success) {
                     this.dialogRef.close(true);

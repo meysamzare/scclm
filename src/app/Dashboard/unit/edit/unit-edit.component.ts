@@ -68,7 +68,9 @@ export class UnitEditComponent {
                     tableName: 'Unit',
                     logSource: 'dashboard',
                     object: this.unit,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "Unit",
+                    tableObjectIds: [this.unit.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -92,6 +94,8 @@ export class UnitEditComponent {
                     tableName: 'Unit',
                     logSource: 'dashboard',
                     object: this.unit,
+                    table: "Unit",
+                    tableObjectIds: [this.unit.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

@@ -84,7 +84,9 @@ export class RoleEditComponent implements AfterViewInit {
                     tableName: 'Role',
                     logSource: 'dashboard',
                     object: this.Role,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "Role",
+                    tableObjectIds: [this.Role.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -112,6 +114,8 @@ export class RoleEditComponent implements AfterViewInit {
                     tableName:'Role',
                     logSource: 'dashboard',
                     object: this.Role,
+                    table: "Role",
+                    tableObjectIds: [this.Role.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

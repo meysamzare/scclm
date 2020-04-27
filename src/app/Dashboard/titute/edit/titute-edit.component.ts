@@ -229,7 +229,9 @@ export class TituteEditComponent implements AfterViewInit, AfterViewChecked, OnD
                     tableName: 'Titute',
                     logSource: 'dashboard',
                     object: this.titute,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "Titute",
+                    tableObjectIds: [this.titute.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -253,6 +255,8 @@ export class TituteEditComponent implements AfterViewInit, AfterViewChecked, OnD
                     tableName: 'Titute',
                     logSource: 'dashboard',
                     object: this.titute,
+                    table: "Titute",
+                    tableObjectIds: [this.titute.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

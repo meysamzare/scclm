@@ -109,6 +109,7 @@ export class ChatComponent implements AfterViewInit, OnInit, OnDestroy {
             tableName: 'Entring To Chat Page',
             logSource: 'dashboard',
             object: null,
+            table: "Chat"
         }).subscribe((data: jsondata) => {
             if (data.success) {
                 this.users = data.data;
@@ -200,6 +201,7 @@ export class ChatComponent implements AfterViewInit, OnInit, OnDestroy {
                 page: this.page,
                 clientId: cid
             },
+            table: "Chat"
         }).subscribe((data: jsondata) => {
             if (data.success) {
                 if (resetpage) {
@@ -238,6 +240,8 @@ export class ChatComponent implements AfterViewInit, OnInit, OnDestroy {
             tableName: 'Chat',
             logSource: 'dashboard',
             object: this.chat,
+            table: "Chat",
+            tableObjectIds: [this.chat.reciverId]
         }).subscribe((data: jsondata) => {
             if (data.success) {
 

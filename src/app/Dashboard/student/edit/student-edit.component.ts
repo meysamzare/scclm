@@ -9,7 +9,7 @@ import { IStudentInfo } from "../studentinfo";
 @Component({
     templateUrl: "./student-edit.component.html"
 })
-export class StudentEditComponent implements OnDestroy{
+export class StudentEditComponent implements OnDestroy {
     Title: string;
     btnTitle: string;
     isEdit: boolean = false;
@@ -70,7 +70,7 @@ export class StudentEditComponent implements OnDestroy{
         });
     }
 
-    
+
     ngOnDestroy(): void {
         let title = "student";
         if (!this.fm1.submitted) {
@@ -140,7 +140,9 @@ export class StudentEditComponent implements OnDestroy{
                             student: this.student,
                             studentInfo: this.studentInfo
                         },
-                        oldObject: JSON.parse(this.oldData)
+                        oldObject: JSON.parse(this.oldData),
+                        table: "Student",
+                        tableObjectIds: [this.student.id]
                     })
                     .subscribe(
                         (data: jsondata) => {
@@ -174,6 +176,8 @@ export class StudentEditComponent implements OnDestroy{
                             student: this.student,
                             studentInfo: this.studentInfo
                         },
+                        table: "Student",
+                        tableObjectIds: [this.student.id]
                     })
                     .subscribe(
                         (data: jsondata) => {

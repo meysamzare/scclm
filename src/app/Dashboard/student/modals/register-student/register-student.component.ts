@@ -95,6 +95,8 @@ export class RegisterStudentModalComponent implements OnInit {
                 tableName: 'StdClassMng(RegisterStudentModal)',
                 logSource: 'dashboard',
                 object: this.stdClassMng,
+                table: "StdClassMng",
+                tableObjectIds: [this.stdClassMng.studentId]
             }).subscribe((data: jsondata) => {
                 if (data.success) {
                     this.message.showSuccessAlert("با موفقیت ثبت شد");
@@ -117,7 +119,9 @@ export class RegisterStudentModalComponent implements OnInit {
                 object: {
                     stdClassMng: this.stdClassMng,
                     StudentsIds: this.data.ids
-                }
+                },
+                table: "StdClassMng",
+                tableObjectIds: this.data.ids
             }).subscribe((data: jsondata) => {
                 if (data.success) {
                     this.message.showSuccessAlert("موارد انتخابی با موفقیت ثبت شدند");

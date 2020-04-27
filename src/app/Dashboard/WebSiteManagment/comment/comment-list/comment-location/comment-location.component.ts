@@ -36,6 +36,8 @@ export class CommentLocationComponent implements OnInit {
             tableName: 'Post Comment Location',
             logSource: 'dashboard',
             object: obj,
+            table: "Comment",
+            tableObjectIds: [this.commentId]
         }).subscribe(data => {
             if (data.success) {
                 this.relatedComments = data.data;

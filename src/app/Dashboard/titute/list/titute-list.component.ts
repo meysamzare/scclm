@@ -131,6 +131,8 @@ export class TituteListComponent implements OnInit, AfterViewInit, AfterContentI
                     tableName: 'Titute',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Titute",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -183,6 +185,7 @@ export class TituteListComponent implements OnInit, AfterViewInit, AfterContentI
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "Titute"
             })
             .subscribe(
                 (data: jsondata) => {

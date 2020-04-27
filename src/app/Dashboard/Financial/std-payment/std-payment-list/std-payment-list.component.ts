@@ -123,6 +123,8 @@ export class StdPaymentListComponent implements OnInit {
                     tableName: 'StdPayment',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "StdPayment",
+                    tableObjectIds: ids
                 }).subscribe(
 					(data: jsondata) => {
 						if (data.success) {
@@ -173,6 +175,7 @@ export class StdPaymentListComponent implements OnInit {
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "StdPayment"
             })
 			.subscribe(
 				(data: jsondata) => {

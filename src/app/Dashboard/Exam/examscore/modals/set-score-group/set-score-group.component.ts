@@ -265,6 +265,8 @@ export class SetScoreGroupModalComponent implements OnInit {
             object: {
                 examId: this.examId
             },
+            table: "ExamScore",
+            tableObjectIds: [this.examId]
         }).subscribe(
             (data: jsondata) => {
                 if (data.success) {
@@ -308,6 +310,7 @@ export class SetScoreGroupModalComponent implements OnInit {
                         fileName: fileToUpload.name,
                         fileType: fileToUpload.type
                     },
+                    table: "ExamScore"
                 }).pipe(
                     finalize(() => {
                         this.isLoading = false;
@@ -349,9 +352,11 @@ export class SetScoreGroupModalComponent implements OnInit {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'ExamScore',
+                    tableName: 'Add(Update) ExamScore From Modal',
                     logSource: 'dashboard',
                     object: this.examscore,
+                    table: "ExamScore",
+                    tableObjectIds: [this.examscore.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

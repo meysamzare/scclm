@@ -11,7 +11,7 @@ import { take, switchMap, tap, catchError } from "rxjs/operators";
 import { MatDialog } from "@angular/material";
 
 import * as cryptoJSON from 'crypto-json';
-import { ILogParam, getAssinedPropNameAndValue, ILog } from "./log";
+import { ILogParam, getAssinedPropNameAndValue, ILog, ILogServer } from "./log";
 import { IDBService } from "projects/ParentsMobileApp/src/app/service/idb.service";
 import * as CryptoJS from 'crypto-js';
 import { DraftService } from "public/Services/draft/draft.service";
@@ -577,61 +577,64 @@ export class AuthService {
 
     logToServer(log: ILogParam, JsonData?) {
 
-        var serverLog: ILog = new ILog();
+        var serverLog: ILogServer = new ILogServer();
 
         serverLog.agentId = log.agentId;
         serverLog.agentName = log.agentName;
         serverLog.agentType = log.agentType;
         serverLog.logSource = log.logSource;
 
-        serverLog.ev = log.type;
+        serverLog.event = log.tableName;
+        serverLog.table = log.table;
+        serverLog.tableObjectIds = log.tableObjectIds;
+        serverLog.type = log.type;
 
-        var data = getAssinedPropNameAndValue(JsonData);
+        serverLog.object = log.object;
+        serverLog.oldObject = log.oldObject;
+        serverLog.deleteObjects = log.deleteObjects;
 
-        if (log.type == "Add") {
-            var objectText = getAssinedPropNameAndValue(log.object);
+        serverLog.responseData = JsonData;
+        
+        serverLog.desc = log.desc;
 
-            serverLog.desc = `Add New Data To: '${log.tableName}' & Object is: {${objectText}} \n and JsonData is: ${data}`;
-        }
 
-        if (log.type == "Edit") {
-            var objectText = getAssinedPropNameAndValue(log.object);
-            var oldObjectText = getAssinedPropNameAndValue(log.oldObject);
+        // if (log.type == "Add") {
+        //     var objectText = getAssinedPropNameAndValue(log.object);
 
-            serverLog.desc = `Edit Data in: '${log.tableName}' \n & NewObject is: {${objectText}} & OldObject was: {${oldObjectText}} \n and JsonData is: ${data}`;
-        }
+        //     serverLog.desc = `Add New Data To: '${log.tableName}' & Object is: {${objectText}} \n and JsonData is: ${data}`;
+        // }
 
-        if (log.type == "Delete") {
+        // if (log.type == "Edit") {
+        //     var objectText = getAssinedPropNameAndValue(log.object);
+        //     var oldObjectText = getAssinedPropNameAndValue(log.oldObject);
 
-            var deteledObjects = `\n`;
+        //     serverLog.desc = `Edit Data in: '${log.tableName}' \n & NewObject is: {${objectText}} & OldObject was: {${oldObjectText}} \n and JsonData is: ${data}`;
+        // }
 
-            log.deleteObjects.forEach(obj => {
-                var objText = getAssinedPropNameAndValue(obj);
+        // if (log.type == "Delete") {
 
-                deteledObjects = deteledObjects + `{${objText}}, \n`;
-            });
+        //     var deteledObjects = `\n`;
 
-            serverLog.desc = `Delete Object(s) from Table: ${log.tableName} & Deleted Object(s) was: [${deteledObjects}] \n and JsonData is: ${data}`
-        }
+        //     log.deleteObjects.forEach(obj => {
+        //         var objText = getAssinedPropNameAndValue(obj);
 
-        if (log.type == "View") {
-            var objectText = getAssinedPropNameAndValue(log.object);
+        //         deteledObjects = deteledObjects + `{${objText}}, \n`;
+        //     });
 
-            serverLog.desc = `View ${log.tableName}, And Object is: ${objectText} \n and JsonData is: ${data}`;
-        }
+        //     serverLog.desc = `Delete Object(s) from Table: ${log.tableName} & Deleted Object(s) was: [${deteledObjects}] \n and JsonData is: ${data}`
+        // }
 
-        if (log.type == "custom") {
-            serverLog.desc = log.desc;
+        // if (log.type == "View") {
+        //     var objectText = getAssinedPropNameAndValue(log.object);
 
-            serverLog.ev = log.event;
-        }
+        //     serverLog.desc = `View ${log.tableName}, And Object is: ${objectText} \n and JsonData is: ${data}`;
+        // }
 
         this.post("/api/Log/setLog", serverLog).subscribe(data => {
             if (data.success) {
                 // Do Nothing
-                // alert("success");
             } else {
-                this.message.showErrorAlert("خطا در ذخیره برخی داده ها، لطفا با مدیر سیستم تماس حاصل فرمایید");
+                this.message.showWarningAlert("خطا در ذخیره برخی داده ها، لطفا با مدیر سیستم تماس حاصل فرمایید");
             }
         });
     }

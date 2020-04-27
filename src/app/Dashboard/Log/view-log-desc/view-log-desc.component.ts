@@ -11,6 +11,7 @@ import { MessageService } from 'src/app/shared/services/message.service';
 export class ViewLogDescComponent implements OnInit {
 
     id = "";
+    date = "";
     desc = "";
 
     isLoading = true;
@@ -24,8 +25,12 @@ export class ViewLogDescComponent implements OnInit {
 
     ngOnInit() {
         this.id = this.data.id;
+        this.date = this.data.date;
 
-        this.auth.post("/api/Log/getDesc", this.id).subscribe(data => {
+        this.auth.post("/api/Log/getDesc", {
+            id: this.id,
+            date: this.date
+        }).subscribe(data => {
             if (data.success) {
                 this.desc = data.data;
             } else {

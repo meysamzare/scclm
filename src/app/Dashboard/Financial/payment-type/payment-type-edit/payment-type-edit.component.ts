@@ -79,10 +79,12 @@ export class PaymentTypeEditComponent implements OnInit, OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'PaymentType',
+                    tableName: 'Edit PaymentType',
                     logSource: 'dashboard',
                     object: this.paymentType,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "PaymentType",
+                    tableObjectIds: [this.paymentType.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -103,9 +105,11 @@ export class PaymentTypeEditComponent implements OnInit, OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName:'PaymentType',
+                    tableName:'Add PaymentType',
                     logSource: 'dashboard',
                     object: this.paymentType,
+                    table: "PaymentType",
+                    tableObjectIds: [this.paymentType.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

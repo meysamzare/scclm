@@ -168,6 +168,8 @@ export class StudentStudyRecordComponent implements OnInit {
             tableName: 'View Student Workbook',
             logSource: 'dashboard',
             object: obj,
+            table: "Student",
+            tableObjectIds: [this.selectedStudent]
         }).subscribe(data => {
             if (data.success) {
 
@@ -221,6 +223,8 @@ export class StudentStudyRecordComponent implements OnInit {
                     studentId: this.selectedStudent,
                     gradeId: this.selectedGrade
                 },
+                table: "Student",
+                tableObjectIds: [this.selectedStudent]
             }).subscribe(data => {
                 if (data.success) {
                     this.coursesByGrade = data.data;

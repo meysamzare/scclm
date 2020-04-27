@@ -114,7 +114,9 @@ export class TeacherEditComponent implements AfterViewInit, OnDestroy {
                     tableName: 'Teacher',
                     logSource: 'dashboard',
                     object: this.teacher,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "Teacher",
+                    tableObjectIds: [this.teacher.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -138,6 +140,8 @@ export class TeacherEditComponent implements AfterViewInit, OnDestroy {
                     tableName: 'Teacher',
                     logSource: 'dashboard',
                     object: this.teacher,
+                    table: "Teacher",
+                    tableObjectIds: [this.teacher.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

@@ -123,9 +123,11 @@ export class OrgPersonListComponent{
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'OrgPerson',
+                    tableName: 'Delete OrgPerson(s)',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "OrgPerson",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -167,7 +169,7 @@ export class OrgPersonListComponent{
                 agentId: this.auth.getUserId(),
                 agentType: 'User',
                 agentName: this.auth.getUser().fullName,
-                tableName: 'OrgPerson',
+                tableName: 'Get OrgPerson List',
                 logSource: 'dashboard',
                 object: {
                     sort: this.sort.active,
@@ -176,6 +178,7 @@ export class OrgPersonListComponent{
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "OrgPerson"
             })
             .subscribe(
                 (data: jsondata) => {
@@ -230,6 +233,8 @@ export class OrgPersonListComponent{
                     tableName: 'OrgPerson',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "OrgPerson",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

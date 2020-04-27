@@ -93,7 +93,7 @@ export class ClassBookEditComponent implements OnInit, OnDestroy {
         });
     }
 
-    
+
     ngOnDestroy(): void {
         let title = this.PAGE_APIURL;
         if (!this.fm1.submitted) {
@@ -296,7 +296,9 @@ export class ClassBookEditComponent implements OnInit, OnDestroy {
                     tableName: 'ClassBook',
                     logSource: 'dashboard',
                     object: this.PAGE_Data,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: this.PAGE_APIURL,
+                    tableObjectIds: [this.PAGE_Data.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -320,6 +322,8 @@ export class ClassBookEditComponent implements OnInit, OnDestroy {
                     tableName: 'ClassBook',
                     logSource: 'dashboard',
                     object: this.PAGE_Data,
+                    table: this.PAGE_APIURL,
+                    tableObjectIds: [this.PAGE_Data.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

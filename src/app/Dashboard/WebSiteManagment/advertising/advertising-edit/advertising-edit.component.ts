@@ -86,7 +86,9 @@ export class AdvertisingEditComponent implements OnInit, OnDestroy {
                     tableName: 'Advertising',
                     logSource: 'dashboard',
                     object: this.advertising,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "Advertising",
+                    tableObjectIds: [this.advertising.id]
                 }).subscribe(
 					(data: jsondata) => {
 						if (data.success) {
@@ -110,6 +112,8 @@ export class AdvertisingEditComponent implements OnInit, OnDestroy {
                     tableName: 'Advertising',
                     logSource: 'dashboard',
                     object: this.advertising,
+                    table: "Advertising",
+                    tableObjectIds: [this.advertising.id]
                 }).subscribe(
 					(data: jsondata) => {
 						if (data.success) {

@@ -120,6 +120,8 @@ export class AdvertisingListComponent implements OnInit, AfterViewInit {
                     tableName: 'Advertising',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Advertising",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -170,6 +172,7 @@ export class AdvertisingListComponent implements OnInit, AfterViewInit {
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "Advertising"
             })
             .subscribe(
                 (data: jsondata) => {
@@ -214,6 +217,20 @@ export class AdvertisingListComponent implements OnInit, AfterViewInit {
         this.auth.post("/api/Advertising/changeActiveState", {
             id: id,
             active: active
+        }, {
+            type: 'Edit',
+            agentId: this.auth.getUserId(),
+            agentType: 'User',
+            agentName: this.auth.getUser().fullName,
+            tableName: 'Change Advertising Active State',
+            logSource: 'dashboard',
+            object: {
+                id: id,
+                active: active
+            },
+            oldObject: null,
+            table: "Advertising",
+            tableObjectIds: [id]
         }).subscribe(data => {
             if (data.success) {
                 this.refreshDataSource();

@@ -8,9 +8,9 @@ import { MessageService } from 'src/app/shared/services/message.service';
 import { merge } from 'rxjs';
 
 @Component({
-  selector: 'app-product-category-list',
-  templateUrl: './product-category-list.component.html',
-  styleUrls: ['./product-category-list.component.scss']
+    selector: 'app-product-category-list',
+    templateUrl: './product-category-list.component.html',
+    styleUrls: ['./product-category-list.component.scss']
 })
 export class ProductCategoryListComponent implements OnInit {
     displayedColumns: string[] = [
@@ -111,6 +111,8 @@ export class ProductCategoryListComponent implements OnInit {
                     tableName: this.PAGE_APIURL,
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: this.PAGE_APIURL,
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -157,6 +159,7 @@ export class ProductCategoryListComponent implements OnInit {
                 tableName: this.PAGE_APIURL + ' List Get Method',
                 logSource: 'dashboard',
                 object: obj,
+                table: this.PAGE_APIURL
             })
             .subscribe(
                 (data: jsondata) => {

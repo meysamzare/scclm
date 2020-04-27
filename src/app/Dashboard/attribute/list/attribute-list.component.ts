@@ -141,6 +141,8 @@ export class AttributeListComponent implements OnInit, AfterViewInit, AfterConte
                     tableName: 'Attribute',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Attribute",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -185,7 +187,7 @@ export class AttributeListComponent implements OnInit, AfterViewInit, AfterConte
                 agentId: this.auth.getUserId(),
                 agentType: 'User',
                 agentName: this.auth.getUser().fullName,
-                tableName: 'Attribute List',
+                tableName: 'Attribute List Get',
                 logSource: 'dashboard',
                 object: {
                     getparams: {
@@ -197,6 +199,7 @@ export class AttributeListComponent implements OnInit, AfterViewInit, AfterConte
                     },
                     selectedCatId: this.selectedCatId
                 },
+                table: "Attribute"
             })
             .subscribe(
                 (data: jsondata) => {

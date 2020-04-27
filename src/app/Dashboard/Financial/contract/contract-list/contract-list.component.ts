@@ -125,6 +125,8 @@ export class ContractListComponent implements OnInit {
                     tableName: 'Contract',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Contract",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -175,6 +177,7 @@ export class ContractListComponent implements OnInit {
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "Contract"
             })
             .subscribe(
                 (data: jsondata) => {
@@ -226,6 +229,8 @@ export class ContractListComponent implements OnInit {
             object: {
                 contractId: Id
             },
+            table: "Contract",
+            tableObjectIds: [Id]
         }).subscribe(data => {
             if (data.success) {
                 this.printSrv.printHtmlContent(data.data, this.router.url);

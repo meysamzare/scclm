@@ -196,6 +196,8 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
                     tableName: 'Attribute From Category Edit',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Attribute",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -417,10 +419,12 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'Category',
+                    tableName: 'Edit Category',
                     logSource: 'dashboard',
                     object: this.category,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "Category",
+                    tableObjectIds: [this.category.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -441,9 +445,11 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'Category',
+                    tableName: 'Add Category',
                     logSource: 'dashboard',
                     object: this.category,
+                    table: "Category",
+                    tableObjectIds: [this.category.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

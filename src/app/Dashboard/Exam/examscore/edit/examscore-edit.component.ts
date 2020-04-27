@@ -268,10 +268,12 @@ export class ExamScoreEditComponent {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'ExamScore',
+                    tableName: 'Edit ExamScore',
                     logSource: 'dashboard',
                     object: this.examscore,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "ExamScore",
+                    tableObjectIds: [this.examscore.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -292,9 +294,11 @@ export class ExamScoreEditComponent {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName:'ExamScore',
+                    tableName: 'Add ExamScore',
                     logSource: 'dashboard',
                     object: this.examscore,
+                    table: "ExamScore",
+                    tableObjectIds: [this.examscore.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

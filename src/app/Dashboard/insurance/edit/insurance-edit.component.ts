@@ -77,10 +77,12 @@ export class InsuranceEditComponent implements OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'Insurance',
+                    tableName: 'Edit Insurance',
                     logSource: 'dashboard',
                     object: this.insurance,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "Insurance",
+                    tableObjectIds: [this.insurance.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -101,9 +103,11 @@ export class InsuranceEditComponent implements OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'Insurance',
+                    tableName: 'Add Insurance',
                     logSource: 'dashboard',
                     object: this.insurance,
+                    table: "Insurance",
+                    tableObjectIds: [this.insurance.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

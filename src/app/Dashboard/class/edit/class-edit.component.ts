@@ -124,10 +124,12 @@ export class ClassEditComponent implements OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'Class',
+                    tableName: 'Edit Class',
                     logSource: 'dashboard',
                     object: this.class,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "Class",
+                    tableObjectIds: [this.class.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -148,9 +150,11 @@ export class ClassEditComponent implements OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'Class',
+                    tableName: 'Add Class',
                     logSource: 'dashboard',
                     object: this.class,
+                    table: "Class",
+                    tableObjectIds: [this.class.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

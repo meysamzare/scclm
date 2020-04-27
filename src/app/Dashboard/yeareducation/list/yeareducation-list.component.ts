@@ -122,6 +122,8 @@ export class YeareducationListComponent {
                     tableName: 'Yeareducation',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Yeareducation",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -159,7 +161,9 @@ export class YeareducationListComponent {
             object: {
                 yeareducationId: id
             },
-            oldObject: null
+            oldObject: null,
+            table: "Yeareducation",
+            tableObjectIds: [id]
         }).subscribe(data => {
             if (data.success) {
 
@@ -207,6 +211,7 @@ export class YeareducationListComponent {
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "Yeareducation"
             })
             .subscribe(
                 (data: jsondata) => {

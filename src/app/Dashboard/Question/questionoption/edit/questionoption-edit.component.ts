@@ -96,7 +96,9 @@ export class QuestionOptionEditComponent implements OnDestroy{
                     tableName: 'QuestionOption',
                     logSource: 'dashboard',
                     object: this.questionoption,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "QuestionOption",
+                    tableObjectIds: [this.questionoption.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -120,6 +122,8 @@ export class QuestionOptionEditComponent implements OnDestroy{
                     tableName:'QuestionOption',
                     logSource: 'dashboard',
                     object: this.questionoption,
+                    table: "QuestionOption",
+                    tableObjectIds: [this.questionoption.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

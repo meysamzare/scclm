@@ -78,10 +78,12 @@ export class ExamTypeEditComponent implements OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'ExamType',
+                    tableName: 'Edit ExamType',
                     logSource: 'dashboard',
                     object: this.examtype,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "ExamType",
+                    tableObjectIds: [this.examtype.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -102,9 +104,11 @@ export class ExamTypeEditComponent implements OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'ExamType',
+                    tableName: 'Add ExamType',
                     logSource: 'dashboard',
                     object: this.examtype,
+                    table: "ExamType",
+                    tableObjectIds: [this.examtype.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

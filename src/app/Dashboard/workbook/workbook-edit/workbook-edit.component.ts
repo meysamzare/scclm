@@ -11,7 +11,7 @@ import { AuthService, jsondata } from 'src/app/shared/Auth/auth.service';
     styleUrls: ['./workbook-edit.component.scss']
 })
 export class WorkbookEditComponent implements OnInit, OnDestroy {
-    
+
     Title: string;
     btnTitle: string;
     isEdit: boolean = false;
@@ -87,7 +87,9 @@ export class WorkbookEditComponent implements OnInit, OnDestroy {
                     tableName: this.PAGE_APIURL,
                     logSource: 'dashboard',
                     object: this.PAGE_Data,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: this.PAGE_APIURL,
+                    tableObjectIds: [this.PAGE_Data.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -111,6 +113,8 @@ export class WorkbookEditComponent implements OnInit, OnDestroy {
                     tableName: this.PAGE_APIURL,
                     logSource: 'dashboard',
                     object: this.PAGE_Data,
+                    table: this.PAGE_APIURL,
+                    tableObjectIds: [this.PAGE_Data.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

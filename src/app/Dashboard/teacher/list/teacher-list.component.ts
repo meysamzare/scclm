@@ -124,6 +124,8 @@ export class TeacherListComponent {
                     tableName: 'Teacher',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Teacher",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -173,6 +175,7 @@ export class TeacherListComponent {
                 tableName: 'Teacher',
                 logSource: 'dashboard',
                 object: obj,
+                table: "Teacher"
             })
             .subscribe(
                 (data: jsondata) => {
@@ -228,6 +231,20 @@ export class TeacherListComponent {
         this.auth.post("/api/Teacher/ChangeAllCourseAccess", {
             id: id,
             access: access
+        }, {
+            type: 'Edit',
+            agentId: this.auth.getUserId(),
+            agentType: 'User',
+            agentName: this.auth.getUser().fullName,
+            tableName: 'change Teacher All Course Access',
+            logSource: 'dashboard',
+            object: {
+                id: id,
+                access: access
+            },
+            oldObject: null,
+            table: "Teacher",
+            tableObjectIds: [id]
         }).subscribe(data => {
             if (data.success) {
                 this.message.showSuccessAlert();

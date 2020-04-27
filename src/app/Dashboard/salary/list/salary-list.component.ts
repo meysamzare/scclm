@@ -119,6 +119,8 @@ export class SalaryListComponent{
                     tableName: 'Salary',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Salary",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -169,6 +171,7 @@ export class SalaryListComponent{
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "Salary"
             })
             .subscribe(
                 (data: jsondata) => {

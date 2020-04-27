@@ -119,7 +119,9 @@ export class WriterEditComponent implements OnInit, OnDestroy {
                     tableName: this.PAGE_APIURL,
                     logSource: 'dashboard',
                     object: this.PAGE_Data,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: this.PAGE_APIURL,
+                    tableObjectIds: [this.PAGE_Data.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -143,6 +145,8 @@ export class WriterEditComponent implements OnInit, OnDestroy {
                     tableName: this.PAGE_APIURL,
                     logSource: 'dashboard',
                     object: this.PAGE_Data,
+                    table: this.PAGE_APIURL,
+                    tableObjectIds: [this.PAGE_Data.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

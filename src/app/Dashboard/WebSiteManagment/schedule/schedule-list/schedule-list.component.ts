@@ -122,6 +122,8 @@ export class ScheduleListComponent implements OnInit, AfterViewInit {
                     tableName: 'Schedule',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Schedule",
+                    tableObjectIds: ids
                 }).subscribe(
 					(data: jsondata) => {
 						if (data.success) {
@@ -172,6 +174,7 @@ export class ScheduleListComponent implements OnInit, AfterViewInit {
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "Schedule"
             })
 			.subscribe(
 				(data: jsondata) => {

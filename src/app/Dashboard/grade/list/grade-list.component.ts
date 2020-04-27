@@ -121,9 +121,11 @@ export class GradeListComponent {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'Grade',
+                    tableName: 'Detele Grade',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Grade",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -165,7 +167,7 @@ export class GradeListComponent {
                 agentId: this.auth.getUserId(),
                 agentType: 'User',
                 agentName: this.auth.getUser().fullName,
-                tableName: 'Grade List',
+                tableName: 'Get Grade List',
                 logSource: 'dashboard',
                 object: {
                     sort: this.sort.active,
@@ -174,6 +176,7 @@ export class GradeListComponent {
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "Grade"
             })
             .subscribe(
                 (data: jsondata) => {
@@ -224,6 +227,7 @@ export class GradeListComponent {
             tableName: 'Print Grade Data',
             logSource: 'dashboard',
             object: null,
+            table: "Grade"
         }).subscribe(data => {
             if (data.success) {
                 this.printService.setPrintDatasAndRedirect(data, this.router.url);

@@ -155,9 +155,11 @@ export class CourseListComponent {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'Course',
+                    tableName: 'Delete Course(s)',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Course",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -205,9 +207,10 @@ export class CourseListComponent {
                 agentId: this.auth.getUserId(),
                 agentType: 'User',
                 agentName: this.auth.getUser().fullName,
-                tableName: 'Course List',
+                tableName: 'Get Course List',
                 logSource: 'dashboard',
                 object: obj,
+                table: "Course"
             })
             .subscribe(
                 (data: jsondata) => {

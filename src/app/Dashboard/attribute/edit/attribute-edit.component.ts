@@ -218,10 +218,12 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'Attribute',
+                    tableName: 'Edit Attribute',
                     logSource: 'dashboard',
                     object: this.attr,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "Attribute",
+                    tableObjectIds: [this.attr.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -243,9 +245,11 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
                     agentId: this.auth.getUserId(),
                     agentType: "User",
                     agentName: this.auth.getUser().fullName,
-                    tableName: "Attribute",
+                    tableName: "Add Attribute",
                     logSource: "dashboard",
-                    object: this.attr
+                    object: this.attr,
+                    table: "Attribute",
+                    tableObjectIds: [this.attr.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

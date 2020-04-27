@@ -113,6 +113,8 @@ export class WorkbookComparisonComponent implements OnInit {
             tableName: 'Add Workbook to WorkbooksComparison List',
             logSource: 'dashboard',
             object: obj,
+            table: "WorkbookComparison",
+            tableObjectIds: [obj.studentId]
         }).subscribe(data => {
             if (data.success) {
 
@@ -161,7 +163,7 @@ export class WorkbookComparisonComponent implements OnInit {
 export class StudentWorkbookType {
 
     title: string;
-    
+
     coursesHeaders: string[];
     courseAvgs: number[];
     totalAvg: number;

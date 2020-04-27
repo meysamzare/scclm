@@ -381,10 +381,12 @@ export class ExamEditComponent implements AfterViewInit, OnInit, OnDestroy {
                         agentId: this.auth.getUserId(),
                         agentType: 'User',
                         agentName: this.auth.getUser().fullName,
-                        tableName: 'Exam',
+                        tableName: 'Edit Exam',
                         logSource: 'dashboard',
                         object: this.exam,
-                        oldObject: JSON.parse(this.oldData)
+                        oldObject: JSON.parse(this.oldData),
+                        table: "Exam",
+                        tableObjectIds: [this.exam.id]
                     })
                     .subscribe(
                         (data: jsondata) => {
@@ -412,9 +414,11 @@ export class ExamEditComponent implements AfterViewInit, OnInit, OnDestroy {
                         agentId: this.auth.getUserId(),
                         agentType: 'User',
                         agentName: this.auth.getUser().fullName,
-                        tableName: 'Exam',
+                        tableName: 'Add Exam',
                         logSource: 'dashboard',
                         object: this.exam,
+                        table: "Exam",
+                        tableObjectIds: [this.exam.id]
                     })
                     .subscribe(
                         (data: jsondata) => {

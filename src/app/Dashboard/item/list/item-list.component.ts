@@ -283,6 +283,8 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
                             tableName: 'Item',
                             logSource: 'dashboard',
                             deleteObjects: deleteDatas,
+                            table: "Item",
+                            tableObjectIds: ids
                         }).subscribe(
                             (data: jsondata) => {
                                 if (data.success) {
@@ -328,6 +330,8 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
                     tableName: 'Item',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Item",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -468,7 +472,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
         this.onCategorySelectChange();
     }
 
-    
+
     onCategorySelectChange() {
         if (this.selectedCatId) {
 
@@ -556,7 +560,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
                 agentId: this.auth.getUserId(),
                 agentType: 'User',
                 agentName: this.auth.getUser().fullName,
-                tableName: 'Item List',
+                tableName: 'Get Item List',
                 logSource: 'dashboard',
                 object: {
                     param: {
@@ -570,6 +574,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
                     attrvalsearch: this.searchAttrVals,
                     state: this.state
                 },
+                table: "Item"
             })
             .subscribe(
                 (data: jsondata) => {

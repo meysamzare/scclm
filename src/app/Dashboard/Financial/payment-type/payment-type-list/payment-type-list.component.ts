@@ -120,6 +120,8 @@ export class PaymentTypeListComponent implements OnInit {
                     tableName: 'PaymentType',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "PaymentType",
+                    tableObjectIds: ids
                 }).subscribe(
 					(data: jsondata) => {
 						if (data.success) {
@@ -170,6 +172,7 @@ export class PaymentTypeListComponent implements OnInit {
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "PaymentType"
             })
 			.subscribe(
 				(data: jsondata) => {

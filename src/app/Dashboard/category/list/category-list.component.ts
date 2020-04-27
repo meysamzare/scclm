@@ -164,6 +164,8 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
                     tableName: 'Category',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Category",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -201,6 +203,8 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
             object: {
                 catId: catId
             },
+            table: "Category",
+            tableObjectIds: [catId]
         }).subscribe(
             (data: jsondata) => {
                 if (data.success) {
@@ -240,6 +244,7 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "Category"
             })
             .subscribe(
                 (data: jsondata) => {

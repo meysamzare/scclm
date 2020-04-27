@@ -102,7 +102,9 @@ export class StdChangeStateSheetComponent implements OnInit {
                     oldObject: {
                         StudentIds: ids,
                         OldState: this.nowState
-                    }
+                    },
+                    table: "Student",
+                    tableObjectIds: ids
                 })
                 .subscribe(
                     (data: jsondata) => {
@@ -135,7 +137,9 @@ export class StdChangeStateSheetComponent implements OnInit {
                 oldObject: {
                     id: this.Id,
                     OldStdType: this.nowState
-                }
+                },
+                table: "Student",
+                tableObjectIds: [this.Id]
             }).subscribe(data => {
                 if (data.success) {
                     this.message.showSuccessAlert();
@@ -168,7 +172,9 @@ export class StdChangeStateSheetComponent implements OnInit {
                         id: this.Id,
                         type: this.Type,
                         OldState: this.nowState
-                    }
+                    },
+                    table: "Student",
+                    tableObjectIds: [this.Id]
                 })
                 .subscribe(
                     (data: jsondata) => {

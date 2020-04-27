@@ -63,6 +63,8 @@ export class NotificationSeenModalComponent implements OnInit {
             tableName: 'NotificationSeen',
             logSource: 'dashboard',
             object: obj,
+            table: "Notification",
+            tableObjectIds: [this.data.id]
         }).subscribe(data => {
             if (data.success) {
                 this.notificationSeens = data.data;

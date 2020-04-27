@@ -125,6 +125,8 @@ export class ClassListComponent {
                     tableName: 'Class',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Class",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -197,6 +199,7 @@ export class ClassListComponent {
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "Class"
             })
             .subscribe(
                 (data: jsondata) => {

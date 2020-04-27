@@ -122,10 +122,12 @@ export class StdPaymentEditComponent implements OnInit, OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'StdPayment',
+                    tableName: 'Edit StdPayment',
                     logSource: 'dashboard',
                     object: this.stdpayment,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "StdPayment",
+                    tableObjectIds: [this.stdpayment.id]
                 }).subscribe(
 					(data: jsondata) => {
 						if (data.success) {
@@ -146,9 +148,11 @@ export class StdPaymentEditComponent implements OnInit, OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName:'StdPayment',
+                    tableName:'Add StdPayment',
                     logSource: 'dashboard',
                     object: this.stdpayment,
+                    table: "StdPayment",
+                    tableObjectIds: [this.stdpayment.id]
                 }).subscribe(
 					(data: jsondata) => {
 						if (data.success) {

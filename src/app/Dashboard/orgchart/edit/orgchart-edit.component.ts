@@ -21,7 +21,7 @@ export class OrgChartEditComponent implements AfterViewChecked, OnDestroy {
 
     orgcharts: IOrgChart[] = [];
 
-    @ViewChild("fm1", {static: false}) public fm1: NgForm;
+    @ViewChild("fm1", { static: false }) public fm1: NgForm;
 
     constructor(
         private route: Router,
@@ -82,7 +82,7 @@ export class OrgChartEditComponent implements AfterViewChecked, OnDestroy {
         );
     }
 
-    
+
     ngOnDestroy(): void {
         let title = "orgchart";
         if (!this.fm1.submitted) {
@@ -98,7 +98,7 @@ export class OrgChartEditComponent implements AfterViewChecked, OnDestroy {
             }
         }
     }
-	
+
 
     ngAfterViewChecked(): void {
         var sanitizerUr = url => {
@@ -108,14 +108,14 @@ export class OrgChartEditComponent implements AfterViewChecked, OnDestroy {
             plugins: ["wholerow", "types"],
             core: {
                 data: {
-                    url: function(node) {
+                    url: function (node) {
                         return node.id === "#"
                             ? sanitizerUr("/api/OrgChart/GetTreeRoot")
                             : sanitizerUr(
-                                  "/api/OrgChart/GetTreeChildren/" + node.id
-                              );
+                                "/api/OrgChart/GetTreeChildren/" + node.id
+                            );
                     },
-                    data: function(node) {
+                    data: function (node) {
                         return { id: node.id };
                     }
                 },
@@ -211,10 +211,12 @@ export class OrgChartEditComponent implements AfterViewChecked, OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'OrgChart',
+                    tableName: 'Edit OrgChart',
                     logSource: 'dashboard',
                     object: this.orgchart,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "OrgChart",
+                    tableObjectIds: [this.orgchart.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -235,9 +237,11 @@ export class OrgChartEditComponent implements AfterViewChecked, OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName:'OrgChart',
+                    tableName: 'Add OrgChart',
                     logSource: 'dashboard',
                     object: this.orgchart,
+                    table: "OrgChart",
+                    tableObjectIds: [this.orgchart.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

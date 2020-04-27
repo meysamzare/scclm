@@ -126,6 +126,8 @@ export class PostListComponent implements OnInit, AfterViewInit {
                     tableName: 'Post',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Post",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -187,6 +189,7 @@ export class PostListComponent implements OnInit, AfterViewInit {
                 tableName: 'Post List',
                 logSource: 'dashboard',
                 object: paramObj,
+                table: "Post"
             })
             .subscribe(
                 (data: jsondata) => {
@@ -231,6 +234,20 @@ export class PostListComponent implements OnInit, AfterViewInit {
         this.auth.post("/api/Post/changeActiveState", {
             postId: postId,
             active: active
+        }, {
+            type: 'Edit',
+            agentId: this.auth.getUserId(),
+            agentType: 'User',
+            agentName: this.auth.getUser().fullName,
+            tableName: 'Change Post Active State',
+            logSource: 'dashboard',
+            object: {
+                postId: postId,
+                active: active
+            },
+            oldObject: null,
+            table: "Post",
+            tableObjectIds: [postId]
         }).subscribe(data => {
             if (data.success) {
                 this.refreshDataSource();

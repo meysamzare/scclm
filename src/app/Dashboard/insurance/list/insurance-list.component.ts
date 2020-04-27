@@ -114,9 +114,11 @@ export class InsuranceListComponent {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'Insurance',
+                    tableName: 'Delete Insurance',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Insurance",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -158,7 +160,7 @@ export class InsuranceListComponent {
                 agentId: this.auth.getUserId(),
                 agentType: 'User',
                 agentName: this.auth.getUser().fullName,
-                tableName: 'Insurance',
+                tableName: 'Get Insurance List',
                 logSource: 'dashboard',
                 object: {
                     sort: this.sort.active,
@@ -167,6 +169,7 @@ export class InsuranceListComponent {
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "Insurance"
             })
             .subscribe(
                 (data: jsondata) => {

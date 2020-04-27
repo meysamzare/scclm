@@ -50,6 +50,7 @@ export class LoginComponent {
                             username: this.user.username,
                             password: this.user.password
                         },
+                        table: "User"
                     });
 				}
 			}
@@ -65,6 +66,7 @@ export class LoginComponent {
                     username: this.user.username,
                     password: this.user.password
                 },
+                table: "User"
             });
 		}
 	}

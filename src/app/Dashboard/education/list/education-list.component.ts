@@ -116,9 +116,11 @@ export class EducationListComponent{
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'Education',
+                    tableName: 'Delete Education(s)',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "Education",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -160,7 +162,7 @@ export class EducationListComponent{
                 agentId: this.auth.getUserId(),
                 agentType: 'User',
                 agentName: this.auth.getUser().fullName,
-                tableName: 'Education List',
+                tableName: 'Get Education List',
                 logSource: 'dashboard',
                 object: {
                     sort: this.sort.active,
@@ -169,6 +171,7 @@ export class EducationListComponent{
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "Education"
             })
             .subscribe(
                 (data: jsondata) => {

@@ -48,7 +48,9 @@ export class TeacherChangePasswordModalComponent implements OnInit {
             oldObject: {
                 id: this.teacherId,
                 oldPass: "Unknown"
-            }
+            },
+            table: "Teacher",
+            tableObjectIds: [this.teacherId]
         }).subscribe(data => {
             if (data.success) {
                 this.dialogRef.close();

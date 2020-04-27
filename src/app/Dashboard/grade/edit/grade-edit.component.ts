@@ -140,10 +140,12 @@ export class GradeEditComponent implements OnDestroy{
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'Grade',
+                    tableName: 'Edit Grade',
                     logSource: 'dashboard',
                     object: this.grade,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "Grade",
+                    tableObjectIds: [this.grade.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -164,9 +166,11 @@ export class GradeEditComponent implements OnDestroy{
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName:'Grade',
+                    tableName:'Add Grade',
                     logSource: 'dashboard',
                     object: this.grade,
+                    table: "Grade",
+                    tableObjectIds: [this.grade.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

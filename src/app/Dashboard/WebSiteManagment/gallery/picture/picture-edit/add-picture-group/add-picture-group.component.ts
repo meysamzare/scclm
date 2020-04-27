@@ -158,6 +158,8 @@ export class AddPictureGroupComponent implements OnInit {
                                 tableName: "Picture Group",
                                 logSource: 'dashboard',
                                 object: obj,
+                                table: this.PAGE_APIURL,
+                                tableObjectIds: [this.PAGE_Data.id]
                             }, data);
 
                             this.route.navigate(["/dashboard/" + this.PAGE_URL]);

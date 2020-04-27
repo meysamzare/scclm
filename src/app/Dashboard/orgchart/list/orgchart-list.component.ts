@@ -128,9 +128,11 @@ export class OrgChartListComponent implements AfterContentInit, OnInit, AfterVie
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'OrgChart',
+                    tableName: 'Delete OrgChart(s)',
                     logSource: 'dashboard',
                     deleteObjects: deleteDatas,
+                    table: "OrgChart",
+                    tableObjectIds: ids
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -174,7 +176,7 @@ export class OrgChartListComponent implements AfterContentInit, OnInit, AfterVie
                 agentId: this.auth.getUserId(),
                 agentType: 'User',
                 agentName: this.auth.getUser().fullName,
-                tableName: 'OrgChart List',
+                tableName: 'Get OrgChart List',
                 logSource: 'dashboard',
                 object: {
                     sort: this.sort.active,
@@ -183,6 +185,7 @@ export class OrgChartListComponent implements AfterContentInit, OnInit, AfterVie
                     pageSize: this.paginator.pageSize,
                     q: this.txtSearch
                 },
+                table: "OrgChart"
             })
             .subscribe(
                 (data: jsondata) => {

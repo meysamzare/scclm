@@ -233,10 +233,12 @@ export class LinkEditComponent implements OnInit, OnDestroy {
                                         agentId: this.auth.getUserId(),
                                         agentType: 'User',
                                         agentName: this.auth.getUser().fullName,
-                                        tableName: this.PAGE_APIURL,
+                                        tableName: `Edit ${this.PAGE_APIURL}`,
                                         logSource: 'dashboard',
                                         object: this.PAGE_Data,
-                                        oldObject: JSON.parse(this.oldData)
+                                        oldObject: JSON.parse(this.oldData),
+                                        table: this.PAGE_APIURL,
+                                        tableObjectIds: [this.PAGE_Data.id]
                                     });
                                 } else {
                                     this.auth.logToServer({
@@ -244,9 +246,11 @@ export class LinkEditComponent implements OnInit, OnDestroy {
                                         agentId: this.auth.getUserId(),
                                         agentType: 'User',
                                         agentName: this.auth.getUser().fullName,
-                                        tableName: this.PAGE_APIURL,
+                                        tableName: `Add ${this.PAGE_APIURL}`,
                                         logSource: 'dashboard',
                                         object: this.PAGE_Data,
+                                        table: this.PAGE_APIURL,
+                                        tableObjectIds: [this.PAGE_Data.id]
                                     });
                                 }
 

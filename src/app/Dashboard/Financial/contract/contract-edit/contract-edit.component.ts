@@ -225,10 +225,12 @@ export class ContractEditComponent implements OnInit, AfterViewInit, OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'Contract',
+                    tableName: 'Edit Contract',
                     logSource: 'dashboard',
                     object: this.contrct,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "Contract",
+                    tableObjectIds: [this.contrct.id]
                 }).subscribe(
 					(data: jsondata) => {
 						if (data.success) {
@@ -249,9 +251,11 @@ export class ContractEditComponent implements OnInit, AfterViewInit, OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName:'Contract',
+                    tableName:'Add Contract',
                     logSource: 'dashboard',
                     object: this.contrct,
+                    table: "Contract",
+                    tableObjectIds: [this.contrct.id]
                 }).subscribe(
 					(data: jsondata) => {
 						if (data.success) {

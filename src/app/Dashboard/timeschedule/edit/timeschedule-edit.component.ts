@@ -156,7 +156,9 @@ export class TimeScheduleEditComponent implements OnDestroy{
                     tableName: 'TimeSchedule',
                     logSource: 'dashboard',
                     object: this.timesch,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "TimeSchedule",
+                    tableObjectIds: [this.timesch.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -180,6 +182,8 @@ export class TimeScheduleEditComponent implements OnDestroy{
                     tableName: 'TimeSchedule',
                     logSource: 'dashboard',
                     object: this.timesch,
+                    table: "TimeSchedule",
+                    tableObjectIds: [this.timesch.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

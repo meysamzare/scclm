@@ -163,7 +163,7 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        
+
     }
 
 
@@ -206,6 +206,8 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
                     itemId: itemId,
                     inputValue: event
                 },
+                table: "Item",
+                tableObjectIds: [itemId]
             })
             .subscribe(
                 (data: jsondata) => {
@@ -259,6 +261,8 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
                             fileFormat: file.type,
                             fileName: file.name
                         },
+                        table: "Item",
+                        tableObjectIds: [itemId]
                     })
                     .subscribe(
                         (data: jsondata) => {
@@ -302,6 +306,8 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
                     itemId: itemId,
                     inputValue: ""
                 },
+                table: "Item",
+                tableObjectIds: [itemId]
             })
             .subscribe(
                 (data: jsondata) => {
@@ -349,6 +355,8 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
                         itemId: itemId,
                         inputValue: inputValue
                     },
+                    table: "Item",
+                    tableObjectIds: [itemId]
                 })
                 .subscribe(
                     (data: jsondata) => {
@@ -454,7 +462,7 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
 
         $("#divtree").on("changed.jstree", (e, data) => {
             console.log("selected");
-            
+
             if (data.node) {
                 if (!this.isEdit) {
                     this.item.categoryId = data.node.id;
@@ -536,10 +544,12 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'Item',
+                    tableName: 'Edit Item',
                     logSource: 'dashboard',
                     object: this.item,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "Item",
+                    tableObjectIds: [this.item.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -564,9 +574,11 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'Item',
+                    tableName: 'Add Item',
                     logSource: 'dashboard',
                     object: this.item,
+                    table: "Item",
+                    tableObjectIds: [this.item.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {

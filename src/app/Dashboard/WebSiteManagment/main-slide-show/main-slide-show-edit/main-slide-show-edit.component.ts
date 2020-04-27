@@ -139,7 +139,9 @@ export class MainSlideShowEditComponent implements OnInit, OnDestroy {
                     tableName: 'MainSlideShow',
                     logSource: 'dashboard',
                     object: this.mainslideshow,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "MainSlideShow",
+                    tableObjectIds: [this.mainslideshow.id]
                 }).subscribe(
 					(data: jsondata) => {
 						if (data.success) {
@@ -163,6 +165,8 @@ export class MainSlideShowEditComponent implements OnInit, OnDestroy {
                     tableName: 'MainSlideShow',
                     logSource: 'dashboard',
                     object: this.mainslideshow,
+                    table: "MainSlideShow",
+                    tableObjectIds: [this.mainslideshow.id]
                 }).subscribe(
 					(data: jsondata) => {
 						if (data.success) {

@@ -144,10 +144,12 @@ export class CourseEditComponent implements OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName: 'Course',
+                    tableName: 'Edit Course',
                     logSource: 'dashboard',
                     object: this.course,
-                    oldObject: JSON.parse(this.oldData)
+                    oldObject: JSON.parse(this.oldData),
+                    table: "Course",
+                    tableObjectIds: [this.course.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
@@ -168,9 +170,11 @@ export class CourseEditComponent implements OnDestroy {
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName:'Course',
+                    tableName:'Add Course',
                     logSource: 'dashboard',
                     object: this.course,
+                    table: "Course",
+                    tableObjectIds: [this.course.id]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
