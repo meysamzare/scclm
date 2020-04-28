@@ -171,6 +171,7 @@ export class PostComponent implements OnInit, OnDestroy {
             tableName: 'Comment (From Index)',
             logSource: 'Index',
             object: this.comment,
+            table: "Comment"
         }).subscribe((data: jsondata) => {
             if (data.success) {
                 this.message.showSuccessAlert("نظر شما ارسال شد و پس از بررسی منتشر خواهد شد");

@@ -524,7 +524,8 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                                     agentName: this.auth.getUser().fullName,
                                     tableName: 'Item Register From Index',
                                     logSource: 'dashboard',
-                                    object: object
+                                    object: object,
+                                    table: "Item"
                                 });
 
                                 Swal.fire({
