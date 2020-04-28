@@ -520,13 +520,13 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                                 this.auth.logToServer({
                                     type: 'Add',
                                     agentId: this.auth.getUserId(),
-                                    agentType: 'User',
+                                    agentType: 'Other',
                                     agentName: this.auth.getUser().fullName,
                                     tableName: 'Item Register From Index',
-                                    logSource: 'dashboard',
+                                    logSource: 'Index',
                                     object: object,
                                     table: "Item"
-                                });
+                                }, data);
 
                                 Swal.fire({
                                     title: "ثبت داده ها با موفقیت انجام شد",
