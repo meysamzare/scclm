@@ -10,7 +10,7 @@
         "**/*.spec.ts"
     ],
     "angularCompilerOptions": {
-        "enableIvy": false,
+        "enableIvy": true,
         // "fullTemplateTypeCheck": false,
         // "ivyTemplateTypeCheck": false,
     }

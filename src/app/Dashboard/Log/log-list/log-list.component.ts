@@ -304,7 +304,7 @@ export class LogListComponent implements OnInit {
 
     filter$ = new Subject();
 
-    applyFilter(filterValue: string) {
+    applyFilter(filterValue?: string) {
         if (this.dataSource.paginator) {
             this.dataSource.paginator.firstPage();
         }
