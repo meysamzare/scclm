@@ -9,18 +9,6 @@
                     <form #fm1="ngForm" id="fm11">
                         <div class="col-sm-6 b-r">
 
-                            <div class="form-group">
-                                <label>عنوان گزینه</label>
-                                <input type="text" required #name="ngModel" name="name"
-                                    [(ngModel)]="questionoption.name" placeholder="عنوان گزینه" class="form-control">
-                                <div *ngIf="(name.touched || name.dirty) &&
-                                    name.invalid">
-                                    <p *ngIf="name.hasError('required')" class="error">
-                                        وارد کردن عنوان گزینه الزامی است
-                                    </p>
-                                </div>
-                            </div>
-
                             <p>آیا این گزینه صحیح است؟</p>
                             <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="questionoption.isTrue">صحیح
                             </mat-checkbox>
@@ -41,6 +29,20 @@
                             </div>
 
                         </div>
+                        <br>
+                        <br>
+
+                        <div class="col-lg-12">
+                            <label>عنوان گزینه</label>
+                            <ckeditor name="qtitle" #questionTitle="ngModel" [(ngModel)]="questionoption.name" required>
+                            </ckeditor>
+                            <div *ngIf="(questionTitle.touched || questionTitle.dirty) && questionTitle.invalid">
+                                <p *ngIf="questionTitle.hasError('required')" class="error">
+                                    وارد کردن عنوان گزینه الزامی است
+                                </p>
+                            </div>
+                        </div>
+
                         <br>
                         <br>
                         <div class="col-md-12">

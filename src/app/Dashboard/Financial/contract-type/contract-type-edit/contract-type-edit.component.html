@@ -58,9 +58,15 @@
 
                                 <button (click)="addCommend('{date}')" mat-menu-item>تاریخ پرینت قرارداد </button>
                             </mat-menu>
+
                             
-                            <ckeditor [editor]="Editor" name="content" [(ngModel)]="contrcttype.content" [config]="config">
+                            <ckeditor name="content" required #questionTitle="ngModel" [(ngModel)]="contrcttype.content">
                             </ckeditor>
+                            <div *ngIf="(questionTitle.touched || questionTitle.dirty) && questionTitle.invalid">
+                                <p *ngIf="questionTitle.hasError('required')" class="error">
+                                    وارد کردن متن قرارداد الزامی است
+                                </p>
+                            </div>
                         </div>
 
 

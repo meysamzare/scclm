@@ -129,8 +129,7 @@
                                 <div class="col-lg-12">
                                     <div class="form-group">
                                         <label>توضیحات {{ PAGE_TITLE }}</label>
-                                        <ckeditor [editor]="Editor" name="desc" [(ngModel)]="PAGE_Data.desc"
-                                            [config]="config">
+                                        <ckeditor name="desc" [(ngModel)]="PAGE_Data.desc">
                                         </ckeditor>
                                     </div>
                                 </div>

@@ -182,13 +182,14 @@ import { LogListComponent } from '../Dashboard/Log/log-list/log-list.component';
 import { ViewLogDescComponent } from '../Dashboard/Log/view-log-desc/view-log-desc.component';
 import { NotificationSeenModalComponent } from '../Dashboard/notification/notification-list/notification-seen-modal/notification-seen-modal.component';
 import { ExamDetailsComponent } from '../Dashboard/home/exam-details/exam-details.component';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { ExamAnalizeStdtypeComponent } from '../Dashboard/chart-report/exam-analize-stdtype/exam-analize-stdtype.component';
 import { WorkbookEditComponent } from '../Dashboard/workbook/workbook-edit/workbook-edit.component';
 import { WorkbookListComponent } from '../Dashboard/workbook/workbook-list/workbook-list.component';
 import { WorkbookReportByClassComponent } from '../Dashboard/chart-report/workbook-report-by-class/workbook-report-by-class.component';
 import { WorkbookComparisonComponent } from '../Dashboard/chart-report/workbook-comparison/workbook-comparison.component';
 import { TreeComponent, TreeDialogComponent } from '../shared/components/tree/tree.component';
+
+import { CKEditorModule } from 'ckeditor4-angular';
 
 @NgModule({
     imports: [
