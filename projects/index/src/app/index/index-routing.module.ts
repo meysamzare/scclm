@@ -36,7 +36,10 @@ const routes: Routes = [
                     },
                     {
                         path: ":id",
-                        component: PostShortcutComponent
+                        component: PostShortcutComponent,
+                        data: {
+                            type: 0
+                        }
                     }
                 ]
 
@@ -82,6 +85,13 @@ const routes: Routes = [
                     {
                         path: ":id/:title",
                         component: ProductComponent
+                    },
+                    {
+                        path: ":id",
+                        component: PostShortcutComponent,
+                        data: {
+                            type: 2
+                        }
                     }
                 ]
             },
@@ -99,6 +109,13 @@ const routes: Routes = [
                     {
                         path: ":id/:title",
                         component: ViewVirtualTeachingComponent
+                    },
+                    {
+                        path: ":id",
+                        component: PostShortcutComponent,
+                        data: {
+                            type: 1
+                        }
                     }
                 ]
             }

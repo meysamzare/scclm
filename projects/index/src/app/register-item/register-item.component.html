@@ -7,11 +7,11 @@
                     style="width: 100%; border-radius: 10px;box-shadow: 2px 3px 12px black; margin-bottom: 15px;"
                     [src]="auth.getFileUrl(cat.headerPicUrl)">
 
-                <h4 class="margin-top-10" style="color: green;">
+                <h4 class="margin-top-10" style="color: green; white-space: pre-line;">
                     {{ cat.desc }}
                 </h4>
                 <div style="text-align: left;">
-                    <small style="font-size: 13px;">مهلت ثبت نام تا {{ cat.dateExpireString }}</small>
+                    <small style="font-size: 13px;">مهلت {{ cat.btnTitle ? cat.btnTitle : "ثبت نام" }} تا {{ cat.dateExpireString }}</small>
                 </div>
             </div>
             <div class="col-lg-2"></div>
@@ -33,20 +33,36 @@
 
                         <div class="bordered" *ngIf="canShowUnit(unit.id)">
 
-                            <div class="form-group" *ngFor="let i of getAttrsForUnit(unit.id)">
-                                <label *ngIf="i.attrTypeInt != 4">{{i.title}}</label>
+                            <div class="form-group" *ngFor="let i of getAttrsForUnit(unit.id); index as index"
+                                [style.margin-top.px]="index == 0 ? 0 : 35">
+                                <div class="row" style="flex-flow: row;">
+                                    <div class="col-lg-10" style="margin: auto;">
+                                        <label *ngIf="i.attrTypeInt != 4">
+                                            <b>
+                                                {{i.title}}
+                                            </b>
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2" style="text-align: left;">
+                                        <button [disabled]="!group.controls['p' + getIndexForAttr(i.id)].dirty"
+                                            mat-icon-button [matTooltip]="'پاکسازی'" style="outline: none;"
+                                            (click)="clearItemAttr(i.id)">
+                                            <mat-icon>close</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
 
                                 <input *ngIf="i.attrTypeInt == 1"
                                     (blur)="i.isUniq ? checkForUniqValue($event, i.id) : null"
                                     [formControlName]="'p' + getIndexForAttr(i.id)" type="text" class="form-control"
                                     placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
-                                    (change)="setItemAttr($event, i.id)" />
+                                    (input)="setItemAttr($event, i.id)" />
 
                                 <input *ngIf="i.attrTypeInt == 2"
                                     (blur)="i.isUniq ? checkForUniqValue($event, i.id) : null"
                                     [formControlName]="'p' + getIndexForAttr(i.id)" type="number" class="form-control"
                                     placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
-                                    (change)="setItemAttr($event, i.id)" />
+                                    (input)="setItemAttr($event, i.id)" />
 
                                 <mat-form-field class="example-full-width" *ngIf="i.attrTypeInt == 3">
                                     <input matInput [formControlName]="'p' + getIndexForAttr(i.id)" readonly
@@ -62,7 +78,7 @@
                                     (change)="setItemAttr($event, i.id)">{{i.title}}</mat-checkbox>
 
                                 <input *ngIf="i.attrTypeInt == 5" [formControlName]="'p' + getIndexForAttr(i.id)"
-                                    class="form-control" type="password" (change)="setItemAttr($event, i.id)"
+                                    class="form-control" type="password" (input)="setItemAttr($event, i.id)"
                                     placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}" />
 
                                 <mat-form-field *ngIf="i.attrTypeInt == 6">
@@ -73,6 +89,13 @@
                                         </mat-option>
                                     </mat-select>
                                 </mat-form-field>
+
+                                <mat-radio-group *ngIf="i.attrTypeInt == 10" class="radio-group"
+                                    [formControlName]="'p' + getIndexForAttr(i.id)"
+                                    (change)="setItemAttrforselect($event.value, i.id)">
+                                    <mat-radio-button class="radio-button" *ngFor="let v of getShiftedItem(i.values)"
+                                        [value]="v">{{v}}</mat-radio-button>
+                                </mat-radio-group>
 
                                 <input type="file" *ngIf="i.attrTypeInt == 7"
                                     [formControlName]="'p' + getIndexForAttr(i.id)" accept="image/x-png,image/jpeg"
@@ -87,7 +110,12 @@
                                     placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
                                     (change)="setItemAttr($event, i.id)"></textarea>
 
-
+                                <ng-container *ngIf="i.attrTypeInt == 10">
+                                    <p *ngIf="group.get('p'+getIndexForAttr(i.id)).hasError('required') || group.get('p'+getIndexForAttr(i.id)).invalid"
+                                        class="error">
+                                        وارد کردن {{i.title}} الزامی است
+                                    </p>
+                                </ng-container>
 
                                 <p *ngIf="group.get('p'+getIndexForAttr(i.id)).hasError('required') && i.attrTypeInt != 4 && (group.get('p'+getIndexForAttr(i.id)).touched || group.get('p'+getIndexForAttr(i.id)).dirty)  && group.get('p'+getIndexForAttr(i.id)).invalid"
                                     class="error">
@@ -103,7 +131,7 @@
                                 </p>
 
                                 <div class="row" *ngIf="canShowDesc(i.desc)">
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-1">
                                         <image-icon icon="info" [height]="15"></image-icon>
                                     </div>
                                     <div class="col-lg-10">
@@ -119,13 +147,32 @@
 
                     <div class="col-md-12 margin-top-10">
                         <div class="row">
+                            <div class="col-lg-12">
+                                <div style="direction: ltr; text-align: center;" *ngIf="isUploading">
+
+                                    <progressbar max="100" [value]="uploaded_PS" type="success" [striped]="true"
+                                        [animate]="true">
+                                        <b>{{ uploaded_MB.toFixed(2) }} / {{ fileSize_MB.toFixed(2) }} (mb)</b>
+                                    </progressbar>
+                                    <p>
+                                        <b tooltip="{{ uploaded_MB.toFixed(2) }} / {{ fileSize_MB.toFixed(2) }} (mb)">
+                                            {{ uploaded_PS.toFixed(3) }} %
+                                        </b>
+                                    </p>
+                                    <p>
+                                        در حال بارگذاری، لطفا شکیبا باشید
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-lg-3">
-                                <button type="button" routerLink="/"
+                                <button type="button" routerLink="/" [disabled]="isUploading"
                                     class="btn btn-block btn-outline-danger">انصراف</button>
                             </div>
                             <div class="col-lg-9">
                                 <button type="button" class="btn btn-block btn-outline-success"
-                                    [disabled]="group.invalid || attrUniqList.length != 0 || reqfilesAttrint.length != 0 || disableButton"
+                                    [disabled]="group.invalid || attrUniqList.length != 0 || reqfilesAttrint.length != 0 || isUploading"
                                     (click)="sts()">{{ getRegisterBtnTitle() }}</button>
                             </div>
                         </div>

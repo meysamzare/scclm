@@ -66,7 +66,7 @@ export class LoginItemComponent implements OnInit {
 	login() {
 		if (this.fm1.valid) {
             this.auth.post("/api/Item/IsRahCodeExist", { 
-                ahCode: this.rahCode, 
+                rahCode: this.rahCode, 
                 catId: this.catId 
             }, {
                 type: 'View',

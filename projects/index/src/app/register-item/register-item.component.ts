@@ -7,11 +7,15 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService, jsondata } from 'src/app/shared/Auth/auth.service';
 import { MessageService } from 'src/app/shared/services/message.service';
 import { DomSanitizer } from '@angular/platform-browser';
-import { interval } from 'rxjs';
 import Swal from "sweetalert2";
 import { IUnit } from 'src/app/Dashboard/unit/unit';
 import { RegisterItemLoginService } from './login-for-register-item/register-item-login.service';
 import { RegisterItemLicenseService } from './license-for-register-item/register-item-license.service';
+import { HttpRequest, HttpHeaders, HttpEventType, HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/internal/operators/map';
+import { last, catchError } from 'rxjs/operators';
+import { of } from 'rxjs/internal/observable/of';
+import { EMPTY } from 'rxjs/internal/observable/empty';
 
 @Component({
     selector: 'app-register-item',
@@ -60,7 +64,8 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         private message: MessageService,
         private sanitizer: DomSanitizer,
         private loginService: RegisterItemLoginService,
-        private licenseService: RegisterItemLicenseService
+        private licenseService: RegisterItemLicenseService,
+        private http: HttpClient
     ) {
         this.activeRoute.params.subscribe(params => {
             this.catId = params["id"];
@@ -70,37 +75,35 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
 
         if (!this.cat.canShowByDate) {
-            this.message.showWarningAlert(
-                "مهلت ثبت نام به پایان رسیده است",
-                "خطا"
-            );
+            let title = `مهلت ${this.cat.btnTitle ? this.cat.btnTitle : "ثبت نام"} به پایان رسیده است`;
+            this.message.showWarningAlert(title);
             this.router.navigate(["/"]);
-        }
+        } else {
 
+            if (this.cat.authorizeState != CategoryAuthorizeState.none) {
+                if (!this.loginService.isUserAccessToCat(this.catId)) {
+                    this.router.navigate([`/register-item/${this.catId}/login`], { skipLocationChange: true });
+                } else {
+                    var token = this.loginService.getLoginToken(this.catId);
 
-        if (this.cat.authorizeState != CategoryAuthorizeState.none) {
-            if (!this.loginService.isUserAccessToCat(this.catId)) {
-                this.router.navigate([`/register-item/${this.catId}/login`], { skipLocationChange: true });
-            } else {
-                var token = this.loginService.getLoginToken(this.catId);
+                    if (!token) {
+                        this.router.navigate(['/']);
+                    }
 
-                if (!token) {
-                    this.router.navigate(['/']);
+                    this.authorizedFullName = token.userFullName;
+                    this.authorizedUsername = token.username;
+                    this.authorizedType = token.userType;
                 }
-
-                this.authorizedFullName = token.userFullName;
-                this.authorizedUsername = token.username;
-                this.authorizedType = token.userType;
             }
+
+            if (this.cat.haveLicense) {
+                if (!this.licenseService.isUserAcceptTheLicense(this.catId)) {
+                    this.router.navigate([`/register-item/${this.catId}/license`], { skipLocationChange: true });
+                }
+            }
+
         }
 
-        if (this.cat.haveLicense) {
-            if (!this.licenseService.isUserAcceptTheLicense(this.catId)) {
-                this.router.navigate([`/register-item/${this.catId}/license`], { skipLocationChange: true });
-            }
-        }
-
-        
         this.attrs = this.activeRoute.snapshot.data.attrs;
         this.units = this.activeRoute.snapshot.data.units;
 
@@ -170,6 +173,23 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                 (attr.isRequired && attr.attrTypeInt != 4) ? Validators.required : null);
         });
         return new FormGroup(group);
+    }
+
+    clearItemAttr(attrId) {
+        let controlName = `p${this.getIndexForAttr(attrId)}`;
+        this.group.controls[controlName].reset();
+
+        let itemAttr = this.itemAttrs.find(c => c.attributeId == attrId);
+
+        if (itemAttr) {
+            itemAttr.attrubuteValue = "";
+
+
+            let fileObj = this._files.find(c => c.attrId == attrId);
+            if (fileObj) {
+                this._files.splice(this._files.indexOf(fileObj), 1);
+            }
+        }
     }
 
     getIndexForAttr(attrId) {
@@ -319,57 +339,99 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         }
     }
 
+    _files: {
+        file: File,
+        attrId: number
+    }[] = [];
+
     setItemAttrforPic(event, attrId, type) {
-        let reader = new FileReader();
-        var size = type == "file" ? 10 : 1;
-        var sizeText = size == 10 ? "ده مگابایت" : "یک مگابایت";
-        if (event.target.files && event.target.files.length > 0) {
-            let file = event.target.files[0];
-            var fi = this.reqfilesAttrint.find(c => c == attrId);
-            if (file.size / 1024 / 1024 > size) {
-                event.target.value = null;
-                event.target.files = null;
-                if (fi) {
-                    fi = attrId;
-                } else {
-                    var attr = this.attrs.find(c => c.id == attrId);
-                    if (attr.isRequired) {
-                        this.reqfilesAttrint.push(attrId);
-                    }
+        var requiredFileAttr = this.reqfilesAttrint.find(c => c == attrId);
+        const fileIsInvalid = (message) => {
+            event.target.value = null;
+            event.target.files = null;
+            if (requiredFileAttr) {
+                requiredFileAttr = attrId;
+            } else {
+                var attr = this.attrs.find(c => c.id == attrId);
+                if (attr.isRequired) {
+                    this.reqfilesAttrint.push(attrId);
                 }
-                return this.message.showWarningAlert(
-                    "حجم فایل باید کمتر از " + sizeText + " باشد",
-                    "اخطار"
-                );
             }
-            if (fi) {
+            return this.message.showWarningAlert(message);
+        }
+
+
+        let fileObj = this._files.find(c => c.attrId == attrId);
+        if (fileObj) {
+            this._files.splice(this._files.indexOf(fileObj), 1);
+        }
+
+        let attribute = this.attrs.find(c => c.id == attrId);;
+
+        var size = type == "file" ? attribute.maxFileSize : 10;
+        var sizeText = type == "file" ? `${attribute.maxFileSize} مگابایت` : `10 مگابایت`;
+
+        if (event.target.files && event.target.files.length > 0) {
+            let file: File = event.target.files[0];
+
+            let fileExtentions = file.name.split('.');
+
+            if (fileExtentions.length <= 1) {
+                fileIsInvalid("بارگذاری این فایل مجاز نمی باشد!");
+                return;
+            }
+
+            Object.defineProperty(file, 'name', {
+                writable: true,
+                value: `${this.getRandomFileName()}.${fileExtentions.slice(-1)[0]}`
+            });
+
+            if (file.size / 1024 / 1024 > size) {
+                fileIsInvalid("حجم فایل باید کمتر از " + sizeText + " باشد");
+                return;
+            }
+
+            if (requiredFileAttr) {
                 var indexOf = this.reqfilesAttrint.indexOf(attrId, 0);
                 if (indexOf > -1) {
                     this.reqfilesAttrint.splice(indexOf, 1);
                 }
             }
-            reader.readAsDataURL(file);
-            reader.onload = () => {
-                let result = reader.result.toString().split(",")[1];
+            
+            this._files.push({
+                file: file,
+                attrId: attrId
+            });
 
-                var itemAttr = this.itemAttrs.find(
-                    c => c.attributeId == attrId
-                );
+            var itemAttr = this.itemAttrs.find(
+                c => c.attributeId == attrId
+            );
 
-                if (itemAttr) {
-                    itemAttr.attrubuteValue = result;
-                    itemAttr.fileName = file.name;
-                } else {
-                    this.itemAttrs.push({
-                        itemId: 0,
-                        attributeId: attrId,
-                        attrubuteValue: result,
-                        attributeFilePath: "1",
-                        fileName: file.name
-                    });
-                }
-            };
+            let result = "(binery)";
+
+            if (itemAttr) {
+                itemAttr.attrubuteValue = result;
+                itemAttr.fileName = file.name;
+            } else {
+                this.itemAttrs.push({
+                    itemId: 0,
+                    attributeId: attrId,
+                    attrubuteValue: result,
+                    attributeFilePath: "1",
+                    fileName: file.name
+                });
+            }
         }
+    }
+
+    getRandomFileName(filelength = 10): string {
+        let result = "";
+        let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let charactersLength = characters.length;
+        for (let i = 0; i < filelength; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
     }
 
     isFileExist(attrId) {
@@ -380,6 +442,11 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         }
     }
 
+    isUploading = false;
+    fileSize_MB = 0;
+    uploaded_MB = 0;
+    uploaded_PS = 0;
+
     sts() {
         if (
             this.group.valid &&
@@ -387,63 +454,118 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
             this.attrUniqList.length == 0
         ) {
             this.disableButton = true;
-            this.auth
-                .post("/api/Item/SetItemeWithAttrs", {
-                    itemAttrs: this.itemAttrs,
-                    catId: this.catId,
-                    authorizedFullName: this.authorizedFullName,
-                    authorizedUsername: this.authorizedUsername,
-                    authorizedType: this.authorizedType,
-                }, {
-                    type: 'Add',
-                    agentId: this.auth.getUserId(),
-                    agentType: 'User',
-                    agentName: this.auth.getUser().fullName,
-                    tableName: 'Item Register From Index',
-                    logSource: 'dashboard',
-                    object: {
-                        itemAttrs: this.itemAttrs,
-                        catId: this.catId
-                    },
-                })
-                .subscribe(
-                    (data: jsondata) => {
-                        if (data.success) {
-                            if (!data.message) {
-                                data.message = "";
+
+            let object = {
+                itemAttrs: this.itemAttrs,
+                catId: this.catId,
+                authorizedFullName: this.authorizedFullName,
+                authorizedUsername: this.authorizedUsername,
+                authorizedType: this.authorizedType,
+            };
+
+
+            let formData = new FormData();
+
+            formData.append("object", JSON.stringify(object));
+
+            if (this._files.length != 0) {
+                this._files.forEach(fileObj => {
+                    let file = fileObj.file;
+                    formData.append("files", file, file.name);
+                });
+            }
+
+            let url = this.auth.serializeUrl(`/api/Item/SetItemeWithAttrs`);
+
+            let token = this.auth.getToken();
+
+            let request = new HttpRequest('POST', url, formData, {
+                reportProgress: true,
+                headers: new HttpHeaders({
+                    Authorization: `Bearer ${token}`,
+                    "ngsw-bypass": "true"
+                }),
+            });
+
+            this.http.request(request).pipe(
+                map(event => {
+                    switch (event.type) {
+                        case HttpEventType.Sent:
+                            this.isUploading = true;
+                            break;
+                        case HttpEventType.UploadProgress || HttpEventType.DownloadProgress:
+
+                            const percentDone = (100 * event.loaded / event.total);
+
+                            this.uploaded_PS = percentDone;
+
+                            var uploadedSize = event.loaded / 1024 / 1024;
+                            this.uploaded_MB = uploadedSize;
+
+                            this.fileSize_MB = event.total / 1024 / 1024
+
+                            break;
+                        case HttpEventType.Response:
+                            var data: any = event.body;
+
+                            if (!event.ok) {
+                                this.isUploading = false;
                             }
 
-                            Swal.fire({
-                                title: "ثبت نام شما با موفقیت انجام شد",
-                                icon: "success",
-                                text: data.message + " کد رهگیری شما : " + data.type,
-                                confirmButtonText: "کد رهگیری را یادداشت کردم",
-                                showCancelButton: false,
-                                allowOutsideClick: false,
-                                allowEnterKey: false,
-                            }).then(result => {
-                                if (result.value) {
-                                    this.isFromSts = true;
-                                    this.router.navigate(["/"]);
-                                    this.loginService.removeToken(this.catId);
-                                    this.licenseService.removeLicense(this.catId);
+                            if (data.success) {
+                                if (!data.message) {
+                                    data.message = "";
                                 }
-                            })
-                        } else {
-                            this.message.showWarningAlert(
-                                "خطایی روی داده است لطفا با راهبر سیستم تماس حاصل فرمایید",
-                                "خطا"
-                            );
-                            this.message.showMessageforFalseResult(data);
-                        }
-                    },
-                    er => {
-                        this.disableButton = false;
-                        this.auth.handlerError(er);
-                    }, () => {
-                        this.disableButton = false;
+
+                                this.auth.logToServer({
+                                    type: 'Add',
+                                    agentId: this.auth.getUserId(),
+                                    agentType: 'Other',
+                                    agentName: this.auth.getUser().fullName,
+                                    tableName: 'Item Register From Index',
+                                    logSource: 'Index',
+                                    object: object,
+                                    table: "Item"
+                                }, data);
+
+                                Swal.fire({
+                                    title: "ثبت داده ها با موفقیت انجام شد",
+                                    icon: "success",
+                                    text: data.message + " کد رهگیری شما : " + data.type,
+                                    confirmButtonText: "کد رهگیری را یادداشت کردم",
+                                    showCancelButton: false,
+                                    allowOutsideClick: false,
+                                    allowEnterKey: false,
+                                }).then(result => {
+                                    if (result.value) {
+                                        this.isFromSts = true;
+                                        this.router.navigate(["/"]);
+                                        this.loginService.removeToken(this.catId);
+                                        this.licenseService.removeLicense(this.catId);
+                                    }
+                                });
+                            } else {
+                                this.message.showWarningAlert(
+                                    "خطایی روی داده است لطفا با راهبر سیستم تماس حاصل فرمایید",
+                                    "خطا"
+                                );
+                                this.message.showMessageforFalseResult(data);
+                                this.isUploading = false;
+                            }
+                            break;
                     }
-                );
+                }),
+                catchError(() => {
+                    this.message.showWarningAlert(
+                        "خطایی روی داده است لطفا با راهبر سیستم تماس حاصل فرمایید",
+                        "خطا"
+                    );
+                    this.isUploading = false;
+                    return of(EMPTY);
+                }),
+                last()
+            ).subscribe();
+
         } else {
             this.message.showWarningAlert("مقادیر خواسته شده را تکمیل نمایید");
         }

@@ -1,0 +1,23 @@
+.box {
+    padding: 30px !important;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.box:hover {
+    background-color: #80808014;
+}
+
+.middle {
+    align-self: center;
+    text-align: center;
+}
+
+h2 {
+    font-size: 25px;
+    margin-bottom: 5px;
+}
+
+p {
+    opacity: .5;
+}

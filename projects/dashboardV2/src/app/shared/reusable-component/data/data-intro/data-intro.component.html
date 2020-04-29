@@ -1,0 +1,47 @@
+<app-divider [text]="dataTitles"></app-divider>
+
+<div class="columns" style="flex-wrap: wrap;">
+
+    <div class="column is-6" *ngIf="showAdd">
+        <div class="box" [routerLink]="addLink">
+            <div class="columns">
+                <div class="column is-2 middle">
+                    <app-icon [icon]="'plus'" size="3x" [color]="'info'"></app-icon>
+                </div>
+                <div class="column">
+                    <h2>{{ addTitle }}</h2>
+                    <p>{{ getAddDesc() }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="column is-6" *ngIf="showList">
+        <div class="box" [routerLink]="listLink">
+            <div class="columns">
+                <div class="column is-2 middle">
+                    <app-icon [icon]="'list'" size="3x" [color]="'info'"></app-icon>
+                </div>
+                <div class="column">
+                    <h2>{{ listTitle }}</h2>
+                    <p>{{ getListDesc() }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="column is-6" *ngFor="let i of items.toArray()">
+        <div class="box" [routerLink]="i.link">
+            <div class="columns">
+                <div class="column is-2 middle">
+                    <app-icon [icon]="i.icon" size="3x" [color]="'info'"></app-icon>
+                </div>
+                <div class="column">
+                    <h2>{{ i.title }}</h2>
+                    <p>{{ i.desc }}</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
