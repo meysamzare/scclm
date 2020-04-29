@@ -90,7 +90,8 @@ export class AuthService {
 
     INDEX_VERSION = "2.6.8 Build 8420";
 
-    PARENTMOBILEAPP_VERSION = "2.9.1 Build 5800";
+    PARENTMOBILEAPP_VERSION = "2.9.3 Build 9700";
+    
     TMA_VERSION = "1.8.6 Build 310";
 
 

@@ -10,6 +10,7 @@ import { ChartDataSets } from 'chart.js';
 import { Label } from 'ng2-charts';
 import { IWorkbook } from 'src/app/Dashboard/workbook/workbook';
 import { IClassBook, getClassBookTypeString, ClassBookType, getClassBookResult } from 'src/app/Dashboard/student/class-book/class-book';
+import { IExamType } from 'src/app/Dashboard/Exam/examtype/examtype';
 
 @Component({
     selector: 'app-work-book',
@@ -37,13 +38,16 @@ export class WorkBookComponent implements OnInit {
         last: 12
     }
 
-    showByWorkBooks = false;
+    ViewState: "workbook" | "exams" | "examType" = "exams";
 
     isLoading = true;
 
     selectedWorkbook: number = null;
 
     workbooks: IWorkbook[] = [];
+
+    examTypes: IExamType[] = [];
+    selectedExamType: number = null;
 
     constructor(
         private message: MessageService,
@@ -61,6 +65,7 @@ export class WorkBookComponent implements OnInit {
             tableName: 'Entring WorkBook Page',
             logSource: 'PMA',
             object: null,
+            table: "Workbook"
         }).subscribe(data => {
             if (data.success) {
                 this.registredGrades = data.data;
@@ -83,7 +88,117 @@ export class WorkBookComponent implements OnInit {
         }, er => {
             this.stdAuth.auth.handlerError(er);
         });
+
+        this.stdAuth.auth.post("/api/ExamType/getAll").subscribe(data => {
+            if (data.success) {
+                this.examTypes = data.data;
+            } else {
+                this.message.showMessageforFalseResult(data);
+            }
+        }, er => {
+            this.stdAuth.auth.handlerError(er);
+        });
     }
+
+
+    studentEducationDatas: ChartDataSets[] = [
+        { data: [], label: "نمره دانش آموز" },
+        { data: [], label: "میانگین کلاس" }
+    ];
+    studentEducationDatasLabel: Label[] = [];
+
+    courseChartDataSort: "max" | "min" = "max";
+
+    updateStudentEducationChartData(examsIds?: number[]) {
+
+        this.studentEducationDatas = [
+            { data: [], label: "نمره دانش آموز" },
+            { data: [], label: "میانگین کلاس" }
+        ];
+        this.studentEducationDatasLabel = [];
+
+        if (this.selectedExamType) {
+
+            var examByType = this.examsByGrade.filter(c => c.examTypeId == this.selectedExamType);
+
+            if (examsIds) {
+
+                examByType = [];
+
+                examsIds.forEach(examId => {
+                    var exam = this.examsByGrade.find(c => c.id == examId);
+
+                    if (exam) {
+                        examByType.push(exam);
+                    }
+
+                });
+            } else {
+                // this.endDate = null;
+                // this.startDate = null;
+            }
+
+            var courses: courseChartData_StudentEducation[] = [];
+
+            examByType.forEach(exam => {
+                var examCourseId = exam.courseId;
+
+                var course = courses.find(c => c.courseId == examCourseId);
+                if (this.getExamScoreForExam(exam.id)) {
+                    if (course) {
+                        course.count += 1;
+                    } else {
+                        courses.push({
+                            courseId: examCourseId,
+                            courseName: this.coursesByGrade.find(c => c.id == examCourseId).name,
+                            count: 1
+                        });
+                    }
+                }
+            });
+
+            let courseChartTemp: courseChartDataTemp[] = [];
+
+            courses.forEach(course => {
+
+                var sumStudentScore: number = 0;
+                var sumAvg: number = 0;
+
+                examByType.filter(c => c.courseId == course.courseId).forEach(exam => {
+                    if (this.getExamScoreForExam(exam.id)) {
+                        sumStudentScore += this.getExamScoreForExam(exam.id).score;
+                        sumAvg += exam.avgInExam;
+                    }
+                });
+
+                var studentEducationDatas_AVG = (sumStudentScore / course.count);
+                var sumAvg_AVG = (sumAvg / course.count);
+
+                courseChartTemp.push({
+                    stdScore: studentEducationDatas_AVG,
+                    classAvg: sumAvg_AVG,
+                    lable: course.courseName
+                });
+
+            });
+
+            courseChartTemp.sort((a, b) => {
+                if (a.stdScore > b.stdScore) {
+                    return this.courseChartDataSort == "min" ? 1 : -1;
+                } else {
+                    return this.courseChartDataSort == "min" ? -1 : 1;
+                }
+            });
+
+            courseChartTemp.forEach(temp => {
+                this.studentEducationDatas[0].data.push(temp.stdScore);
+                this.studentEducationDatas[1].data.push(temp.classAvg);
+
+                this.studentEducationDatasLabel.push(temp.lable);
+            });
+        }
+    }
+
 
     totalAvgTitle: string = "معدل کل";
     coursesHeaders: string[] = [];
@@ -121,6 +236,7 @@ export class WorkBookComponent implements OnInit {
                     classId: this.stdAuth.getActiveStdClassMng().classId,
                     workbookId: this.selectedWorkbook
                 },
+                table: "Workbook"
             }).subscribe(data => {
                 if (data.success) {
 
@@ -229,6 +345,7 @@ export class WorkBookComponent implements OnInit {
                                     studentId: this.stdId,
                                     gradeId: this.selectedGrade
                                 },
+                                table: "Workbook"
                             }).subscribe(data => {
                                 if (data.success) {
                                     this.examScoreByGrade = data.data;
@@ -389,4 +506,17 @@ export class WorkBookComponent implements OnInit {
 
 
 
+}
+
+interface courseChartData_StudentEducation {
+    courseId: number;
+    courseName: string;
+    count: number;
+}
+
+class courseChartDataTemp {
+    stdScore: number;
+    classAvg: number;
+
+    lable: string;
 }

@@ -17,13 +17,17 @@
 
 <div class="form-group">
     <div class="al-center">
-        <ng-switchery [disabled]="coursesByGrade.length == 0 || isLoading" [(ngModel)]="showByWorkBooks"
-            [offLabel]="'کارنامه'" [onLabel]="'دروس'"></ng-switchery>
+        <mat-button-toggle-group [disabled]="coursesByGrade.length == 0 || isLoading" name="viewState"
+            [(ngModel)]="ViewState">
+            <mat-button-toggle value="exams">دروس</mat-button-toggle>
+            <mat-button-toggle value="workbook">کارنامه</mat-button-toggle>
+            <mat-button-toggle value="examType">وضعیت تحصیلی</mat-button-toggle>
+        </mat-button-toggle-group>
     </div>
 </div>
 
 
-<div class="form-group" *ngIf="!showByWorkBooks">
+<div class="form-group" *ngIf="ViewState == 'exams'">
     <label [class.disabled]="!selectedGrade">
         <image-icon icon="course"></image-icon>
         انتخاب درس
@@ -37,7 +41,7 @@
     </select>
 </div>
 
-<div class="form-group" *ngIf="showByWorkBooks">
+<div class="form-group" *ngIf="ViewState == 'workbook'">
     <label [class.disabled]="!selectedGrade">
         <image-icon icon="course"></image-icon>
         انتخاب کارنامه
@@ -50,7 +54,20 @@
     </select>
 </div>
 
-<div *ngIf="!showByWorkBooks">
+<div class="form-group" *ngIf="ViewState == 'examType'">
+    <label [class.disabled]="!selectedGrade">
+        <image-icon icon="course"></image-icon>
+        انتخاب نوع آزمون
+    </label>
+    <select class="form-control" [disabled]="coursesByGrade.length == 0 || isLoading" name="examTypes"
+        [(ngModel)]="selectedExamType" (change)="updateStudentEducationChartData()">
+        <option [value]="null">---</option>
+
+        <option *ngFor="let i of examTypes" [value]="i.id">{{ i.name }}</option>
+    </select>
+</div>
+
+<div *ngIf="ViewState == 'exams'">
 
     <ng-container *ngIf="classBookForSelectedCourse.length != 0">
         <b>دفتر کلاسی</b>
@@ -221,7 +238,7 @@
     </div>
 </div>
 
-<div *ngIf="showByWorkBooks && selectedGrade && selectedWorkbook && !isLoading">
+<div *ngIf="ViewState == 'workbook' && selectedGrade && selectedWorkbook && !isLoading">
     <ng-container *ngIf="coursesHeaders.length != 0 ">
 
 
@@ -280,4 +297,24 @@
             <b>نمره ای برای این کارنامه ثبت نشده است</b>
         </div>
     </ng-container>
+</div>
+
+<div *ngIf="ViewState == 'examType' && selectedExamType">
+    <div class="row">
+        <div class="col-sm-12 al-center">
+            <p>مرتب سازی نمره</p>
+            <mat-button-toggle-group name="sort" [(ngModel)]="courseChartDataSort"
+                (ngModelChange)="updateStudentEducationChartData()">
+                <mat-button-toggle value="min">کمتر به بیشتر</mat-button-toggle>
+                <mat-button-toggle value="max">بیشتر به کمتر</mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+    </div>
+    <div class="row margin-top-10">
+        <div class="col-sm-12">
+            <canvas *ngIf="studentEducationDatas[0].data.length != 0" width="300" height="300" baseChart
+                [datasets]="studentEducationDatas" [labels]="studentEducationDatasLabel" [chartType]="'bar'">
+            </canvas>
+        </div>
+    </div>
 </div>
