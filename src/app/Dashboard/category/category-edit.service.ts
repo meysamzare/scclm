@@ -21,12 +21,13 @@ export class CategoryEditService implements Resolve<any>{
 
         if (id) {
 
-            let title = "category";
-            if (await this.auth.draft.isAnyDraft(title)) {
-                return JSON.parse((await this.auth.draft.getDraft(title)).value);
-            }
-
             if (id == 0) {
+
+                let title = "category";
+                if (await this.auth.draft.isAnyDraft(title)) {
+                    return JSON.parse((await this.auth.draft.getDraft(title)).value);
+                }
+
                 return of(new ICategory()).toPromise();
             }
 

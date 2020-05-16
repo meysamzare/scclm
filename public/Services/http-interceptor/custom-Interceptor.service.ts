@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { tap } from "rxjs/operators";
+import { tap, timeout } from "rxjs/operators";
 import {
     HttpRequest,
     HttpHandler,
@@ -31,6 +31,7 @@ export class CustomInterceptor implements HttpInterceptor {
         // });
         
         return next.handle(request).pipe(
+            timeout(70000),
             tap(
                 event => {
                     

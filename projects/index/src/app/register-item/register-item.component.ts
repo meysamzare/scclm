@@ -16,6 +16,7 @@ import { map } from 'rxjs/internal/operators/map';
 import { last, catchError } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
 import { EMPTY } from 'rxjs/internal/observable/empty';
+import { IAttributeOption } from 'src/app/Dashboard/attribute/attribute-option';
 
 @Component({
     selector: 'app-register-item',
@@ -54,8 +55,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     authorizedUsername: string = "---";
     authorizedType: CategoryAuthorizeState = CategoryAuthorizeState.none;
 
-    ngOnInit() { }
-
+    catDesc = null;
 
     constructor(
         private router: Router,
@@ -104,6 +104,8 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
         }
 
+        this.catDesc = this.sanitizer.bypassSecurityTrustHtml(this.cat.desc);
+
         this.attrs = this.activeRoute.snapshot.data.attrs;
         this.units = this.activeRoute.snapshot.data.units;
 
@@ -144,6 +146,8 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         // });
     }
 
+    ngOnInit() { }
+
     getAttrsForUnit(unitId) {
         return this.attrs.filter(c => c.unitId == unitId);
     }
@@ -159,7 +163,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     ngOnDestroy(): void {
-        // this.interval1.unsubscribe();
+        this.licenseService.removeLicense(this.catId);
     }
     ngAfterViewInit(): void {
         window.scroll(0, 0);
@@ -272,10 +276,10 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         }
     }
 
-    getShiftedItem(items: string) {
-        var a = items.substring(1);
+    getShiftedItem(attr: IAttr) {
+        let options: IAttributeOption[] = (attr as any).attributeOptions;
 
-        return a.split(",");
+        return options;
     }
 
     setItemAttrforselect(event, attrId) {

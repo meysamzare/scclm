@@ -10,6 +10,7 @@ import { getPostTypeString } from "../../WebSiteManagment/post/post";
 import { IAttr } from "../../attribute/attribute";
 import { IUnit } from "../../unit/unit";
 import Swal from "sweetalert2";
+import { IAttributeOption } from "../../attribute/attribute-option";
 
 declare var $: any;
 // import * as $ from 'jquery';
@@ -58,6 +59,9 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
     @ViewChild("d2", { static: false }) public d2;
     @ViewChild("d3", { static: false }) public d3;
 
+    Categories: ICategory[] = [];
+    
+
     constructor(
         private route: Router,
         private activeRoute: ActivatedRoute,
@@ -65,6 +69,14 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
         public auth: AuthService,
         private sanitizer: DomSanitizer
     ) {
+        this.auth.post("/api/Category/GetAll").subscribe((data: jsondata) => {
+            if (data.success) {
+                this.Categories = data.data;
+            } else {
+                this.message.showMessageforFalseResult(data);
+            }
+        });
+        
         this.activeRoute.params.subscribe(params => {
 
             this.activeRoute.data.subscribe(data => {
@@ -91,7 +103,6 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
                 this.Title = "افزودن نمون برگ";
                 this.btnTitle = "افزودن";
                 this.isEdit = false;
-                this.clearSelection();
             } else {
                 var idd = Number.parseInt(id);
                 if (Number.isInteger(idd)) {
@@ -105,19 +116,6 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
                 }
             }
 
-            $("#divtree").jstree("deselect_all");
-            $("#divtree").jstree("refresh");
-            $("#divtree").jstree("open_all");
-            $("#divtree").on("load_node.jstree", (e, n) => {
-                if (n.node.id == this.category.parentId) {
-                    $("#divtree").jstree(
-                        "select_node",
-                        "#" + this.category.parentId,
-                        true
-                    );
-                }
-            });
-
             this.auth.post("/api/Role/GetAll", null).subscribe((data: jsondata) => {
                 if (data.success) {
                     this.roles = data.data;
@@ -128,42 +126,16 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
         });
     }
 
-    public changeStatus(node_id, changeTo) {
-        var node = $("#divtree")
-            .jstree(true)
-            .get_node(node_id);
-        if (changeTo === "enable") {
-            $("#divtree")
-                .jstree()
-                .enable_node(node);
-            if (node.children) {
-                node.children.forEach(function (child_id) {
-                    this.changeStatus(child_id, changeTo);
-                });
-            }
-        } else {
-            $("#divtree")
-                .jstree(true)
-                .disable_node(node);
-
-            if (node.children) {
-                node.children.forEach(function (child_id) {
-                    this.changeStatus(child_id, changeTo);
-                });
-            }
-        }
-    }
     openc(picker1) {
         picker1.open();
     }
 
 
-    getShiftedItem(items: string) {
-        var a = items.substring(1);
+    getShiftedItem(attr: IAttr) {
+        let options: IAttributeOption[] = (attr as any).attributeOptions || [];
 
-        return a.split(",");
+        return options;
     }
-
 
     getAttrsForUnit(unitId): IAttr[] {
         return this.attributes.filter(c => c.unitId == unitId);
@@ -249,7 +221,7 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
                     this.units = data.data;
 
 
-                    this.auth.post("/api/Attribute/getAttrsForCat", this.category.id).subscribe(
+                    this.auth.post("/api/Attribute/getAttrsForCat", this.activeRoute.snapshot.params["id"]).subscribe(
                         (data: jsondata) => {
                             if (data.success) {
                                 this.attributes = data.data;
@@ -272,82 +244,12 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
     }
 
     ngAfterViewChecked(): void {
-        var sanitizerUr = url => {
-            return this.auth.serializeUrl(url);
-        };
-        $("#divtree").jstree({
-            plugins: ["wholerow", "types"],
-            core: {
-                data: {
-                    url: function (node) {
-                        return node.id === "#"
-                            ? sanitizerUr("/api/Category/GetTreeRoot")
-                            : sanitizerUr(
-                                "/api/Category/GetTreeChildren/" + node.id
-                            );
-                    },
-                    data: function (node) {
-                        return { id: node.id };
-                    }
-                },
-                strings: {
-                    "Loading ...": "لطفا اندکی صبر نمایید"
-                },
-                multiple: false
-            },
-            types: {
-                default: {
-                    icon: "fa fa-folder"
-                }
-            }
-        });
 
-
-        $("#divtree").on("changed.jstree", (e, data) => {
-            if (data.node) {
-                this.category.parentId = data.node.id;
-            }
-        });
-
-        $("#divtree").on("ready.jstree", () => {
-            $("#divtree").jstree("open_all");
-        });
-
-        $("#divtree").on("load_node.jstree", (e, n) => {
-            if (n.node.id == this.category.parentId) {
-                $("#divtree").jstree(
-                    "select_node",
-                    "#" + this.category.parentId,
-                    true
-                );
-            }
-        });
     }
 
 
     ngAfterViewInit(): void {
 
-    }
-
-    clearSelection() {
-        $("#divtree").jstree("deselect_all");
-        this.category.parentId = null;
-    }
-
-    openAllTree() {
-        $("#divtree").jstree("open_all");
-    }
-
-    closeAllTree() {
-        var a = $("#divtree").jstree("close_all");
-    }
-
-    checkForNodeOpen(): boolean {
-        if ($("#divtree li.jstree-open").length) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     setPic(files: File[], type) {

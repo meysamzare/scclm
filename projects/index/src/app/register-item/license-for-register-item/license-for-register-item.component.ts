@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/shared/Auth/auth.service';
 import { ICategory } from 'src/app/Dashboard/category/category';
 import { RegisterItemLicenseService } from './register-item-license.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
     selector: 'app-license-for-register-item',
@@ -15,17 +16,22 @@ export class LicenseForRegisterItemComponent implements OnInit {
 
     cat: ICategory;
 
+    catLicense = null;
+
     constructor(
         private router: Router,
         private activeRoute: ActivatedRoute,
         public auth: AuthService,
-        private licenseService: RegisterItemLicenseService
+        private licenseService: RegisterItemLicenseService,
+        private sanitizer: DomSanitizer,
     ) {
         this.activeRoute.params.subscribe(params => {
             this.catId = params["id"];
         });
 
         this.cat = this.activeRoute.snapshot.data.cat;
+
+        this.catLicense = this.sanitizer.bypassSecurityTrustHtml(this.cat.license);
      }
 
     ngOnInit() {

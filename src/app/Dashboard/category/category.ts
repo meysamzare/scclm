@@ -21,7 +21,7 @@ export class ICategory {
 
     isActive: boolean;
 
-    authorizeState: CategoryAuthorizeState;
+    authorizeState: CategoryAuthorizeState = CategoryAuthorizeState.none;
 
     license: string;
     haveLicense: boolean = false;

@@ -86,9 +86,9 @@ export class AuthService {
 
 
 
-    DASHBOARD_VERSION = "0.9.9.9.0 Build 5290";
+    DASHBOARD_VERSION = "0.9.9.9.2 Build 357";
 
-    INDEX_VERSION = "2.6.8 Build 8420";
+    INDEX_VERSION = "2.7.2 Build 2500";
 
     PARENTMOBILEAPP_VERSION = "2.9.3 Build 9700";
     

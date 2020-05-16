@@ -138,10 +138,8 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
                                 this.loadItemAttr = false;
                             }
                         );
-
-                    if (this.data.attrs) {
-                        this.attrs = this.data.attrs;
-                    }
+                            
+                        this.getItemAttr(this.item.categoryId);
 
                     // this.getItemAttr(this.item.categoryId);
                 } else {

@@ -8,6 +8,7 @@ export class IAttr {
     gId;
 
     attrTypeInt: number = null;
+    attrType = 1;
 
     maxFileSize: number;
 
@@ -15,14 +16,14 @@ export class IAttr {
 
     isUniq: boolean;
 
-    orderInt: number;
+    orderInt: number = 1;
 
     categoryId: number = null;
 
     unitId: number = null;
-    
+
     placeholder: string;
-    isRequired: boolean;
+    isRequired: boolean = true;
 
     isMeliCode: boolean;
 
@@ -36,10 +37,15 @@ export class IAttr {
 
     values: string = "";
 
+    haveAnyOption = false;
+    haveAnyTrueOption = false;
+
+    score: number = 1;
+
 
     isInClient: boolean = true;
     isInShowInfo: boolean = false;
     isInSearch: boolean = false;
 
-    orderInInfo: number;
+    orderInInfo: number = 0;
 }

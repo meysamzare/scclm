@@ -11,6 +11,10 @@ import { MatChipInputEvent } from '@angular/material';
 import { ITags } from '../../item/tags';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { Location } from '@angular/common';
+import { ICategory } from '../../category/category';
+import { IAttributeOption } from '../attribute-option';
+import Swal from "sweetalert2";
+import { finalize } from 'rxjs/internal/operators/finalize';
 
 declare var $: any;
 
@@ -51,6 +55,10 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
 
     @ViewChild("fm1", { static: false }) public fm1: NgForm;
 
+    Categories: ICategory[] = [];
+
+    attributeOptions: IAttributeOption[] = [];
+
     constructor(
         public route: Router,
         private activeRoute: ActivatedRoute,
@@ -80,13 +88,7 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
                                 this.Title = 'ویرایش فیلد ' + this.attr.title;
                                 this.btnTitle = 'ویرایش';
                                 this.isEdit = true;
-                                if (this.attr.attrTypeInt == 6 || this.attr.attrTypeInt == 10) {
-                                    this.attr.values.split(',').forEach(st => {
-                                        this.values.push({ name: st });
-                                    });
-
-                                    this.values.splice(0, 1);
-                                }
+                                this.refreshAttributeOptions();
                             } else {
                                 this.message.showMessageforFalseResult(data);
                             }
@@ -99,6 +101,14 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
                     this.message.showWarningAlert('invalid Data');
                     this.route.navigate(['/dashboard']);
                 }
+            }
+        });
+
+        this.auth.post("/api/Category/GetAll").subscribe((data: jsondata) => {
+            if (data.success) {
+                this.Categories = data.data;
+            } else {
+                this.message.showMessageforFalseResult(data);
             }
         });
     }
@@ -166,6 +176,208 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
         }
     }
 
+    async addAttributeOption() {
+        let { value } = await Swal.fire({
+            title: 'عنوان گزینه را وارد نمایید',
+            input: 'text',
+            inputValue: '',
+            showCancelButton: true,
+            cancelButtonText: "لغو",
+            confirmButtonText: "ثبت",
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'وارد کردن عنوان گزینه الزامی است'
+                }
+            }
+        });
+
+        if (value) {
+            let title = value;
+
+            let attrOption: IAttributeOption = {
+                attributeId: this.attr.id,
+                id: 0,
+                isTrue: false,
+                title: title
+            };
+
+            if (this.isEdit) {
+                this.auth.post("/api/Attribute/AddAttributeOption", attrOption, {
+                    type: 'Add',
+                    agentId: this.auth.getUserId(),
+                    agentType: 'User',
+                    agentName: this.auth.getUser().fullName,
+                    tableName: 'Add Attribute Option',
+                    logSource: 'dashboard',
+                    object: attrOption,
+                    table: "AttributeOption",
+                    tableObjectIds: [attrOption.id, attrOption.attributeId]
+                }).subscribe(data => {
+                    if (data.success) {
+                        this.auth.message.showSuccessAlert();
+                        this.refreshAttributeOptions();
+                    } else {
+                        this.auth.message.showMessageforFalseResult(data);
+                    }
+                }, er => {
+                    this.auth.handlerError(er);
+                });
+            } else {
+                this.attributeOptions.push(attrOption);
+            }
+        }
+    }
+
+    async removeAttributeOption(option: IAttributeOption) {
+        let attrOption = this.attributeOptions.find(c => c == option);
+
+        if (attrOption) {
+
+            let { value } = await Swal.fire({
+                title: 'آیا از حذف این مورد اطمینان دارید؟',
+                icon: "question",
+                showCancelButton: true,
+                cancelButtonText: "خیر",
+                confirmButtonText: "بله",
+            });
+
+            if (value) {
+                if (this.isEdit) {
+                    this.auth.post("/api/Attribute/RemoveAttributeOption", attrOption, {
+                        type: 'Delete',
+                        agentId: this.auth.getUserId(),
+                        agentType: 'User',
+                        agentName: this.auth.getUser().fullName,
+                        tableName: 'Remove Attribute Option',
+                        logSource: 'dashboard',
+                        deleteObjects: [attrOption],
+                        table: "AttributeOption",
+                        tableObjectIds: [attrOption.id, attrOption.attributeId]
+                    }).subscribe(data => {
+                        if (data.success) {
+                            this.auth.message.showSuccessAlert("با موفقیت حذف شد");
+                            this.attributeOptions.splice(this.attributeOptions.indexOf(attrOption), 1);
+                        } else {
+                            this.auth.message.showMessageforFalseResult(data);
+                        }
+                    }, er => {
+                        this.auth.handlerError(er);
+                    });
+                } else {
+                    this.attributeOptions.splice(this.attributeOptions.indexOf(attrOption), 1);
+                }
+            }
+        }
+    }
+
+    async editAttributeOption(option: IAttributeOption) {
+        let attrOption = this.attributeOptions.find(c => c == option);
+
+        let { value } = await Swal.fire({
+            title: 'عنوان گزینه را وارد نمایید',
+            input: 'text',
+            inputValue: option.title,
+            showCancelButton: true,
+            cancelButtonText: "لغو",
+            confirmButtonText: "ثبت",
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'وارد کردن عنوان گزینه الزامی است'
+                }
+            }
+        });
+
+
+        if (value) {
+
+            attrOption.title = value;
+
+            if (this.isEdit) {
+                this.auth.post("/api/Attribute/EditAttributeOption", attrOption, {
+                    type: 'Edit',
+                    agentId: this.auth.getUserId(),
+                    agentType: 'User',
+                    agentName: this.auth.getUser().fullName,
+                    tableName: 'Edit Attribute Option',
+                    logSource: 'dashboard',
+                    object: attrOption,
+                    oldObject: option,
+                    table: "AttributeOption",
+                    tableObjectIds: [attrOption.id, attrOption.attributeId]
+                }).subscribe(data => {
+                    if (data.success) {
+                        this.auth.message.showSuccessAlert("با موفقیت حذف شد");
+                        this.refreshAttributeOptions();
+                    } else {
+                        this.auth.message.showMessageforFalseResult(data);
+                        attrOption.title = option.title;
+                    }
+                }, er => {
+                    this.auth.handlerError(er);
+                    attrOption.title = option.title;
+                });
+            }
+        }
+    }
+
+    async setIsTrueAttributeOption(option: IAttributeOption) {
+        let isTrue = !option.isTrue;
+        let attrOption = this.attributeOptions.find(c => c == option);
+
+        if (this.isEdit) {
+            this.auth.post("/api/Attribute/setTrueOption", option, {
+                type: 'Edit',
+                agentId: this.auth.getUserId(),
+                agentType: 'User',
+                agentName: this.auth.getUser().fullName,
+                tableName: 'Set Attribute True Option',
+                logSource: 'dashboard',
+                object: option,
+                oldObject: option,
+                table: "AttributeOption",
+                tableObjectIds: [attrOption.id, attrOption.attributeId]
+            }).subscribe(data => {
+                if (data.success) {
+                    this.refreshAttributeOptions();
+                } else {
+                    this.auth.message.showMessageforFalseResult(data);
+                }
+            }, er => {
+                this.auth.handlerError(er);
+            });
+        } else {
+            this.attributeOptions.forEach(c => c.isTrue = false);
+            attrOption.isTrue = isTrue;
+        }
+    }
+
+    loadingAttrOptions = false;
+
+    refreshAttributeOptions() {
+        if (this.isEdit) {
+            this.loadingAttrOptions = true;
+            this.auth.post("/api/Attribute/getAttributeOptions", this.attr.id)
+                .pipe(finalize(() => this.loadingAttrOptions = false))
+                .subscribe(data => {
+                    if (data.success) {
+                        this.attributeOptions = data.data;
+                    } else {
+                        this.auth.message.showMessageforFalseResult(data);
+                    }
+                }, er => {
+                    this.auth.handlerError(er);
+                });
+        }
+    }
+
+    isAttributeOptionRequired() {
+        if ((this.attr.attrTypeInt == 6 || this.attr.attrTypeInt == 10) && this.attributeOptions.length == 0) {
+            return true;
+        }
+
+        return false;
+    }
+
     add(event: MatChipInputEvent): void {
         const input = event.input;
         const value = event.value;
@@ -205,22 +417,30 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
 
     sts() {
         if (this.fm1.valid) {
+
+            let options = [];
+
             if (this.attr.attrTypeInt == 6 || this.attr.attrTypeInt == 10) {
-                this.attr.values = '';
-                this.values.forEach(row => {
-                    this.attr.values += ',' + row.name;
-                });
+                options = this.attributeOptions;
             }
 
+            this.attr.attrType = this.attr.attrTypeInt;
+
             if (this.isEdit) {
-                this.auth.post('/api/Attribute/Edit', this.attr, {
+                this.auth.post('/api/Attribute/Edit', {
+                    attr: this.attr,
+                    options: options
+                }, {
                     type: 'Edit',
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
                     tableName: 'Edit Attribute',
                     logSource: 'dashboard',
-                    object: this.attr,
+                    object: {
+                        attr: this.attr,
+                        options: options
+                    },
                     oldObject: JSON.parse(this.oldData),
                     table: "Attribute",
                     tableObjectIds: [this.attr.id]
@@ -240,14 +460,20 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
                     }
                 );
             } else {
-                this.auth.post('/api/Attribute/Add', this.attr, {
+                this.auth.post('/api/Attribute/Add', {
+                    attr: this.attr,
+                    options: options
+                }, {
                     type: "Add",
                     agentId: this.auth.getUserId(),
                     agentType: "User",
                     agentName: this.auth.getUser().fullName,
                     tableName: "Add Attribute",
                     logSource: "dashboard",
-                    object: this.attr,
+                    object: {
+                        attr: this.attr,
+                        options: options
+                    },
                     table: "Attribute",
                     tableObjectIds: [this.attr.id]
                 }).subscribe(
@@ -281,71 +507,13 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
         this.attr.isUniq = false;
         this.attr.orderInt = null;
         this.attr.placeholder = "";
-        this.attr.isRequired = false;
+        this.attr.isRequired = true;
+        this.attr.isMeliCode = false;
+        this.attributeOptions = [];
     }
 
     ngAfterViewChecked(): void {
-        const sanitizerUr = (url) => {
-            return this.auth.serializeUrl(url);
-        };
 
-        $('#divtree').jstree({
-            plugins: ['wholerow', 'types'],
-            core: {
-                data: {
-                    url: function (node) {
-                        return node.id === '#'
-                            ? sanitizerUr('/api/Category/GetTreeRoot')
-                            : sanitizerUr('/api/Category/GetTreeChildren/' + node.id);
-                    },
-                    data: function (node) {
-                        return { id: node.id };
-                    }
-                },
-                strings: {
-                    'Loading ...': 'لطفا اندکی صبر نمایید'
-                },
-                multiple: false
-            },
-            types: {
-                default: {
-                    icon: 'fa fa-folder'
-                }
-            }
-        });
-
-
-        $('#divtree').on('changed.jstree', (e, data) => {
-            if (data.node) {
-                this.attr.categoryId = data.node.id;
-            }
-        });
-
-        $('#divtree').on('ready.jstree', () => {
-            $('#divtree').jstree('open_all');
-            $('#divtree').jstree(
-                'select_node',
-                '#' + this.attr.categoryId,
-                true
-            );
-        });
-        $('#divtree').on('loaded.jstree', () => {
-            $('#divtree').jstree(
-                'select_node',
-                '#' + this.attr.categoryId,
-                true
-            );
-        });
-
-        $('#divtree').on('load_node.jstree', (e, n) => {
-            if (n.node.id == this.attr.categoryId) {
-                $('#divtree').jstree(
-                    'select_node',
-                    '#' + this.attr.categoryId,
-                    true
-                );
-            }
-        });
     }
 
     ngAfterViewInit(): void {

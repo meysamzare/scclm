@@ -39,6 +39,7 @@ export class LogListComponent implements OnInit {
 
     tables: { name; desc; }[] = [
         { name: "Attribute", desc: "فیلد" },
+        { name: "AttributeOption", desc: "گزینه فیلد" },
         { name: "Category", desc: "نمون برگ" },
         { name: "Chat", desc: "گفتگو" },
         { name: "ExamAnalyze", desc: "تحلیل آزمون ها" },

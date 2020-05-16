@@ -32,6 +32,7 @@ import { ItemListExcelAttrSelectComponent } from "./item-list-excel-attr-select.
 import { Subject } from "rxjs/internal/Subject";
 import { ICategory } from "../../category/category";
 import { TreeService } from "src/app/shared/components/tree/tree.service";
+import { IAttributeOption } from "../../attribute/attribute-option";
 
 declare var $: any;
 
@@ -122,12 +123,27 @@ declare var $: any;
             }
 
             .button-row {
-                display: table-cell;
+                display: block;
             }
 
             .button-row button {
                 display: table-cell;
                 margin: 10px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                text-align: right;
+                width: -webkit-fill-available;
+            }
+
+            .radio-group {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .radio-button {
+                margin: 0;
+                pointer-events: none;
             }
 
         `
@@ -400,20 +416,78 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
         return this.showDietaleAttrs.filter(c => c.unitId == unitId);
     }
 
-    getItemAttrValDietale(attrId): string {
-        var a = this.showDietaleItemAttrs.find(c => c.attributeId == attrId);
 
-        if (a) {
-            return a.attrubuteValue;
+    getShiftedItem(attr: IAttr) {
+        let options: IAttributeOption[] = (attr as any).attributeOptions || [];
+
+        return options;
+    }
+
+    getItemAttrValDietale(attrId): string {
+        let itemAttr = this.showDietaleItemAttrs.find(c => c.attributeId == attrId);
+
+
+        if (itemAttr) {
+            return itemAttr.attrubuteValue;
         }
 
         return "";
     }
 
+    getScoreForAttr(attr: IAttr) {
+        let itemAttr = this.showDietaleItemAttrs.find(c => c.attributeId == attr.id);
+
+        if (itemAttr) {
+            if (attr.attrTypeInt == 6 || attr.attrTypeInt == 10) {
+                let attrOptions: IAttributeOption[] = (attr as any).attributeOptions || [];
+
+                if (attrOptions.length != 0 && attrOptions.some(c => c.isTrue)) {
+                    return attrOptions.find(c => c.isTrue).id == itemAttr.attrubuteValue ? attr.score : 0;
+                }
+
+                return 0;
+            }
+        }
+
+        return 0;
+    }
+
+    getTotalScoreOfDietale(): number {
+        let score = 0;
+
+        this.showDietaleAttrs.forEach(attr => {
+            let itemAttr = this.showDietaleItemAttrs.find(c => c.attributeId == attr.id);
+
+            if (itemAttr) {
+                if (attr.attrTypeInt == 6 || attr.attrTypeInt == 10) {
+                    let attrOptions: IAttributeOption[] = (attr as any).attributeOptions || [];
+
+                    if (attrOptions.length != 0 && attrOptions.some(c => c.isTrue)) {
+                        attrOptions.find(c => c.isTrue).id == itemAttr.attrubuteValue ? score += attr.score : score += 0;
+                    }
+                }
+            }
+        });
+
+        return score;
+    }
+
+    getSumScoreOfDietaleAttrs(): number {
+        let score = 0;
+
+        this.showDietaleAttrs.forEach(attr => {
+            if (attr.attrTypeInt == 6 || attr.attrTypeInt == 10) {
+                score += attr.score;
+            }
+        });
+
+        return score;
+    }
+
     getItemAttrUrlDietale(attrId): string {
         var a = this.showDietaleItemAttrs.find(c => c.attributeId == attrId);
 
-        if (a) {
+        if (a && a.attributeFilePath) {
             return this.auth.apiUrl + a.attributeFilePath.substr(1);
         }
 
@@ -915,12 +989,6 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
 
     openc(picker) {
         picker.open();
-    }
-
-    getShiftedItem(items: string) {
-        var a = items.substring(1);
-
-        return a.split(",");
     }
 
     showDialogforLongSelect(longVal) {

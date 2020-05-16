@@ -86,7 +86,7 @@
                             </ng-container>
 
                             <ng-container matColumnDef="pin">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header> نشان کردن </th>
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> برگزیده کردن </th>
                                 <td mat-cell *matCellDef="let row">
                                     <button mat-icon-button (click)="togglePin(row.id)">
                                         <mat-icon>{{ row.isPined ? 'bookmark' : 'bookmark_border' }}</mat-icon>
