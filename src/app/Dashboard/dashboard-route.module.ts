@@ -232,17 +232,90 @@ import { CommentTotalType } from "./WebSiteManagment/comment/product-comment";
                                 component: CategoryListComponent,
                                 pathMatch: "full",
                                 data: {
-                                    role: ["view_Category"]
+                                    role: ["view_Category"],
+                                    Type: 0
                                 }
                             },
                             {
                                 path: "edit/:id",
                                 component: CategoryEditComponent,
                                 data: {
-                                    role: ["add_Category", "edit_Category"]
+                                    role: ["add_Category", "edit_Category"],
+                                    Type: 0
                                 },
                                 resolve: { cat: CategoryEditService }
                             }
+                        ]
+                    },
+                    {
+                        path: "online-exam",
+                        children: [
+                            {
+                                path: "",
+                                component: CategoryListComponent,
+                                pathMatch: "full",
+                                data: {
+                                    role: ["view_OnlineExam"],
+                                    Type: 1
+                                }
+                            },
+                            {
+                                path: "edit/:id",
+                                component: CategoryEditComponent,
+                                data: {
+                                    role: ["add_OnlineExam", "edit_OnlineExam"],
+                                    Type: 1
+                                },
+                                resolve: { cat: CategoryEditService }
+                            },
+                            {
+                                path: "option",
+                                children: [
+                                    {
+                                        path: "",
+                                        component: AttributeListComponent,
+                                        pathMatch: "full",
+                                        data: {
+                                            role: ["view_OnlineExamOption"],
+                                            Type: 1
+                                        }
+                                    },
+                                    {
+                                        path: "edit/:id",
+                                        component: AttributeEditComponent,
+                                        data: {
+                                            role: ["add_OnlineExamOption", "edit_OnlineExamOption"],
+                                            Type: 1
+                                        },
+                                        resolve: { unit: UnitListResolverService }
+                                    }
+                                ]
+                            },
+                            {
+                                path: "result",
+                                children: [
+                                    {
+                                        path: "",
+                                        component: ItemListComponent,
+                                        pathMatch: "full",
+                                        data: {
+                                            role: ["view_OnlineExamResult"],
+                                            Type: 1
+                                        }
+                                    },
+                                    {
+                                        path: "edit/:id",
+                                        component: ItemEditComponent,
+                                        data: {
+                                            role: ["add_OnlineExamResult", "edit_OnlineExamResult"],
+                                            Type: 1
+                                        },
+                                        resolve: {
+                                            item: ItemResolverService
+                                        }
+                                    }
+                                ]
+                            },
                         ]
                     },
                     {
@@ -274,14 +347,16 @@ import { CommentTotalType } from "./WebSiteManagment/comment/product-comment";
                                 component: AttributeListComponent,
                                 pathMatch: "full",
                                 data: {
-                                    role: ["view_Attribute"]
+                                    role: ["view_Attribute"],
+                                    Type: 0
                                 }
                             },
                             {
                                 path: "edit/:id",
                                 component: AttributeEditComponent,
                                 data: {
-                                    role: ["add_Attribute", "edit_Attribute"]
+                                    role: ["add_Attribute", "edit_Attribute"],
+                                    Type: 0
                                 },
                                 resolve: { unit: UnitListResolverService }
                             }
@@ -295,19 +370,19 @@ import { CommentTotalType } from "./WebSiteManagment/comment/product-comment";
                                 component: ItemListComponent,
                                 pathMatch: "full",
                                 data: {
-                                    role: ["view_Item"]
+                                    role: ["view_Item"],
+                                    Type: 0
                                 }
                             },
                             {
                                 path: "edit/:id",
                                 component: ItemEditComponent,
                                 data: {
-                                    role: ["add_Item", "edit_Item"]
+                                    role: ["add_Item", "edit_Item"],
+                                    Type: 0
                                 },
                                 resolve: {
-                                    item: ItemResolverService,
-                                    // itemAttrs: ItemAttrResolverService,
-                                    // unit: UnitListResolverService
+                                    item: ItemResolverService
                                 }
                             }
                         ]

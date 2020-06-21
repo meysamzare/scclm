@@ -88,7 +88,7 @@
 				</ul>
 			</li>
 			<li *ngIf="auth.isUserAccessGroup(['view_Exam','view_ExamType','view_ExamScore'])" routerLinkActive="">
-				<a><i class="fa fa-paper-plane-o"></i> <span class="nav-label">مدیریت آزمون</span>
+				<a><i class="fa fa-paper-plane-o"></i> <span class="nav-label">ارزشیابی های تحصیلی</span>
 					<span class="fa arrow"></span></a>
 				<ul class="nav nav-second-level collapse">
 
@@ -106,11 +106,16 @@
 					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_QuestionOption', false)" routerLink="/dashboard/questionoption"> گزینه های سوالات </a></li>
 
 				</ul>
-			</li>
-			<li *ngIf="false" routerLinkActive="">
-				<a><i class="fa fa-newspaper-o"></i> <span class="nav-label">آزمون آنلاین</span>
+            </li>
+            <li *ngIf="auth.isUserAccessGroup(['view_OnlineExam','view_OnlineExamOption','view_OnlineExamResult'])" routerLinkActive="">
+				<a><i class="fa fa-wifi"></i> <span class="nav-label">مدیریت آزمون آنلاین</span>
 					<span class="fa arrow"></span></a>
 				<ul class="nav nav-second-level collapse">
+
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_OnlineExam', false)" routerLink="/dashboard/online-exam">آزمون های آنلاین</a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_OnlineExamOption', false)" routerLink="/dashboard/online-exam/option">  فیلد های آزمون آنلاین </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_OnlineExamResult', false)" routerLink="/dashboard/online-exam/result">  نتیجه آزمون آنلاین </a></li>
+ 
 				</ul>
 			</li>
 			<li *ngIf="auth.isUserAccessGroup(['view_ContractType','view_Contract','view_PaymentType','view_StdPayment'])" routerLinkActive="">

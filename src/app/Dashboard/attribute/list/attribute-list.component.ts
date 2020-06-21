@@ -65,6 +65,13 @@ export class AttributeListComponent implements OnInit, AfterViewInit, AfterConte
 
     Categories: ICategory[] = [];
 
+
+    TYPE = 0;
+
+    pageTitle = "نمون برگ";
+    pageTitles = "نمون برگ ها";
+    pageUrl = "attribute";
+
     constructor(
         private router: Router,
         private activeroute: ActivatedRoute,
@@ -72,12 +79,24 @@ export class AttributeListComponent implements OnInit, AfterViewInit, AfterConte
         private message: MessageService,
         private bottomSheet: MatBottomSheet
     ) {
-        this.auth.post("/api/Category/GetAll").subscribe((data: jsondata) => {
-            if (data.success) {
-                this.Categories = data.data;
-            } else {
-                this.message.showMessageforFalseResult(data);
+
+        this.activeroute.data.subscribe(data => {
+
+            this.TYPE = data["Type"];
+
+            if (this.TYPE == 1) {
+                this.pageTitle = "آزمون آنلاین";
+                this.pageTitles = "آزمون های آنلاین";
+                this.pageUrl = "online-exam/option";
             }
+
+            this.auth.post("/api/Category/getAllByType", this.TYPE).subscribe((data: jsondata) => {
+                if (data.success) {
+                    this.Categories = data.data;
+                } else {
+                    this.message.showMessageforFalseResult(data);
+                }
+            });
         });
     }
 
@@ -125,7 +144,7 @@ export class AttributeListComponent implements OnInit, AfterViewInit, AfterConte
     }
 
     deleteSelected() {
-        if (this.auth.isUserAccess("remove_Attribute")) {
+        if (this.auth.isUserAccess(this.TYPE == 0 ? "remove_Attribute" : "remove_OnlineExamOption")) {
             if (this.selection.selected.length != 0) {
 
                 let ids: number[] = [];
@@ -164,41 +183,35 @@ export class AttributeListComponent implements OnInit, AfterViewInit, AfterConte
     }
 
     onEdit(id) {
-        if (this.auth.isUserAccess("edit_Attribute")) {
-            this.router.navigate(["/dashboard/attribute/edit/" + id]);
+        if (this.auth.isUserAccess(this.TYPE == 0 ? "edit_Attribute" : "edit_OnlineExamOption")) {
+            this.router.navigate(["/dashboard/"+ this.pageUrl +"/edit/" + id]);
         }
     }
 
     refreshDataSource() {
         this.selection.clear();
 
+        let obj = {
+            getparams: {
+                sort: this.sort.active,
+                direction: this.sort.direction,
+                pageIndex: this.paginator.pageIndex,
+                pageSize: this.paginator.pageSize,
+                q: this.txtSearch
+            },
+            selectedCatId: this.selectedCatId,
+            Type: this.TYPE
+        };
+
         this.auth
-            .post("/api/Attribute/Get", {
-                getparams: {
-                    sort: this.sort.active,
-                    direction: this.sort.direction,
-                    pageIndex: this.paginator.pageIndex,
-                    pageSize: this.paginator.pageSize,
-                    q: this.txtSearch
-                },
-                selectedCatId: this.selectedCatId
-            }, {
+            .post("/api/Attribute/Get", obj, {
                 type: 'View',
                 agentId: this.auth.getUserId(),
                 agentType: 'User',
                 agentName: this.auth.getUser().fullName,
                 tableName: 'Attribute List Get',
                 logSource: 'dashboard',
-                object: {
-                    getparams: {
-                        sort: this.sort.active,
-                        direction: this.sort.direction,
-                        pageIndex: this.paginator.pageIndex,
-                        pageSize: this.paginator.pageSize,
-                        q: this.txtSearch
-                    },
-                    selectedCatId: this.selectedCatId
-                },
+                object: obj,
                 table: "Attribute"
             })
             .subscribe(

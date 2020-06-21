@@ -1,0 +1,145 @@
+<div class="row" style="flex-flow: row;">
+    <div class="col-lg-10" style="margin: auto;">
+        <label *ngIf="Attribute.attrTypeInt != 4 && Attribute.attrTypeInt != 11">
+            <b>
+                {{Attribute.title}}
+            </b>
+        </label>
+    </div>
+    <div class="col-lg-2" style="text-align: left;">
+        <button [disabled]="!value" mat-icon-button [matTooltip]="'پاکسازی'" style="outline: none;"
+            (click)="clearItemAttr()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+</div>
+
+<input *ngIf="Attribute.attrTypeInt == 1" [(ngModel)]="value" type="text" class="form-control"
+    [placeholder]="getAttrPlaceholder()" (blur)="onTouched()" [disabled]="disabled"
+    [required]="this.Attribute.isRequired"
+    (input)="onChange($event.target.value); setItemAttr($event.target.value); saveItemAttrs(); Attribute.isUniq ? checkForUniqValue($event.target.value, Attribute.id) : null" />
+
+<input *ngIf="Attribute.attrTypeInt == 2" [(ngModel)]="value" type="tel" inputmode="numeric" pattern="[0-9]*"
+    class="form-control" [placeholder]="getAttrPlaceholder()" (blur)="onTouched()" [disabled]="disabled"
+    [required]="this.Attribute.isRequired"
+    (input)="onChange($event.target.value); setItemAttr($event.target.value); saveItemAttrs(); Attribute.isUniq ? checkForUniqValue($event.target.value, Attribute.id) : null" />
+
+<mat-form-field class="example-full-width" *ngIf="Attribute.attrTypeInt == 3">
+    <input matInput [(ngModel)]="value" readonly (click)="openc(picker)" (blur)="onTouched()" [disabled]="disabled"
+        (dateChange)="onChange($event.target.value); setItemAttr($event.target.value); saveItemAttrs()"
+        [matDatepicker]="picker" [placeholder]="getAttrPlaceholder()">
+    <mat-datepicker-toggle style="font-size: 25px;" matTooltip="باز کردن تقویم" matSuffix [for]="picker">
+    </mat-datepicker-toggle>
+    <mat-datepicker #picker touchUi="true"></mat-datepicker>
+</mat-form-field>
+
+<mat-checkbox *ngIf="Attribute.attrTypeInt == 4" [(ngModel)]="value" (blur)="onTouched()" [disabled]="disabled"
+    (change)="onChange($event.checked); setItemAttr($event.checked); saveItemAttrs()">{{Attribute.title}}
+</mat-checkbox>
+
+<input *ngIf="Attribute.attrTypeInt == 5" [(ngModel)]="value" class="form-control" type="password"
+    (input)="setItemAttr($event.target.value); saveItemAttrs()" [placeholder]="getAttrPlaceholder()" />
+
+<mat-form-field *ngIf="Attribute.attrTypeInt == 6">
+    <mat-label>{{Attribute.title}}</mat-label>
+    <mat-select style="direction: ltr" [(ngModel)]="value" (valueChange)="setItemAttr($event); saveItemAttrs()">
+        <mat-option *ngFor="let v of getShiftedItem()" [value]="v.id">
+            {{v.title}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+
+<mat-radio-group *ngIf="Attribute.attrTypeInt == 10" class="radio-group" [(ngModel)]="value"
+    (change)="setItemAttr($event.value); saveItemAttrs()">
+    <mat-radio-button class="radio-button" *ngFor="let v of getShiftedItem()" [value]="v.id">{{v.title}}
+    </mat-radio-button>
+</mat-radio-group>
+
+<input type="file" *ngIf="Attribute.attrTypeInt == 7" [(ngModel)]="value" accept="image/x-png,image/jpeg"
+    class="form-control" (change)="setItemAttrforPic($event, Attribute.id, 'pic')" />
+
+<input type="file" *ngIf="Attribute.attrTypeInt == 8" [(ngModel)]="value" class="form-control"
+    (change)="setItemAttrforPic($event, Attribute.id, 'file')" />
+
+<textarea *ngIf="Attribute.attrTypeInt == 9" [(ngModel)]="value" type="text" class="form-control"
+    [placeholder]="getAttrPlaceholder()" (change)="setItemAttr($event.target.value); saveItemAttrs()"></textarea>
+
+<ng-container *ngIf="Attribute.attrTypeInt == 11">
+    <div [innerHTML]="Attribute.title | safeHtml"></div>
+
+    <hr>
+
+    <ng-container *ngIf="Attribute.questionType == 1">
+        <label>جواب شما:</label>
+        <ckeditor [(ngModel)]="value" (dataChange)="setItemAttr($event); saveItemAttrs()">
+        </ckeditor>
+    </ng-container>
+
+    <ng-container *ngIf="Attribute.questionType == 2">
+        <mat-radio-group class="radio-group" [(ngModel)]="value" (change)="setItemAttr($event.value); saveItemAttrs()">
+            <mat-radio-button class="radio-button" *ngFor="let v of getShiftedItem()" [value]="v.id">
+                <div [innerHTML]="v.title | safeHtml"></div>
+            </mat-radio-button>
+        </mat-radio-group>
+    </ng-container>
+
+    <ng-container *ngIf="Attribute.questionType == 3">
+        <mat-hint>محتوای زیر را تکمیل کنید</mat-hint>
+        <!-- <ckeditor [data]="haveSavedData ? getItemAttr(Attribute.id) : Attribute.complatabelContent" [(ngModel)]="value"
+            (dataChange)="setItemAttr($event); saveItemAttrs()">
+        </ckeditor> -->
+        <ckeditor [data]="Attribute.complatabelContent" [(ngModel)]="value"
+            (dataChange)="setItemAttr($event); saveItemAttrs()">
+        </ckeditor>
+    </ng-container>
+
+</ng-container>
+
+<ng-container *ngIf="controlDir">
+
+    <ng-container *ngIf="Attribute.attrTypeInt == 11">
+        <p *ngIf="controlDir.hasError('required') || controlDir.invalid" class="error">
+            وارد کردن جواب این سوال الزامی است
+        </p>
+    </ng-container>
+
+    <ng-container *ngIf="Attribute.attrTypeInt == 10">
+        <p *ngIf="controlDir.hasError('required') || controlDir.invalid" class="error">
+            وارد کردن {{Attribute.title}} الزامی است
+        </p>
+    </ng-container>
+
+    <ng-container *ngIf="Attribute.attrTypeInt != 10 && Attribute.attrTypeInt != 11">
+        <ng-container
+            *ngIf="Attribute.attrTypeInt != 4 && (controlDir.touched || controlDir.dirty)  && controlDir.invalid">
+
+            <p *ngIf="controlDir.hasError('required')" class="error">
+                وارد کردن {{Attribute.title}} الزامی است
+            </p>
+            <p *ngIf="controlDir.hasError('meliCode') && controlDir.value" class="error">
+                کد ملی را به صورت صحیح وارد نمایید
+            </p>
+        </ng-container>
+    </ng-container>
+
+</ng-container>
+
+
+<p *ngIf="IsUniqValueExist" class="error">
+    این {{Attribute.title}} قبلا وارد شده است
+</p>
+
+<p *ngIf="IsFileRequiredToEnter" class="error">
+    وارد کردن {{Attribute.title}} الزامی است
+</p>
+
+<div class="row" *ngIf="canShowDesc(Attribute.desc)">
+    <div class="col-lg-1">
+        <image-icon icon="info" [height]="15"></image-icon>
+    </div>
+    <div class="col-lg-10">
+        <small style="color: #0072ab;">
+            {{ Attribute.desc }}
+        </small>
+    </div>
+</div>

@@ -8,7 +8,7 @@
                     <div class="ibox border-top-green float-e-margins"
                         style="background: aliceblue; border-top-color: green;">
                         <div class="ibox-title">
-                            <h5>جستجو براساس نمون برگ</h5>
+                            <h5>جستجو براساس {{ pageTitle }}</h5>
                             <!-- <div class="ibox-tools">
                                 <a class="collapse-link">
                                     <i class="fa fa-chevron-up"></i>
@@ -17,11 +17,11 @@
                         </div>
                         <div class="ibox-content">
 
-                            <button mat-stroked-button style="width: 100%; margin-bottom: 10px;"
+                            <button *ngIf="TYPE == 0" mat-stroked-button style="width: 100%; margin-bottom: 10px;"
                                 (click)="tree.openTreeDialog('Category', 'نمون برگ ها')">لیست درختی نمون برگ ها</button>
 
                             <div class="form-group">
-                                <label>انتخاب نمون برگ</label>
+                                <label>انتخاب {{ pageTitle }}</label>
                                 <ng-select [clearable]="true" name="category" [(ngModel)]="selectedCatId"
                                     (change)="onCategorySelectChange()">
                                     <ng-option *ngFor="let u of Categories" [value]="u.id">{{u.title}}</ng-option>
@@ -36,7 +36,7 @@
                     <div class="ibox border-top-green float-e-margins"
                         style="background: aliceblue; border-top-color: red;">
                         <div class="ibox-title">
-                            <h5>نمون برگ های برگزیده</h5>
+                            <h5>{{ pageTitle }} های برگزیده</h5>
                             <!-- <div class="ibox-tools">
                                 <a class="collapse-link">
                                     <i class="fa fa-chevron-up"></i>
@@ -52,7 +52,7 @@
                             </ng-container>
 
                             <div class="button-row">
-                                <button *ngFor="let i of pinedCategories" mat-stroked-button
+                                <button [tooltip]="i.title" *ngFor="let i of pinedCategories" mat-stroked-button
                                     (click)="pinedCatSelect(i.id)" [color]="selectedPinedCat == i.id ? 'primary' : ''">
                                     <mat-icon>bookmark</mat-icon> &nbsp; &nbsp;
                                     {{ i.title }}
@@ -301,7 +301,8 @@
                                                 <td mat-cell *matCellDef="let row"> {{row.rahCode}} </td>
                                             </ng-container>
                                             <ng-container matColumnDef="categoryString">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> نمون برگ </th>
+                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ pageTitle }}
+                                                </th>
                                                 <td mat-cell *matCellDef="let row"> {{row.categoryString}} </td>
                                             </ng-container>
                                             <ng-container matColumnDef="date">
@@ -380,24 +381,33 @@
 
                         <div class="ibox float-e-margins animated fadeInRight" *ngIf="showDietaledBox">
                             <div class="ibox-title">
-                                <h5>داده های ثبت شده در نمون برگ : <strong> {{ showDietaleItem.title }} </strong></h5>
+                                <h5>داده های ثبت شده در {{ pageTitle }} : <strong> {{ showDietaleItem.title }} </strong>
+                                </h5>
                                 <!-- <button style="float: left;" matTooltip="بستن" (click)="showDietaledBox = false;" mat-icon-button><mat-icon>close</mat-icon></button> -->
                                 <div class="ibox-tools">
-                                    <a class="close-link" matTooltip="بستن" (click)="showDietaledBox = false;">
+                                    <a class="close-link" matTooltip="بستن"
+                                        (click)="showDietaledBox = false; showDietaleCatId = null; showDietaleItem = null;">
                                         <i class="fa fa-times"></i>
                                     </a>
                                 </div>
                             </div>
                             <div class="ibox-content">
                                 <div class="row">
-                                    <div *ngFor="let unit of units">
-                                        <div class="col-lg-4" *ngIf="getAttrsForUnit(unit.id).length != 0">
+                                    <ng-container *ngFor="let unit of units">
+                                        <div class="col-lg-12" *ngIf="getAttrsForUnit(unit.id).length != 0">
                                             <div class="panel panel-default">
                                                 <div class="panel-heading">
                                                     {{unit.title}}
                                                 </div>
                                                 <div class="panel-body">
-                                                    <div *ngFor="let i of getAttrsForUnit(unit.id)">
+                                                    <div class="bordered" *ngFor="let i of getAttrsForUnit(unit.id)">
+
+                                                        <button
+                                                            *ngIf="TYPE == 1 && i.attrTypeInt == 11 && (i.questionType == 1 || i.questionType == 3)"
+                                                            mat-stroked-button style="margin: 10px;"
+                                                            (click)="openSetItemAttributeScoreDialog(i)">
+                                                            ثبت نمره
+                                                        </button>
 
                                                         <div
                                                             *ngIf="i.attrTypeInt == 1 || i.attrTypeInt == 2 || i.attrTypeInt == 5 || i.attrTypeInt == 9">
@@ -477,11 +487,45 @@
                                                             mat-raised-button>دانلود
                                                             فایل</a>
 
+
+                                                        <ng-container *ngIf="i.attrTypeInt == 11">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    <b [tooltip]="'امتیاز'">{{ getScoreForAttr(i) }} از
+                                                                        {{ i.score }}</b>
+                                                                </label>
+
+                                                                <div [innerHTML]="i.title | safeHtml"></div>
+
+                                                                <hr>
+
+                                                                <ng-container
+                                                                    *ngIf="i.questionType == 1 || i.questionType == 3">
+                                                                    <div
+                                                                        [innerHTML]="getItemAttrValDietale(i.id) | safeHtml">
+                                                                    </div>
+                                                                </ng-container>
+
+                                                                <ng-container *ngIf="i.questionType == 2">
+                                                                    <mat-radio-group class="radio-group"
+                                                                        [value]="getItemAttrValDietale(i.id)">
+                                                                        <mat-radio-button class="radio-button"
+                                                                            *ngFor="let v of getShiftedItem(i)"
+                                                                            [style.color]="v.isTrue ? 'green' : 'unset'"
+                                                                            [value]="v.id.toString()">
+                                                                            <div [innerHTML]="v.title | safeHtml"></div>
+                                                                        </mat-radio-button>
+                                                                    </mat-radio-group>
+                                                                </ng-container>
+
+                                                            </div>
+                                                        </ng-container>
+
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </ng-container>
                                 </div>
 
                                 <div class="row">
@@ -575,7 +619,7 @@
                                 </ng-container>
 
                                 <ng-container matColumnDef="categoryString">
-                                    <th mat-header-cell *matHeaderCellDef> نمون برگ </th>
+                                    <th mat-header-cell *matHeaderCellDef> {{ pageTitle }} </th>
                                     <td mat-cell *matCellDef="let row"> {{row.categoryString}} </td>
                                 </ng-container>
 

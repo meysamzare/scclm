@@ -11,6 +11,8 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { AuthService, jsondata } from "src/app/shared/Auth/auth.service";
 import { MessageService } from "src/app/shared/services/message.service";
 import { merge } from "rxjs";
+import { IGrade } from "../../grade/grade";
+import { IClass } from "../../class/class";
 
 declare var $: any;
 
@@ -34,14 +36,7 @@ declare var $: any;
     ]
 })
 export class CategoryListComponent implements OnInit, AfterViewInit, AfterContentInit {
-    displayedColumns: string[] = [
-        "select",
-        "id",
-        "title",
-        "parentTitle",
-        "pin",
-        "action"
-    ];
+    displayedColumns: string[] = [];
     dataSource: MatTableDataSource<ICategory>;
     selection = new SelectionModel<ICategory>(true, []);
 
@@ -63,19 +58,92 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
 
     selectedCatId = null;
 
+    TYPE = 0;
+
+    pageTitle = "نمون برگ";
+    pageTitles = "نمون برگ ها";
+    pageUrl = "category";
+
+    grades: IGrade[] = [];
+    classes: IClass[] = [];
+
+    selectedGradeId = null;
+    selectedClassId = null;
+
     constructor(
         private router: Router,
         private activeroute: ActivatedRoute,
         private auth: AuthService,
         private message: MessageService
     ) {
-        this.auth.post("/api/Category/GetAll").subscribe((data: jsondata) => {
-            if (data.success) {
-                this.Categories = data.data;
-            } else {
-                this.message.showMessageforFalseResult(data);
+
+        this.activeroute.data.subscribe(data => {
+
+            this.TYPE = data["Type"];
+
+            if (this.TYPE == 1) {
+                this.pageTitle = "آزمون آنلاین";
+                this.pageTitles = "آزمون های آنلاین";
+                this.pageUrl = "online-exam";
+
+
+                this.auth.post("/api/Grade/getAll").subscribe(data => {
+                    if (data.success) {
+                        this.grades = data.data;
+                    } else {
+                        this.message.showMessageforFalseResult(data);
+                    }
+                }, er => {
+                    this.auth.handlerError(er);
+                });
+
+                this.auth.post("/api/Class/getAll").subscribe(data => {
+                    if (data.success) {
+                        this.classes = data.data;
+                    } else {
+                        this.message.showMessageforFalseResult(data);
+                    }
+                }, er => {
+                    this.auth.handlerError(er);
+                });
             }
+
+            this.displayedColumns.push(...[
+                "select",
+                "id",
+                "title",
+                "parentTitle",
+            ]);
+
+            if (this.TYPE == 1) {
+                this.displayedColumns.push("grade");
+            }
+
+            this.displayedColumns.push(...[
+                "pin",
+                "action"
+            ]);
+
+            this.auth.post("/api/Category/getAllByType", this.TYPE).subscribe((data: jsondata) => {
+                if (data.success) {
+                    this.Categories = data.data;
+                } else {
+                    this.message.showMessageforFalseResult(data);
+                }
+            });
         });
+
+
+    }
+
+    getClassByGrade() {
+        let gradeId = this.selectedGradeId;
+
+        if (gradeId) {
+            return this.classes.filter(c => c.gradeId == gradeId);
+        }
+
+        return [];
     }
 
     togglePin(id) {
@@ -149,7 +217,7 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
     }
 
     deleteSelected() {
-        if (this.auth.isUserAccess("remove_Category")) {
+        if (this.auth.isUserAccess(this.TYPE == 0 ? "remove_Category" : "remove_OnlineExam")) {
             if (this.selection.selected.length != 0) {
                 let ids: number[] = [];
                 this.selection.selected.forEach(row => ids.push(row.id));
@@ -187,8 +255,8 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
     }
 
     onEdit(id) {
-        if (this.auth.isUserAccess("edit_Category")) {
-            this.router.navigate(["/dashboard/category/edit/" + id]);
+        if (this.auth.isUserAccess(this.TYPE == 0 ? "edit_Category" : "edit_OnlineExam")) {
+            this.router.navigate(["/dashboard/" + this.pageUrl + "/edit/" + id]);
         }
     }
 
@@ -223,27 +291,28 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
     refreshDataSource() {
         this.selection.clear();
 
-        this.auth
-            .post("/api/Category/Get", {
+        let obj = {
+            getparams: {
                 sort: this.sort.active,
                 direction: this.sort.direction,
                 pageIndex: this.paginator.pageIndex,
                 pageSize: this.paginator.pageSize,
-                q: this.txtSearch
-            }, {
+                q: this.txtSearch,
+            },
+            type: this.TYPE,
+            selectedGradeId: this.selectedGradeId,
+            selectedClassId: this.selectedClassId
+        };
+
+        this.auth
+            .post("/api/Category/Get", obj, {
                 type: 'View',
                 agentId: this.auth.getUserId(),
                 agentType: 'User',
                 agentName: this.auth.getUser().fullName,
                 tableName: 'Category List',
                 logSource: 'dashboard',
-                object: {
-                    sort: this.sort.active,
-                    direction: this.sort.direction,
-                    pageIndex: this.paginator.pageIndex,
-                    pageSize: this.paginator.pageSize,
-                    q: this.txtSearch
-                },
+                object: obj,
                 table: "Category"
             })
             .subscribe(
@@ -311,5 +380,21 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
         if (this.dataSource.paginator) {
             this.dataSource.paginator.firstPage();
         }
+    }
+
+    changeCheckableProperty(catId, type, check) {
+        this.auth.post("/api/Category/ChangeCheckableProperty", {
+            catId: catId,
+            type: type,
+            check: check,
+        }).subscribe(data => {
+            if (data.success) {
+                this.refreshDataSource();
+            } else {
+                this.auth.message.showMessageforFalseResult(data);
+            }
+        }, er => {
+            this.auth.handlerError(er);
+        });
     }
 }

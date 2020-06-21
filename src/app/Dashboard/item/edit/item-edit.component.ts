@@ -3,8 +3,7 @@ import { NgForm } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { MessageService } from "src/app/shared/services/message.service";
 import { AuthService, jsondata } from "src/app/shared/Auth/auth.service";
-import { IItem } from "../item";
-import { COMMA, ENTER } from "@angular/cdk/keycodes";
+import { ENTER } from "@angular/cdk/keycodes";
 import { ITags } from "../tags";
 import { MatChipInputEvent, MatDialog } from "@angular/material";
 import { IUnit } from "../../unit/unit";
@@ -12,8 +11,15 @@ import { IAttr } from "../../attribute/attribute";
 import { IItemAttr } from "../item-attr";
 import { ItemEditLongTextSelectComponent } from "./item-edit-long-text-select.component";
 import { ShowImageComponent } from "src/app/shared/Modal/show-image.component";
+import { ICategory } from "../../category/category";
+import { IAttributeOption } from "../../attribute/attribute-option";
+import { HttpRequest, HttpHeaders, HttpEventType } from "@angular/common/http";
+import { map, catchError, last } from "rxjs/operators";
+import Swal from "sweetalert2";
+import { of, EMPTY } from "rxjs";
+import { Location } from "@angular/common";
 
-declare var $: any;
+declare let $: any;
 
 @Component({
     templateUrl: "./item-edit.component.html",
@@ -28,6 +34,16 @@ declare var $: any;
             }
             .pad-r {
                 margin-right: 3px;
+            }
+            
+            .radio-group {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .radio-button {
+                margin: 0;
+                pointer-events: none;
             }
         `
     ]
@@ -55,16 +71,27 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
 
     loadItemAttr = false;
 
+    Categories: ICategory[] = [];
+
+    selectedCategoryId = null;
+
     readonly separatorKeysCodes: number[] = [ENTER];
 
     @ViewChild("fm1", { static: false }) public fm1: NgForm;
+
+    TYPE = 0;
+
+    pageTitle = "نمون برگ";
+    pageTitles = "نمون برگ ها";
+    pageUrl = "category";
 
     constructor(
         private route: Router,
         private activeRoute: ActivatedRoute,
         private message: MessageService,
         private auth: AuthService,
-        public dialog: MatDialog
+        public dialog: MatDialog,
+        public location: Location
     ) {
         activeRoute.params.subscribe(params => {
             this.activeRoute.data.subscribe(data => {
@@ -73,9 +100,17 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
                 this.item = this.data.item;
 
                 this.oldData = JSON.stringify(this.item);
+
+                this.TYPE = data["Type"];
+
+                if (this.TYPE == 1) {
+                    this.pageTitle = "آزمون آنلاین";
+                    this.pageTitles = "آزمون های آنلاین";
+                    this.pageUrl = "online-exam";
+                }
             });
 
-            var id = params["id"];
+            let id = params["id"];
 
             if (id === "0") {
                 this.Title = "افزودن نمون برگ";
@@ -85,7 +120,7 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
                 this.tags = [];
                 this.itemAttrs = [];
             } else {
-                var idd = Number.parseInt(id);
+                let idd = Number.parseInt(id);
                 if (Number.isInteger(idd)) {
                     this.Title = "ویرایش نمون برگ " + this.item.title;
                     this.btnTitle = "ویرایش";
@@ -138,8 +173,8 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
                                 this.loadItemAttr = false;
                             }
                         );
-                            
-                        this.getItemAttr(this.item.categoryId);
+
+                    this.getItemAttr(this.item.categoryId);
 
                     // this.getItemAttr(this.item.categoryId);
                 } else {
@@ -147,6 +182,15 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
                     this.route.navigate(["/dashboard"]);
                 }
             }
+
+
+            this.auth.post("/api/Category/getAllByType", this.TYPE).subscribe((data: jsondata) => {
+                if (data.success) {
+                    this.Categories = data.data;
+                } else {
+                    this.message.showMessageforFalseResult(data);
+                }
+            });
 
 
         });
@@ -167,18 +211,13 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
 
     ngOnInit(): void { }
 
-    getShiftedItem(items: string) {
-        var a = items.substring(1);
+    getShiftedItem(attr: IAttr) {
+        let options: IAttributeOption[] = (attr as any).attributeOptions || [];
 
-        return a.split(",");
+        return options;
     }
 
     showDialogforLongSelect(longVal) {
-        const dialogRef = this.dialog.open(ItemEditLongTextSelectComponent, {
-            data: {
-                text: longVal
-            }
-        });
     }
 
     openc(picker1) {
@@ -186,7 +225,7 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
     }
 
     setItemAttrforselect(event, attrId) {
-        var itemId = this.item.id;
+        let itemId = this.item.id;
         this.auth
             .post("/api/Item/setItemAttr", {
                 attrId: attrId,
@@ -222,112 +261,153 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
     }
 
     setItemAttrforPic(event, attrId, type) {
-        var itemId = this.item.id;
-        let reader = new FileReader();
-        var size = type == "file" ? 10 : 1;
-        var sizeText = size == 10 ? "ده مگابایت" : "یک مگابایت";
-        if (event.target.files && event.target.files.length > 0) {
-            let file = event.target.files[0];
-            if (file.size / 1024 / 1024 > size) {
-                return this.message.showWarningAlert(
-                    "حجم فایل باید کمتر از " + sizeText + " باشد",
-                    "اخطار"
-                );
-            }
-            reader.readAsDataURL(file);
-            reader.onload = () => {
-                let result = reader.result.toString().split(",")[1];
-                // this.fileName = file.name + " " + file.type;
-                this.auth
-                    .post("/api/Item/setItemAttrForFiles", {
-                        attrId: attrId,
-                        itemId: itemId,
-                        inputValue: result,
-                        fileFormat: file.type,
-                        fileName: file.name
-                    }, {
-                        type: 'Add',
-                        agentId: this.auth.getUserId(),
-                        agentType: 'User',
-                        agentName: this.auth.getUser().fullName,
-                        tableName: 'setItemAttrForFiles(saveFile(OnItemEdit))',
-                        logSource: 'dashboard',
-                        object: {
-                            attrId: attrId,
-                            itemId: itemId,
-                            inputValue: result,
-                            fileFormat: file.type,
-                            fileName: file.name
-                        },
-                        table: "Item",
-                        tableObjectIds: [itemId]
-                    })
-                    .subscribe(
-                        (data: jsondata) => {
-                            if (data.success) {
-                                this.message.showSuccessAlert(
-                                    "با موفقیت ثبت شد"
-                                );
+        let itemId = this.item.id;
 
-                                var a = this.itemAttrs.find(
-                                    c => c.attributeId == attrId
-                                );
-                                a.attributeFilePath = data.data;
+        const fileIsInvalid = (message) => {
+            event.target.value = null;
+            event.target.files = null;
+            return this.message.showWarningAlert(message);
+        }
+
+        let attribute = this.attrs.find(c => c.id == attrId);;
+
+        let size = type == "file" ? attribute.maxFileSize : 10;
+        let sizeText = type == "file" ? `${attribute.maxFileSize} مگابایت` : `10 مگابایت`;
+
+        if (event.target.files && event.target.files.length > 0) {
+
+            let file: File = event.target.files[0];
+
+            let fileExtentions = file.name.split('.');
+
+            if (fileExtentions.length <= 1) {
+                fileIsInvalid("بارگذاری این فایل مجاز نمی باشد!");
+                return;
+            }
+
+            Object.defineProperty(file, 'name', {
+                writable: true,
+                value: `${this.getRandomFileName()}.${fileExtentions.slice(-1)[0]}`
+            });
+
+            if (file.size / 1024 / 1024 > size) {
+                fileIsInvalid("حجم فایل باید کمتر از " + sizeText + " باشد");
+                return;
+            }
+
+            let result = "(binery)";
+
+            let obj = {
+                attributeId: attrId,
+                attrubuteValue: result,
+                itemId: itemId,
+                fileName: file.name
+            }
+
+            let formData = new FormData();
+
+            formData.append("object", JSON.stringify(obj));
+            formData.append("files", file, file.name);
+
+            let url = this.auth.serializeUrl(`/api/Item/setItemAttrForFiles`);
+
+            let token = this.auth.getToken();
+
+            let request = new HttpRequest('POST', url, formData, {
+                reportProgress: false,
+                headers: new HttpHeaders({
+                    Authorization: `Bearer ${token}`,
+                    "ngsw-bypass": "true"
+                }),
+            });
+
+            this.auth.http.request(request).pipe(
+                map(event => {
+                    switch (event.type) {
+                        case HttpEventType.Response:
+
+                            let data: any = event.body;
+
+                            if (data.success) {
+                                let itemAttr = this.itemAttrs.find(c => c.attributeId == attrId);
+                                itemAttr.attributeFilePath = data.data;
+
+                                this.auth.logToServer({
+                                    type: 'Add',
+                                    agentId: this.auth.getUserId(),
+                                    agentType: 'User',
+                                    agentName: this.auth.getUser().fullName,
+                                    tableName: 'setItemAttrForFiles(saveFile(OnItemEdit))',
+                                    logSource: 'dashboard',
+                                    object: obj,
+                                    table: "Item",
+                                    tableObjectIds: [itemId]
+                                }, data);
+
+                                this.message.showSuccessAlert("با موفقیت ثبت شد");
                             } else {
+                                this.message.showWarningAlert("خطایی روی داده است لطفا با راهبر سیستم تماس حاصل فرمایید");
                                 this.message.showMessageforFalseResult(data);
                             }
-                        },
-                        er => {
-                            this.auth.handlerError(er);
-                        }
-                    );
-            };
+                            break;
+                    }
+                }),
+                catchError(() => {
+                    this.message.showWarningAlert("خطایی روی داده است لطفا با راهبر سیستم تماس حاصل فرمایید");
+                    return of(EMPTY);
+                }),
+                last()
+            ).subscribe();
         }
     }
 
+
+    getRandomFileName(filelength = 10): string {
+        let result = "";
+        let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let charactersLength = characters.length;
+        for (let i = 0; i < filelength; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+
     setAttrForNullPic(attrId) {
-        var itemId = this.item.id;
-        this.auth
-            .post("/api/Item/setItemAttrForFiles", {
+        let itemId = this.item.id;
+
+        this.auth.post("/api/Item/removeItemAttrFile", {
+            attrId: attrId,
+            itemId: itemId
+        }, {
+            type: 'Delete',
+            agentId: this.auth.getUserId(),
+            agentType: 'User',
+            agentName: this.auth.getUser().fullName,
+            tableName: 'ItemAttrForNullFile(DeleteFileIfExist(OnItemEdit))',
+            logSource: 'dashboard',
+            object: {
                 attrId: attrId,
-                itemId: itemId,
-                inputValue: ""
-            }, {
-                type: 'Add',
-                agentId: this.auth.getUserId(),
-                agentType: 'User',
-                agentName: this.auth.getUser().fullName,
-                tableName: 'ItemAttrForNullFile(DeleteFileIfExist(OnItemEdit))',
-                logSource: 'dashboard',
-                object: {
-                    attrId: attrId,
-                    itemId: itemId,
-                    inputValue: ""
-                },
-                table: "Item",
-                tableObjectIds: [itemId]
-            })
-            .subscribe(
-                (data: jsondata) => {
-                    if (data.success) {
-                        this.message.showSuccessAlert("با موفقیت ثبت شد");
-                    } else {
-                        this.message.showMessageforFalseResult(data);
-                    }
-                },
-                er => {
-                    this.auth.handlerError(er);
-                }
-            );
+                itemId: itemId
+            },
+            table: "Item",
+            tableObjectIds: [itemId]
+        }).subscribe(data => {
+            if (data.success) {
+                let itemAttr = this.itemAttrs.find(c => c.attributeId == attrId);
+                itemAttr.attributeFilePath = "";
 
-        var a = this.itemAttrs.find(c => c.attributeId == attrId);
-
-        a.attributeFilePath = "";
+                this.message.showSuccessAlert("با موفقیت ثبت شد");
+            } else {
+                this.auth.message.showMessageforFalseResult(data);
+            }
+        }, er => {
+            this.auth.handlerError(er);
+        });
     }
 
     setItemAttr(event, attrId) {
         if (this.isEdit) {
-            var itemId = this.item.id;
+            let itemId = this.item.id;
             let inputValue;
             if (event.target) {
                 inputValue = event.target.value;
@@ -362,7 +442,7 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
                             this.message.showSuccessAlert("با موفقیت ثبت شد");
                             let allInputs = $("input[tabindex]").toArray();
 
-                            var nextInput =
+                            let nextInput =
                                 allInputs[allInputs.findIndex(c => c.tabIndex == event.target.tabIndex) + 1];
 
                             if (nextInput) {
@@ -386,7 +466,7 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
     }
 
     getItemAttrVal(attrId): string {
-        var a = this.itemAttrs.find(c => c.attributeId == attrId);
+        let a = this.itemAttrs.find(c => c.attributeId == attrId);
 
         if (a) {
             return a.attrubuteValue;
@@ -396,7 +476,7 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
     }
 
     getItemAttrUrl(attrId): string {
-        var a = this.itemAttrs.find(c => c.attributeId == attrId);
+        let a = this.itemAttrs.find(c => c.attributeId == attrId);
 
         if (a) {
             return this.auth.apiUrl + a.attributeFilePath.substr(1);
@@ -422,73 +502,33 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
         this.loadAttrs = false;
     }
 
-    getAttrsForUnit(unitId): IAttr[] {
+    getAttrsForUnit(unitId): any[] {
         return this.attrs.filter(c => c.unitId == unitId);
     }
 
     ngAfterContentInit(): void {
-        var sanitizerUr = url => {
-            return this.auth.serializeUrl(url);
-        };
 
-        $("#divtree").jstree({
-            plugins: ["wholerow", "types"],
-            core: {
-                data: {
-                    url: function (node) {
-                        return node.id === "#"
-                            ? sanitizerUr("/api/Category/GetTreeRoot")
-                            : sanitizerUr(
-                                "/api/Category/GetTreeChildren/" + node.id
-                            );
-                    },
-                    data: function (node) {
-                        return { id: node.id };
+    }
+
+    onCategorySelect() {
+        if (this.item.categoryId && !this.isEdit) {
+            this.auth.post("/api/Category/getCategory", this.item.categoryId).subscribe((data: jsondata) => {
+                if (data.success) {
+                    this.item.categoryRoleAccess = data.data.roleAccess;
+                    if (
+                        this.auth.checkForMatchRole(
+                            this.item.categoryRoleAccess
+                        )
+                    ) {
+                        this.getItemAttr(this.item.categoryId);
+                    } else {
+                        this.item.categoryId = null;
                     }
-                },
-                strings: {
-                    "Loading ...": "لطفا اندکی صبر نمایید"
-                },
-                multiple: false
-            },
-            types: {
-                default: {
-                    icon: "fa fa-folder"
+                } else {
+                    this.message.showMessageforFalseResult(data);
                 }
-            }
-        });
-
-        $("#divtree").on("changed.jstree", (e, data) => {
-            console.log("selected");
-
-            if (data.node) {
-                if (!this.isEdit) {
-                    this.item.categoryId = data.node.id;
-
-                    this.auth.post("/api/Category/getCategory", data.node.id).subscribe((data: jsondata) => {
-                        if (data.success) {
-                            this.item.categoryRoleAccess = data.data.roleAccess;
-                            if (
-                                this.auth.checkForMatchRole(
-                                    this.item.categoryRoleAccess
-                                )
-                            ) {
-                                this.getItemAttr(this.item.categoryId);
-                            } else {
-                                $("#divtree").jstree("deselect_all");
-
-                                this.item.categoryId = 0;
-                            }
-                        } else {
-                            this.message.showMessageforFalseResult(data);
-                        }
-                    });
-
-
-
-                }
-            }
-        });
+            });
+        }
     }
 
     add(event: MatChipInputEvent): void {
@@ -600,10 +640,5 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
     }
 
     showPopupImage(imgUrl) {
-        const dialog = this.dialog.open(ShowImageComponent, {
-            data: {
-                url: imgUrl
-            }
-        })
     }
 }

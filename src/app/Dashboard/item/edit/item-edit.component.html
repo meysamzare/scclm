@@ -26,11 +26,16 @@
 
 
                             <div class="form-group">
-                                <label>نمون برگ</label>
-                                <div id="divtree" [ngClass]="{ 'di': !isEdit ? false : true }"></div>
-                                <mat-error *ngIf="!isCatSelected()">
-                                    انتخاب نمون برگ الزامی است
-                                </mat-error>
+                                <label>انتخاب {{ pageTitle }}</label>
+                                <ng-select #catSelect="ngModel" name="cat" required [disabled]="isEdit"
+                                    [(ngModel)]="item.categoryId" (change)="onCategorySelect()">
+                                    <ng-option *ngFor="let u of Categories" [value]="u.id">{{u.title}}</ng-option>
+                                </ng-select>
+                                <div *ngIf="(catSelect.touched || catSelect.dirty)  && catSelect.invalid">
+                                    <p *ngIf="catSelect.hasError('required')" class="error">
+                                        انتخاب {{ pageTitle }} الزامی است
+                                    </p>
+                                </div>
                             </div>
 
                             <div class="form-group">
@@ -105,7 +110,7 @@
                         <br>
                         <div class="col-md-12">
                             <a mat-raised-button color="warn" style="margin: 5px;" queryParamsHandling="preserve"
-                                routerLink="/dashboard/item">لغو</a>
+                                (click)="location.back()">لغو</a>
                             <button type="submit" mat-raised-button color="primary"
                                 [disabled]="!fm1.valid || !isCatSelected() || !isUnitSelected()"
                                 (click)="sts()">{{ btnTitle }}</button>
@@ -130,20 +135,22 @@
                 </div>
                 <div class="ibox-content">
                     <div class="form-group" *ngFor="let i of getAttrsForUnit(unit.id); let ind = index">
-                        <label *ngIf="i.attrTypeInt != 4">{{i.title}}</label>
+
+                        <label *ngIf="i.attrTypeInt != 4 && i.attrTypeInt != 11">{{i.title}}</label>
 
                         <input *ngIf="i.attrTypeInt == 1" type="text" [tabIndex]="ind + 5" class="form-control"
-                            [value]="getItemAttrVal(i.id)" placeholder="{{i.title}}" [matTooltip]="i.desc"
-                            (keydown.enter)="setItemAttr($event, i.id)" />
+                            [value]="getItemAttrVal(i.id)" [placeholder]="i.placeholder ? i.placeholder : i.title"
+                            [matTooltip]="i.desc" (keydown.enter)="setItemAttr($event, i.id)" />
 
-                        <input *ngIf="i.attrTypeInt == 2" type="number" [tabIndex]="ind + 5" class="form-control"
-                            [value]="getItemAttrVal(i.id)" placeholder="{{i.title}}" [matTooltip]="i.desc"
+                        <input *ngIf="i.attrTypeInt == 2" type="number" inputmode="numeric" pattern="[0-9]*"
+                            [tabIndex]="ind + 5" class="form-control" [value]="getItemAttrVal(i.id)"
+                            [placeholder]="i.placeholder ? i.placeholder : i.title" [matTooltip]="i.desc"
                             (keydown.enter)="setItemAttr($event, i.id)" />
 
                         <mat-form-field class="example-full-width" *ngIf="i.attrTypeInt == 3">
                             <input required matInput [matTooltip]="i.desc" readonly (click)="openc(picker)"
                                 (dateChange)="setItemAttr($event, i.id)" [matDatepicker]="picker"
-                                [value]="getItemAttrVal(i.id)" placeholder="{{i.title}}">
+                                [value]="getItemAttrVal(i.id)" [placeholder]="i.placeholder ? i.placeholder : i.title">
                             <mat-datepicker-toggle style="font-size: 25px;" matTooltip="باز کردن تقویم" matSuffix
                                 [for]="picker"></mat-datepicker-toggle>
                             <mat-datepicker #picker touchUi="true"></mat-datepicker>
@@ -153,22 +160,33 @@
                             (change)="setItemAttr($event, i.id)">{{i.title}}</mat-checkbox>
 
                         <input *ngIf="i.attrTypeInt == 5" [tabIndex]="ind + 5" class="form-control" type="password"
-                            [value]="getItemAttrVal(i.id)" placeholder="{{i.title}}" [matTooltip]="i.desc"
-                            (keydown.enter)="setItemAttr($event, i.id)" />
+                            [value]="getItemAttrVal(i.id)" [placeholder]="i.placeholder ? i.placeholder : i.title"
+                            [matTooltip]="i.desc" (keydown.enter)="setItemAttr($event, i.id)" />
 
                         <mat-form-field *ngIf="i.attrTypeInt == 6">
                             <mat-label>{{i.title}}</mat-label>
                             <mat-select style="direction: ltr" (valueChange)="setItemAttrforselect($event, i.id)"
                                 [value]="getItemAttrVal(i.id)">
-                                <mat-option *ngFor="let v of getShiftedItem(i.values)" [value]="v">{{v}}</mat-option>
+                                <mat-option [style.color]="v.isTrue ? 'green' : 'unset'"
+                                    *ngFor="let v of getShiftedItem(i)" [value]="v.id.toString()">{{v.title}}
+                                </mat-option>
                             </mat-select>
                             <mat-hint>{{i.desc}}</mat-hint>
                         </mat-form-field>
 
-                        <button mat-mini-fab *ngIf="i.attrTypeInt == 6 && getItemAttrVal(i.id).length > 50"
+                        <!-- <button mat-mini-fab *ngIf="i.attrTypeInt == 6 && getItemAttrVal(i.id).length > 50"
                             (click)="showDialogforLongSelect(getItemAttrVal(i.id))">
                             <mat-icon>remove_red_eye</mat-icon>
-                        </button>
+                        </button> -->
+
+
+                        <mat-radio-group *ngIf="i.attrTypeInt == 10" class="radio-group"
+                            (change)="setItemAttrforselect($event.value, i.id)" [value]="getItemAttrVal(i.id)">
+                            <mat-radio-button class="radio-button" *ngFor="let v of getShiftedItem(i)"
+                                [value]="v.id.toString()" [style.color]="v.isTrue ? 'green' : 'unset'">
+                                {{v.title}}
+                            </mat-radio-button>
+                        </mat-radio-group>
 
 
                         <input type="file" *ngIf="i.attrTypeInt == 7" accept="image/x-png,image/jpeg"
@@ -196,8 +214,43 @@
                             فایل</button>
 
                         <textarea *ngIf="i.attrTypeInt == 9" [tabIndex]="ind + 5" class="form-control"
-                            placeholder="{{i.title}}" [matTooltip]="i.desc"
+                            [placeholder]="i.placeholder ? i.placeholder : i.title" [matTooltip]="i.desc"
                             (keydown.control.enter)="setItemAttr($event, i.id)">{{getItemAttrVal(i.id)}}</textarea>
+
+
+                        <ng-container *ngIf="i.attrTypeInt == 11">
+                            <div class="form-group">
+
+                                <div [innerHTML]="i.title | safeHtml"></div>
+
+                                <hr>
+                                <ng-container *ngIf="i.questionType == 1">
+                                    <label>جواب شما:</label>
+                                    <ckeditor [data]="getItemAttrVal(i.id)"
+                                        (dataChange)="setItemAttrforselect($event, i.id);">
+                                    </ckeditor>
+                                </ng-container>
+
+                                <ng-container *ngIf="i.questionType == 2">
+                                    <mat-radio-group class="radio-group"
+                                        (change)="setItemAttrforselect($event.value, i.id)"
+                                        [value]="getItemAttrVal(i.id)">
+                                        <mat-radio-button class="radio-button" *ngFor="let v of getShiftedItem(i)"
+                                            [style.color]="v.isTrue ? 'green' : 'unset'" [value]="v.id.toString()">
+                                            <div [innerHTML]="v.title | safeHtml"></div>
+                                        </mat-radio-button>
+                                    </mat-radio-group>
+                                </ng-container>
+
+                                <ng-container *ngIf="i.questionType == 3">
+                                    <mat-hint>محتوای زیر را تکمیل کنید</mat-hint>
+                                    <ckeditor [data]="i.complatabelContent"
+                                        (dataChange)="setItemAttrforselect($event, i.id)">
+                                    </ckeditor>
+                                </ng-container>
+
+                            </div>
+                        </ng-container>
 
                     </div>
                 </div>

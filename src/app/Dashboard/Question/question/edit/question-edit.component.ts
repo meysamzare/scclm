@@ -7,10 +7,22 @@ import { IQuestion } from "../question";
 import { ICourse } from "src/app/Dashboard/course/course";
 import { IGrade } from "src/app/Dashboard/grade/grade";
 import { Observable } from "rxjs";
-import { startWith, map } from "rxjs/operators";
+import { startWith, map, finalize } from "rxjs/operators";
+import { IQuestionOption } from "../../questionoption/questionoption";
+import Swal from "sweetalert2";
+import { Location } from "@angular/common";
 
 @Component({
-    templateUrl: "./question-edit.component.html"
+    templateUrl: "./question-edit.component.html",
+
+    styles: [
+        `
+            .panel-main.disabled {
+                pointer-events: none; 
+                opacity: 0.5;
+            }
+        `
+    ]
 })
 export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
     Title: string;
@@ -27,14 +39,21 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
     persones: string[] = [];
     filteredPerson: Observable<string[]>;
 
-    @ViewChild("fm1", {static: false}) public fm1: NgForm;
+    @ViewChild("fm1", { static: false }) public fm1: NgForm;
     @ViewChild("person", { static: false }) public person: NgModel;
+
+    options: IQuestionOption[] = [];
+
+    isLoading = false;
+
+    editOptionIndex: number = null;
 
     constructor(
         private route: Router,
         private activeRoute: ActivatedRoute,
         private message: MessageService,
-        private auth: AuthService
+        private auth: AuthService,
+        public location: Location,
     ) {
         activeRoute.params.subscribe(params => {
             this.activeRoute.data.subscribe(data => {
@@ -55,6 +74,8 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
                     this.Title = "ویرایش " + this.question.name;
                     this.btnTitle = "ویرایش";
                     this.isEdit = true;
+
+                    this.refreshOptions();
                 } else {
                     this.message.showWarningAlert("invalid Data");
                     this.route.navigate(["/dashboard"]);
@@ -101,7 +122,107 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
         );
     }
 
-    
+    addOptionTemp() {
+        this.options.push({
+            id: 0,
+            title: `گزینه ${this.options.length + 1}`,
+            isTrue: false,
+            name: "",
+            questionId: this.question.id || 0,
+            questionName: ""
+        });
+
+        this.editOptionIndex = this.options.length - 1;
+    }
+
+    deleteOption(option: IQuestionOption) {
+
+        let value = confirm("آیا از حذف این مورد اطمینان دارید؟");
+
+        if (value) {
+            if (this.isEdit && option.id != 0) {
+
+                this.auth.post("/api/QuestionOption/Delete", [option.id]).subscribe(data => {
+                    if (data.success) {
+                        this.refreshOptions();
+
+                        this.message.showSuccessAlert("با موفقیت حذف شد");
+                    } else {
+                        this.message.showMessageforFalseResult(data);
+                    }
+                }, er => {
+                    this.auth.handlerError(er);
+                });
+
+            } else {
+                this.options.splice(this.options.findIndex(c => c == option), 1);
+            }
+        }
+    }
+
+    editOption(option) {
+        if (this.isEdit) {
+            this.auth.post(`/api/QuestionOption/${option.id == 0 ? 'Add' : 'Edit'}`, option).subscribe(data => {
+                if (data.success) {
+                    this.refreshOptions();
+
+                    this.message.showSuccessAlert("با موفقیت ثبت شد");
+
+                    this.editOptionIndex = null;
+                } else {
+                    this.message.showMessageforFalseResult(data);
+                }
+            }, er => {
+                this.auth.handlerError(er);
+            });
+        }
+    }
+
+    setIsTrueOPtion(option) {
+        if (this.isEdit) {
+            this.auth.post("/api/Question/SetTrueOption", option).subscribe(data => {
+                if (data.success) {
+                    this.refreshOptions();
+
+                    this.message.showSuccessAlert("با موفقیت ثبت شد");
+                } else {
+                    this.message.showMessageforFalseResult(data);
+                }
+            }, er => {
+                this.auth.handlerError(er);
+            });
+        } else {
+            this.options.forEach(op => op.isTrue = false);
+
+            this.options.find(c => c == option).isTrue = !option.isTrue;
+        }
+    }
+
+    refreshOptions() {
+        this.isLoading = true;
+        this.auth.post("/api/Question/getOptions", this.question.id)
+            .pipe(finalize(() => this.isLoading = false))
+            .subscribe(data => {
+                if (data.success) {
+                    this.options = data.data;
+                } else {
+                    this.message.showMessageforFalseResult(data);
+                }
+            }, er => {
+                this.auth.handlerError(er);
+            });
+    }
+
+    getCourseByGrade() {
+        let gradeId = this.question.gradeId;
+
+        if (gradeId) {
+            return this.courses.filter(c => c.gradeId == gradeId);
+        }
+
+        return [];
+    }
+
     ngOnDestroy(): void {
         let title = "question";
         if (!this.fm1.submitted) {
@@ -118,7 +239,18 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
         }
     }
 
-    ngAfterViewInit(): void {}
+    ngAfterViewInit(): void { }
+
+    getFiltredPersons() {
+        let value = this.question.person;
+
+        if (value) {
+            return this.persones.filter(c => c.includes(value));
+        }
+
+        return this.persones;
+    }
+
     ngOnInit(): void {
         this.filteredPerson = this.person.valueChanges.pipe(
             startWith(""),
@@ -151,13 +283,13 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
                     object: this.question,
                     oldObject: JSON.parse(this.oldData),
                     table: "Question",
-                    tableObjectIds: [this.question.id]
+                    tableObjectIds: [this.question.id, ...this.options.map(c => c.id)]
                 }).subscribe(
                     (data: jsondata) => {
                         if (data.success) {
                             this.message.showSuccessAlert("با موفقیت ثبت شد");
 
-                            this.route.navigate(["/dashboard/question"]);
+                            this.location.back();
                         } else {
                             this.message.showMessageforFalseResult(data);
                         }
@@ -167,14 +299,20 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
                     }
                 );
             } else {
-                this.auth.post("/api/Question/Add", this.question, {
+
+                let obj = {
+                    question: this.question,
+                    options: this.options
+                }
+
+                this.auth.post("/api/Question/Add", obj, {
                     type: 'Add',
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
-                    tableName:'Question',
+                    tableName: 'Question',
                     logSource: 'dashboard',
-                    object: this.question,
+                    object: obj,
                     table: "Question",
                     tableObjectIds: [this.question.id]
                 }).subscribe(
@@ -182,7 +320,7 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
                         if (data.success) {
                             this.message.showSuccessAlert("با موفقیت ثبت شد");
 
-                            this.route.navigate(["/dashboard/question"]);
+                            this.clearForm();
                         } else {
                             this.message.showMessageforFalseResult(data);
                         }
@@ -195,5 +333,22 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
         } else {
             this.message.showWarningAlert("مقادیر خواسته شده را تکمیل نمایید");
         }
+    }
+
+
+
+    clearForm() {
+        this.question.id = 0;
+        this.question.type = null;
+        this.question.answer = '';
+        this.question.source = '';
+        this.question.mark = 1;
+        this.question.desc1 = '';
+        this.question.desc2 = '';
+
+        this.question.title = '';
+        this.question.complatabelContent = '';
+
+        this.options = [];
     }
 }

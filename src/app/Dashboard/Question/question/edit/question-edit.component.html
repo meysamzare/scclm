@@ -7,7 +7,7 @@
             <div class="ibox-content">
                 <div class="row">
                     <form #fm1="ngForm" id="fm11">
-                        <div class="col-sm-6 ">
+                        <div class="col-sm-6">
 
                             <div class="form-group">
                                 <label>عنوان سوال</label>
@@ -22,7 +22,8 @@
 
                             <div class="form-group">
                                 <label>انتخاب نوع سوال</label>
-                                <ng-select #typeselect="ngModel" name="type" [(ngModel)]="question.type" required>
+                                <ng-select #typeselect="ngModel" [disabled]="isEdit" name="type"
+                                    [(ngModel)]="question.type" required>
                                     <ng-option [value]="1">تشریحی</ng-option>
                                     <ng-option [value]="2">تستی</ng-option>
                                     <ng-option [value]="3">جایگزینی</ng-option>
@@ -89,8 +90,8 @@
                             <div class="form-group">
                                 <label>انتخاب درس</label>
                                 <ng-select #courseselect="ngModel" name="course" [(ngModel)]="question.courseId"
-                                    required>
-                                    <ng-option *ngFor="let cor of courses" [value]="cor.id">{{cor.name}}</ng-option>
+                                    required [disabled]="!question.gradeId">
+                                    <ng-option *ngFor="let cor of getCourseByGrade()" [value]="cor.id">{{cor.name}}</ng-option>
                                 </ng-select>
                                 <mat-error *ngIf="courseselect.hasError('required')">
                                     انتخاب درس الزامی است
@@ -103,7 +104,7 @@
                                     <input type="text" placeholder="طراح سوال" #person="ngModel" name="person"
                                         [(ngModel)]="question.person" required matInput [matAutocomplete]="auto">
                                     <mat-autocomplete #auto="matAutocomplete">
-                                        <mat-option *ngFor="let i of filteredPerson | async" [value]="i">
+                                        <mat-option *ngFor="let i of getFiltredPersons()" [value]="i">
                                             {{i}}
                                         </mat-option>
                                     </mat-autocomplete>
@@ -155,11 +156,101 @@
                             </div>
                         </div>
 
+                        <div class="col-lg-12" *ngIf="question.type == 3">
+                            <label>محتوایی که باید توسط کاربر تکمیل شود</label>
+                            <ckeditor name="completeContent" #complatabelContent="ngModel"
+                                [(ngModel)]="question.complatabelContent" required>
+                            </ckeditor>
+                            <div
+                                *ngIf="(complatabelContent.touched || complatabelContent.dirty) && complatabelContent.invalid">
+                                <p *ngIf="complatabelContent.hasError('required')" class="error">
+                                    وارد کردن محتوایی که باید توسط کاربر تکمیل شود الزامی است
+                                </p>
+                            </div>
+                        </div>
+
+
+                        <div class="row margin-top-10" *ngIf="question.type == 2">
+
+                            <div class="col-lg-12" style="padding: 30px;">
+                                <p><b>گزینه ها</b></p>
+
+                                <mat-progress-bar mode="buffer" *ngIf="isLoading"></mat-progress-bar>
+
+                                <button mat-stroked-button style="width: 100%; margin-bottom: 10px;"
+                                    (click)="addOptionTemp()">
+                                    افزودن گزینه جدید
+                                </button>
+
+                                <div class="row">
+                                    <div class="col-lg-6" *ngFor="let option of options; index as index">
+                                        <div class="form-group">
+                                            <div class="panel"
+                                                style="cursor: pointer; border-radius: 15px; background-color: whitesmoke;">
+
+                                                <button [tooltip]="'حذف دائمی گزینه'" mat-icon-button
+                                                    (click)="deleteOption(option)" color="warn">
+                                                    <mat-icon>cancel</mat-icon>
+                                                </button>
+
+                                                <button [tooltip]="'ویرایش گزینه'" (click)="editOptionIndex = index"
+                                                    [disabled]="editOptionIndex == index" mat-icon-button
+                                                    color="primary" style="margin-right: 5px;">
+                                                    <mat-icon>edit</mat-icon>
+                                                </button>
+
+                                                <button [tooltip]="'ثبت نهایی ویرایش'"
+                                                    *ngIf="isEdit && editOptionIndex == index"
+                                                    (click)="editOption(option)" mat-icon-button color="primary"
+                                                    style="margin-right: 5px">
+                                                    <mat-icon>save</mat-icon>
+                                                </button>
+
+                                                <button [tooltip]="'گزینه صحیح'" (click)="setIsTrueOPtion(option)"
+                                                    mat-icon-button color="primary" style="margin-right: 5px;">
+                                                    <mat-icon>{{ option.isTrue ? 'done_all' : 'done'}}</mat-icon>
+                                                </button>
+
+                                                <label>{{index + 1 + '.'}} &nbsp; {{option.title}}</label>
+
+                                                <div class="panel-main" [class.disabled]="editOptionIndex != index">
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <input type="text" required
+                                                                [ngModelOptions]="{ standalone: true }"
+                                                                [(ngModel)]="options[index].title"
+                                                                placeholder="نام گزینه" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <label>عنوان گزینه</label>
+                                                            <ckeditor [ngModelOptions]="{ standalone: true }"
+                                                                [(ngModel)]="options[index].name" required>
+                                                            </ckeditor>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                
+                                <button mat-stroked-button style="width: 100%; margin-bottom: 10px;"
+                                    (click)="addOptionTemp()">
+                                    افزودن گزینه جدید
+                                </button>
+                            </div>
+                        </div>
+
+
                         <br>
                         <br>
                         <div class="col-md-12">
                             <a mat-raised-button color="warn" style="margin: 5px;"
-                                routerLink="/dashboard/question">لغو</a>
+                                (click)="location.back()">لغو</a>
                             <button type="submit" mat-raised-button color="primary" [disabled]="!fm1.valid"
                                 (click)="sts()">{{ btnTitle }}</button>
                         </div>

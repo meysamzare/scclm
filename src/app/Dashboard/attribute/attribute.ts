@@ -42,6 +42,8 @@ export class IAttr {
 
     score: number = 1;
 
+    questionId: number = null;
+
 
     isInClient: boolean = true;
     isInShowInfo: boolean = false;

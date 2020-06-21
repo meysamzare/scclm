@@ -32,7 +32,6 @@ export class QuestionListComponent{
         "select",
         "id",
         "name",
-        "title",
         "gradeName",
         "courseName",
         "person",

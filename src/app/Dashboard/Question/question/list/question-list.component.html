@@ -76,20 +76,7 @@
                                     <td mat-cell *matCellDef="let row">
                                         {{row.name}} </td>
                                 </ng-container>
-
-                                <ng-container matColumnDef="title">
-                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> صورت سوال </th>
-                                    <td mat-cell *matCellDef="let row">
-                                        <ng-container *ngIf="row.title.length > 40; else elseTemplate">
-                                            {{row.title.substr(0 , 40) + '....'}}
-                                        </ng-container>
-                                        <ng-template #elseTemplate>
-                                            {{row.title}}
-                                        </ng-template>
-
-                                    </td>
-                                </ng-container>
-
+                                
                                 <ng-container matColumnDef="gradeName">
                                     <th mat-header-cell *matHeaderCellDef mat-sort-header> پایه تحصیلی </th>
                                     <td mat-cell *matCellDef="let row">

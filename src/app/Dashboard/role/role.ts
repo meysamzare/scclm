@@ -296,6 +296,21 @@ export class RoleClass {
     remove_Workbook = false;
     view_Workbook = false;
 
+    add_OnlineExam = false;
+    edit_OnlineExam = false;
+    remove_OnlineExam = false;
+    view_OnlineExam = false;
+
+    add_OnlineExamOption = false;
+    edit_OnlineExamOption = false;
+    remove_OnlineExamOption = false;
+    view_OnlineExamOption = false;
+
+    add_OnlineExamResult = false;
+    edit_OnlineExamResult = false;
+    remove_OnlineExamResult = false;
+    view_OnlineExamResult = false;
+
     view_Log = false;
 
     haveAnyUser = false;

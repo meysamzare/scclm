@@ -15,6 +15,7 @@ import { ICategory } from '../../category/category';
 import { IAttributeOption } from '../attribute-option';
 import Swal from "sweetalert2";
 import { finalize } from 'rxjs/internal/operators/finalize';
+import { IQuestion } from '../../Question/question/question';
 
 declare var $: any;
 
@@ -59,6 +60,14 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
 
     attributeOptions: IAttributeOption[] = [];
 
+    TYPE = 0;
+
+    pageTitle = "نمون برگ";
+    pageTitles = "نمون برگ ها";
+    pageUrl = "category";
+
+    Questions: IQuestion[] = [];
+
     constructor(
         public route: Router,
         private activeRoute: ActivatedRoute,
@@ -68,6 +77,34 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
         public location: Location
     ) {
         this.activeRoute.params.subscribe(params => {
+
+            this.activeRoute.data.subscribe(data => {
+                
+                this.TYPE = data["Type"];
+
+                if (this.TYPE == 1) {
+                    this.pageTitle = "آزمون آنلاین";
+                    this.pageTitles = "آزمون های آنلاین";
+                    this.pageUrl = "online-exam";
+
+                    this.auth.post("/api/Question/getAll").subscribe((data: jsondata) => {
+                        if (data.success) {
+                            this.Questions = data.data;
+                        } else {
+                            this.message.showMessageforFalseResult(data);
+                        }
+                    });
+                }
+
+                this.auth.post("/api/Category/getAllByType", this.TYPE).subscribe((data: jsondata) => {
+                    if (data.success) {
+                        this.Categories = data.data;
+                    } else {
+                        this.message.showMessageforFalseResult(data);
+                    }
+                });
+            });
+
             const id = params['id'];
 
             if (id === '0') {
@@ -103,14 +140,6 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
                 }
             }
         });
-
-        this.auth.post("/api/Category/GetAll").subscribe((data: jsondata) => {
-            if (data.success) {
-                this.Categories = data.data;
-            } else {
-                this.message.showMessageforFalseResult(data);
-            }
-        });
     }
 
     ngOnDestroy(): void {
@@ -138,7 +167,7 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
                 this.message.showMessageforFalseResult(data);
             }
         });
-        this.auth.post('/api/Attribute/GetAll', null).subscribe((data: jsondata) => {
+        this.auth.post('/api/Attribute/getAllByCatType', this.TYPE).subscribe((data: jsondata) => {
             if (data.success) {
                 this.attributes = data.data;
             } else {
@@ -376,27 +405,6 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
         }
 
         return false;
-    }
-
-    add(event: MatChipInputEvent): void {
-        const input = event.input;
-        const value = event.value;
-
-        if ((value || '').trim()) {
-            this.values.push({ name: value.trim() });
-        }
-
-        if (input) {
-            input.value = '';
-        }
-    }
-
-    remove(tag: ITags): void {
-        const index = this.values.indexOf(tag);
-
-        if (index >= 0) {
-            this.values.splice(index, 1);
-        }
     }
 
     isCatSelected(): boolean {

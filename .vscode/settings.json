@@ -2,5 +2,11 @@
 	"editor.detectIndentation": false,
 	"editor.renderLineHighlight": "all",
     "editor.renderIndentGuides": false,
-    "explorer.compactFolders": false
+    "explorer.compactFolders": false,
+    "files.watcherExclude": {
+        "**/node_modules/*/**": false
+    },
+    "search.exclude": {
+        "**/node_modules": false
+    }
 }

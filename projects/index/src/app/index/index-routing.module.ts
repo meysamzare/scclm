@@ -13,6 +13,7 @@ import { ProductsComponent } from './Product/products/products.component';
 import { ProductComponent } from './Product/product/product.component';
 import { LoadIdataResolverService } from 'src/app/shared/Auth/load-idata-resolver.service';
 import { ViewVirtualTeachingComponent } from './Product/view-virtual-teaching/view-virtual-teaching.component';
+import { OnlineExamsComponent } from './online-exams/online-exams.component';
 
 const routes: Routes = [
     {
@@ -43,6 +44,16 @@ const routes: Routes = [
                     }
                 ]
 
+            },
+            {
+                path: "online-exam",
+                children: [
+                    {
+                        path: "",
+                        pathMatch: "full",
+                        component: OnlineExamsComponent
+                    }
+                ]
             },
             {
                 path: "posts",

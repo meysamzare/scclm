@@ -68,7 +68,8 @@ export class RegisterItemComponent implements AfterViewInit, OnDestroy {
                     attributeId: attr.id,
                     attrubuteValue: "",
                     attributeFilePath: "1",
-                    fileName: ""
+                    fileName: "",
+                    score: 0
                 });
             } else {
                 this.itemAttrs.push({
@@ -76,7 +77,8 @@ export class RegisterItemComponent implements AfterViewInit, OnDestroy {
                     attributeId: attr.id,
                     attrubuteValue: "",
                     attributeFilePath: "",
-                    fileName: ""
+                    fileName: "",
+                    score: 0
                 });
             }
         });
@@ -159,7 +161,8 @@ export class RegisterItemComponent implements AfterViewInit, OnDestroy {
                 attributeId: attrId,
                 attrubuteValue: inputValue,
                 attributeFilePath: "",
-                fileName: ""
+                fileName: "",
+                score: 0
             });
         }
     }
@@ -181,7 +184,8 @@ export class RegisterItemComponent implements AfterViewInit, OnDestroy {
                 attributeId: attrId,
                 attrubuteValue: event,
                 attributeFilePath: "",
-                fileName: ""
+                fileName: "",
+                score: 0
             });
         }
     }
@@ -274,7 +278,8 @@ export class RegisterItemComponent implements AfterViewInit, OnDestroy {
                         attributeId: attrId,
                         attrubuteValue: result,
                         attributeFilePath: "1",
-                        fileName: file.name
+                        fileName: file.name,
+                        score: 0
                     });
                 }
             };

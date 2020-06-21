@@ -40,6 +40,23 @@ export class ICategory {
 
     showRow: ShowRow;
 
+    
+    type = 0;
+    gradeId: number = null;
+    classId: number = null;
+    randomAttribute: boolean = false;
+    randomAttributeOption: boolean = false;
+
+    gradeString = "";
+    classString = "";
+
+    
+    teachersIdAccess: number[] = [];
+
+
+
+    formatedDateEnd = "";
+
     postType: number;
 
     registerPicUrl = "";
@@ -60,7 +77,6 @@ export class ICategory {
     datePublishString = "";
     dateExpireString = "";
     canShowByDate = false;
-
 }
 
 export enum ShowRow {

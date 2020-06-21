@@ -19,10 +19,10 @@
                             <div class="form-group">
                                 <label>نام</label>
                                 <input type="text" required #name="ngModel" name="name" [(ngModel)]="category.title"
-                                    placeholder="نام نمون برگ" class="form-control">
+                                    placeholder="نام {{ pageTitle }}" class="form-control">
                                 <div *ngIf="(name.touched || name.dirty)  && name.invalid">
                                     <p *ngIf="name.hasError('required')" class="error">
-                                        وارد کردن نام نمون برگ الزامی است
+                                        وارد کردن نام {{ pageTitle }} الزامی است
                                     </p>
                                 </div>
                             </div>
@@ -81,21 +81,22 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="form-group">
-                                <label>آیا این نمون برگ فعال است؟</label>
+                                <label>آیا این {{ pageTitle }} فعال است؟</label>
                                 <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="category.isActive">فعال
                                 </mat-checkbox>
                             </div>
 
                             <div class="form-group">
-                                <label>آیا این نمون برگ دارای اطلاع رسانی است؟</label>
+                                <label>آیا این {{ pageTitle }} دارای اطلاع رسانی است؟</label>
                                 <mat-checkbox [ngModelOptions]="{standalone: true}"
                                     (change)="category.isInfoShow = category.haveInfo" [(ngModel)]="category.haveInfo">
                                     اطلاع رسانی</mat-checkbox>
                             </div>
 
                             <div class="form-group">
-                                <label>آیا زمان اطلاع رسانی نمون برگ فرا رسیده است؟</label>
+                                <label>آیا زمان اطلاع رسانی {{ pageTitle }} فرا رسیده است؟</label>
                                 <mat-checkbox [ngModelOptions]="{standalone: true}"
                                     [disabled]="category.haveInfo == false" [(ngModel)]="category.isInfoShow">زمان اطلاع
                                     رسانی</mat-checkbox>
@@ -134,7 +135,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label>انتخاب نوع پست مرتبط به این نمونه برگ</label>
+                                <label>انتخاب نوع پست مرتبط به این {{ pageTitle }}</label>
                                 <ng-select #type="ngModel" name="type" [(ngModel)]="category.postType" required>
                                     <ng-option [value]="0">صفحه اصلی</ng-option>
                                     <ng-option *ngIf="auth.isUserAccess('post_feed', false)" [value]="1">
@@ -189,9 +190,49 @@
                                         {{ getPostTypeString(25) }}</ng-option>
                                 </ng-select>
                                 <mat-error *ngIf="type.hasError('required')">
-                                    انتخاب نوع پست مرتبط به این نمونه برگ الزامی است
+                                    انتخاب نوع پست مرتبط به این {{ pageTitle }} الزامی است
                                 </mat-error>
                             </div>
+
+                            <ng-container *ngIf="TYPE == 1">
+
+                                <div class="form-group">
+                                    <label>پایه تحصیلی</label>
+                                    <ng-select #grade="ngModel" name="grade" [(ngModel)]="category.gradeId"
+                                        (change)="getClassbyGrade()" [required]="true">
+                                        <ng-option *ngFor="let u of grades" [value]="u.id">{{u.name}}</ng-option>
+                                    </ng-select>
+                                    <mat-error *ngIf="grade.hasError('required')">
+                                        انتخاب پایه تحصیلی الزامی است
+                                    </mat-error>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>کلاس</label>
+                                    <ng-select #classId="ngModel" name="classId" [(ngModel)]="category.classId"
+                                        [disabled]="!category.gradeId">
+                                        <ng-option *ngFor="let u of classes" [value]="u.id">{{u.name}}</ng-option>
+                                    </ng-select>
+                                    <mat-hint>انتخاب کلاس اختیاری است</mat-hint>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>سوالات به صورت تصادفی</label>
+                                    <mat-checkbox [ngModelOptions]="{standalone: true}"
+                                        [(ngModel)]="category.randomAttribute">
+                                        سوالات تصادفی
+                                    </mat-checkbox>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>جواب های سوال به صورت تصادفی</label>
+                                    <mat-checkbox [ngModelOptions]="{standalone: true}"
+                                        [(ngModel)]="category.randomAttributeOption">
+                                        جواب های تصادفی
+                                    </mat-checkbox>
+                                </div>
+
+                            </ng-container>
 
                         </div>
                         <div class="col-sm-6">
@@ -203,21 +244,22 @@
                                 <mat-hint>انتخاب ریشه اختیاری است</mat-hint>
                             </div>
                             <div class="form-group">
-                                <label>توضیحات نمون برگ</label>
+                                <label>توضیحات {{ pageTitle }}</label>
                                 <ckeditor name="desc" [(ngModel)]="category.desc">
                                 </ckeditor>
                             </div>
                             <div class="form-group">
-                                <label>توافق نامه نمون برگ</label>
+                                <label>توافق نامه {{ pageTitle }}</label>
                                 <ckeditor name="licence" [(ngModel)]="category.license">
                                 </ckeditor>
                                 <mat-hint>درصورت پرکردن این فیلد قبل از وارد کردن داده، کاربر می بایست مفاد این توافق
                                     نامه را بپذیرد</mat-hint>
                             </div>
                             <div class="form-group">
-                                <label>پیغام پایان ثبت نام</label>
+                                <label>پیغام پایان {{ category.btnTitle ? category.btnTitle : "ثبت نام" }}</label>
                                 <input type="text" name="endMessage" [(ngModel)]="category.endMessage"
-                                    placeholder="پیغام پایان ثبت نام " class="form-control">
+                                    placeholder="پیغام پایان {{ category.btnTitle ? category.btnTitle : 'ثبت نام' }} "
+                                    class="form-control">
                             </div>
 
 
@@ -228,7 +270,7 @@
                                     <ng-option *ngFor="let u of roles" [value]="u.id">{{u.name}}
                                     </ng-option>
                                 </ng-select>
-                                <mat-hint>سطح دسترسی مجاز به مشاهده نمون برگ</mat-hint>
+                                <mat-hint>سطح دسترسی مجاز به مشاهده {{ pageTitle }}</mat-hint>
                                 <mat-error *ngIf="role.hasError('required')">
                                     انتخاب سطح دسترسی الزامی است
                                 </mat-error>
@@ -244,7 +286,7 @@
                                     <ng-option [value]="3">احراز هویت دانش آموز</ng-option>
                                     <ng-option [value]="4">تمامی کاربران سایت (دبیران - اولیا و دانش آموزان)</ng-option>
                                 </ng-select>
-                                <mat-hint>آیا کاربر برای وارد شدن به نمون برگ و وارد کردن داده نیاز است به
+                                <mat-hint>آیا کاربر برای وارد شدن به {{ pageTitle }} و وارد کردن داده نیاز است به
                                     حساب کاربری خود وارد شود یا خیر
                                 </mat-hint>
                                 <mat-error *ngIf="authorize.hasError('required')">
@@ -252,8 +294,51 @@
                                 </mat-error>
                             </div>
 
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+
+                                    <div class="row">
+                                        <div class="col-lg-9">
+                                            <div class="form-group">
+                                                <label>انتخاب دسترسی دبیران</label>
+                                                <ng-select name="teacherSelect" [(ngModel)]="selectedTeacherId">
+                                                    <ng-option *ngFor="let u of Teachers" [value]="u.id">{{u.name}}
+                                                    </ng-option>
+                                                </ng-select>
+                                                <mat-hint>افزودن دبیر مجاز به مشاهده و ویرایش {{ pageTitle }}</mat-hint>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+
+                                            <button [disabled]="!selectedTeacherId" mat-stroked-button style="width: 100%; margin-top: 35px;"
+                                                (click)="addTeacherToCategoryAccess()">
+                                                افزودن
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="row margin-top-10">
+                                        <div class="col-lg-12">
+                                            <mat-chip-list>
+                                                <mat-chip *ngFor="let i of category.teachersIdAccess">
+                                                    {{ getTeacherName(i) }}
+                                                    <mat-icon matChipRemove (click)="removeTeacher(i)"
+                                                        style="margin-right: 5px; margin-left: 0;">cancel</mat-icon>
+                                                </mat-chip>
+                                            </mat-chip-list>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                            <hr>
+
                             <div class="form-group">
-                                <label>آیا این نمون برگ دارای کارت ورود به جلسه است؟</label>
+                                <label>آیا این {{ pageTitle }} دارای کارت ورود به جلسه است؟</label>
                                 <mat-checkbox [ngModelOptions]="{standalone: true}"
                                     [(ngModel)]="category.haveEntringCard">
                                     کارت ورود به جلسه</mat-checkbox>
@@ -334,7 +419,7 @@
 
                         <div class="col-md-12">
                             <button type="button" mat-raised-button color="warn" style="margin: 5px;"
-                                routerLink="/dashboard/category">لغو</button>
+                                routerLink="/dashboard/{{ pageUrl }}">لغو</button>
                             <button type="submit" mat-raised-button color="primary"
                                 [disabled]="!fm1.valid || (!isEdit && category.showInfoFileData.length == 0) || (!isEdit && category.registerFileData.length == 0)"
                                 (click)="sts()">{{ btnTitle }}</button>
@@ -346,12 +431,88 @@
     </div>
 </div>
 
+<ng-container *ngIf="TYPE == 1 && isEdit">
+    <div class="row margin-top-10">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+
+                <div class="ibox-title">
+                    افزودن گروهی سوال
+                </div>
+
+                <div class="ibox-content">
+                    <form #fm3="ngForm">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label>انتخاب پایه</label>
+                                    <ng-select name="gradeSelect" [(ngModel)]="selectedGradeForCourse" required>
+                                        <ng-option *ngFor="let u of grades" [value]="u.id">{{u.name}}</ng-option>
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label>انتخاب درس</label>
+                                    <ng-select #Course="ngModel" name="courseSelect"
+                                        [(ngModel)]="selectedCourseForQuestion" [disabled]="!selectedGradeForCourse"
+                                        required>
+                                        <ng-option *ngFor="let u of getCourseByGrade()" [value]="u.id">{{u.name}}
+                                        </ng-option>
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+
+                                <div class="form-group">
+                                    <label>سوال سخت</label>
+                                    <input type="text" inputmode="numeric" pattern="[0-9]*" name="hardQuestion"
+                                        [(ngModel)]="hardQuestionNumber" placeholder="تعداد سوال سخت"
+                                        class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+
+                                <div class="form-group">
+                                    <label>سوال متوسط</label>
+                                    <input type="text" inputmode="numeric" pattern="[0-9]*" name="mediumQuestion"
+                                        [(ngModel)]="mediumQuestionNumber" placeholder="تعداد سوال متوسط"
+                                        class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+
+                                <div class="form-group">
+                                    <label>سوال آسان</label>
+                                    <input type="text" inputmode="numeric" pattern="[0-9]*" name="easyQuestion"
+                                        [(ngModel)]="easyQuestionNumber" placeholder="تعداد سوال آسان"
+                                        class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <mat-progress-bar mode="buffer" *ngIf="isLoadingQuestions"></mat-progress-bar>
+                                <button mat-stroked-button style="width: 100%;" (click)="addRandomQuestions()"
+                                    [disabled]="fm3.invalid || isLoadingQuestions || !selectedCourseForQuestion || (!hardQuestionNumber && !mediumQuestionNumber && !easyQuestionNumber)">
+                                    افزودن گروهی سوالات
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</ng-container>
+
+
 <div class="row margin-top-10" *ngIf="isEdit">
     <mat-progress-bar mode="buffer" *ngIf="isLoading"></mat-progress-bar>
 
-    <div *ngFor="let unit of units">
-
-        <div class="col-lg-4 ui-sortable" *ngIf="getAttrsForUnit(unit.id).length != 0">
+    <ng-container *ngFor="let unit of units">
+        <div class="col-lg-12" *ngIf="getAttrsForUnit(unit.id).length != 0">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5 style="color: #1ab394"> {{ unit.title }} </h5>
@@ -359,6 +520,7 @@
                 <div class="ibox-content">
                     <div class="form-group" *ngFor="let i of getAttrsForUnit(unit.id); let ind = index">
                         <div class="panel" style="cursor: pointer; border-radius: 15px; background-color: whitesmoke;">
+
                             <button [tooltip]="'حذف دائمی فیلد'" mat-icon-button (click)="deleteAttr(i.id)"
                                 color="warn">
                                 <mat-icon>cancel</mat-icon>
@@ -369,7 +531,42 @@
                                 <mat-icon>edit</mat-icon>
                             </button>
 
-                            <label *ngIf="i.attrTypeInt != 4">{{i.title}}</label>
+                            <mat-checkbox [checked]="i.isInClient"
+                                (change)="changeCheckableAttr($event.checked, i, 'isInClient')">
+                                سمت کاربر
+                            </mat-checkbox>
+
+                            <mat-checkbox [checked]="i.isRequired"
+                                (change)="changeCheckableAttr($event.checked, i, 'isRequired')">
+                                اجباری
+                            </mat-checkbox>
+
+                            <mat-checkbox [checked]="i.isUniq"
+                                (change)="changeCheckableAttr($event.checked, i, 'isUniq')">
+                                غیرتکراری
+                            </mat-checkbox>
+
+                            <mat-checkbox [checked]="i.isInShowInfo"
+                                (change)="changeCheckableAttr($event.checked, i, 'isInShowInfo')">
+                                اطلاع رسانی
+                            </mat-checkbox>
+
+                            <mat-checkbox [checked]="i.isInSearch"
+                                (change)="changeCheckableAttr($event.checked, i, 'isInSearch')">
+                                جستجو
+                            </mat-checkbox>
+
+                            <div *ngIf="i.attrTypeInt == 11">
+                                <button [tooltip]="'انتقال به صفحه ویرایش سوال'"
+                                    routerLink="/dashboard/question/edit/{{ i.questionId }}" mat-icon-button
+                                    color="primary" style="margin-right: 5px;">
+                                    <mat-icon>help_center</mat-icon>
+                                </button>
+                            </div>
+
+                            <br>
+
+                            <label *ngIf="i.attrTypeInt != 4 && i.attrTypeInt != 11">{{i.title}}</label>
 
                             <input *ngIf="i.attrTypeInt == 1" type="text" [tabIndex]="ind + 5" class="form-control"
                                 placeholder="{{i.title}}" [matTooltip]="i.desc" />
@@ -393,7 +590,8 @@
                             <mat-form-field *ngIf="i.attrTypeInt == 6">
                                 <mat-label>{{i.title}}</mat-label>
                                 <mat-select style="direction: ltr">
-                                    <mat-option *ngFor="let v of getShiftedItem(i)" [value]="v.id">{{v.title}}
+                                    <mat-option *ngFor="let v of getShiftedItem(i)" [value]="v.id"
+                                        (click)="setIsTrueAttributeOption(v)">{{v.title}}
                                     </mat-option>
                                 </mat-select>
                                 <mat-hint>{{i.desc}}</mat-hint>
@@ -401,7 +599,7 @@
 
                             <mat-radio-group class="example-radio-group" *ngIf="i.attrTypeInt == 10">
                                 <mat-radio-button class="example-radio-button" *ngFor="let v of getShiftedItem(i)"
-                                    [value]="v.id">{{v.title}}
+                                    [value]="v.id" double-click (doubleClick)="setIsTrueAttributeOption(v)">{{v.title}}
                                 </mat-radio-button>
                             </mat-radio-group>
 
@@ -415,11 +613,38 @@
                             <textarea *ngIf="i.attrTypeInt == 9" [tabIndex]="ind + 5" class="form-control"
                                 placeholder="{{i.title}}" [matTooltip]="i.desc"></textarea>
 
+
+                            <ng-container *ngIf="i.attrTypeInt == 11">
+                                <div [innerHTML]="i.title | safeHtml"></div>
+
+                                <hr>
+
+                                <ng-container *ngIf="i.questionType == 1">
+                                    <label>جواب کاربر:</label>
+                                </ng-container>
+
+                                <ng-container *ngIf="i.questionType == 2">
+                                    <mat-radio-group class="radio-group">
+                                        <mat-radio-button class="radio-button" *ngFor="let v of getShiftedItem(i)"
+                                            [value]="v.id" double-click
+                                            (doubleClick)="setIsTrueQuestionOption(v, i.questionId)">
+                                            <div [innerHTML]="v.title | safeHtml"></div>
+                                        </mat-radio-button>
+                                    </mat-radio-group>
+                                </ng-container>
+
+                                <ng-container *ngIf="i.questionType == 3">
+                                    <mat-hint>محتوای زیر را تکمیل کنید</mat-hint>
+                                    <div [innerHTML]="i.complatabelContent | safeHtml"></div>
+                                </ng-container>
+
+                            </ng-container>
+
                         </div>
 
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </ng-container>
 </div>

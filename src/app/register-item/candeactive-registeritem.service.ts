@@ -16,7 +16,7 @@ export class CanDeActiveRegisterItem
         nextState?: RouterStateSnapshot
     ): boolean {
         if (component.isFormDirty()) {
-            return confirm("آیا از خروج اطمینان دارید؟ تمامی داده های شما پاک خواهد شد");
+            return confirm("آیا از خروج اطمینان دارید؟");
         }
         return true;
     }

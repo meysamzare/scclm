@@ -1,15 +1,40 @@
 .bordered {
-    border: 1px solid #ccc !important;
-    border-radius: 15px;
-    padding: 10px;
+	border: 1px solid #ccc !important;
+	border-radius: 15px;
+	padding: 10px;
 }
 
 .radio-group {
-    display: flex;
-    flex-direction: column;
-    // margin: 15px 0;
+	display: flex;
+	flex-direction: column;
+	// margin: 15px 0;
 }
 
 .radio-button {
-    margin: 0;
+	margin: 0;
+}
+
+.step-dot {
+	height: 15px;
+	width: 15px;
+	margin: 0 2px;
+	background-color: #bbbbbb;
+	border: none;
+	border-radius: 50%;
+	display: inline-block;
+	opacity: 0.3;
+
+	&.finished {
+		background-color: #4caf50;
+    }
+    
+    &.active {
+        opacity: 1;
+        background-color: #5e5e5ec7;
+    }
+    
+    &.error {
+        opacity: 1;
+        background-color: #fa3535cc !important;
+    }
 }

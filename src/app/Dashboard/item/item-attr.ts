@@ -1,5 +1,5 @@
-export class IItemAttr{
-    constructor(){}
+export class IItemAttr {
+    constructor() { }
 
     itemId: number;
 
@@ -10,4 +10,8 @@ export class IItemAttr{
     attributeFilePath: any;
 
     fileName: any;
+
+    score: number = 0;
+
+    scoreString?: number = 0;
 }

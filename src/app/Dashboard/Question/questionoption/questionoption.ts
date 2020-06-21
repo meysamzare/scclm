@@ -3,6 +3,8 @@ export class IQuestionOption{
     
     id = 0;
 
+    title: string;
+
     name: string;
 
     isTrue: boolean = false;

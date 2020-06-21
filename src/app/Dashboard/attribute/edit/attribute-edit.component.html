@@ -54,6 +54,7 @@
                                     <ng-option [value]="10">لیست گزینشی</ng-option>
                                     <ng-option [value]="7">تصویر</ng-option>
                                     <ng-option [value]="8">فایل</ng-option>
+                                    <ng-option [value]="11">بانک سوالات</ng-option>
                                 </ng-select>
                                 <mat-error *ngIf="type.hasError('required')">
                                     انتخاب نوع الزامی است
@@ -112,6 +113,21 @@
                                 <hr>
                             </ng-container>
 
+                            <ng-container *ngIf="attr.attrTypeInt == 11">
+
+                                <div class="form-group">
+                                    <label>انتخاب سوال</label>
+                                    <ng-select #question="ngModel" name="question" [(ngModel)]="attr.questionId" required>
+                                        <ng-option *ngFor="let i of Questions" [value]="i.id">{{i.name}}
+                                        </ng-option>
+                                    </ng-select>
+                                    <mat-error *ngIf="question.hasError('required')">
+                                        انتخاب سوال الزامی است
+                                    </mat-error>
+                                </div>
+
+                            </ng-container>
+
                             <div class="form-group" *ngIf="attr.attrTypeInt == 8">
                                 <label>حداکثر حجم فایل (MB)</label>
                                 <input type="number" required #maxSize="ngModel" name="maxFileSize"
@@ -148,14 +164,14 @@
                         </div>
                         <div class="col-sm-6 ">
                             <div class="form-group">
-                                <label>نمون برگ</label>
+                                <label>{{ pageTitle }}</label>
                                 <ng-select [clearable]="false" #cat="ngModel" name="category"
                                     [(ngModel)]="attr.categoryId" required>
                                     <ng-option *ngFor="let u of Categories" [value]="u.id">{{u.title}}</ng-option>
                                 </ng-select>
                                 <div *ngIf="(cat.touched || cat.dirty)  && cat.invalid">
                                     <p *ngIf="cat.hasError('required')" class="error">
-                                        انتخاب نمون برگ الزامی است
+                                        انتخاب {{ pageTitle }} الزامی است
                                     </p>
                                 </div>
                             </div>

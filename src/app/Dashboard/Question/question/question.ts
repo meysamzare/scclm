@@ -17,7 +17,7 @@ export class IQuestion{
 
     source: string;
 
-    mark: number;
+    mark: number = 1;
 
     defact: number;
 
@@ -26,6 +26,8 @@ export class IQuestion{
     desc1: string;
 
     desc2: string;
+
+    complatabelContent: string;
 
 
     gradeName = "";

@@ -6,12 +6,13 @@ import { Injectable } from '@angular/core';
 export class IDBService {
 
     dbName = "main";
-    dbVersion = 5;
+    dbVersion = 9;
     dbStudentStoreName = "student";
     dbTokenStoreName = "token";
     dbUserStoreName = "us";
     dbApiStoreName = "api";
     dbDraftStoreName = "draft";
+    dbRegisterItemStoreName = "registerItem";
 
     db: IDBDatabase;
 
@@ -25,6 +26,7 @@ export class IDBService {
             req.onupgradeneeded = (e) => {
                 var database: IDBDatabase = (e.target as any).result;
 
+                database.createObjectStore(this.dbRegisterItemStoreName, { keyPath: "catId", autoIncrement: false });
                 database.createObjectStore(this.dbDraftStoreName, { keyPath: "title", autoIncrement: false });
 
                 var stdstore = database.createObjectStore(this.dbStudentStoreName, { keyPath: "id", autoIncrement: true });

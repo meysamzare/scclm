@@ -3,6 +3,20 @@
 @import 'angular-notifier/styles.css';
 @import "~@ng-select/ng-select/themes/material.theme.css";
 
+
+.cke_button__mathjax {
+    display: none !important;
+}
+.cke_button__maximize {
+    display: none !important;
+}
+.cke_button__about {
+    display: none !important;
+}
+iframe#FMathEd1_ads {
+    display: none !important;
+}
+
 .mat-radio-label-content {
     white-space: pre-wrap;
 }

@@ -53,7 +53,12 @@ import { RouterModule } from '@angular/router';
 import { LoginForRegisterItemComponent } from './register-item/login-for-register-item/login-for-register-item.component';
 import { LicenseForRegisterItemComponent } from './register-item/license-for-register-item/license-for-register-item.component';
 import { CustomInterceptor } from 'public/Services/http-interceptor/custom-Interceptor.service';
+import { HtmlToolsModule } from 'src/app/html-tools/html-tools.module';
 
+import { CKEditorModule } from 'ckeditor4-angular';
+import { RegisterStepDirective, StepsDirective } from './register-item/register-step.directive';
+import { CountdownModule } from 'ngx-countdown';
+import { AttributeInputModule } from './register-item/attribute-input/attribute-input.module';
 
 @NgModule({
     declarations: [
@@ -78,7 +83,9 @@ import { CustomInterceptor } from 'public/Services/http-interceptor/custom-Inter
         CustomMessageComponent,
         AdvertisingComponent,
         LoginForRegisterItemComponent,
-        LicenseForRegisterItemComponent
+        LicenseForRegisterItemComponent,
+        RegisterStepDirective,
+        StepsDirective,
     ],
     imports: [
         IndexModule,
@@ -99,7 +106,11 @@ import { CustomInterceptor } from 'public/Services/http-interceptor/custom-Inter
         NgProgressHttpModule,
         NgProgressRouterModule,
         ImageIconModule,
-        RouterModule
+        RouterModule,
+        HtmlToolsModule,
+        CKEditorModule,
+        CountdownModule,
+        AttributeInputModule
     ],
     providers: [
         AuthService,

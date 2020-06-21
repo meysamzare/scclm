@@ -44,7 +44,7 @@ export class QuestionOptionEditComponent implements OnDestroy{
             } else {
                 var idd = Number.parseInt(id);
                 if (Number.isInteger(idd)) {
-                    this.Title = "ویرایش گزینه " + this.questionoption.name;
+                    this.Title = "ویرایش گزینه " + this.questionoption.title;
                     this.btnTitle = "ویرایش";
                     this.isEdit = true;
                 } else {

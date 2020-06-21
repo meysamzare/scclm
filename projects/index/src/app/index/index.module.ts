@@ -17,6 +17,7 @@ import { ProductsComponent } from './Product/products/products.component';
 import { ProductComponent } from './Product/product/product.component';
 import { RouterModule } from '@angular/router';
 import { ViewVirtualTeachingComponent } from './Product/view-virtual-teaching/view-virtual-teaching.component';
+import { OnlineExamsComponent } from './online-exams/online-exams.component';
 
 @NgModule({
     declarations: [
@@ -31,6 +32,7 @@ import { ViewVirtualTeachingComponent } from './Product/view-virtual-teaching/vi
         ProductsComponent,
         ProductComponent,
         ViewVirtualTeachingComponent,
+        OnlineExamsComponent,
     ],
     imports: [
         CommonModule,

@@ -190,6 +190,9 @@ import { WorkbookComparisonComponent } from '../Dashboard/chart-report/workbook-
 import { TreeComponent, TreeDialogComponent } from '../shared/components/tree/tree.component';
 
 import { CKEditorModule } from 'ckeditor4-angular';
+import { HtmlToolsModule } from "../html-tools/html-tools.module";
+import { DoubleClickDirective } from '../shared/Directive/double-click.directive';
+import { SetItemAttributeScoreComponent } from '../Dashboard/item/list/set-item-attribute-score/set-item-attribute-score.component';
 
 @NgModule({
     imports: [
@@ -212,7 +215,8 @@ import { CKEditorModule } from 'ckeditor4-angular';
 		NgSelectModule,
         NgxDropzoneModule,
         ChartsModule,
-        CKEditorModule
+        CKEditorModule,
+        HtmlToolsModule
     ],
     declarations: [
         DashboardComponent,
@@ -352,7 +356,9 @@ import { CKEditorModule } from 'ckeditor4-angular';
         WorkbookReportByClassComponent,
         WorkbookComparisonComponent,
         TreeComponent,
-        TreeDialogComponent
+        TreeDialogComponent,
+        DoubleClickDirective,
+        SetItemAttributeScoreComponent
     ],
     providers: [
         AuthGuardService,
@@ -407,7 +413,8 @@ import { CKEditorModule } from 'ckeditor4-angular';
         ViewLogDescComponent,
         NotificationSeenModalComponent,
         ExamDetailsComponent,
-        TreeDialogComponent
+        TreeDialogComponent,
+        SetItemAttributeScoreComponent
     ]
 })
 export class DashboardModule {}

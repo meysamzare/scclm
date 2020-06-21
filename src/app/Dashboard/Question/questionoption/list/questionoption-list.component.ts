@@ -31,7 +31,7 @@ export class QuestionOptionListComponent {
     displayedColumns: string[] = [
         "select",
         "id",
-        "name",
+        "title",
         "questionName",
         "istrue",
         "action"

@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild } from '@angular
 import { IAttr } from 'src/app/Dashboard/attribute/attribute';
 import { IItemAttr } from 'src/app/Dashboard/item/item-attr';
 import { ICategory, CategoryAuthorizeState } from 'src/app/Dashboard/category/category';
-import { FormGroup, NgForm, FormControl, Validators } from '@angular/forms';
+import { FormGroup, NgForm, FormControl, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService, jsondata } from 'src/app/shared/Auth/auth.service';
 import { MessageService } from 'src/app/shared/services/message.service';
@@ -13,10 +13,16 @@ import { RegisterItemLoginService } from './login-for-register-item/register-ite
 import { RegisterItemLicenseService } from './license-for-register-item/register-item-license.service';
 import { HttpRequest, HttpHeaders, HttpEventType, HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/internal/operators/map';
-import { last, catchError } from 'rxjs/operators';
+import { last, catchError, debounceTime } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
 import { EMPTY } from 'rxjs/internal/observable/empty';
 import { IAttributeOption } from 'src/app/Dashboard/attribute/attribute-option';
+import { StepsDirective } from './register-step.directive';
+import { CountdownFormatFn } from 'ngx-countdown';
+import { RegisterItemDataService } from './register-item-data.service';
+import { Observable } from 'rxjs/internal/Observable';
+import { interval } from 'rxjs/internal/observable/interval';
+import { AttributeInputSaveItemAttributeEvent } from './attribute-input/attribute-input/attribute-input.component';
 
 @Component({
     selector: 'app-register-item',
@@ -25,7 +31,7 @@ import { IAttributeOption } from 'src/app/Dashboard/attribute/attribute-option';
 })
 export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestroy {
 
-    attrs: IAttr[] = [];
+    attrs: IAttr[] | any[] = [];
 
     itemAttrs: IItemAttr[] = [];
 
@@ -57,22 +63,32 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
     catDesc = null;
 
+    // Index of Active Attr
+    activeStep = 0;
+    isPrevStepAllowed = false;
+
+    forceExit = false;
+
+    haveSavedData = false;
+
+    @ViewChild(StepsDirective, { static: false }) RegisterSteps: StepsDirective;
+
     constructor(
         private router: Router,
         private activeRoute: ActivatedRoute,
         public auth: AuthService,
         private message: MessageService,
-        private sanitizer: DomSanitizer,
+        public sanitizer: DomSanitizer,
         private loginService: RegisterItemLoginService,
         private licenseService: RegisterItemLicenseService,
-        private http: HttpClient
+        private http: HttpClient,
+        private registerItemDataService: RegisterItemDataService
     ) {
         this.activeRoute.params.subscribe(params => {
             this.catId = params["id"];
         });
 
         this.cat = this.activeRoute.snapshot.data.cat;
-
 
         if (!this.cat.canShowByDate) {
             let title = `مهلت ${this.cat.btnTitle ? this.cat.btnTitle : "ثبت نام"} به پایان رسیده است`;
@@ -84,7 +100,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                 if (!this.loginService.isUserAccessToCat(this.catId)) {
                     this.router.navigate([`/register-item/${this.catId}/login`], { skipLocationChange: true });
                 } else {
-                    var token = this.loginService.getLoginToken(this.catId);
+                    let token = this.loginService.getLoginToken(this.catId);
 
                     if (!token) {
                         this.router.navigate(['/']);
@@ -107,26 +123,53 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         this.catDesc = this.sanitizer.bypassSecurityTrustHtml(this.cat.desc);
 
         this.attrs = this.activeRoute.snapshot.data.attrs;
+
+        if (this.cat.randomAttribute) {
+            let questionAttrs = this.attrs.filter(c => c.attrTypeInt == 11);
+            let nonQuestionAttrs = this.attrs.filter(c => c.attrTypeInt != 11);
+
+            questionAttrs = this.shuffleArray(questionAttrs);
+
+            this.attrs = [];
+
+            nonQuestionAttrs.forEach(attr => this.attrs.push(attr));
+            questionAttrs.forEach(attr => this.attrs.push(attr));
+        }
+
         this.units = this.activeRoute.snapshot.data.units;
 
-        this.attrs.forEach(attr => {
-            if (attr.attrTypeInt == 7 || attr.attrTypeInt == 8) {
-                this.itemAttrs.push({
-                    itemId: 0,
-                    attributeId: attr.id,
-                    attrubuteValue: "",
-                    attributeFilePath: "1",
-                    fileName: ""
-                });
-            } else {
-                this.itemAttrs.push({
-                    itemId: 0,
-                    attributeId: attr.id,
-                    attrubuteValue: "",
-                    attributeFilePath: "",
-                    fileName: ""
-                });
+        this.registerItemDataService.getRegisterItemData(this.cat.id).then(data => {
+            if (data) {
+                if (data.authorizeType == this.authorizedType && data.authorizeUsername == this.authorizedUsername) {
+
+                    if (data.itemAttrs) {
+                        this.itemAttrs = data.itemAttrs;
+                    }
+
+                    if (data.files) {
+                        this._files = data.files;
+                    }
+
+                    this.haveSavedData = true;
+                }
             }
+
+
+            this.attrs.forEach(attr => {
+                let itemAttr = this.itemAttrs.find(c => c.attributeId == attr.id);
+                if (!itemAttr) {
+                    this.itemAttrs.push({
+                        itemId: 0,
+                        attributeId: attr.id,
+                        attrubuteValue: "",
+                        attributeFilePath: attr.attrTypeInt == 7 || attr.attrTypeInt == 8 ? "1" : "",
+                        fileName: "",
+                        score: 0
+                    });
+                }
+            });
+
+            this.group = this.toFormGroup(this.attrs);
         });
 
         if (this.attrs.length == 0) {
@@ -134,26 +177,112 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         }
 
         this.group = this.toFormGroup(this.attrs);
-
-        // this.interval1 = interval(1000).subscribe(x => {
-        //     if (!this.isValidToShow(this.cat)) {
-        //         this.message.showWarningAlert(
-        //             "مهلت ثبت نام به پایان رسیده است",
-        //             "خطا"
-        //         );
-        //         this.router.navigate(["/"]);
-        //     }
-        // });
     }
 
-    ngOnInit() { }
+    async refreshCat() {
+        let data = await this.auth.post("/api/Category/getCategory", this.catId).toPromise();
 
-    getAttrsForUnit(unitId) {
+        if (data.success) {
+            this.cat = data.data;
+        }
+    }
+
+    catRefreshInterval = null;
+
+    ngOnInit() {
+        this.catRefreshInterval = interval(30 * 1000).subscribe(() => this.refreshCat());
+    }
+
+
+    ngOnDestroy(): void {
+        this.licenseService.removeLicense(this.catId);
+
+        if (this.catRefreshInterval) {
+            this.catRefreshInterval.unsubscribe();
+        }
+
+        if (this.isFormDirty()) {
+            this.saveItemAttrs();
+        }
+
+        if (this.isFromSts || this.forceExit) {
+            this.registerItemDataService.removeRegisterItemData(this.cat.id);
+        }
+    }
+
+    nextStep() {
+        if (this.RegisterSteps.isActiveStepValid()
+            && !this.isUploading
+            && this.attrUniqList.length == 0
+            && this.reqfilesAttrint.length == 0) {
+
+            if (this.activeStep == this.attrs.length - 2) {
+                this.isPrevStepAllowed = true;
+            }
+            this.activeStep += 1;
+        }
+    }
+
+    prevStep() {
+        if (this.isPrevStepAllowed) {
+            if (this.activeStep != 0) {
+                this.activeStep -= 1;
+            }
+        }
+    }
+
+    countdownEvent(action) {
+        if (action == "done") {
+            this.forceExit = true;
+            let title = `مهلت ${this.cat.btnTitle ? this.cat.btnTitle : "ثبت نام"} به پایان رسید`;
+            this.message.showWarningAlert(title);
+            this.router.navigateByUrl("/");
+        }
+    }
+
+    isItemAttrHasValue(attr) {
+        let itemAttr = this.itemAttrs.find(c => c.attributeId == attr.id);
+
+        if (itemAttr && itemAttr.attrubuteValue) {
+            if (attr.complatabelContent != itemAttr.attrubuteValue) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    CountdownTimeUnits: Array<[string, number]> = [
+        ['Y', 1000 * 60 * 60 * 24 * 365], // years
+        ['M', 1000 * 60 * 60 * 24 * 30], // months
+        ['D', 1000 * 60 * 60 * 24], // days
+        ['H', 1000 * 60 * 60], // hours
+        ['m', 1000 * 60], // minutes
+        ['s', 1000], // seconds
+        ['S', 1] // million seconds
+    ];
+
+    formatDate: CountdownFormatFn = ({ date, formatStr, timezone }) => {
+        let duration = Number(date || 0);
+
+        return this.CountdownTimeUnits.reduce((current, [name, unit]) => {
+            if (current.indexOf(name) !== -1) {
+                const v = Math.floor(duration / unit);
+                duration -= v * unit;
+                return current.replace(new RegExp(`${name}+`, 'g'), (match: string) => {
+                    return v.toString().padStart(match.length, '0');
+                });
+            }
+            return current;
+        }, formatStr);
+    };
+
+    getAttrsForUnit(unitId): any[] {
         return this.attrs.filter(c => c.unitId == unitId);
     }
 
     canShowUnit(unitId) {
-        var attrs = this.getAttrsForUnit(unitId);
+        let attrs = this.getAttrsForUnit(unitId);
 
         if (attrs.length == 0) {
             return false;
@@ -162,9 +291,17 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         return true;
     }
 
-    ngOnDestroy(): void {
-        this.licenseService.removeLicense(this.catId);
+    saveItemAttrs() {
+        this.registerItemDataService.saveRegisterItemData(
+            this.cat.id,
+            this.itemAttrs,
+            this.authorizedUsername,
+            this.authorizedType,
+            this.activeStep,
+            this._files);
     }
+
+
     ngAfterViewInit(): void {
         window.scroll(0, 0);
     }
@@ -173,10 +310,46 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         let group: any = {};
 
         attrs.forEach((attr, index) => {
-            group["p" + index] = new FormControl(null,
-                (attr.isRequired && attr.attrTypeInt != 4) ? Validators.required : null);
+            group["p" + index] = new FormControl(
+                this.getDefaultValueForAttr(attr),
+                this.getValidationForAttr(attr)
+            );
         });
         return new FormGroup(group);
+    }
+
+    getDefaultValueForAttr(attr): any {
+
+        let itemAttr = this.itemAttrs.find(c => c.attributeId == attr.id);
+
+        if (itemAttr && itemAttr.attrubuteValue) {
+            let value = itemAttr.attrubuteValue;
+            if (attr.isUniq && (attr.attrTypeInt == 1 || attr.attrTypeInt == 2)) {
+                this.checkForUniqValue(value, attr.id);
+            }
+            return value;
+        }
+
+
+        if (attr.attrTypeInt == 11 && attr.questionType == 3) {
+            return attr.complatabelContent;
+        }
+
+        return null;
+    }
+
+    getValidationForAttr(attr: IAttr): any[] {
+        let validations = [];
+
+        if (attr.isRequired && attr.attrTypeInt != 4) {
+            validations.push(Validators.required);
+        }
+
+        if (attr.isMeliCode && attr.attrTypeInt == 2) {
+            validations.push(validateMeliCode);
+        }
+
+        return validations;
     }
 
     clearItemAttr(attrId) {
@@ -201,7 +374,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     getRegisterBtnTitle(): string {
-        var btnTitle = this.cat.btnTitle;
+        let btnTitle = this.cat.btnTitle;
         if (!btnTitle || btnTitle == " ") {
             return "ثبت نام";
         }
@@ -228,9 +401,9 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
     isValidToShow(cat: ICategory): boolean {
         if (cat.isActive) {
-            var datePub: Date = new Date(Date.parse(cat.datePublish));
-            var dateEx: Date = new Date(Date.parse(cat.dateExpire));
-            var nowDate: Date = new Date();
+            let datePub: Date = new Date(Date.parse(cat.datePublish));
+            let dateEx: Date = new Date(Date.parse(cat.dateExpire));
+            let nowDate: Date = new Date();
 
             if (nowDate > datePub && nowDate < dateEx) {
                 return true;
@@ -243,7 +416,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     isFormDirty(): boolean {
-        if (this.isFromSts) {
+        if (this.isFromSts || this.forceExit) {
             return false;
         }
         return this.group.dirty;
@@ -251,6 +424,23 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
     openc(picker1) {
         picker1.open();
+    }
+
+    setItemAttrDirectly(data, attrId) {
+        let itemAttr = this.itemAttrs.find(c => c.attributeId == attrId);
+
+        if (itemAttr) {
+            itemAttr.attrubuteValue = data;
+        } else {
+            this.itemAttrs.push({
+                itemId: 0,
+                attributeId: attrId,
+                attrubuteValue: data,
+                attributeFilePath: "",
+                fileName: "",
+                score: 0
+            });
+        }
     }
 
     setItemAttr(event, attrId) {
@@ -261,7 +451,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
             inputValue = event.checked;
         }
 
-        var itemAttr = this.itemAttrs.find(c => c.attributeId == attrId);
+        let itemAttr = this.itemAttrs.find(c => c.attributeId == attrId);
 
         if (itemAttr) {
             itemAttr.attrubuteValue = inputValue;
@@ -271,19 +461,61 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                 attributeId: attrId,
                 attrubuteValue: inputValue,
                 attributeFilePath: "",
-                fileName: ""
+                fileName: "",
+                score: 0
             });
         }
     }
 
+    getItemAttr(attrId): any {
+        let itemAttr = this.itemAttrs.find(c => c.attributeId == attrId);
+
+        if (itemAttr) {
+            return itemAttr.attrubuteValue;
+        }
+
+        return "";
+    }
+
     getShiftedItem(attr: IAttr) {
-        let options: IAttributeOption[] = (attr as any).attributeOptions;
+        let options: IAttributeOption[] = (attr as any).attributeOptions || [];
+
+        if (this.cat.randomAttributeOption) {
+            options = this.shuffleArray(options);
+        }
 
         return options;
     }
 
+    shuffleArray(array: any[]) {
+
+        let shuffled = array
+            .map((a) => ({ sort: Math.random(), value: a }))
+            .sort((a, b) => a.sort - b.sort)
+            .map((a) => a.value)
+
+
+        // for (let i = array.length - 1; i > 0; i--) {
+        //     const j = Math.floor(Math.random() * (i + 1));
+        //     [array[i], array[j]] = [array[j], array[i]];
+        // }
+
+        return shuffled;
+    }
+
+    isAttrHasError(attr: IAttr): boolean {
+        let input = this.group.controls['p' + this.getIndexForAttr(attr.id)];
+        if (input.value && (input.invalid ||
+            this.attrUniqList.some(c => c == attr.id) ||
+            this.reqfilesAttrint.some(c => c == attr.id))) {
+            return true
+        }
+
+        return false;
+    }
+
     setItemAttrforselect(event, attrId) {
-        var itemAttr = this.itemAttrs.find(c => c.attributeId == attrId);
+        let itemAttr = this.itemAttrs.find(c => c.attributeId == attrId);
 
         if (itemAttr) {
             itemAttr.attrubuteValue = event;
@@ -293,46 +525,42 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                 attributeId: attrId,
                 attrubuteValue: event,
                 attributeFilePath: "",
-                fileName: ""
+                fileName: "",
+                score: 0
             });
         }
     }
 
-    checkForUniqValue(event, attrId) {
-        var val = event.target.value;
-        if (!val) {
-            return;
-        }
-        var catId = this.catId;
+    async checkForUniqValue(val: any, attrId: number) {
+        try {
+            if (!val) {
+                return;
+            }
 
-        this.auth
-            .post("/api/Item/CheckForUniqAttr", {
+            let catId = this.catId;
+
+            let data = await this.auth.post("/api/Item/CheckForUniqAttr", {
                 catId: catId,
                 attrId: attrId,
                 val: val
-            })
-            .subscribe(
-                (data: jsondata) => {
-                    var un = this.attrUniqList.find(c => c == attrId);
-                    if (data.success) {
-                        if (un) {
-                            un = attrId;
-                        } else {
-                            this.attrUniqList.push(attrId);
-                        }
-                    } else {
-                        if (un) {
-                            var indexOf = this.attrUniqList.indexOf(attrId, 0);
-                            if (indexOf > -1) {
-                                this.attrUniqList.splice(indexOf, 1);
-                            }
-                        }
-                    }
-                },
-                er => {
-                    this.auth.handlerError(er);
+            }).toPromise();
+
+            let un = this.attrUniqList.find(c => c == attrId);
+            if (data.success) {
+                if (un) {
+                    un = attrId;
+                } else {
+                    this.attrUniqList.push(attrId);
                 }
-            );
+            } else {
+                if (un) {
+                    let indexOf = this.attrUniqList.indexOf(attrId, 0);
+                    if (indexOf > -1) {
+                        this.attrUniqList.splice(indexOf, 1);
+                    }
+                }
+            }
+        } catch { }
     }
 
     isAtrrUniqExsist(attrId = 1): boolean {
@@ -343,20 +571,45 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         }
     }
 
+    setAnyItemAttribute(result: AttributeInputSaveItemAttributeEvent) {
+        let itemAttr = this.itemAttrs.find(c => c.attributeId == result.attrId);
+
+        if (itemAttr) {
+            itemAttr.attrubuteValue = result.attrValue;
+            result.File ? itemAttr.fileName = result.File.name : null;
+        } else {
+            this.itemAttrs.push({
+                itemId: 0,
+                attributeId: result.attrId,
+                attrubuteValue: result.attrValue,
+                attributeFilePath: result.File ? "1" : "",
+                fileName: result.File ? result.File.name : "",
+                score: 0
+            });
+        }
+
+        if (result.File) {
+            this._files.push({
+                file: result.File,
+                attrId: result.attrId
+            });
+        }
+    }
+
     _files: {
         file: File,
         attrId: number
     }[] = [];
 
     setItemAttrforPic(event, attrId, type) {
-        var requiredFileAttr = this.reqfilesAttrint.find(c => c == attrId);
+        let requiredFileAttr = this.reqfilesAttrint.find(c => c == attrId);
         const fileIsInvalid = (message) => {
             event.target.value = null;
             event.target.files = null;
             if (requiredFileAttr) {
                 requiredFileAttr = attrId;
             } else {
-                var attr = this.attrs.find(c => c.id == attrId);
+                let attr = this.attrs.find(c => c.id == attrId);
                 if (attr.isRequired) {
                     this.reqfilesAttrint.push(attrId);
                 }
@@ -372,8 +625,8 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
         let attribute = this.attrs.find(c => c.id == attrId);;
 
-        var size = type == "file" ? attribute.maxFileSize : 10;
-        var sizeText = type == "file" ? `${attribute.maxFileSize} مگابایت` : `10 مگابایت`;
+        let size = type == "file" ? attribute.maxFileSize : 10;
+        let sizeText = type == "file" ? `${attribute.maxFileSize} مگابایت` : `10 مگابایت`;
 
         if (event.target.files && event.target.files.length > 0) {
             let file: File = event.target.files[0];
@@ -396,18 +649,18 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
             }
 
             if (requiredFileAttr) {
-                var indexOf = this.reqfilesAttrint.indexOf(attrId, 0);
+                let indexOf = this.reqfilesAttrint.indexOf(attrId, 0);
                 if (indexOf > -1) {
                     this.reqfilesAttrint.splice(indexOf, 1);
                 }
             }
-            
+
             this._files.push({
                 file: file,
                 attrId: attrId
             });
 
-            var itemAttr = this.itemAttrs.find(
+            let itemAttr = this.itemAttrs.find(
                 c => c.attributeId == attrId
             );
 
@@ -422,9 +675,12 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                     attributeId: attrId,
                     attrubuteValue: result,
                     attributeFilePath: "1",
-                    fileName: file.name
+                    fileName: file.name,
+                    score: 0
                 });
             }
+
+            this.saveItemAttrs();
         }
     }
 
@@ -451,128 +707,169 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     uploaded_MB = 0;
     uploaded_PS = 0;
 
-    sts() {
+    async sts() {
+        let reqAttrs = this.attrs.filter(c => c.isUniq && (c.attrTypeInt == 1 || c.attrTypeInt == 2))
+
+        await Promise.all(reqAttrs.map(async (attr) => {
+            await this.checkForUniqValue(this.group.controls['p' + this.getIndexForAttr(attr.id)].value, attr.id);
+        }));
+
         if (
             this.group.valid &&
             this.reqfilesAttrint.length == 0 &&
             this.attrUniqList.length == 0
         ) {
-            this.disableButton = true;
-
-            let object = {
-                itemAttrs: this.itemAttrs,
-                catId: this.catId,
-                authorizedFullName: this.authorizedFullName,
-                authorizedUsername: this.authorizedUsername,
-                authorizedType: this.authorizedType,
-            };
-
-
-            let formData = new FormData();
-
-            formData.append("object", JSON.stringify(object));
-
-            if (this._files.length != 0) {
-                this._files.forEach(fileObj => {
-                    let file = fileObj.file;
-                    formData.append("files", file, file.name);
-                });
-            }
-
-            let url = this.auth.serializeUrl(`/api/Item/SetItemeWithAttrs`);
-
-            let token = this.auth.getToken();
-
-            let request = new HttpRequest('POST', url, formData, {
-                reportProgress: true,
-                headers: new HttpHeaders({
-                    Authorization: `Bearer ${token}`,
-                    "ngsw-bypass": "true"
-                }),
+            let swalData = await Swal.fire({
+                title: "آیا شما مایل به ثبت داده های فعلی هستید؟",
+                icon: "question",
+                text: "داده های وارد شده شما ثبت، و امکان ویرایش آن پس از ارسال و ثبت نهایی وجود ندارد",
+                confirmButtonText: "بله",
+                cancelButtonText: "خیر",
+                showCancelButton: true,
+                allowOutsideClick: false,
+                allowEnterKey: false,
             });
 
-            this.http.request(request).pipe(
-                map(event => {
-                    switch (event.type) {
-                        case HttpEventType.Sent:
-                            this.isUploading = true;
-                            break;
-                        case HttpEventType.UploadProgress || HttpEventType.DownloadProgress:
+            if (swalData.value) {
+                this.disableButton = true;
 
-                            const percentDone = (100 * event.loaded / event.total);
+                let object = {
+                    itemAttrs: this.itemAttrs,
+                    catId: this.catId,
+                    authorizedFullName: this.authorizedFullName,
+                    authorizedUsername: this.authorizedUsername,
+                    authorizedType: this.authorizedType,
+                };
 
-                            this.uploaded_PS = percentDone;
 
-                            var uploadedSize = event.loaded / 1024 / 1024;
-                            this.uploaded_MB = uploadedSize;
+                let formData = new FormData();
 
-                            this.fileSize_MB = event.total / 1024 / 1024
+                formData.append("object", JSON.stringify(object));
 
-                            break;
-                        case HttpEventType.Response:
-                            var data: any = event.body;
+                if (this._files.length != 0) {
+                    this._files.forEach(fileObj => {
+                        let file = fileObj.file;
+                        formData.append("files", file, file.name);
+                    });
+                }
 
-                            if (!event.ok) {
-                                this.isUploading = false;
-                            }
+                let url = this.auth.serializeUrl(`/api/Item/SetItemeWithAttrs`);
 
-                            if (data.success) {
-                                if (!data.message) {
-                                    data.message = "";
+                let token = this.auth.getToken();
+
+                let request = new HttpRequest('POST', url, formData, {
+                    reportProgress: true,
+                    headers: new HttpHeaders({
+                        Authorization: `Bearer ${token}`,
+                        "ngsw-bypass": "true"
+                    }),
+                });
+
+                this.http.request(request).pipe(
+                    map(event => {
+                        switch (event.type) {
+                            case HttpEventType.Sent:
+                                this.isUploading = true;
+                                break;
+                            case HttpEventType.UploadProgress || HttpEventType.DownloadProgress:
+
+                                const percentDone = (100 * event.loaded / event.total);
+
+                                this.uploaded_PS = percentDone;
+
+                                let uploadedSize = event.loaded / 1024 / 1024;
+                                this.uploaded_MB = uploadedSize;
+
+                                this.fileSize_MB = event.total / 1024 / 1024
+
+                                break;
+                            case HttpEventType.Response:
+                                let data: any = event.body;
+
+                                if (!event.ok) {
+                                    this.isUploading = false;
                                 }
 
-                                this.auth.logToServer({
-                                    type: 'Add',
-                                    agentId: this.auth.getUserId(),
-                                    agentType: 'Other',
-                                    agentName: this.auth.getUser().fullName,
-                                    tableName: 'Item Register From Index',
-                                    logSource: 'Index',
-                                    object: object,
-                                    table: "Item"
-                                }, data);
-
-                                Swal.fire({
-                                    title: "ثبت داده ها با موفقیت انجام شد",
-                                    icon: "success",
-                                    text: data.message + " کد رهگیری شما : " + data.type,
-                                    confirmButtonText: "کد رهگیری را یادداشت کردم",
-                                    showCancelButton: false,
-                                    allowOutsideClick: false,
-                                    allowEnterKey: false,
-                                }).then(result => {
-                                    if (result.value) {
-                                        this.isFromSts = true;
-                                        this.router.navigate(["/"]);
-                                        this.loginService.removeToken(this.catId);
-                                        this.licenseService.removeLicense(this.catId);
+                                if (data.success) {
+                                    if (!data.message) {
+                                        data.message = "";
                                     }
-                                });
-                            } else {
-                                this.message.showWarningAlert(
-                                    "خطایی روی داده است لطفا با راهبر سیستم تماس حاصل فرمایید",
-                                    "خطا"
-                                );
-                                this.message.showMessageforFalseResult(data);
-                                this.isUploading = false;
-                            }
-                            break;
-                    }
-                }),
-                catchError(() => {
-                    this.message.showWarningAlert(
-                        "خطایی روی داده است لطفا با راهبر سیستم تماس حاصل فرمایید",
-                        "خطا"
-                    );
-                    this.isUploading = false;
-                    return of(EMPTY);
-                }),
-                last()
-            ).subscribe();
 
+                                    this.auth.logToServer({
+                                        type: 'Add',
+                                        agentId: this.auth.getUserId(),
+                                        agentType: 'Other',
+                                        agentName: this.auth.getUser().fullName,
+                                        tableName: 'Item Register From Index',
+                                        logSource: 'Index',
+                                        object: object,
+                                        table: "Item"
+                                    }, data);
+
+                                    Swal.fire({
+                                        title: "ثبت داده ها با موفقیت انجام شد",
+                                        icon: "success",
+                                        text: data.message + " کد رهگیری شما : " + data.type,
+                                        confirmButtonText: "کد رهگیری را یادداشت کردم",
+                                        showCancelButton: false,
+                                        allowOutsideClick: false,
+                                        allowEnterKey: false,
+                                    }).then(result => {
+                                        if (result.value) {
+                                            this.isFromSts = true;
+                                            this.router.navigate(["/"]);
+                                            this.loginService.removeToken(this.catId);
+                                            this.licenseService.removeLicense(this.catId);
+                                        }
+                                    });
+                                } else {
+                                    this.message.showWarningAlert("خطایی روی داده است لطفا با راهبر سیستم تماس حاصل فرمایید");
+                                    this.message.showMessageforFalseResult(data);
+                                    this.isUploading = false;
+                                }
+                                break;
+                        }
+                    }),
+                    catchError(() => {
+                        this.message.showWarningAlert("خطایی روی داده است لطفا با راهبر سیستم تماس حاصل فرمایید");
+                        this.isUploading = false;
+                        return of(EMPTY);
+                    }),
+                    last()
+                ).subscribe();
+            }
         } else {
             this.message.showWarningAlert("مقادیر خواسته شده را تکمیل نمایید");
         }
     }
+}
 
+export function validateMeliCode(control: FormControl) {
+
+    let isValid = checkForMeliCode(control.value || "");
+
+    return !isValid ? { 'meliCode': { value: control.value } } : null;
+}
+
+export function checkForMeliCode(input: string) {
+    if (!/^\d{10}$/.test(input)
+        || input == '0000000000'
+        || input == '1111111111'
+        || input == '2222222222'
+        || input == '3333333333'
+        || input == '4444444444'
+        || input == '5555555555'
+        || input == '6666666666'
+        || input == '7777777777'
+        || input == '8888888888'
+        || input == '9999999999')
+        return false;
+    let check = parseInt(input[9]);
+    let sum = 0;
+    let i;
+    for (i = 0; i < 9; ++i) {
+        sum += parseInt(input[i]) * (10 - i);
+    }
+    sum %= 11;
+    return (sum < 2 && check == sum) || (sum >= 2 && check + sum == 11);
 }

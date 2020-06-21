@@ -33,6 +33,8 @@ import { Subject } from "rxjs/internal/Subject";
 import { ICategory } from "../../category/category";
 import { TreeService } from "src/app/shared/components/tree/tree.service";
 import { IAttributeOption } from "../../attribute/attribute-option";
+import { DomSanitizer } from "@angular/platform-browser";
+import { SetItemAttributeScoreComponent } from "./set-item-attribute-score/set-item-attribute-score.component";
 
 declare var $: any;
 
@@ -146,6 +148,13 @@ declare var $: any;
                 pointer-events: none;
             }
 
+            .bordered {
+                border: 1px solid #ccc !important;
+                border-radius: 15px;
+                padding: 10px;
+                margin-bottom: 20px;
+            }
+
         `
     ]
 })
@@ -178,6 +187,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
 
     showDietaledBox = false;
     showDietaleItem: IItem = new IItem();
+    showDietaleCatId: number = null;
     showDietaleAttrs: IAttr[] = [];
     showDietaleItemAttrs: IItemAttr[] = [];
 
@@ -208,15 +218,30 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
 
     expandedElement: ItemList | null;
 
+    TYPE = 0;
+
+    pageTitle = "نمون برگ";
+    pageTitles = "نمون برگ ها";
+    pageUrl = "category";
+
     constructor(
         private router: Router,
         private activeroute: ActivatedRoute,
         private auth: AuthService,
         private message: MessageService,
-        private bottomSheet: MatBottomSheet,
+        public sanitizer: DomSanitizer,
         public dialog: MatDialog,
         public tree: TreeService
     ) {
+        this.activeroute.data.subscribe(data => {
+            this.TYPE = data["Type"];
+
+            if (this.TYPE == 1) {
+                this.pageTitle = "آزمون آنلاین";
+                this.pageTitles = "آزمون های آنلاین";
+                this.pageUrl = "online-exam";
+            }
+        });
     }
 
     ngAfterContentInit(): void {
@@ -276,7 +301,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
     }
 
     deleteSelected() {
-        if (this.auth.isUserAccess("remove_Item")) {
+        if (this.auth.isUserAccess(this.TYPE == 0 ? "remove_Item" : "remove_OnlineExamResult")) {
             if (this.selection.selected.length != 0) {
                 let ids: number[] = [];
                 this.selection.selected.forEach(row => ids.push(row.id));
@@ -326,7 +351,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
     }
 
     deleteRow(id) {
-        if (this.auth.isUserAccess("remove_Item")) {
+        if (this.auth.isUserAccess(this.TYPE == 0 ? "remove_Item" : "remove_OnlineExamResult")) {
             if (
                 this.auth.checkForMatchRole(
                     this.items.find(c => c.id == id).categoryRoleAccess
@@ -369,13 +394,14 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
     }
 
     showDietaleOfItem(itemId, categoryId) {
-        if (this.auth.isUserAccess("view_Item")) {
+        if (this.auth.isUserAccess(this.TYPE == 0 ? "view_Item" : "view_OnlineExamResult")) {
             if (
                 this.auth.checkForMatchRole(
                     this.items.find(c => c.id == itemId).categoryRoleAccess
                 )
             ) {
                 this.showDietaleItem = this.items.find(c => c.id == itemId);
+                this.showDietaleCatId = categoryId;
 
                 this.auth
                     .post("/api/Item/getItemAttrForItem", itemId)
@@ -412,7 +438,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
         }
     }
 
-    getAttrsForUnit(unitId): IAttr[] {
+    getAttrsForUnit(unitId): any[] {
         return this.showDietaleAttrs.filter(c => c.unitId == unitId);
     }
 
@@ -438,15 +464,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
         let itemAttr = this.showDietaleItemAttrs.find(c => c.attributeId == attr.id);
 
         if (itemAttr) {
-            if (attr.attrTypeInt == 6 || attr.attrTypeInt == 10) {
-                let attrOptions: IAttributeOption[] = (attr as any).attributeOptions || [];
-
-                if (attrOptions.length != 0 && attrOptions.some(c => c.isTrue)) {
-                    return attrOptions.find(c => c.isTrue).id == itemAttr.attrubuteValue ? attr.score : 0;
-                }
-
-                return 0;
-            }
+            return itemAttr.scoreString;
         }
 
         return 0;
@@ -456,27 +474,37 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
         let score = 0;
 
         this.showDietaleAttrs.forEach(attr => {
-            let itemAttr = this.showDietaleItemAttrs.find(c => c.attributeId == attr.id);
-
-            if (itemAttr) {
-                if (attr.attrTypeInt == 6 || attr.attrTypeInt == 10) {
-                    let attrOptions: IAttributeOption[] = (attr as any).attributeOptions || [];
-
-                    if (attrOptions.length != 0 && attrOptions.some(c => c.isTrue)) {
-                        attrOptions.find(c => c.isTrue).id == itemAttr.attrubuteValue ? score += attr.score : score += 0;
-                    }
-                }
-            }
+            let attrScore = this.getScoreForAttr(attr);
+            score += attrScore;
         });
 
         return score;
+    }
+
+
+
+    openSetItemAttributeScoreDialog(attr: IAttr) {
+        let itemAttr = this.showDietaleItemAttrs.find(c => c.attributeId == attr.id);
+        const dialog = this.dialog.open(SetItemAttributeScoreComponent, {
+            data: {
+                itemAttr: itemAttr,
+                currentScore: itemAttr.scoreString,
+                maxScore: attr.score
+            }
+        });
+
+        dialog.afterClosed().subscribe((changed) => {
+            if (changed && this.showDietaleCatId && this.showDietaleItem) {
+                this.showDietaleOfItem(this.showDietaleItem.id, this.showDietaleCatId);
+            }
+        });
     }
 
     getSumScoreOfDietaleAttrs(): number {
         let score = 0;
 
         this.showDietaleAttrs.forEach(attr => {
-            if (attr.attrTypeInt == 6 || attr.attrTypeInt == 10) {
+            if (attr.attrTypeInt == 6 || attr.attrTypeInt == 10 || attr.attrTypeInt == 11) {
                 score += attr.score;
             }
         });
@@ -517,7 +545,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
             }
         });
 
-        this.auth.post("/api/Category/GetAll").subscribe((data: jsondata) => {
+        this.auth.post("/api/Category/getAllByType", this.TYPE).subscribe((data: jsondata) => {
             if (data.success) {
                 this.Categories = data.data;
             } else {
@@ -525,7 +553,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
             }
         });
 
-        this.auth.post("/api/Category/GetAllPined").subscribe((data: jsondata) => {
+        this.auth.post("/api/Category/GetAllPinedByType", this.TYPE).subscribe((data: jsondata) => {
             if (data.success) {
                 this.pinedCategories = data.data;
             } else {
@@ -586,7 +614,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
     }
 
     onEdit(id) {
-        if (this.auth.isUserAccess("edit_Item")) {
+        if (this.auth.isUserAccess(this.TYPE == 0 ? "edit_Item" : "edit_OnlineExamResult")) {
             if (
                 this.auth.checkForMatchRole(
                     this.items.find(c => c.id == id).categoryRoleAccess
@@ -617,37 +645,29 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
             }
         });
 
+        let obj = {
+            param: {
+                sort: this.sort.active,
+                direction: this.sort.direction,
+                pageIndex: this.paginator.pageIndex,
+                pageSize: this.paginator.pageSize,
+                q: this.txtSearch
+            },
+            catName: this.selectedCatName,
+            attrvalsearch: this.searchAttrVals,
+            state: this.state,
+            Type: this.TYPE
+        };
+
         this.auth
-            .post("/api/Item/Get", {
-                param: {
-                    sort: this.sort.active,
-                    direction: this.sort.direction,
-                    pageIndex: this.paginator.pageIndex,
-                    pageSize: this.paginator.pageSize,
-                    q: this.txtSearch
-                },
-                catName: this.selectedCatName,
-                attrvalsearch: this.searchAttrVals,
-                state: this.state
-            }, {
+            .post("/api/Item/Get", obj, {
                 type: 'View',
                 agentId: this.auth.getUserId(),
                 agentType: 'User',
                 agentName: this.auth.getUser().fullName,
                 tableName: 'Get Item List',
                 logSource: 'dashboard',
-                object: {
-                    param: {
-                        sort: this.sort.active,
-                        direction: this.sort.direction,
-                        pageIndex: this.paginator.pageIndex,
-                        pageSize: this.paginator.pageSize,
-                        q: this.txtSearch
-                    },
-                    catName: this.selectedCatName,
-                    attrvalsearch: this.searchAttrVals,
-                    state: this.state
-                },
+                object: obj,
                 table: "Item"
             })
             .subscribe(
@@ -725,7 +745,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
     }
 
     setIsActive(id, isActive) {
-        if (this.auth.isUserAccess("edit_Item")) {
+        if (this.auth.isUserAccess(this.TYPE == 0 ? "edit_Item" : "edit_OnlineExamResult")) {
             if (
                 this.auth.checkForMatchRole(
                     this.items.find(c => c.id == id).categoryRoleAccess
@@ -818,7 +838,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
     }
 
     setIsActiveGroup(isActive) {
-        if (this.auth.isUserAccess("edit_Item")) {
+        if (this.auth.isUserAccess(this.TYPE == 0 ? "edit_Item" : "edit_OnlineExamResult")) {
             if (this.selection.selected.length != 0) {
                 let ids: number[] = [];
                 this.selection.selected.forEach(row => ids.push(row.id));
@@ -875,7 +895,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
     }
 
     openChahngeGroupDialog() {
-        if (this.auth.isUserAccess("edit_Item")) {
+        if (this.auth.isUserAccess(this.TYPE == 0 ? "edit_Item" : "edit_OnlineExamResult")) {
             var selectedData = this.selection.selected;
 
             let ids: number[] = [];
@@ -1141,7 +1161,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
     }
 
     deleteSelectedItemList() {
-        if (this.auth.isUserAccess("remove_Item")) {
+        if (this.auth.isUserAccess(this.TYPE == 0 ? "remove_Item" : "remove_OnlineExamResult")) {
             var ids: number[] = [];
 
             this.selectedItemList.forEach(item => {
@@ -1170,7 +1190,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
     }
 
     chengGroupSelectedItemList() {
-        if (this.auth.isUserAccess("edit_Item")) {
+        if (this.auth.isUserAccess(this.TYPE == 0 ? "edit_Item" : "edit_OnlineExamResult")) {
             let ids: number[] = [];
             this.selectedItemList.forEach(item => {
                 ids.push(item.id);
@@ -1209,7 +1229,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
     }
 
     setIsActiveGroupSelectedItemList(isActive) {
-        if (this.auth.isUserAccess("edit_Item")) {
+        if (this.auth.isUserAccess(this.TYPE == 0 ? "edit_Item" : "edit_OnlineExamResult")) {
             let ids: number[] = [];
 
             this.selectedItemList.forEach(item => {
@@ -1273,7 +1293,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
     }
 
     setIsActiveSelectedItemList(id, isActive) {
-        if (this.auth.isUserAccess("edit_Item")) {
+        if (this.auth.isUserAccess(this.TYPE == 0 ? "edit_Item" : "edit_OnlineExamResult")) {
             if (
                 this.auth.checkForMatchRole(
                     this.selectedItemList.find(c => c.id == id)
