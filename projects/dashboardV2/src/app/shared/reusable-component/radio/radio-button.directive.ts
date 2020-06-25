@@ -5,7 +5,7 @@ import { Directive, Input } from '@angular/core';
 })
 export class RadioButtonDirective {
 
-    @Input() title = "";
+    @Input() label = "";
     @Input() value: any;
     @Input() disabled = false;
     

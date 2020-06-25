@@ -10,7 +10,7 @@ import { DataListComponent } from './data/data-list/data-list.component';
 import { DataFormComponent } from './data/data-edit/data-form/data-form.component';
 import { DataFormButtonsDirective } from './data/data-edit/data-form/data-form.directive';
 import { DataEditHeaderDirective } from './data/data-edit/data-edit.directive';
-import { DataListItemDirective, DataListActionsDirective } from './data/data-list/data-list-item.directive';
+import { DataListItemDirective, DataListActionsDirective, DataListDeleteOprationDirective, DataListOprationDirective } from './data/data-list/data-list-item.directive';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { MaterialModule } from 'src/app/shared/material.module';
 import { RouterModule } from '@angular/router';
@@ -38,6 +38,12 @@ import { HaveAccessDirective } from './directives/have-access.directive';
 import { DataListFilterItemDirective } from './data/data-list/data-list-filter-item.directive';
 import { DataIntroComponent } from './data/data-intro/data-intro.component';
 import { DataIntroItemDirective } from './data/data-intro/data-intro-item.directive';
+import { NavbarComponent, NavbarItemDirective } from '../../main/navbar/navbar.component';
+import { MenuIntroComponent } from './data/data-intro/menu-intro/menu-intro.component';
+import { TreeComponent } from './tree/tree.component';
+import { LongPressDirective } from './directives/long-press.directive';
+import { TreeDialogComponent } from './tree/tree-dialog/tree-dialog.component';
+import { DateInputComponent } from './input/date-input/date-input.component';
 
 
 @NgModule({
@@ -72,7 +78,16 @@ import { DataIntroItemDirective } from './data/data-intro/data-intro-item.direct
         HaveAccessDirective,
         DataListFilterItemDirective,
         DataIntroComponent,
-        DataIntroItemDirective
+        DataIntroItemDirective,
+        NavbarComponent,
+        NavbarItemDirective,
+        MenuIntroComponent,
+        TreeComponent,
+        LongPressDirective,
+        TreeDialogComponent,
+        DateInputComponent,
+        DataListOprationDirective,
+        DataListDeleteOprationDirective
     ],
     imports: [
         CommonModule,
@@ -114,7 +129,16 @@ import { DataIntroItemDirective } from './data/data-intro/data-intro-item.direct
         HaveAccessDirective,
         DataListFilterItemDirective,
         DataIntroComponent,
-        DataIntroItemDirective
+        DataIntroItemDirective,
+        NavbarComponent,
+        NavbarItemDirective,
+        MenuIntroComponent,
+        TreeComponent,
+        LongPressDirective,
+        TreeDialogComponent,
+        DateInputComponent,
+        DataListOprationDirective,
+        DataListDeleteOprationDirective
     ],
     providers: [
         { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },

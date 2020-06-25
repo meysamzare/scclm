@@ -3,9 +3,17 @@ table {
 	text-align: right !important;
 }
 
+.data-row {
+    transition: .2s;
+
+    &:hover {
+        background-color: #c6c6c630 !important;
+    }
+}
+
 .mat-menu-container {
-    padding: 10px;
-    direction: rtl;
+	padding: 10px;
+	direction: rtl;
 }
 
 .table-container {

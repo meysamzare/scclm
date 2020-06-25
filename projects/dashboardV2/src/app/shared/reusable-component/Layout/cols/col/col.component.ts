@@ -9,9 +9,12 @@ export class ColComponent implements OnInit {
 
     @Input() classes = "";
 
+    @HostBinding('class') componentClass = "column ";
+
     constructor() { }
 
     ngOnInit() {
+        this.componentClass += this.classes;
     }
 
 }

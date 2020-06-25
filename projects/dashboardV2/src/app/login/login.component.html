@@ -11,7 +11,7 @@
             <app-data-form #fm1>
                 <app-input [(ngModel)]="username" name="us" [label]="'نام کاربری'"></app-input>
 
-                <app-input [(ngModel)]="password" name="pass" [label]="'کلمه عبور'" [Type]="'password'"></app-input>
+                <app-input [(ngModel)]="password" name="pass" [label]="'کلمه عبور'" [type]="'password'"></app-input>
 
                 <app-button-group [center]="true">
                     <app-button *button (onClick)="doLogin()" text="ورود" [disabled]="!fm1.isFormValid"
@@ -64,4 +64,14 @@
                 [returnBinery]="true" (fileChange)="onFileChange($event)"></app-file>
         </bu-column>
     </bu-columns>
+</app-data-form>
+
+<hr>
+
+<app-button text="نمایش لیست نمون برگ ها" (onClick)="tree.openTreeDialog('Category', 'نمون برگ ها')"></app-button>
+
+<app-data-form #fm1>
+    <app-date-input label="تاریخ شروع" [(ngModel)]="dateVal" name="date1"></app-date-input>
+    {{dateVal}}
+    <app-button text="ارسال داده به سرور" [disabled]="!fm1.isFormValid" (onClick)="sendDateToServer()"></app-button>
 </app-data-form>

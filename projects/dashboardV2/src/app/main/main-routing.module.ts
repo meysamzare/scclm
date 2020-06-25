@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { MainComponent } from './main/main.component';
 import { IndexComponent } from './index/index.component';
-import { TestComponent } from './test/test.component';
 import { MainCanActiveGuard } from './main-can-active.guard';
 
 
@@ -19,8 +18,9 @@ const routes: Routes = [
                 component: IndexComponent
             },
             {
-                path: "a",
-                component: TestComponent
+                path: 'training-management',
+                loadChildren: () => import('./training-management/training-management.module')
+                    .then(m => m.TrainingManagementModule)
             }
         ]
     }

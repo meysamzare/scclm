@@ -1,0 +1,51 @@
+<app-navbar [showRefresh]="true" (refresh)="list.refreshDataSource()"></app-navbar>
+
+<app-data-list #list [PAGE_APIURL]="'Titute'" [PAGE_ROLE]="'InsTitute'" [conditionalProperty]="'haveChildren,haveGrade'"
+    [conditionalTitle]="'زیرمجموعه یا مقطع تحصیلی'" (editClick)="list.onEdit($event.id)"
+    (deleteClick)="list.deleteSelected()">
+
+    <ng-template dataListItem [def]="'id'" [title]="'ردیف'" [show]="false" let-row="Row">
+        <p>{{ row.id }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'name'" [title]="'نام'" let-row="Row">
+        <p>{{ row.name }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'orgCode'" [title]="'کد آموزشگاه'" let-row="Row">
+        <p>{{ row.orgCode }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'orgSection'" [title]="'ناحیه آموزش و پرورش'" [show]="false" let-row="Row">
+        <p>{{ row.orgSection }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'state'" [title]="'استان / شهر'" [show]="false" [sortHeader]="false" let-row="Row">
+        <p>{{ row.state + ' / ' + row.city }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'postCode'" [title]="'کد پستی'" [show]="false" let-row="Row">
+        <p>{{ row.postCode }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'gender'" [title]="'جنسیت'" let-row="Row">
+        <mat-chip-list>
+            <mat-chip color="primary" *ngIf="row.orgSex == 1" selected>
+                <mat-icon>person</mat-icon>
+                پسرانه
+            </mat-chip>
+            <mat-chip color="accent" *ngIf="row.orgSex == 2" selected>
+                <mat-icon>person</mat-icon>
+                دخترانه
+            </mat-chip>
+        </mat-chip-list>
+    </ng-template>
+
+    <app-data-list-opration>
+        <button mat-icon-button (click)="tree.openTreeDialog(list.PAGE_APIURL, list.PAGE_TITLES)"
+            matTooltip="لیست درختی">
+            <mat-icon>short_text</mat-icon>
+        </button>
+    </app-data-list-opration>
+
+</app-data-list>

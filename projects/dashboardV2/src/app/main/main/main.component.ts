@@ -42,7 +42,7 @@ export class MainComponent implements OnInit, OnDestroy {
     }
 
     prepareRoute(outlet: RouterOutlet) {
-        return false;
+        return (outlet && outlet.activatedRouteData) || outlet.activatedRouteData['animation'];
     }
     
 }

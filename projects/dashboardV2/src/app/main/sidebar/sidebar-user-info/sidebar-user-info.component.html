@@ -4,7 +4,7 @@
         <img class="is-rounded" [src]="auth.getUserProfilePic()">
     </figure>
 
-
+    <p style="opacity: .7;">{{ auth.getUser().fullName }}</p>
 
     <div class="dropdown" [class.is-active]="menuActive">
         <div class="dropdown-trigger">

@@ -8,22 +8,20 @@ import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { IndexComponent } from './index/index.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { NavbarComponent, NavbarItemDirective } from './navbar/navbar.component';
 import { ReusableComponentModule } from '../shared/reusable-component/reusable-component.module';
 
 import { Angular2BulmaModule } from 'angular2-bulma';
 import { TestComponent } from './test/test.component';
 import { SidebarUserInfoComponent } from './sidebar/sidebar-user-info/sidebar-user-info.component';
 
+import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 
 @NgModule({
     declarations: [
         MainComponent,
         IndexComponent,
         SidebarComponent,
-        NavbarComponent,
         TestComponent,
-        NavbarItemDirective,
         SidebarUserInfoComponent
     ],
     imports: [
@@ -33,7 +31,8 @@ import { SidebarUserInfoComponent } from './sidebar/sidebar-user-info/sidebar-us
         MaterialModule,
         BrowserAnimationsModule,
         ReusableComponentModule,
-        Angular2BulmaModule
+        Angular2BulmaModule,
+        PerfectScrollbarModule
     ]
 })
 export class MainModule { }

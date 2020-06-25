@@ -30,6 +30,12 @@ export class DataListItemDirective implements OnInit {
         this._show = value;
     }
 
+    public _showOnColsList = true;
+    @Input()
+    set showOnColsList(value: boolean) {
+        this._showOnColsList = value;
+    }
+
     constructor(
         public tempRef: TemplateRef<any>
     ) { }
@@ -44,3 +50,13 @@ export class DataListItemDirective implements OnInit {
     selector: 'app-data-list-actions'
 })
 export class DataListActionsDirective { }
+
+@Directive({
+    selector: 'app-data-list-opration'
+})
+export class DataListOprationDirective { }
+
+@Directive({
+    selector: 'app-data-list-delete-opration'
+})
+export class DataListDeleteOprationDirective { }

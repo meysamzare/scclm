@@ -1,0 +1,38 @@
+<app-data-edit #edit>
+    <app-navbar [Title]="edit.Title"></app-navbar>
+
+    <app-card [title]="edit.Title">
+        <app-data-form>
+            <app-cols>
+                <!-- Right -->
+                <app-col>
+                    <app-input label="عنوان {{ edit.PAGE_TITLE }}" [(ngModel)]="edit.PAGE_Data.name" name="name">
+                    </app-input>
+
+                    <app-date-input label="تاریخ شروع" [(ngModel)]="edit.PAGE_Data.dateStart" name="dateStart">
+                    </app-date-input>
+                </app-col>
+
+
+                <!-- Left -->
+                <app-col>
+                    <app-date-input label="تاریخ پایان" [(ngModel)]="edit.PAGE_Data.dateEnd" name="dateEnd">
+                    </app-date-input>
+
+                    <app-textarea label="توضیحات" [required]="false" [(ngModel)]="edit.PAGE_Data.desc" name="desc">
+                    </app-textarea>
+                </app-col>
+            </app-cols>
+
+            
+            <app-button-group>
+                <app-button *button [text]="edit.btnTitle" [loading]="edit.isLoading" (onClick)="edit.sts()"
+                    color="primary" [fullWidth]="true" [disabled]="!edit.isAllFormValid()">
+                </app-button>
+
+                <app-button *button text="لغو" [isEdit]="edit.isEdit" [backToPureMenuUrl]="true"></app-button>
+            </app-button-group>
+
+        </app-data-form>
+    </app-card>
+</app-data-edit>

@@ -10,7 +10,7 @@
                 [class.is-loading]="Loading">
 
                 <input #input class="input" (input)="onChange($event.target.value)" (blur)="onTouched()"
-                    [class.is-success]="isValid()" [class.is-danger]="!isValid()" [type]="Type"
+                    [class.is-success]="isValid()" [class.is-danger]="!isValid()" [type]="type"
                     [placeholder]="Placeholder ? Placeholder : label" [class.is-rounded]="Rounded" [disabled]="disabled"
                     [readOnly]="readonly" [class.is-small]="Size == 'small'" [class.is-medium]="Size == 'medium'"
                     [class.is-large]="Size == 'large'">

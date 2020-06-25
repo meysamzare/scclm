@@ -9,7 +9,7 @@
 
         <mat-sidenav-content class="main-content" [style.margin-top.px]="mobileQuery.matches ? 40 : 0"
             [style.overflow]="mobileQuery.matches ? 'hidden' : 'auto'">
-            <!-- <div class="container"> -->
+            <!-- <div [@routeAnimations]="prepareRoute(outlet)"> -->
             <router-outlet #outlet="outlet"></router-outlet>
             <!-- </div> -->
 

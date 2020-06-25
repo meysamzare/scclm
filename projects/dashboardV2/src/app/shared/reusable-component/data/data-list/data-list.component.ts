@@ -1,15 +1,16 @@
-import { Component, OnInit, ViewChild, AfterViewInit, ContentChildren, QueryList, AfterContentInit, Input, Output, EventEmitter } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatSort, PageEvent } from '@angular/material';
+import { Component, OnInit, ViewChild, AfterViewInit, ContentChildren, QueryList, AfterContentInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatSortHeader } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/shared/Auth/auth.service';
 import { MessageService } from 'src/app/shared/services/message.service';
 import { DataListItemDirective } from './data-list-item.directive';
 import { merge } from 'rxjs/internal/observable/merge';
-import { finalize, debounceTime } from 'rxjs/operators';
+import { finalize, debounceTime, take } from 'rxjs/operators';
 import { Subject } from 'rxjs/internal/Subject';
 import { DataListFilterItemDirective } from './data-list-filter-item.directive';
 import { Location } from '@angular/common';
+import { MenuService } from '../../../services/menu/menu.service';
 
 @Component({
     selector: 'app-data-list',
@@ -36,6 +37,9 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
     @Input() pageSizeOptions = [5, 10, 15, 20, 25];
 
 
+    @Input() introUrl = "../";
+
+    @Input() staticData: any[] = [];
 
     @Output() editClick = new EventEmitter<any>();
     @Output() deleteClick = new EventEmitter<any>();
@@ -49,11 +53,11 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
 
     showSearch = false;
 
-
-    displayedColumns: string[] = [];
     columns: {
         def: string,
-        title: string
+        title: string,
+        show: boolean,
+        showOnColsList: boolean
     }[] = [];
 
     dataSource: MatTableDataSource<any>;
@@ -64,7 +68,8 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
     isLoadingResults = false;
 
     txtSearch: string = "";
-    txtSearch$ = new Subject();
+
+    filter$ = new Subject();
 
     itemLength = null;
 
@@ -72,20 +77,30 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
         title: string,
         name: string,
         value: any
-    }[] = []
+    }[] = [];
 
     constructor(
         private router: Router,
         private auth: AuthService,
         private message: MessageService,
-        public location: Location
+        public location: Location,
+        private activeroute: ActivatedRoute,
+        private menu: MenuService
     ) {
-        this.txtSearch$.pipe(
-            debounceTime(500)
+        this.filter$.pipe(
+            debounceTime(1000)
         ).subscribe(() => this.applyFilter());
     }
 
     ngOnInit() {
+
+        if (!this.PAGE_TITLE) {
+            this.PAGE_TITLE = this.menu.getCurrentPureUrl().title;
+        }
+
+        if (!this.PAGE_TITLES) {
+            this.PAGE_TITLES = this.menu.getCurrentPureUrl().titles;
+        }
 
         this.paginator.pageSizeOptions = this.pageSizeOptions;
         this.paginator.pageSize = 5;
@@ -93,26 +108,49 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
         const changeed = merge(this.sort.sortChange, this.paginator.page);
 
         changeed.subscribe(() => {
-            this.refreshDataSource();
+            this.filter$.next();
         });
 
+        if (!this.PAGE_APIURL) {
+            this.PAGE_APIURL = this.menu.getCurrentPureUrl().apiUrl;
+        }
+
         if (!this.PAGE_ROLE) {
-            this.PAGE_ROLE = this.PAGE_APIURL;
+            this.PAGE_ROLE = this.menu.getCurrentPureUrl().role;
         }
     }
 
     ngAfterViewInit(): void {
+        if (this.staticData.length == 0) {
+            this.activeroute.queryParams.subscribe(qparam => {
+                this.paginator.pageSize =
+                    this.activeroute.snapshot.queryParams["pagesize"] || 5;
+                this.paginator.pageIndex =
+                    this.activeroute.snapshot.queryParams["page"] || 0;
+                this.sort.direction =
+                    this.activeroute.snapshot.queryParams["dir"] || "";
+                this.sort.active =
+                    this.activeroute.snapshot.queryParams["sort"] || "";
+                this.txtSearch = this.activeroute.snapshot.queryParams["q"] || "";
 
+                if (this.txtSearch) {
+                    this.showSearch = true;
+                }
+
+                this.sort.sortChange.next();
+            });
+        }
     }
 
     ngAfterContentInit(): void {
 
         // Cols----------------------
         if (this.showSelect) {
-            this.displayedColumns.push("select");
             this.columns.push({
                 def: "select",
-                title: "انتخاب"
+                title: "انتخاب",
+                show: true,
+                showOnColsList: true
             });
         }
 
@@ -121,21 +159,21 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
             this.items.forEach(item => {
                 this.columns.push({
                     def: item._def,
-                    title: item._title
+                    title: item._title,
+                    show: item._show,
+                    showOnColsList: item._showOnColsList
                 });
-                if (item._show) {
-                    this.displayedColumns.push(item._def);
-                }
             });
 
         }
 
 
         if (this.showAction) {
-            this.displayedColumns.push("action");
             this.columns.push({
                 def: "action",
-                title: "عملیات"
+                title: "عملیات",
+                show: true,
+                showOnColsList: true
             });
         }
         // /Cols----------------------
@@ -145,41 +183,30 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
         if (this.filters) {
             this.filters.forEach(filter => {
                 this.filterDatas.push({
-                    name: filter.name,
+                    name: filter.model.name,
                     title: filter.title,
                     value: null
                 });
 
                 filter.modelValue$.subscribe(value => {
                     this.filterDatas.find(c => c.name == filter.model.name).value = value;
-                    this.refreshDataSource();
+                    this.paginator.firstPage();
+                    this.filter$.next();
                 });
             });
         }
         // /Filters------------------------------
 
-        this.refreshDataSource();
+        this.filter$.next();
 
     }
 
-    toggleCol(def: string, show: boolean, index: number) {
-        let displayCol = this.displayedColumns.find(c => c == def);
+    getShowColsList() {
+        return this.columns.filter(c => c.showOnColsList);
+    }
 
-        if (show) {
-            if (!displayCol) {
-                this.displayedColumns.splice(index, 0, def);
-            }
-        } else {
-            if (displayCol) {
-                if (this.displayedColumns.length == 2) {
-                    return this.auth.message.showInfoAlert("دو ستون آخز نمیتوانند حذف شوند");
-                }
-                this.displayedColumns.splice(this.displayedColumns.indexOf(displayCol), 1);
-            }
-        }
-
-        // console.log({ displayCols: this.getDisplayedCols(), def: def, displayCol: displayCol, show: show, index: index });
-
+    toggleCol(def: string, show: boolean) {
+        this.columns.find(c => c.def == def).show = show;
     }
 
     getFiltersByType(type: string) {
@@ -193,18 +220,30 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
     isAnyAppliedFilter(): boolean {
         return this.filterDatas.some(c => c.value);
     }
-    
+
     clearFilterValue(name: string) {
         this.filterDatas.find(c => c.name == name).value = null;
 
         this.filters.find(c => c.name == name).clearValue();
 
-        this.refreshDataSource();
+        this.filter$.next();
     }
 
+    @HostListener("document:keydown.alt.c")
+    clearAllFilters() {
+        this.filterDatas.map(data => {
+            data.value = null;
+        });
+
+        this.filters.map(filter => {
+            filter.clearValue();
+        });
+
+        this.filter$.next();
+    }
     isLastItemInDisplayCol(def: string): boolean {
-        if (this.displayedColumns.length == 2) {
-            let item = this.displayedColumns.find(c => c == def);
+        if (this.columns.filter(c => c.show).length == 2) {
+            let item = this.columns.filter(c => c.show).find(c => c.def == def);
 
             return item ? true : false;
         }
@@ -212,16 +251,11 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
         return false;
     }
 
-    isOnDisplayCols(def: string): boolean {
-        let displayCol = this.displayedColumns.find(c => c == def);
-
-        return displayCol ? true : false;
-    }
-
     getDisplayedCols() {
-        return this.displayedColumns;
+        return this.columns.filter(c => c.show).map(c => c.def);
     }
 
+    @HostListener("document:keydown.esc")
     toggleSearch() {
         this.showSearch = !this.showSearch;
 
@@ -231,8 +265,11 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
     }
 
     clearSearch() {
-        this.txtSearch = '';
-        this.txtSearch$.next();
+        let searchBefore = this.txtSearch;
+        if (searchBefore) {
+            this.txtSearch = '';
+            this.filter$.next();
+        }
     }
 
     isRowSelected(row): boolean {
@@ -310,7 +347,7 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
     }
 
     deleteSelected() {
-        if (this.auth.isUserAccess("remove_" + this.PAGE_ROLE)) {
+        if (this.auth.isUserAccess("remove_" + this.PAGE_ROLE) && this.selection.selected.length != 0) {
             if (this.selection.selected.length != 0) {
                 let ids: number[] = [];
                 this.selection.selected.forEach(row => ids.push(row.id));
@@ -344,75 +381,111 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
 
     onEdit(id) {
         if (this.auth.isUserAccess("edit_" + this.PAGE_ROLE)) {
-            this.router.navigate(["/dashboard/" + this.PAGE_URL + "/edit/" + id]);
+            this.router.navigateByUrl(`${this.menu.getCurrentPureUrl().link}/edit/${id}`);
         }
     }
 
+    @HostListener("document:keydown.arrowright")
+    nextPage() {
+        this.paginator.nextPage();
+    }
+
+    @HostListener("document:keydown.arrowleft")
+    prevPage() {
+        this.paginator.previousPage();
+    }
+
+    @HostListener("document:keydown.control.arrowright")
+    lastPage() {
+        this.paginator.lastPage();
+    }
+
+    @HostListener("document:keydown.control.arrowleft")
+    firstPage() {
+        this.paginator.firstPage();
+    }
+
+    @HostListener("document:keydown.alt.r")
     refreshDataSource() {
-        this.isLoadingResults = true;
-
-        this.selection.clear();
-
-        var obj = null;
-
-        obj = {
-            sort: this.sort.active || "",
-            direction: this.sort.direction || "",
-            pageIndex: this.paginator.pageIndex || 0,
-            pageSize: this.paginator.pageSize || 5,
-            q: this.txtSearch
-        };
-
-        if (this.filterDatas.length != 0) {
-            obj = {
-                getparams: {
-                    sort: this.sort.active || "",
-                    direction: this.sort.direction || "",
-                    pageIndex: this.paginator.pageIndex || 0,
-                    pageSize: this.paginator.pageSize || 5,
+        if (this.staticData.length != 0) {
+            this.dataSource = new MatTableDataSource(this.staticData);
+        } else {
+            this.router.navigate(["."], {
+                relativeTo: this.activeroute,
+                queryParams: {
+                    pagesize: this.paginator.pageSize,
+                    page: this.paginator.pageIndex,
+                    dir: this.sort.direction,
+                    sort: this.sort.active,
                     q: this.txtSearch
-                },
+                }
+            });
+
+            this.isLoadingResults = true;
+
+            this.selection.clear();
+
+            var obj = null;
+
+            obj = {
+                sort: this.sort.active || "",
+                direction: this.sort.direction || "",
+                pageIndex: this.paginator.pageIndex || 0,
+                pageSize: this.paginator.pageSize || 5,
+                q: this.txtSearch
+            };
+
+            if (this.filterDatas.length != 0) {
+                obj = {
+                    getparams: {
+                        sort: this.sort.active || "",
+                        direction: this.sort.direction || "",
+                        pageIndex: this.paginator.pageIndex || 0,
+                        pageSize: this.paginator.pageSize || 5,
+                        q: this.txtSearch
+                    },
+                }
+
+                this.filterDatas.forEach(data => {
+                    obj[data.name] = data.value || "";
+                });
             }
 
-            this.filterDatas.forEach(data => {
-                obj[data.name] = data.value || "";
+            let url = `/api/${this.PAGE_APIURL}/Get`;
+
+            this.auth.post(url, obj, {
+                type: 'View',
+                agentId: this.auth.getUserId(),
+                agentType: 'User',
+                agentName: this.auth.getUser().fullName,
+                tableName: this.PAGE_APIURL + ' List Get Method',
+                logSource: 'dashboard',
+                object: obj,
+            }).pipe(
+                finalize(() => this.isLoadingResults = false)
+            ).subscribe(data => {
+                if (data.success) {
+                    this.itemLength = data.type;
+                    this.PAGE_Datas = data.data;
+
+                    this.dataSource = new MatTableDataSource(this.PAGE_Datas);
+                } else {
+                    this.message.showMessageforFalseResult(data);
+                }
+            }, er => {
+                this.auth.handlerError(er);
             });
         }
-
-        let url = `/api/${this.PAGE_APIURL}/Get`;
-
-        this.auth.post(url, obj, {
-            type: 'View',
-            agentId: this.auth.getUserId(),
-            agentType: 'User',
-            agentName: this.auth.getUser().fullName,
-            tableName: this.PAGE_APIURL + ' List Get Method',
-            logSource: 'dashboard',
-            object: obj,
-        }).pipe(
-            finalize(() => this.isLoadingResults = false)
-        ).subscribe(data => {
-            if (data.success) {
-                this.itemLength = data.type;
-                this.PAGE_Datas = data.data;
-
-                this.dataSource = new MatTableDataSource(this.PAGE_Datas);
-            } else {
-                this.message.showMessageforFalseResult(data);
-            }
-        }, er => {
-            this.auth.handlerError(er);
-        });
     }
 
 
 
     applyFilter() {
-        this.refreshDataSource();
-
-        if (this.dataSource.paginator) {
-            this.dataSource.paginator.firstPage();
+        if (this.paginator) {
+            this.paginator.firstPage();
         }
+
+        this.refreshDataSource();
     }
 
 }

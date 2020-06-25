@@ -4,31 +4,31 @@ export class ITitute {
     id: number = 0;
 
     //Nullable
-    tituteCode;
+    tituteCode = null;
 
-    name: string;
+    name: string = "";
 
-    orgCode: number;
+    orgCode: number = null;
 
-    orgSection: string;
+    orgSection: string = "";
 
     //male = 1
     //femaile = 2
     orgSex: number = 1;
 
-    state: string;
+    state: string = "";
 
-    city: string;
+    city: string = "";
 
-    address: string;
+    address: string = "";
 
-    postCode: number;
+    postCode: number = null;
 
-    tell: string;
+    tell: string = "";
 
-    email: string;
+    email: string = "";
 
-    desc: string;
+    desc: string = "";
 
     haveChildren: boolean = false;
     haveGrade: boolean = false;

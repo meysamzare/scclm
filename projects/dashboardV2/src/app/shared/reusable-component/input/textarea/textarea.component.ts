@@ -13,7 +13,7 @@ export class TextareaComponent implements OnInit, ControlValueAccessor, Validato
     @Input() label: string;
     @Input() showLabelSection: boolean = true;
     @Input() Size: "small" | "normal" | "medium" | "large" = "normal";
-    @Input() Placeholder: string = "";
+    @Input("placeholder") Placeholder: string = "";
     @Input() InvalidMessage: string = "";
     @Input() Loading: boolean = false;
     @Input() disabled: boolean = false;

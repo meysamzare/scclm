@@ -8,7 +8,7 @@
                 <div class="level">
                     <div class="level-left" style="width: 50%;">
                         <ng-container *ngIf="!showSearch">
-                            <button mat-icon-button (click)="location.back()" matTooltip="بازگشت">
+                            <button mat-icon-button [routerLink]="introUrl" matTooltip="بازگشت">
                                 <mat-icon>keyboard_arrow_right</mat-icon>
                             </button>
                             <b>{{ PAGE_TITLES }}</b>
@@ -17,7 +17,7 @@
                             <mat-form-field style="width: 100%; text-align: right; font-size: 13px;">
                                 <mat-label>جستجو</mat-label>
                                 <input matInput placeholder="موردی را جستجو کنید" [(ngModel)]="txtSearch" name="search"
-                                    (input)="txtSearch$.next()">
+                                    (input)="filter$.next()">
                             </mat-form-field>
                             <button mat-icon-button (click)="showSearch = false; clearSearch()"
                                 matTooltip="پاکسازی جستجو">
@@ -26,17 +26,22 @@
                         </ng-container>
                     </div>
                     <div class="level-right">
+                        <ng-content select="app-data-list-opration"></ng-content>
+
                         <button mat-icon-button (click)="toggleSearch()" matTooltip="جستجو">
                             <mat-icon>search</mat-icon>
+                        </button>
+                        <button mat-icon-button (click)="refreshDataSource()" matTooltip="بارگذاری مجدد">
+                            <mat-icon>refresh</mat-icon>
                         </button>
                         <button mat-icon-button [matMenuTriggerFor]="viewCols" matTooltip="نمایش ستون ها">
                             <mat-icon>view_column</mat-icon>
                         </button>
                         <mat-menu #viewCols="matMenu">
                             <div class="mat-menu-container" (click)="$event.stopPropagation()">
-                                <ng-container *ngFor="let i of columns; let index = index;">
-                                    <mat-checkbox (change)="toggleCol(i.def, $event.checked, index)"
-                                        [checked]="isOnDisplayCols(i.def)" [disabled]="isLastItemInDisplayCol(i.def)">
+                                <ng-container *ngFor="let i of getShowColsList()">
+                                    <mat-checkbox (change)="toggleCol(i.def, $event.checked)"
+                                        [checked]="i.show" [disabled]="isLastItemInDisplayCol(i.def)">
                                         {{ i.title }}
                                     </mat-checkbox>
                                     <br>
@@ -65,6 +70,7 @@
                         <b>{{ selection.selected.length }} مورد انتخاب شده است</b>
                     </div>
                     <div class="level-right">
+                        <ng-content select="app-data-list-delete-opration"></ng-content>
                         <button mat-icon-button matTooltip="حذف دائمی" [swal]="deleteSwal">
                             <mat-icon>delete_forever</mat-icon>
                         </button>
@@ -94,8 +100,7 @@
                 <th mat-header-cell *matHeaderCellDef>
                     <mat-checkbox [disabled]="!haveAnyData() || getRowCanSelected() == 0" matTooltipPosition="before"
                         matTooltip="تعداد {{ selection.selected.length }} مورد انتخاب شده است"
-                        [matTooltipHideDelay]="1700" (change)="$event ?  masterToggle() : null"
-                        [checked]="selection.hasValue() && isAllSelected()"
+                        (change)="$event ?  masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
                         [indeterminate]="selection.hasValue() && !isAllSelected()">
                     </mat-checkbox>
                 </th>
@@ -144,8 +149,8 @@
 
 
             <tr mat-header-row *matHeaderRowDef="this.getDisplayedCols()"></tr>
-            <tr mat-row *matRowDef="let row; columns: this.getDisplayedCols();"
-                [style.backgroundColor]="isRowSelected(row) ? '#c6c6c630': 'unset'"></tr>
+            <tr mat-row *matRowDef="let row; columns: this.getDisplayedCols();" class="data-row"
+                [style.backgroundColor]="isRowSelected(row) ? '#7d8ebe1f': 'unset'"></tr>
         </table>
 
         <div dir="ltr">

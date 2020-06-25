@@ -10,11 +10,11 @@ export class InputComponent implements OnInit, ControlValueAccessor, Validator {
 
     @ViewChild('input', { static: true }) input: ElementRef;
 
-    @Input() Type: string = "text";
+    @Input() type: string = "text";
     @Input() label: string;
     @Input() showLabelSection: boolean = true;
     @Input() Size: "small" | "normal" | "medium" | "large" = "normal";
-    @Input() Placeholder: string = "";
+    @Input("placeholder") Placeholder: string = "";
     @Input() InvalidMessage: string = "";
     @Input() Rounded: boolean = false;
     @Input() Loading: boolean = false;
@@ -40,7 +40,7 @@ export class InputComponent implements OnInit, ControlValueAccessor, Validator {
             if (this.required) {
                 validators.push(Validators.required);
             }
-            if (this.Type == "email") {
+            if (this.type == "email") {
                 validators.push(Validators.email);
             }
             if (this.pattern) {
@@ -112,7 +112,7 @@ export class InputComponent implements OnInit, ControlValueAccessor, Validator {
         if (this.required) {
             validators.push(Validators.required);
         }
-        if (this.Type == "email") {
+        if (this.type == "email") {
             validators.push(Validators.email);
         }
         if (this.pattern) {

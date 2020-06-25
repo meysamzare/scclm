@@ -19,6 +19,8 @@ export class SelectComponent implements OnInit, AfterViewInit, AfterContentInit,
     @Input() required = true;
     @Input() InvalidMessage = "";
 
+    value = null;
+
     searchText = "";
 
     options: IOption[] = [];
@@ -66,20 +68,24 @@ export class SelectComponent implements OnInit, AfterViewInit, AfterContentInit,
     }
 
 
-    getFiltredOptions(): IOption[] {
+    getFiltredOptions() {
         let query = this.searchText;
 
-        if (query) {
-            return this.options.filter(c => c.label.includes(query));
+        if (this.selectOptions) {
+
+            if (query) {
+                return this.selectOptions.toArray().filter(c => c.title.includes(query));
+            }
+
+            return this.selectOptions.toArray();
         }
 
-        return this.options;
+
+        return [];
     }
 
     writeValue(obj: any): void {
-        if (this.select) {
-            this.select.writeValue(obj);
-        }
+        this.value = obj;
     }
     registerOnChange(fn: any): void {
         this.onChange = fn;

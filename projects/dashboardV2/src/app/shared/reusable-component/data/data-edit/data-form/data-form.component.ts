@@ -35,6 +35,8 @@ export class DataFormComponent implements OnInit, AfterViewInit {
     //     return false;
     // }
 
-
+    public isFormDirty() {
+        return this.form.dirty;
+    }
 
 }
