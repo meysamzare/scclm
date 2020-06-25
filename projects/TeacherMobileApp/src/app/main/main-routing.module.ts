@@ -14,6 +14,9 @@ import { ViewChatComponent } from './chats/view-chat/view-chat.component';
 import { ViewChatRepositoryService } from './chats/view-chat/view-chat-repository.service';
 import { SetClassBookComponent } from './class-book/set-class-book/set-class-book.component';
 import { ViewStudentComponent } from './class-book/view-student/view-student.component';
+import { TeacherCategoryListComponent } from './more/teacher-category-list/teacher-category-list.component';
+import { CategoryDataListComponent } from './more/teacher-category-list/category-data-list/category-data-list.component';
+import { ViewItemDataComponent } from './more/teacher-category-list/category-data-list/view-item-data/view-item-data.component';
 
 
 const routes: Routes = [
@@ -91,6 +94,24 @@ const routes: Routes = [
                     {
                         path: "settings",
                         component: SettingsComponent
+                    },
+                    {
+                        path: "category",
+                        children: [
+                            {
+                                path: "",
+                                pathMatch: "full",
+                                component: TeacherCategoryListComponent
+                            },
+                            {
+                                path: "data/:catId/:Type/:catTitle",
+                                component: CategoryDataListComponent
+                            },
+                            {
+                                path: "view-item/:itemId/:catId",
+                                component: ViewItemDataComponent
+                            }
+                        ]
                     }
                 ]
             }

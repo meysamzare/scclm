@@ -27,6 +27,11 @@ import { LongpressDirective } from 'projects/ParentsMobileApp/src/app/shared/dir
 import { ViewStudentComponent } from './class-book/view-student/view-student.component';
 import { SetClassBookComponent } from './class-book/set-class-book/set-class-book.component';
 import { BrowserModule } from '@angular/platform-browser';
+import { TeacherCategoryListComponent } from './more/teacher-category-list/teacher-category-list.component';
+import { CategoryDataListComponent } from './more/teacher-category-list/category-data-list/category-data-list.component';
+import { ViewItemDataComponent } from './more/teacher-category-list/category-data-list/view-item-data/view-item-data.component';
+import { HtmlToolsModule } from 'src/app/html-tools/html-tools.module';
+import { SetItemAttributeScoreComponent } from 'src/app/Dashboard/item/list/set-item-attribute-score/set-item-attribute-score.component';
 
 
 @NgModule({
@@ -48,7 +53,11 @@ import { BrowserModule } from '@angular/platform-browser';
         ClassBookComponent,
         LongpressDirective,
         ViewStudentComponent,
-        SetClassBookComponent
+        SetClassBookComponent,
+        TeacherCategoryListComponent,
+        CategoryDataListComponent,
+        ViewItemDataComponent,
+        SetItemAttributeScoreComponent
     ],
     imports: [
         CommonModule,
@@ -62,7 +71,11 @@ import { BrowserModule } from '@angular/platform-browser';
         HttpClientModule,
         ChartsModule,
         ReactiveFormsModule,
-        ImageIconModule
+        ImageIconModule,
+        HtmlToolsModule
+    ],
+    entryComponents: [
+        SetItemAttributeScoreComponent
     ],
     exports: [
         BootstrapModule,

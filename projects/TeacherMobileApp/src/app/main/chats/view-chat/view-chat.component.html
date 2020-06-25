@@ -84,7 +84,7 @@
 
             <div class="row full-wigth">
                 <div class="col-2 al-right auto-margin">
-                    <button (click)="sendChat()" [disabled]="!Chat.text && !Chat.fileData" mat-mini-fab>
+                    <button (click)="sendChat()" [disabled]="!Chat.text && !Chat.fileData || isLoading" mat-mini-fab>
                         <mat-icon>send</mat-icon>
                     </button>
                 </div>

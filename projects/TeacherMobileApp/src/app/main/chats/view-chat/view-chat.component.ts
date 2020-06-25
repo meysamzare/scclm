@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MobileChatType, IMobileChat } from '../mobile-chat';
 import { MobileChatRepositoryService } from '../mobile-chat-repository.service';
 import { MainService } from '../../main/main.service';
-import { debounceTime, take } from 'rxjs/operators';
+import { debounceTime, take, finalize } from 'rxjs/operators';
 
 @Component({
     selector: 'app-view-chat',
@@ -12,8 +12,6 @@ import { debounceTime, take } from 'rxjs/operators';
     styleUrls: ['./view-chat.component.scss']
 })
 export class ViewChatComponent implements OnInit, AfterViewChecked, AfterViewInit, OnDestroy {
-
-
 
     clientId = 0;
     clientType: MobileChatType = MobileChatType.StudentParent;
@@ -246,8 +244,10 @@ export class ViewChatComponent implements OnInit, AfterViewChecked, AfterViewIni
         this.Chat.fileName = "";
     }
 
+    isLoading = false;
 
     sendChat() {
+        this.isLoading = true;
         this.mChatRep.AddChat(this.Chat, {
             type: 'Add',
             agentId: this.tchAuth.getTeacherId(),
@@ -261,7 +261,9 @@ export class ViewChatComponent implements OnInit, AfterViewChecked, AfterViewIni
                 ClientType: this.clientType,
                 ClientName: this.clientName,
             },
-        }).subscribe(data => {
+        }).pipe(
+            finalize(() => this.isLoading = false)
+        ).subscribe(data => {
             if (data.success) {
                 this.refreshChats(true, "bottom");
 

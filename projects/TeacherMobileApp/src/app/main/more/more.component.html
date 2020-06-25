@@ -35,6 +35,30 @@
         </div>
 
         <div class="row">
+            <div class="col-sm-6">
+                <mat-card class="item-card">
+                    <div [routerLink]="['./category']" [queryParams]="{ 'type' : 1 }" matRipple>
+                        <p class="icon" style="color: #23b100">
+                            <mat-icon>wifi</mat-icon>
+                        </p>
+                        <p class="title">آزمون های آنلاین</p>
+                    </div>
+                </mat-card>
+            </div>
+
+            <div class="col-sm-6">
+                <mat-card class="item-card">
+                    <div [routerLink]="['./category']" [queryParams]="{ 'type' : 0 }" matRipple>
+                        <p class="icon" style="color: #6e00b8">
+                            <mat-icon>list</mat-icon>
+                        </p>
+                        <p class="title">نمون برگ ها</p>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="col-sm-4">
                 <mat-card class="item-card">
                     <div [routerLink]="['./settings']" matRipple>

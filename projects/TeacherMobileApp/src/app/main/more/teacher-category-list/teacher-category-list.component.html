@@ -1,0 +1,29 @@
+<app-toolbar [Title]="Title" [showBackButton]="true">
+    <app-toolbar-item-left>
+        <button mat-icon-button (click)="refreshCats()">
+            <mat-icon>refresh</mat-icon>
+        </button>
+    </app-toolbar-item-left>
+</app-toolbar>
+
+<div class="card" *ngFor="let i of categories"
+    [routerLink]="['/more/category/data/' + i.id + '/' + Type + '/' + i.title]" style="margin-top: 3px;" matRipple>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-7">
+                {{ i.title }}
+            </div>
+        </div>
+        <ng-container *ngIf="Type == 1">
+            <hr>
+            <div class="row">
+                <div class="col-sm-5">
+                    <small> پایه : {{ i.gradeString }} </small>
+                    <br>
+                    <small> کلاس : {{ i.classString }} </small>
+                </div>
+            </div>
+        </ng-container>
+
+    </div>
+</div>
