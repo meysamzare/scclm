@@ -1,0 +1,60 @@
+<app-data-edit #edit>
+    <app-navbar [Title]="edit.Title"></app-navbar>
+
+    <app-card [title]="edit.Title">
+        <app-data-form>
+            <app-cols>
+                <!-- Right -->
+                <app-col>
+
+                    <app-input label="نام {{ edit.PAGE_TITLE }}" [(ngModel)]="edit.PAGE_Data.name" name="name">
+                    </app-input>
+
+                    <app-input type="number" label="ضریب در کارنامه" [(ngModel)]="edit.PAGE_Data.courseMix"
+                        name="courseMix">
+                    </app-input>
+
+                    <app-input type="number" label="ترتیب در کارنامه" [required]="false"
+                        [(ngModel)]="edit.PAGE_Data.order" name="order">
+                    </app-input>
+
+                    <app-input type="number" label="ضریب اهمیت" [required]="false" [(ngModel)]="edit.PAGE_Data.order2"
+                        name="order2">
+                    </app-input>
+
+                    <app-input type="number" label="تعداد ساعت تدریس در هفته" [required]="false"
+                        [(ngModel)]="edit.PAGE_Data.teachTime" name="teachTime">
+                    </app-input>
+
+                </app-col>
+
+
+                <!-- Left -->
+                <app-col>
+                    <app-select label="انتخاب آموزشگاه" name="tituteSelect" [(ngModel)]="edit.PAGE_Data.tituteId">
+                        <app-select-option *ngFor="let grade of grades" [title]="grade.name" [value]="grade.id">
+                        </app-select-option>
+                    </app-select>
+
+                    <app-select label="انتخاب سال تحصیلی" name="yeareducationSelect"
+                        [(ngModel)]="edit.PAGE_Data.yeareducationId">
+                        <app-select-option *ngFor="let teacher of teachers" [title]="teacher.name" [value]="teacher.id">
+                        </app-select-option>
+                    </app-select>
+
+                </app-col>
+            </app-cols>
+
+
+            <app-button-group>
+                <app-button *button text="لغو" [isEdit]="edit.isEdit" [backToPureMenuUrl]="true"></app-button>
+
+                <app-button *button [text]="edit.btnTitle" [loading]="edit.isLoading" (onClick)="edit.sts()"
+                    color="primary" [fullWidth]="true" [disabled]="!edit.isAllFormValid()">
+                </app-button>
+
+            </app-button-group>
+
+        </app-data-form>
+    </app-card>
+</app-data-edit>

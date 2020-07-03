@@ -12,8 +12,12 @@ export class TituteRepositoryService {
     ) { }
 
     async getAll() {
-        let data = await this.auth.post(`/api/Titute/getAll`).toPromise();
+        let { success, data } = await this.auth.post(`/api/Titute/getAll`).toPromise();
 
-        return data.data as ITitute[];
+        if (success) {
+            return data as ITitute[];
+        }
+
+        return [];
     }
 }

@@ -1,0 +1,29 @@
+<app-navbar [showRefresh]="true" (refresh)="list.refreshDataSource()"></app-navbar>
+
+<app-data-list #list (editClick)="list.onEdit($event.id)" (deleteClick)="list.deleteSelected()">
+
+    <ng-template dataListItem [def]="'id'" [title]="'ردیف'" [show]="false" let-row="Row">
+        <p>{{ row.id }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'name'" [title]="'عنوان'" let-row="Row">
+        <p>{{ row.name }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'time'" [title]="'ساعت شروع - ساعت پایان'" let-row="Row">
+        <p>{{row.timeStart + ' - '+ row.timeEnd }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'courseTitle'" [title]="'نام درس'" let-row="Row">
+        <p>{{ row.courseTitle }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'timeandDaysTitle'" [title]="'ایام هفته'" [show]="false" let-row="Row">
+        <p>{{ row.timeandDaysTitle }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'teacherTitle'" [title]="'دبیر'" [show]="false" let-row="Row">
+        <p>{{ row.teacherTitle }}</p>
+    </ng-template>
+
+</app-data-list>

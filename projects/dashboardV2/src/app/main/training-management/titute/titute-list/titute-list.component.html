@@ -1,8 +1,7 @@
 <app-navbar [showRefresh]="true" (refresh)="list.refreshDataSource()"></app-navbar>
 
-<app-data-list #list [PAGE_APIURL]="'Titute'" [PAGE_ROLE]="'InsTitute'" [conditionalProperty]="'haveChildren,haveGrade'"
-    [conditionalTitle]="'زیرمجموعه یا مقطع تحصیلی'" (editClick)="list.onEdit($event.id)"
-    (deleteClick)="list.deleteSelected()">
+<app-data-list #list [conditionalProperty]="'haveChildren,haveGrade'" [conditionalTitle]="'زیرمجموعه یا مقطع تحصیلی'"
+    (editClick)="list.onEdit($event.id)" (deleteClick)="list.deleteSelected()">
 
     <ng-template dataListItem [def]="'id'" [title]="'ردیف'" [show]="false" let-row="Row">
         <p>{{ row.id }}</p>

@@ -40,8 +40,8 @@
                         <mat-menu #viewCols="matMenu">
                             <div class="mat-menu-container" (click)="$event.stopPropagation()">
                                 <ng-container *ngFor="let i of getShowColsList()">
-                                    <mat-checkbox (change)="toggleCol(i.def, $event.checked)"
-                                        [checked]="i.show" [disabled]="isLastItemInDisplayCol(i.def)">
+                                    <mat-checkbox (change)="toggleCol(i.def, $event.checked)" [checked]="i.show"
+                                        [disabled]="isLastItemInDisplayCol(i.def)">
                                         {{ i.title }}
                                     </mat-checkbox>
                                     <br>
@@ -131,6 +131,8 @@
             <ng-container matColumnDef="action" *ngIf="showAction">
                 <th mat-header-cell *matHeaderCellDef> عملیات </th>
                 <td mat-cell *matCellDef="let row">
+                    <ng-content select="app-data-list-actions"></ng-content>
+
                     <button matTooltip="ویرایش {{row[tooltipalProperty]}}" matTooltipPosition="before" mat-icon-button
                         (click)="editClick.next(row)">
                         <mat-icon>edit</mat-icon>

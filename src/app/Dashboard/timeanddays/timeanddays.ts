@@ -3,7 +3,7 @@ export class ITimeAndDays{
 
     id = 0;
 
-    name: string;
+    name: string = "";
 
     sat = false;
     sun = false;

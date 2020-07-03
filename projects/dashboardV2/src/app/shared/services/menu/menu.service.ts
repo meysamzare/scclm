@@ -27,7 +27,25 @@ export class MenuService {
             return menu;
         }
 
-        throw new Error("Menu not Found! Please report it to owner.");
+        throw new Error("Menu by link not Found! Please report it to owner.");
+    }
+
+    getMenuByApiUrl(url: string) {
+        let menuWithChild: IMenu[] = [];
+
+        this.menus.forEach(menu => {
+            menuWithChild.push(menu);
+
+            menu.childrens.forEach(childMenu => menuWithChild.push(childMenu));
+        });
+
+        let menu = menuWithChild.find(c => c.apiUrl == url);
+
+        if (menu) {
+            return menu;
+        }
+
+        throw new Error("Menu by api not Found! Please report it to owner.");
     }
 
     getMenusChild(url: string) {

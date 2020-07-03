@@ -287,8 +287,7 @@ export class AuthService {
         roles.forEach(role => {
             let bool = (userRole as any)[role];
 
-            if (bool) {
-            } else {
+            if (!bool) {
                 noAccessList.push(role);
             }
         });

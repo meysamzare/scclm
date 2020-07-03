@@ -1,0 +1,57 @@
+<app-data-edit #edit>
+    <app-navbar [Title]="edit.Title"></app-navbar>
+
+    <app-card [title]="edit.Title">
+        <app-data-form>
+            <app-cols>
+                <!-- Right -->
+                <app-col>
+
+                    <app-input label="عنوان درس، روز و یا دبیر" [(ngModel)]="edit.PAGE_Data.name" name="name">
+                    </app-input>
+
+                    <app-time-input label="زمان شروع" [(ngModel)]="edit.PAGE_Data.timeStart" name="timeStart">
+                    </app-time-input>
+
+                    <app-time-input label="زمان پایان" [(ngModel)]="edit.PAGE_Data.timeEnd" name="timeEnd">
+                    </app-time-input>
+
+                </app-col>
+
+
+                <!-- Left -->
+                <app-col>
+
+                    <app-select label="انتخاب درس" name="courseSelect" [(ngModel)]="edit.PAGE_Data.courseId">
+                        <app-select-option *ngFor="let teacher of teachers" [title]="teacher.name" [value]="teacher.id">
+                        </app-select-option>
+                    </app-select>
+
+                    <app-select label="انتخاب دبیر" name="teacherSelect" [(ngModel)]="edit.PAGE_Data.teacherId">
+                        <app-select-option *ngFor="let course of courses" [title]="course.name" [value]="course.id">
+                        </app-select-option>
+                    </app-select>
+
+                    <app-select label="انتخاب ایام هفته" name="daysofweekSelect"
+                        [(ngModel)]="edit.PAGE_Data.timeandDaysId">
+                        <app-select-option *ngFor="let dayOfWeek of daysOfWeek" [title]="dayOfWeek.name"
+                            [value]="dayOfWeek.id">
+                        </app-select-option>
+                    </app-select>
+
+                </app-col>
+            </app-cols>
+
+
+            <app-button-group>
+                <app-button *button text="لغو" [isEdit]="edit.isEdit" [backToPureMenuUrl]="true"></app-button>
+
+                <app-button *button [text]="edit.btnTitle" [loading]="edit.isLoading" (onClick)="edit.sts()"
+                    color="primary" [fullWidth]="true" [disabled]="!edit.isAllFormValid()">
+                </app-button>
+
+            </app-button-group>
+
+        </app-data-form>
+    </app-card>
+</app-data-edit>

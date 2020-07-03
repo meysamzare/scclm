@@ -3,19 +3,19 @@ export class ICourse{
 
     id = 0;
 
-    name: string;
+    name = null;
 
-    gradeId: number;
+    gradeId = null;
 
-    courseMix: number;
+    courseMix = null;
 
-    order: number;
+    order = null;
 
-    order2: number;
+    order2 = null;
 
-    teacherId: number;
+    teacherId = null;
 
-    teachTime: number;
+    teachTime = null;
 
 
     haveTimeSchedules = false;
@@ -24,5 +24,5 @@ export class ICourse{
     gradeName = "";
     teacherName = "";
 
-    yeareducationId: number = null;
+    yeareducationId = null;
 }

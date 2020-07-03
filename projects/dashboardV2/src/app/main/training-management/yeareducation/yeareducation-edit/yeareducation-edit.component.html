@@ -26,11 +26,12 @@
 
             
             <app-button-group>
+                <app-button *button text="لغو" [isEdit]="edit.isEdit" [backToPureMenuUrl]="true"></app-button>
+
                 <app-button *button [text]="edit.btnTitle" [loading]="edit.isLoading" (onClick)="edit.sts()"
                     color="primary" [fullWidth]="true" [disabled]="!edit.isAllFormValid()">
                 </app-button>
 
-                <app-button *button text="لغو" [isEdit]="edit.isEdit" [backToPureMenuUrl]="true"></app-button>
             </app-button-group>
 
         </app-data-form>

@@ -23,7 +23,7 @@ export class HaveAccessDirective {
 
 
     private updateView() {
-        if (this.auth.isUserAccess(this.role, false)) {
+        if (this.auth.isUserAccessGroup(this.role.split(','))) {
             this.viewContainer.createEmbeddedView(this.templateRef);
         } else {
             this.viewContainer.clear();

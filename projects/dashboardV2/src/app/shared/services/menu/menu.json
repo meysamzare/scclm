@@ -66,42 +66,54 @@
                 "titles": "پایه های تحصیلی",
                 "icon": "stop",
                 "desc": "مدیریت پایه های تحصیلی موجود در سال تحصیلی جاری",
-                "link": "/training-management/"
+                "link": "/training-management/grade",
+                "role": "Grade",
+                "apiUrl": "Grade"
             },
             {
                 "title": "کلاس",
                 "titles": "کلاس ها و شعب",
                 "icon": "project-diagram",
                 "desc": "مدیریت کلاس ها و شعب مختلف موجود در پایه های تحصیلی",
-                "link": "/training-management/"
+                "link": "/training-management/class",
+                "role": "Class",
+                "apiUrl": "Class"
             },
             {
                 "title": "ایام هفته",
                 "titles": "ایام هفته",
                 "icon": "calendar-day",
                 "desc": "مدیریت ایام هفته",
-                "link": "/training-management/"
+                "link": "/training-management/days-of-week",
+                "role": "TimeAndDays",
+                "apiUrl": "TimeAndDays"
             },
             {
                 "title": "زمان بندی",
                 "titles": "زمان بندی ها",
                 "icon": "clock",
                 "desc": "مدیریت زمان بندی ها",
-                "link": "/training-management/"
+                "link": "/training-management/time-schedule",
+                "role": "TimeSchedule",
+                "apiUrl": "TimeSchedule"
             },
             {
                 "title": "دبیر",
                 "titles": "دبیران",
                 "icon": "user-tie",
                 "desc": "مدیریت دبیران براساس پرسنل",
-                "link": "/training-management/"
+                "link": "/training-management/teacher",
+                "role": "Teacher",
+                "apiUrl": "Teacher"
             },
             {
                 "title": "درس",
                 "titles": "دروس",
                 "icon": "book",
                 "desc": "مدیریت دروس مربوط به هر پایه",
-                "link": "/training-management/"
+                "link": "/training-management/course",
+                "role": "Course",
+                "apiUrl": "Course"
             }
         ]
     },
@@ -117,7 +129,7 @@
                 "titles": "دانش آموزان",
                 "icon": "user-graduate",
                 "desc": "به طور کلی مدیریت دانش آموزان اعم از ثبت نام و ثبت وضعیت های مختلف آن ها",
-                "link": "/student-management/students"
+                "link": "/student-management/student"
             },
             {
                 "title": "گروه دانش آموزان",

@@ -1,0 +1,53 @@
+<app-navbar [showRefresh]="true" (refresh)="list.refreshDataSource()"></app-navbar>
+
+<app-data-list #list [conditionalProperty]="'haveTimeSchedules,haveExam'"
+    [conditionalTitle]="'برنامه زمانبندی و یا آزمون'" (editClick)="list.onEdit($event.id)"
+    (deleteClick)="list.deleteSelected()">
+
+    <ng-template dataListItem [def]="'id'" [title]="'ردیف'" [show]="false" let-row="Row">
+        <p>{{ row.id }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'name'" [title]="'نام'" let-row="Row">
+        <p>{{ row.name }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'courseMix'" [title]="'ضریب'" [show]="false" let-row="Row">
+        <p>{{ row.courseMix }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'teachTime'" [title]="'زمان تدریس در هفته'" [show]="false" let-row="Row">
+        <p>{{row.teachTime + ' ساعت'}}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'gradeName'" [title]="'پایه تحصیلی'" let-row="Row">
+        <p>{{ row.gradeName }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'teacherName'" [title]="'دبیر'" let-row="Row">
+        <p>{{ row.teacherName }}</p>
+    </ng-template>
+
+
+
+    <app-data-list-filter-item [title]="'پایه تحصیلی'" name="selectedGrade">
+        <app-col>
+            <app-select [(ngModel)]="selectedGrade" name="selectedGrade" [label]="'پایه تحصیلی'" [required]="false"
+                [showLabelSection]="false">
+                <app-select-option *ngFor="let grade of grades" [title]="grade.name" [value]="grade.id">
+                </app-select-option>
+            </app-select>
+        </app-col>
+    </app-data-list-filter-item>
+
+    <app-data-list-filter-item [title]="'دبیر'" name="selectedTeacher">
+        <app-col>
+            <app-select [(ngModel)]="selectedTeacher" name="selectedTeacher" [label]="'دبیر'" [required]="false"
+                [showLabelSection]="false">
+                <app-select-option *ngFor="let teacher of teachers" [title]="teacher.name" [value]="teacher.id">
+                </app-select-option>
+            </app-select>
+        </app-col>
+    </app-data-list-filter-item>
+
+</app-data-list>

@@ -17,11 +17,8 @@ const routes: Routes = [
                 pathMatch: "full",
                 component: IndexComponent
             },
-            {
-                path: 'training-management',
-                loadChildren: () => import('./training-management/training-management.module')
-                    .then(m => m.TrainingManagementModule)
-            }
+            { path: 'training-management', loadChildren: () => import('./training-management/training-management.module').then(m => m.TrainingManagementModule) },
+            { path: 'student-management', loadChildren: () => import('./student-management/student-management.module').then(m => m.StudentManagementModule) }
         ]
     }
 ];

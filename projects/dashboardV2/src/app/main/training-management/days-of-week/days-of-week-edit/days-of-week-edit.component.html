@@ -1,0 +1,55 @@
+<app-data-edit #edit>
+    <app-navbar [Title]="edit.Title"></app-navbar>
+
+    <app-card [title]="edit.Title">
+        <app-data-form>
+            <app-cols>
+                <!-- Right -->
+                <app-col>
+
+                    <app-input label="عنوان روز" [(ngModel)]="edit.PAGE_Data.name" name="name">
+                    </app-input>
+
+                </app-col>
+
+
+                <!-- Left -->
+                <app-col>
+                    
+                    <app-checkbox title="شنبه" [(ngModel)]="edit.PAGE_Data.sat" name="sat"></app-checkbox>
+                    <br>
+                    
+                    <app-checkbox title="یکشنبه" [(ngModel)]="edit.PAGE_Data.sun" name="sun"></app-checkbox>
+                    <br>
+                    
+                    <app-checkbox title="دوشنبه" [(ngModel)]="edit.PAGE_Data.mon" name="mon"></app-checkbox>
+                    <br>
+                    
+                    <app-checkbox title="سه شنبه" [(ngModel)]="edit.PAGE_Data.tue" name="tue"></app-checkbox>
+                    <br>
+                    
+                    <app-checkbox title="چهارشنبه" [(ngModel)]="edit.PAGE_Data.wed" name="wed"></app-checkbox>
+                    <br>
+                    
+                    <app-checkbox title="پنج شنبه" [(ngModel)]="edit.PAGE_Data.thr" name="thr"></app-checkbox>
+                    <br>
+                    
+                    <app-checkbox title="جمعه" [(ngModel)]="edit.PAGE_Data.fri" name="fri"></app-checkbox>
+                    
+
+                </app-col>
+            </app-cols>
+
+
+            <app-button-group>
+                <app-button *button text="لغو" [isEdit]="edit.isEdit" [backToPureMenuUrl]="true"></app-button>
+
+                <app-button *button [text]="edit.btnTitle" [loading]="edit.isLoading" (onClick)="edit.sts()"
+                    color="primary" [fullWidth]="true" [disabled]="!edit.isAllFormValid()">
+                </app-button>
+
+            </app-button-group>
+
+        </app-data-form>
+    </app-card>
+</app-data-edit>

@@ -1,0 +1,63 @@
+<app-navbar [showRefresh]="true" (refresh)="list.refreshDataSource()"></app-navbar>
+
+
+<app-data-list #list [conditionalProperty]="'haveTimeSchedules,haveCourses'"
+    [conditionalTitle]="'برنامه زمانبندی و یا دروسی'" (editClick)="list.onEdit($event.id)"
+    (deleteClick)="list.deleteSelected()" [showAction]="false">
+
+    <ng-template dataListItem [def]="'id'" [title]="'ردیف'" [sortHeader]="false" [show]="false" let-row="Row">
+        <p>{{ row.id }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'name'" [title]="'نام و نام خانوادگی'" let-row="Row">
+        <p>{{ row.name }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'code'" [title]="'کد دبیر'" let-row="Row">
+        <p>{{ row.code }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'getPersonelCode'" [title]="'کد پرسنلی'" [show]="false" let-row="Row">
+        <p>{{ row.getPersonelCode }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'action'" [sortHeader]="false" let-row="Row">
+        <button matTooltip="مشاهده در پرسنل" mat-icon-button (click)="goToOrgPersonEdit(row.orgPersonId)">
+            <mat-icon>person_pin</mat-icon>
+        </button>
+
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>fingerprint</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button *haveAccess="'edit_TeacherPassword'" mat-menu-item
+                (click)="teacherRepo.openChangePasswordDialog(row.id, row.name)">
+                <mat-icon>vpn_key</mat-icon>
+                <span>تغییر کلمه عبور {{ row.name }}</span>
+            </button>
+            <button *haveAccess="'edit_TeacherAllAccess'" mat-menu-item>
+                <mat-slide-toggle color="primary" (change)="teacherRepo.toggleAllCourseAccess(row.id, $event.checked)"
+                    [checked]="row.allCourseAccess">
+                    دسترسی به تمامی دروس
+                </mat-slide-toggle>
+            </button>
+        </mat-menu>
+
+        <button matTooltip="ویرایش {{row.name}}" matTooltipPosition="before" mat-icon-button
+            (click)="list.onEdit(row.id)">
+            <mat-icon>edit</mat-icon>
+        </button>
+    </ng-template>
+
+    <app-data-list-filter-item [title]="'دسترسی ویژه'" name="access" #item>
+        <app-col>
+            <app-select [(ngModel)]="accessFilter" name="access" [label]="'دسترسی ویژه'" [required]="false"
+                [showLabelSection]="false">
+                <app-select-option [title]="'همه'" [value]="'all'"></app-select-option>
+                <app-select-option [title]="'دسترسی عمومی'" [value]="'allcourse'"></app-select-option>
+                <app-select-option [title]="'دسترسی خصوصی'" [value]="'owncourse'"></app-select-option>
+            </app-select>
+        </app-col>
+    </app-data-list-filter-item>
+
+</app-data-list>

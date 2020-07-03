@@ -1,0 +1,30 @@
+<app-navbar [showRefresh]="true" (refresh)="list.refreshDataSource()"></app-navbar>
+
+<app-data-list #list [conditionalProperty]="'haveClass'" [conditionalTitle]="'کلاس'"
+    (editClick)="list.onEdit($event.id)" (deleteClick)="list.deleteSelected()">
+
+    <ng-template dataListItem [def]="'id'" [title]="'ردیف'" [show]="false" let-row="Row">
+        <p>{{ row.id }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'name'" [title]="'نام'" let-row="Row">
+        <p>{{ row.name }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'code'" [title]="'کد پایه تحصیلی'" let-row="Row">
+        <p>{{ row.code }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'tituteName'" [title]="'آموزشگاه'" [show]="false" let-row="Row">
+        <p>{{ row.tituteName }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'yeareducationName'" [title]="'سال تحصیلی'" let-row="Row">
+        <p>{{ row.yeareducationName }}</p>
+    </ng-template>
+
+    <ng-template dataListItem [def]="'capasity'" [title]="'ظرفیت پذیرش'" [show]="false" let-row="Row">
+        <p>{{ row.capasity }}</p>
+    </ng-template>
+
+</app-data-list>

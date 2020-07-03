@@ -40,5 +40,7 @@ export class YeareducationRepositoryService {
         if (success) {
             return data as IYeareducation[];
         }
+
+        return [];
     }
 }

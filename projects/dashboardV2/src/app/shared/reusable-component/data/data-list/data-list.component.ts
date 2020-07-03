@@ -137,7 +137,9 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
                     this.showSearch = true;
                 }
 
-                this.sort.sortChange.next();
+                if (this.sort.active) {
+                    this.sort.sortChange.next();
+                }
             });
         }
     }
@@ -189,7 +191,11 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
                 });
 
                 filter.modelValue$.subscribe(value => {
-                    this.filterDatas.find(c => c.name == filter.model.name).value = value;
+                    let filterData = this.filterDatas.find(c => c.name == filter.model.name);
+                    if (filterData.value == value) {
+                        return;
+                    }
+                    filterData.value = value;
                     this.paginator.firstPage();
                     this.filter$.next();
                 });
@@ -197,8 +203,7 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
         }
         // /Filters------------------------------
 
-        this.filter$.next();
-
+        this.refreshDataSource();
     }
 
     getShowColsList() {
@@ -416,7 +421,7 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
                     pagesize: this.paginator.pageSize,
                     page: this.paginator.pageIndex,
                     dir: this.sort.direction,
-                    sort: this.sort.active,
+                    sort: this.sort.active || "",
                     q: this.txtSearch
                 }
             });
@@ -481,7 +486,7 @@ export class DataListComponent implements OnInit, AfterViewInit, AfterContentIni
 
 
     applyFilter() {
-        if (this.paginator) {
+        if (this.paginator.pageIndex != 0) {
             this.paginator.firstPage();
         }
 

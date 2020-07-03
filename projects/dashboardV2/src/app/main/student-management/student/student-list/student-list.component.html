@@ -1,0 +1,141 @@
+<app-navbar [showRefresh]="true" (refresh)="list.refreshDataSource()"></app-navbar>
+
+
+<app-card title="لیست دانش آموزان">
+    <app-data-list #list (deleteClick)="list.deleteSelected()" [showAction]="false">
+
+        <ng-template dataListItem [def]="'id'" [title]="'ردیف'" [show]="false" let-row="Row">
+            <p>{{ row.id }}</p>
+        </ng-template>
+
+        <ng-template dataListItem [def]="'complateInfo'" [title]="'اطلاعات تکمیلی'" [show]="false" [sortHeader]="false"
+            let-row="Row">
+            <button matRippleDisabled="true" (click)="list.onEdit(row.id)" mat-icon-button
+                *ngIf="row.isStudentInfoComplated == false" matTooltip="برخی از اطلاعات تکمیلی دانش آموز وارد نشده است">
+                <span class="bell fa fa-bell"></span>
+            </button>
+        </ng-template>
+
+        <ng-template dataListItem [def]="'namelast'" [title]="'نام و نام خانوادگی'" let-row="Row">
+            <p>{{ row.name + ' ' + row.lastName }}</p>
+        </ng-template>
+
+
+        <ng-template dataListItem [def]="'code'" [title]="'کد دانش آموزی'" [show]="false" let-row="Row">
+            <p>{{ row.code }}</p>
+        </ng-template>
+
+        <ng-template dataListItem [def]="'fatherName'" [title]="'نام پدر'" [show]="false" let-row="Row">
+            <p>{{ row.fatherName }}</p>
+        </ng-template>
+
+        <ng-template dataListItem [def]="'idNumber'" [title]="'کد ملی'" let-row="Row">
+            <p>{{ row.idNumber2 }}</p>
+        </ng-template>
+
+        <ng-template dataListItem [def]="'state'" [title]="'وضعیت'" let-row="Row">
+            <mat-chip-list>
+
+                <ng-container *ngFor="let i of [0,1,2,3,4]">
+                    <mat-chip (click)="openStdChangeStateSheet(row.id, row.studentState)"
+                        [style.background-color]="getStudentStateColorString(i)" selected *ngIf="row.studentState == i">
+                        {{ getStudentStateString(i) }}
+                    </mat-chip>
+                </ng-container>
+
+            </mat-chip-list>
+        </ng-template>
+
+
+        <ng-template dataListItem [def]="'action'" [title]="'عملیات'" let-row="Row">
+
+            <button mat-icon-button matTooltip="افزودن به لیست انتخاب شده ها" [disabled]="isOnSelectedList(row)"
+                (click)="addToSelectedList(row)">
+                <mat-icon>done_all</mat-icon>
+            </button>
+
+            <button *ngIf="!row.haveStdClassMng" matTooltip="ثبت نام {{row.name + ' ' + row.lastName}}"
+                matTooltipPosition="before" mat-icon-button
+                (click)="registerStudent(row.id, row.name + ' ' + row.lastName)">
+                <mat-icon>playlist_add</mat-icon>
+            </button>
+
+            <button *ngIf="row.haveStdClassMng" matTooltip="لیست ثبت نامی  {{row.name + ' ' + row.lastName}}"
+                matTooltipPosition="before" mat-icon-button
+                (click)="showRegisteredList(row.id, row.name + ' ' + row.lastName)">
+                <mat-icon [matBadge]="row.stdClassMngNumber" matBadgeColor="accent" style="color: limegreen;">
+                    verified_user</mat-icon>
+            </button>
+
+            <button *haveAccess="'edit_StudentPassword,edit_StudentParentPassword'" mat-icon-button
+                matTooltip="دسترسی ها" [matMenuTriggerFor]="menu">
+                <mat-icon>fingerprint</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+                <button *haveAccess="'edit_StudentPassword'"
+                    (click)="openChangePasswordDialog(row.id, row.name + ' ' + row.lastName, 1)" mat-menu-item>
+                    <mat-icon>tag_faces</mat-icon>
+                    <span>تغییر کلمه عبور دانش آموز</span>
+                </button>
+                <button mat-menu-item>
+                    <mat-slide-toggle color="primary" (change)="toggleAccess(row.id, 1, $event.checked)"
+                        [checked]="row.studentAccess">
+                        دسترسی دانش آموز
+                    </mat-slide-toggle>
+                </button>
+                <button *haveAccess="'edit_StudentParentPassword'"
+                    (click)="openChangePasswordDialog(row.id, row.name + ' ' + row.lastName, 2)" mat-menu-item>
+                    <mat-icon>face</mat-icon>
+                    <span>تغییر کلمه عبور اولیا</span>
+                </button>
+                <button mat-menu-item [role]="'menuitemradio'">
+                    <mat-slide-toggle color="primary" (change)="toggleAccess(row.id, 2, $event.checked)"
+                        [checked]="row.parentAccess">
+                        دسترسی اولیا
+                    </mat-slide-toggle>
+                </button>
+            </mat-menu>
+
+            <button matTooltip="مشاهده {{row.name + ' ' + row.lastName}}" matTooltipPosition="before" mat-icon-button
+                (click)="viewStudent(row)" *haveAccess="'view_Student'">
+                <mat-icon>remove_red_eye</mat-icon>
+            </button>
+
+            <button matTooltip="ویرایش سریع {{row.name + ' ' + row.lastName}}" matTooltipPosition="before"
+                mat-icon-button (click)="fastEdit(row)">
+                <mat-icon>edit_location</mat-icon>
+            </button>
+
+            <button matTooltip="ویرایش {{row.name + ' ' + row.lastName}}" matTooltipPosition="before" mat-icon-button
+                (click)="list.onEdit(row.id)">
+                <mat-icon>edit</mat-icon>
+            </button>
+
+        </ng-template>
+
+
+        <!-- 
+        <app-data-list-filter-item [title]="'پایه تحصیلی'" name="selectedGrade">
+            <app-col>
+                <app-select [(ngModel)]="selectedGrade" name="selectedGrade" [label]="'پایه تحصیلی'" [required]="false"
+                    [showLabelSection]="false">
+                    <app-select-option *ngFor="let grade of grades" [title]="grade.name" [value]="grade.id">
+                    </app-select-option>
+                </app-select>
+            </app-col>
+        </app-data-list-filter-item> -->
+
+    </app-data-list>
+
+</app-card>
+
+
+<app-card title="لیست انتخاب شده ها">
+
+</app-card>
+
+
+
+<app-card title="لیست انتخاب شده ها">
+
+</app-card>

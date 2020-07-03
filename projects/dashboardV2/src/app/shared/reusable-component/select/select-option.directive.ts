@@ -5,7 +5,7 @@ import { Directive, Input } from '@angular/core';
 })
 export class SelectOptionDirective {
 
-    @Input("label") title = "";
+    @Input() title = "";
     @Input() value: any;
     @Input() disabled = false;
 

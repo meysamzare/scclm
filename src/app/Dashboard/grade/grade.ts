@@ -1,29 +1,29 @@
 export class IGrade {
-    constructor() {}
+    constructor() { }
 
     id: number = 0;
 
-    code: string;
+    code = "";
 
-    name: string;
+    name = "";
 
-    tituteId: number;
+    tituteId: number = null;
 
-    yeareducationId: number;
+    yeareducationId: number = null;
 
-    capasity: number;
+    capasity: number = null;
 
-    orgCode: string;
+    orgCode = "";
 
-    internalCode: string;
+    internalCode = "";
 
-    desc: string;
+    desc = "";
 
-    order: number;
+    order: number = 1;
 
     haveClass: boolean = false;
 
-    tituteName: string = "";
+    tituteName = "";
 
-    yeareducationName: string = "";
+    yeareducationName = "";
 }

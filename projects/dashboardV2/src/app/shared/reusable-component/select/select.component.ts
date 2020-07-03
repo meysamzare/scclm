@@ -1,4 +1,4 @@
-import { Component, OnInit, ContentChildren, QueryList, AfterContentInit, Optional, Self, Input, ViewChild, ElementRef, ViewEncapsulation, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ContentChildren, QueryList, AfterContentInit, Optional, Self, Input, ViewChild, ElementRef, ViewEncapsulation, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { SelectOptionDirective } from './select-option.directive';
 import { NgControl, ControlValueAccessor, Validator, AbstractControl, ValidationErrors, ValidatorFn, Validators, FormControl, FormGroupDirective, NgForm } from '@angular/forms';
 import { MatSelect, ErrorStateMatcher } from '@angular/material';
@@ -30,6 +30,8 @@ export class SelectComponent implements OnInit, AfterViewInit, AfterContentInit,
     @ViewChild("select", { static: false }) select: MatSelect;
 
     // matcher = new MyErrorStateMatcher();
+
+    @Output() changed = new EventEmitter<{ title: string, value: any }>();
 
     constructor(
         @Optional() @Self() public controlDir: NgControl
@@ -107,6 +109,23 @@ export class SelectComponent implements OnInit, AfterViewInit, AfterContentInit,
     onChange(event) { }
 
     onTouched() { }
+
+    onValueChange(value) {
+        this.onChange(value);
+
+        if (this.selectOptions) {
+            let option = this.selectOptions.toArray().find(c => c.value == value);
+
+            if (option) {
+                this.changed.emit({
+                    title: option.title,
+                    value: option.value
+                });
+            }
+        }
+
+        this.changed.emit(null);
+    }
 
 
 

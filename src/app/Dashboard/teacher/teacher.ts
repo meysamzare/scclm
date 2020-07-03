@@ -3,15 +3,15 @@ export class ITeacher{
 
     id = 0;
 
-    code: number;
+    code = null;
 
-    name: string;
+    name = "";
 
-    orgPersonId: number;
+    orgPersonId = null;
 
-    password: string;
+    password = "";
 
-    allCourseAccess: boolean;
+    allCourseAccess = false;
 
     
     haveTimeSchedules = false;

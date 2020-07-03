@@ -5,8 +5,8 @@
     <div class="field-body" dir="rtl">
         <mat-form-field [matTooltip]="hint" style="width: 100%;">
             <mat-label>{{ Placeholder ? Placeholder : label }}</mat-label>
-            <mat-select #select [(ngModel)]="value" [disabled]="disabled" (selectionChange)="onChange($event.value)"
-                [required]="required">
+            <mat-select #select [(ngModel)]="value" [disabled]="disabled" (blur)="onTouched()"
+                (selectionChange)="onValueChange($event.value)" [required]="required">
                 <mat-option>
                     <ngx-mat-select-search [(ngModel)]="searchText" [placeholderLabel]="'جستجو'"
                         [noEntriesFoundLabel]="'موردی یافت نشد'"></ngx-mat-select-search>

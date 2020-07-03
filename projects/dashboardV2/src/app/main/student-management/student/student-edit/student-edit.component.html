@@ -1,0 +1,179 @@
+<app-data-edit #edit>
+    <app-navbar [Title]="edit.Title"></app-navbar>
+
+    <app-data-form>
+        <app-card [title]="edit.Title">
+            <app-cols>
+                <!-- Right -->
+                <app-col>
+
+                    <app-input label="نام" [(ngModel)]="edit.PAGE_Data.student.name" name="name">
+                    </app-input>
+
+                    <app-input label="نام خانوادگی" [(ngModel)]="edit.PAGE_Data.student.lastName" name="lastName">
+                    </app-input>
+
+                    <app-date-input label="تاریخ تولد" [(ngModel)]="edit.PAGE_Data.student.birthDate" name="birthDate">
+                    </app-date-input>
+
+                    <app-input label="سریال شناسنامه" [required]="false"
+                        [(ngModel)]="edit.PAGE_Data.student.idCardSerial" name="idCardSerial">
+                    </app-input>
+
+                    <app-input label="محل تولد" [required]="false" [(ngModel)]="edit.PAGE_Data.student.birthLocation"
+                        name="birthLocation">
+                    </app-input>
+
+                </app-col>
+
+
+                <!-- Left -->
+                <app-col>
+
+                    <app-input label="نام پدر" [(ngModel)]="edit.PAGE_Data.student.fatherName" name="fatherName">
+                    </app-input>
+
+                    <app-input label="شماره شناسنامه" [(ngModel)]="edit.PAGE_Data.student.idNumber" name="idNumber">
+                    </app-input>
+
+                    <app-input label="شماره ملی" [(ngModel)]="edit.PAGE_Data.student.idNumber2" name="idNumber2">
+                    </app-input>
+
+                    <app-input label="کد {{ edit.PAGE_TITLE }}" [(ngModel)]="edit.PAGE_Data.student.code" name="code">
+                    </app-input>
+
+                    <app-input label="کد شناسه ای آموزش و پرورش {{ edit.PAGE_TITLE }}" [required]="false"
+                        [(ngModel)]="edit.PAGE_Data.student.orgCode" name="orgCode">
+                    </app-input>
+
+                    <app-file [sizeLimit_MB]="2" label="تصویر {{ edit.PAGE_TITLE }}" [accept]="'image/png,image/jpeg'"
+                        [fileUrl]="edit.PAGE_Data.student.picUrl" (fileChange)="onPicChange($event)"></app-file>
+
+                </app-col>
+            </app-cols>
+
+        </app-card>
+
+        <app-card title="اطلاعات تکمیلی {{ edit.PAGE_TITLE }}" [isCardOpen]="false">
+
+            <app-cols>
+                <app-col>
+                    <app-input label="نام و نام خانوادگی پدر" [required]="false"
+                        [(ngModel)]="edit.PAGE_Data.studentInfo.fatherName" [ngModelOptions]="{ standalone: true }">
+                    </app-input>
+
+                    <app-input label="تحصیلات پدر" [required]="false" [(ngModel)]="edit.PAGE_Data.studentInfo.fatherEdu"
+                        [ngModelOptions]="{ standalone: true }">
+                    </app-input>
+
+                    <app-input label="شغل پدر" [required]="false" [(ngModel)]="edit.PAGE_Data.studentInfo.fatherJob"
+                        [ngModelOptions]="{ standalone: true }">
+                    </app-input>
+
+                    <app-input label="تلفن همراه پدر" [required]="false"
+                        [(ngModel)]="edit.PAGE_Data.studentInfo.fatherPhone" [ngModelOptions]="{ standalone: true }">
+                    </app-input>
+
+                    <app-input label="تلفن محل کار پدر" [required]="false"
+                        [(ngModel)]="edit.PAGE_Data.studentInfo.fatherJobPhone" [ngModelOptions]="{ standalone: true }">
+                    </app-input>
+
+                    <app-input label="آدرس محل کار پدر" [required]="false"
+                        [(ngModel)]="edit.PAGE_Data.studentInfo.fatherJobAddress"
+                        [ngModelOptions]="{ standalone: true }">
+                    </app-input>
+                </app-col>
+
+
+                <app-col>
+
+                    <app-input label="نام و نام خانوادگی مادر" [required]="false"
+                        [(ngModel)]="edit.PAGE_Data.studentInfo.momName" [ngModelOptions]="{ standalone: true }">
+                    </app-input>
+
+                    <app-input label="تحصیلات مادر" [required]="false" [(ngModel)]="edit.PAGE_Data.studentInfo.momEdu"
+                        [ngModelOptions]="{ standalone: true }">
+                    </app-input>
+
+                    <app-input label="شغل مادر" [required]="false" [(ngModel)]="edit.PAGE_Data.studentInfo.momJob"
+                        [ngModelOptions]="{ standalone: true }">
+                    </app-input>
+
+                    <app-input label="تلفن همراه مادر" [required]="false"
+                        [(ngModel)]="edit.PAGE_Data.studentInfo.momPhone" [ngModelOptions]="{ standalone: true }">
+                    </app-input>
+
+                    <app-input label="تلفن محل کار مادر" [required]="false"
+                        [(ngModel)]="edit.PAGE_Data.studentInfo.momJobPhone" [ngModelOptions]="{ standalone: true }">
+                    </app-input>
+
+                    <app-input label="آدرس محل کار مادر" [required]="false"
+                        [(ngModel)]="edit.PAGE_Data.studentInfo.momJobAddress" [ngModelOptions]="{ standalone: true }">
+                    </app-input>
+
+                </app-col>
+            </app-cols>
+
+            <app-cols>
+                <app-col>
+
+                    <app-textarea label="نشانی منزل" [required]="false"
+                        [(ngModel)]="edit.PAGE_Data.studentInfo.homeAddress" [ngModelOptions]="{ standalone: true }">
+                    </app-textarea>
+
+
+                    <app-input label="تلفن ثابت منزل" [required]="false"
+                        [(ngModel)]="edit.PAGE_Data.studentInfo.homePhone" [ngModelOptions]="{ standalone: true }">
+                    </app-input>
+
+                    <app-select label="وضعیت خانوادگی" [required]="false"
+                        [(ngModel)]="edit.PAGE_Data.studentInfo.familyState" [ngModelOptions]="{ standalone: true }">
+                        <app-select-option title="عادی" [value]="'عادی'"></app-select-option>
+                        <app-select-option title="شهدا" [value]="'شهدا'"></app-select-option>
+                        <app-select-option title="جانباز" [value]="'جانباز'"></app-select-option>
+                        <app-select-option title="آزادگان" [value]="'آزادگان'"></app-select-option>
+                        <app-select-option title="مفقود الاثر" [value]="'مفقود الاثر'"></app-select-option>
+                        <app-select-option title="فوت پدر" [value]="'فوت پدر'"></app-select-option>
+                        <app-select-option title="فوت مادر" [value]="'فوت مادر'"></app-select-option>
+                        <app-select-option title="متارکه حضانت با پدر" [value]="'متارکه حضانت با پدر'">
+                        </app-select-option>
+                        <app-select-option title="متارکه حضانت با مادر" [value]="'متارکه حضانت با مادر'">
+                        </app-select-option>
+                    </app-select>
+
+                    <app-input label="دین، مذهب" [required]="false" [(ngModel)]="edit.PAGE_Data.studentInfo.religion"
+                        [ngModelOptions]="{ standalone: true }">
+                    </app-input>
+
+                </app-col>
+                <app-col>
+
+                    <app-input label="شماره شبکه اجتماعی" [required]="false"
+                        [(ngModel)]="edit.PAGE_Data.studentInfo.socialNet" [ngModelOptions]="{ standalone: true }">
+                    </app-input>
+
+                    <app-input label="آدرس پست الکترونیک" [required]="false" type="email"
+                        [(ngModel)]="edit.PAGE_Data.studentInfo.email" [ngModelOptions]="{ standalone: true }">
+                    </app-input>
+
+                    <app-textarea label="توضیحات" [required]="false" [(ngModel)]="edit.PAGE_Data.studentInfo.desc"
+                        name="desc">
+                    </app-textarea>
+
+                </app-col>
+            </app-cols>
+
+        </app-card>
+
+
+        <app-button-group>
+            <app-button *button text="لغو" [isEdit]="edit.isEdit" [backToPureMenuUrl]="true"></app-button>
+
+            <app-button *button [text]="edit.btnTitle" [loading]="edit.isLoading" (onClick)="edit.sts()" color="primary"
+                [fullWidth]="true" [disabled]="!edit.isAllFormValid()">
+            </app-button>
+
+        </app-button-group>
+
+    </app-data-form>
+</app-data-edit>

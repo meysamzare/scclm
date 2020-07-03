@@ -1,0 +1,45 @@
+<app-data-edit #edit>
+    <app-navbar [Title]="edit.Title"></app-navbar>
+
+    <app-card [title]="edit.Title">
+        <app-data-form>
+            <app-cols>
+                <!-- Right -->
+                <app-col>
+
+                    <app-input label="نام و نام خانوادگی {{ edit.PAGE_TITLE }}" [(ngModel)]="edit.PAGE_Data.name"
+                        name="name">
+                    </app-input>
+
+                    <app-input type="number" label="کد {{ edit.PAGE_TITLE }}" [(ngModel)]="edit.PAGE_Data.code"
+                        name="code">
+                    </app-input>
+
+                </app-col>
+
+
+                <!-- Left -->
+                <app-col>
+
+                    <app-select label="انتخاب پرسنل" name="orgPersonSelect" [(ngModel)]="edit.PAGE_Data.orgPersonId">
+                        <app-select-option *ngFor="let person of orgPersons" [title]="person.name" [value]="person.id">
+                        </app-select-option>
+                    </app-select>
+
+                </app-col>
+            </app-cols>
+
+
+            <app-button-group>
+                
+                <app-button *button text="لغو" [isEdit]="edit.isEdit" [backToPureMenuUrl]="true"></app-button>
+
+                <app-button *button [text]="edit.btnTitle" [loading]="edit.isLoading" (onClick)="edit.sts()"
+                    color="primary" [fullWidth]="true" [disabled]="!edit.isAllFormValid()">
+                </app-button>
+
+            </app-button-group>
+
+        </app-data-form>
+    </app-card>
+</app-data-edit>

@@ -1,21 +1,21 @@
 export class IClass {
     constructor() { }
 
-    id: number = 0;
+    id = 0;
 
-    name: string;
+    name = "";
 
-    code: number;
+    code = null;
 
-    section: string;
+    section = "";
 
-    gradeId: number;
+    gradeId = null;
 
-    capasity: number;
+    capasity = null;
 
-    order: number;
+    order = 1;
 
-    gradeName: string = "";
+    gradeName = "";
 
     haveExam = "";
     haveStdClassMngs = "";

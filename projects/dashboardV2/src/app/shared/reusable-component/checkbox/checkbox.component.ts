@@ -13,8 +13,8 @@ export class CheckboxComponent implements OnInit, AfterViewInit, ControlValueAcc
     @ViewChild('checkbox', { static: true }) checkbox: MatCheckbox;
 
     @Input() label: string;
-    @Input() desc: string;
-    @Input() showLabelSection: boolean = true;
+    @Input() title: string;
+    @Input() showLabelSection: boolean = false;
     @Input() disabled: boolean = false;
     @Input() indeterminate: boolean = false;
 

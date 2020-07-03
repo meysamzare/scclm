@@ -44,6 +44,8 @@ import { TreeComponent } from './tree/tree.component';
 import { LongPressDirective } from './directives/long-press.directive';
 import { TreeDialogComponent } from './tree/tree-dialog/tree-dialog.component';
 import { DateInputComponent } from './input/date-input/date-input.component';
+import { TimeInputComponent } from './input/time-input/time-input.component';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 
 @NgModule({
@@ -87,7 +89,8 @@ import { DateInputComponent } from './input/date-input/date-input.component';
         TreeDialogComponent,
         DateInputComponent,
         DataListOprationDirective,
-        DataListDeleteOprationDirective
+        DataListDeleteOprationDirective,
+        TimeInputComponent
     ],
     imports: [
         CommonModule,
@@ -97,6 +100,7 @@ import { DateInputComponent } from './input/date-input/date-input.component';
         MaterialModule,
         RouterModule,
         NgxMatSelectSearchModule,
+        NgxMaterialTimepickerModule,
     ],
     exports: [
         InputComponent,
@@ -138,7 +142,8 @@ import { DateInputComponent } from './input/date-input/date-input.component';
         TreeDialogComponent,
         DateInputComponent,
         DataListOprationDirective,
-        DataListDeleteOprationDirective
+        DataListDeleteOprationDirective,
+        TimeInputComponent
     ],
     providers: [
         { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },

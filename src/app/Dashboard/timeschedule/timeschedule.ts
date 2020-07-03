@@ -3,17 +3,17 @@ export class ITimeSchedule{
 
     id = 0;
 
-    name: string;
+    name = "";
 
-    courseId: number;
+    courseId = null;
 
-    teacherId: number;
+    teacherId = null;
 
-    timeStart: string;
+    timeStart = "";
 
-    timeEnd: string;
+    timeEnd = "";
 
-    timeandDaysId: number;
+    timeandDaysId = null;
 
 
     courseTitle = "";

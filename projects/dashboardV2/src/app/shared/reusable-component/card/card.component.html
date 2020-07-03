@@ -1,9 +1,9 @@
 <div class="card">
-    <header class="card-header" (click)="isCardOpen = !isCardOpen">
+    <header class="card-header">
         <p class="card-header-title">
             {{ title }}
         </p>
-        <a class="card-header-icon">
+        <a class="card-header-icon" (click)="isCardOpen = !isCardOpen">
             <ng-container *ngIf="isCardOpen">
                 <span class="icon">
                     <i class="fas fa-angle-up"></i>
