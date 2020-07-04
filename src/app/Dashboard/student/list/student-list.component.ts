@@ -16,6 +16,7 @@ import { StdChangeStateSheetComponent } from "./change-state-sheet/change-state-
 import { PrintDataService } from "src/app/shared/components/print-data/print-data.service";
 import { ChangeStdPasswordComponent } from "../modals/change-std-password/change-std-password.component";
 import { getStdStudyStateString, getStdBehaveStateString, getStdPayrollStateString } from "../stdClassMng";
+import { ExcelDataService } from "src/app/shared/services/excel-data.service";
 
 
 
@@ -106,7 +107,8 @@ export class StudentListComponent implements OnInit {
         private message: MessageService,
         private dialog: MatDialog,
         private bottomSheet: MatBottomSheet,
-        private printService: PrintDataService
+        private printService: PrintDataService,
+        public excelData: ExcelDataService
     ) { }
 
     getRowCanSelected(): number {

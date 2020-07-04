@@ -165,7 +165,11 @@
                                 </div>
                                 <div class="col-lg-2">
                                     <div style="float: left;">
-                                        <button class="btn btn-white btn-sm " (click)="printData()"
+                                        <button class="btn btn-primary btn-sm"
+                                            (click)="excelData.getExcelData('Student')" matTooltip="دریافت فایل اکسل"><i
+                                                class="fa fa-file"></i></button>
+
+                                        <button class="btn btn-white btn-sm mg-r" (click)="printData()"
                                             matTooltip="چاپ اطلاعات"><i class="fa fa-print"></i> </button>
                                     </div>
                                 </div>
