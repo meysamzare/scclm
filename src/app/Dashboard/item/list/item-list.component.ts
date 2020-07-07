@@ -582,7 +582,9 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
 
             let cat = this.Categories.find(c => c.id == this.selectedCatId);
 
-            this.selectedCatName = cat.title;
+            if (cat) {
+                this.selectedCatName = cat.title;
+            }
             this.searchAttrVals = [];
 
             this.auth
@@ -653,7 +655,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
                 pageSize: this.paginator.pageSize,
                 q: this.txtSearch
             },
-            catName: this.selectedCatName,
+            catId: this.selectedCatId,
             attrvalsearch: this.searchAttrVals,
             state: this.state,
             Type: this.TYPE
@@ -754,7 +756,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
                 if (isActive) {
                     var catId = 0;
 
-                    if (this.selectedCatName) {
+                    if (this.selectedCatId) {
                         catId = this.selectedCatId;
                     } else {
                         catId = this.getCurrentDataOfPage().find(

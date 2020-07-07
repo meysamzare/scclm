@@ -253,7 +253,7 @@
                         <br>
                         <div class="col-md-12">
                             <a mat-raised-button color="warn" style="margin: 5px;"
-                                routerLink="/dashboard/orgperson">لغو</a>
+                                (click)="location.back()">لغو</a>
                             <button type="submit" mat-raised-button color="primary" [disabled]="!fm1.valid"
                                 (click)="sts()">{{ btnTitle }}</button>
                         </div>

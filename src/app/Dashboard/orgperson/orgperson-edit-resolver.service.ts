@@ -27,7 +27,7 @@ export class OrgPersonEditResolverService implements Resolve<any>{
                     return JSON.parse((await this.auth.draft.getDraft(title)).value);
                 }
 
-                return of(new IOrgPerson());
+                return of(new IOrgPerson()).toPromise();
             }
 
             return this.auth.post("/api/OrgPerson/getOrgPerson", id).pipe(
@@ -41,11 +41,11 @@ export class OrgPersonEditResolverService implements Resolve<any>{
                         return EMPTY;
                     }
                 })
-            );
+            ).toPromise();
 
         } else {
             this.router.navigate(["/"]);
-            return EMPTY;
+            return EMPTY.toPromise();
         }
     }
 }

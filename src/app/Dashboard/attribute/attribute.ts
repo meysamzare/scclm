@@ -16,6 +16,7 @@ export class IAttr {
 
     isUniq: boolean;
 
+    order: number = 1;
     orderInt: number = 1;
 
     categoryId: number = null;

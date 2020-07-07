@@ -8,6 +8,7 @@ import { IInsurance } from "../../insurance/insurance";
 import { IEducation } from "../../education/education";
 import { IOrgChart } from "../../orgchart/orgchart";
 import { ISalary } from "../../salary/salary";
+import { Location } from "@angular/common";
 
 
 
@@ -36,7 +37,8 @@ export class OrgPersonEditComponent implements OnDestroy {
         private route: Router,
         private activeRoute: ActivatedRoute,
         private message: MessageService,
-        private auth: AuthService
+        private auth: AuthService,
+        public location: Location
     ) {
         activeRoute.params.subscribe(params => {
             this.activeRoute.data.subscribe(data => {
@@ -185,7 +187,7 @@ export class OrgPersonEditComponent implements OnDestroy {
                         if (data.success) {
                             this.message.showSuccessAlert("با موفقیت ثبت شد");
 
-                            this.route.navigate(["/dashboard/orgperson"]);
+                            this.location.back();
                         } else {
                             this.message.showMessageforFalseResult(data);
                         }

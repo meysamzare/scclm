@@ -172,7 +172,7 @@ export class CategoryDataListComponent implements OnInit {
                 pageSize: 5,
                 q: this.searchText
             },
-            catName: this.catTitle,
+            catId: this.catId,
             attrvalsearch: this.searchAttrVals,
             state: "both",
             Type: this.Type

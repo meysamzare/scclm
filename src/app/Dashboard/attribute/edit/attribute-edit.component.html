@@ -187,7 +187,7 @@
                             </div>
                             <div class="form-group">
                                 <label>اولویت</label>
-                                <input type="number" required #order="ngModel" name="order" [(ngModel)]="attr.orderInt"
+                                <input type="number" required #order="ngModel" name="order" [(ngModel)]="attr.order"
                                     placeholder="اولویت" class="form-control">
                                 <div *ngIf="(order.touched || order.dirty)  && order.invalid">
                                     <p *ngIf="order.hasError('required')" class="error">

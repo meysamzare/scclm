@@ -65,7 +65,7 @@
                 <div class="row">
                     <div class="ibox border-top-green float-e-margins animated fadeInRight"
                         style="background: aliceblue; border-top-color: blue;"
-                        *ngIf="selectedCatName && searchedAttrs.length != 0">
+                        *ngIf="selectedCatId && searchedAttrs.length != 0">
                         <div class="ibox-title">
                             <h5>جستجو پیشرفته</h5>
                             <mat-hint style="float: left;"> {{ itemLength }} ردیف </mat-hint>
@@ -219,7 +219,7 @@
                                                         matTooltip="چاپ"><i class="fa fa-print"></i> </button>
 
                                                     <button class="btn btn-primary btn-sm mg-r"
-                                                        [disabled]="!selectedCatName" (click)="getExcelFileOfList()"
+                                                        [disabled]="!selectedCatId" (click)="getExcelFileOfList()"
                                                         matTooltip="خروجی اکسل"><i class="fa fa-file-text-o"></i>
                                                     </button>
                                                 </div>

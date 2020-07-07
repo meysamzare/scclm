@@ -53,7 +53,7 @@
 
                                 <div class="form-group" *ngFor="let i of getAttrsForUnit(unit.id); index as index"
                                     [style.margin-top.px]="index == 0 ? 0 : 35">
-                                    
+
                                     <div class="row" style="flex-flow: row;">
                                         <div class="col-lg-10" style="margin: auto;">
                                             <label *ngIf="i.attrTypeInt != 4 && i.attrTypeInt != 11">
@@ -77,7 +77,7 @@
                                         (input)="setItemAttr($event, i.id); saveItemAttrs(); i.isUniq ? checkForUniqValue($event.target.value, i.id) : null" />
 
                                     <input *ngIf="i.attrTypeInt == 2" [formControlName]="'p' + getIndexForAttr(i.id)"
-                                        type="tel" inputmode="numeric" pattern="[0-9]*" class="form-control"
+                                        type="tel" inputmode="numeric" pattern="[+-]?([0-9]*[.])?[0-9]+" class="form-control"
                                         placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
                                         (input)="setItemAttr($event, i.id); saveItemAttrs(); i.isUniq ? checkForUniqValue($event.target.value, i.id) : null" />
 
@@ -107,7 +107,9 @@
                                         <mat-select style="direction: ltr"
                                             [formControlName]="'p' + getIndexForAttr(i.id)"
                                             (valueChange)="setItemAttrforselect($event, i.id); saveItemAttrs();">
-                                            <mat-option *ngFor="let v of getShiftedItem(i)" [value]="v.id">{{v.title}}
+                                            <mat-option
+                                                *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption"
+                                                [value]="v.id">{{v.title}}
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -115,7 +117,7 @@
                                     <mat-radio-group *ngIf="i.attrTypeInt == 10" class="radio-group"
                                         [formControlName]="'p' + getIndexForAttr(i.id)"
                                         (change)="setItemAttrforselect($event.value, i.id); saveItemAttrs();">
-                                        <mat-radio-button class="radio-button" *ngFor="let v of getShiftedItem(i)"
+                                        <mat-radio-button class="radio-button" *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption"
                                             [value]="v.id">{{v.title}}</mat-radio-button>
                                     </mat-radio-group>
 
@@ -150,7 +152,7 @@
                                                 [formControlName]="'p' + getIndexForAttr(i.id)"
                                                 (change)="setItemAttrforselect($event.value, i.id); saveItemAttrs();">
                                                 <mat-radio-button class="radio-button"
-                                                    *ngFor="let v of getShiftedItem(i)" [value]="v.id">
+                                                    *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption" [value]="v.id">
                                                     <div [innerHTML]="v.title | safeHtml"></div>
                                                 </mat-radio-button>
                                             </mat-radio-group>
@@ -306,7 +308,7 @@
 
                                         <input *ngIf="i.attrTypeInt == 2"
                                             [formControlName]="'p' + getIndexForAttr(i.id)" type="tel"
-                                            inputmode="numeric" pattern="[0-9]*" class="form-control"
+                                            inputmode="numeric" pattern="[+-]?([0-9]*[.])?[0-9]+" class="form-control"
                                             placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
                                             (input)="setItemAttr($event, i.id); saveItemAttrs(); i.isUniq ? checkForUniqValue($event.target.value, i.id) : null" />
 
@@ -336,7 +338,7 @@
                                             <mat-select style="direction: ltr"
                                                 [formControlName]="'p' + getIndexForAttr(i.id)"
                                                 (valueChange)="setItemAttrforselect($event, i.id); saveItemAttrs()">
-                                                <mat-option *ngFor="let v of getShiftedItem(i)" [value]="v.id">
+                                                <mat-option *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption" [value]="v.id">
                                                     {{v.title}}
                                                 </mat-option>
                                             </mat-select>
@@ -345,7 +347,7 @@
                                         <mat-radio-group *ngIf="i.attrTypeInt == 10" class="radio-group"
                                             [formControlName]="'p' + getIndexForAttr(i.id)"
                                             (change)="setItemAttrforselect($event.value, i.id); saveItemAttrs()">
-                                            <mat-radio-button class="radio-button" *ngFor="let v of getShiftedItem(i)"
+                                            <mat-radio-button class="radio-button" *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption"
                                                 [value]="v.id">{{v.title}}</mat-radio-button>
                                         </mat-radio-group>
 
@@ -381,7 +383,7 @@
                                                     [formControlName]="'p' + getIndexForAttr(i.id)"
                                                     (change)="setItemAttrforselect($event.value, i.id); saveItemAttrs()">
                                                     <mat-radio-button class="radio-button"
-                                                        *ngFor="let v of getShiftedItem(i)" [value]="v.id">
+                                                        *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption" [value]="v.id">
                                                         <div [innerHTML]="v.title | safeHtml"></div>
                                                     </mat-radio-button>
                                                 </mat-radio-group>
