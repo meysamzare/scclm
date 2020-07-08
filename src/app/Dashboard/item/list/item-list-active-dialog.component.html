@@ -1,22 +1,16 @@
 <div dir="rtl">
     <h1 mat-dialog-title> تغییر وضعیت {{ data.title }}</h1>
     <div mat-dialog-content>
+        <ng-container *ngIf="isAttrLoad">
+            <mat-progress-bar mode="buffer"></mat-progress-bar>
+        </ng-container>
         <div class="form-group" *ngIf="attrs.length != 0">
             <h3 style="color: orange;">ثبت فیلد هایی که سمت کاربر نیستند</h3>
-            <label>راهنما</label>
-            <br>
-            <span>برای ثبت هر فیلد کلید Enter را بفشارید.</span>
-            <br>
-            <span>برای حذف یک فیلد کافیست تا متن را خالی گذارید و کلید Enter را بفشارید.</span>
-            <br />
-            <span>فیلد هایی مثل تاریخ، چک باکس و لیست با هر تغییر در مقدار به صورت خودکار ثبت میشوند</span>
-            <br>
-            <span>فیلد هایی مثل فایل و تصویر با هر انتخاب به صورت خودکار بارگذاری می شوند</span>
-
         </div>
 
         <div class="form-group" *ngIf="attrs.length == 0 && isAttrLoad == false">
-            <label style="color: green"> تمامی فیلد های این نمون برگ سمت کاربر هستند، آیا جهت فعال سازی اطمینان دارید؟ </label>
+            <label style="color: green"> تمامی فیلد های این نمون برگ سمت کاربر هستند، آیا جهت فعال سازی اطمینان دارید؟
+            </label>
         </div>
 
         <hr>
@@ -26,39 +20,70 @@
             <div class="form-group" *ngFor="let i of attrs; let ind = index">
                 <label *ngIf="i.attrTypeInt != 4">{{i.title}}</label>
 
-                <input *ngIf="i.attrTypeInt == 1" [tabIndex]="ind + 5" type="text" class="form-control" [value]="getItemAttrVal(i.id)" placeholder="{{i.title}}" [matTooltip]="i.desc" (keydown.enter)="setItemAttr($event, i.id)" />
+                <input *ngIf="i.attrTypeInt == 1" [tabIndex]="ind + 5" type="text" [value]="getItemAttrVal(i.id)"
+                    placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}" [matTooltip]="i.desc"
+                    (input)="setItemAttr$.next({ val: $event, attrId: i.id })" />
 
-                <input *ngIf="i.attrTypeInt == 2" [tabIndex]="ind + 5" type="number" class="form-control" [value]="getItemAttrVal(i.id)" placeholder="{{i.title}}" [matTooltip]="i.desc" (keydown.enter)="setItemAttr($event, i.id)" />
+                <input *ngIf="i.attrTypeInt == 2" type="tel" inputmode="numeric" pattern="[+-]?([0-9]*[.])?[0-9]+"
+                    class="form-control" [tabIndex]="ind + 5" type="number" class="form-control"
+                    [value]="getItemAttrVal(i.id)" placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
+                    [matTooltip]="i.desc" (input)="setItemAttr$.next({ val: $event, attrId: i.id })" />
 
                 <mat-form-field class="example-full-width" *ngIf="i.attrTypeInt == 3">
-                    <input required matInput [matTooltip]="i.desc" readonly (click)="openc(picker)" (dateChange)="setItemAttr($event, i.id)" [matDatepicker]="picker" [value]="getItemAttrVal(i.id)" placeholder="{{i.title}}">
-                    <mat-datepicker-toggle style="font-size: 25px;" matTooltip="باز کردن تقویم" matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <input required matInput [matTooltip]="i.desc" readonly (click)="openc(picker)"
+                        (dateChange)="setItemAttr($event, i.id)" [matDatepicker]="picker" [value]="getItemAttrVal(i.id)"
+                        placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}">
+                    <mat-datepicker-toggle style="font-size: 25px;" matTooltip="باز کردن تقویم" matSuffix
+                        [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker touchUi="true"></mat-datepicker>
                 </mat-form-field>
 
-                <mat-checkbox *ngIf="i.attrTypeInt == 4" [matTooltip]="i.desc" [checked]="getItemAttrVal(i.id)" (change)="setItemAttr($event, i.id)">{{i.title}}</mat-checkbox>
+                <mat-checkbox *ngIf="i.attrTypeInt == 4" [matTooltip]="i.desc" [checked]="getItemAttrVal(i.id)"
+                    (change)="setItemAttr($event, i.id)">{{i.title}}</mat-checkbox>
 
-                <input *ngIf="i.attrTypeInt == 5" [tabIndex]="ind + 5" class="form-control" type="password" [value]="getItemAttrVal(i.id)" placeholder="{{i.title}}" [matTooltip]="i.desc" (keydown.enter)="setItemAttr($event, i.id)" />
+                <input *ngIf="i.attrTypeInt == 5" [tabIndex]="ind + 5" class="form-control" type="password"
+                    [value]="getItemAttrVal(i.id)" placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
+                    [matTooltip]="i.desc" (input)="setItemAttr$.next({ val: $event, attrId: i.id })" />
 
                 <mat-form-field *ngIf="i.attrTypeInt == 6">
                     <mat-label>{{i.title}}</mat-label>
-                    <mat-select style="direction: ltr" [tabIndex]="ind + 5" (valueChange)="setItemAttrforselect($event, i.id)" [value]="getItemAttrVal(i.id)">
-                        <mat-option *ngFor="let v of getShiftedItem(i.values)" [value]="v">{{v}}</mat-option>
+                    <mat-select style="direction: ltr" [tabIndex]="ind + 5"
+                        (valueChange)="setItemAttrforselect($event, i.id)" [value]="getItemAttrVal(i.id)">
+                        <mat-option *ngFor="let v of  i.attributeOptions | shuffleArray:false" [value]="v">{{v}}
+                        </mat-option>
                     </mat-select>
                     <mat-hint>{{i.desc}}</mat-hint>
                 </mat-form-field>
 
 
-                <input type="file" *ngIf="i.attrTypeInt == 7" accept="image/x-png,image/jpeg" value="fileSelected" class="form-control" (change)="setItemAttrforPic($event, i.id, 'pic')" />
-                <img [src]="getItemAttrUrl(i.id)" style="width: 100px; height: 100px;" class="img-circle" *ngIf="i.attrTypeInt == 7 && getItemAttrUrl(i.id)">
-                <button mat-fab *ngIf="i.attrTypeInt == 7 && getItemAttrUrl(i.id)" style="margin-right: 10px;" matTooltip="حذف تصویر" (click)="setAttrForNullPic(i.id)"><mat-icon>remove</mat-icon></button>
-
-                <input type="file" *ngIf="i.attrTypeInt == 8" class="form-control" (change)="setItemAttrforPic($event, i.id, 'file')" />
-                <a *ngIf="i.attrTypeInt == 8 && getItemAttrUrl(i.id)" style="margin-top: 5px;" [href]="getItemAttrUrl(i.id)" mat-raised-button>دانلود فایل</a>
-                <button mat-raised-button style="margin-right: 10px; margin-top: 5px;" *ngIf="i.attrTypeInt == 8 && getItemAttrUrl(i.id)" (click)="setAttrForNullPic(i.id)" color="warn">حذف فایل</button>
+                <mat-radio-group *ngIf="i.attrTypeInt == 10" class="radio-group"
+                    (change)="setItemAttrforselect($event.value, i.id);">
+                    <mat-radio-button class="radio-button" *ngFor="let v of i.attributeOptions " [value]="v.id">
+                        {{v.title}}</mat-radio-button>
+                </mat-radio-group>
 
 
-                <textarea *ngIf="i.attrTypeInt == 9" [tabIndex]="ind + 5" class="form-control" placeholder="{{i.title}}" [matTooltip]="i.desc" (keydown.control.enter)="setItemAttr($event, i.id)">{{getItemAttrVal(i.id)}}</textarea>
+                <input type="file" *ngIf="i.attrTypeInt == 7" accept="image/x-png,image/jpeg" value="fileSelected"
+                    class="form-control" (change)="setItemAttrforPic($event, i.id, 'pic')" />
+                <img [src]="getItemAttrUrl(i.id)" style="width: 100px; height: 100px;" class="img-circle"
+                    *ngIf="i.attrTypeInt == 7 && getItemAttrUrl(i.id)">
+                <button mat-fab *ngIf="i.attrTypeInt == 7 && getItemAttrUrl(i.id)" style="margin-right: 10px;"
+                    matTooltip="حذف تصویر" (click)="setAttrForNullPic(i.id)">
+                    <mat-icon>remove</mat-icon>
+                </button>
+
+                <input type="file" *ngIf="i.attrTypeInt == 8" class="form-control"
+                    (change)="setItemAttrforPic($event, i.id, 'file')" />
+                <a *ngIf="i.attrTypeInt == 8 && getItemAttrUrl(i.id)" style="margin-top: 5px;"
+                    [href]="getItemAttrUrl(i.id)" mat-raised-button>دانلود فایل</a>
+                <button mat-raised-button style="margin-right: 10px; margin-top: 5px;"
+                    *ngIf="i.attrTypeInt == 8 && getItemAttrUrl(i.id)" (click)="setAttrForNullPic(i.id)"
+                    color="warn">حذف فایل</button>
+
+
+                <textarea *ngIf="i.attrTypeInt == 9" [tabIndex]="ind + 5" class="form-control"
+                    placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}" [matTooltip]="i.desc"
+                    (input)="setItemAttr$.next({ val: $event, attrId: i.id })">{{getItemAttrVal(i.id)}}</textarea>
             </div>
         </form>
 

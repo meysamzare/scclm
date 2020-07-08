@@ -32,6 +32,7 @@ import { CategoryDataListComponent } from './more/teacher-category-list/category
 import { ViewItemDataComponent } from './more/teacher-category-list/category-data-list/view-item-data/view-item-data.component';
 import { HtmlToolsModule } from 'src/app/html-tools/html-tools.module';
 import { SetItemAttributeScoreComponent } from 'src/app/Dashboard/item/list/set-item-attribute-score/set-item-attribute-score.component';
+import { ShowImageComponent } from 'src/app/shared/Modal/show-image.component';
 
 
 @NgModule({
@@ -57,7 +58,8 @@ import { SetItemAttributeScoreComponent } from 'src/app/Dashboard/item/list/set-
         TeacherCategoryListComponent,
         CategoryDataListComponent,
         ViewItemDataComponent,
-        SetItemAttributeScoreComponent
+        SetItemAttributeScoreComponent,
+        ShowImageComponent
     ],
     imports: [
         CommonModule,
@@ -75,7 +77,8 @@ import { SetItemAttributeScoreComponent } from 'src/app/Dashboard/item/list/set-
         HtmlToolsModule
     ],
     entryComponents: [
-        SetItemAttributeScoreComponent
+        SetItemAttributeScoreComponent,
+        ShowImageComponent
     ],
     exports: [
         BootstrapModule,

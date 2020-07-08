@@ -86,13 +86,13 @@ export class AuthService {
 
 
 
-    DASHBOARD_VERSION = "1.0.0 Beta 9";
+    DASHBOARD_VERSION = "1.0.0 Beta 10";
 
-    INDEX_VERSION = "3.1.9 Build 9201";
+    INDEX_VERSION = "3.2.0 Build 760";
 
     PARENTMOBILEAPP_VERSION = "2.9.3 Build 9700";
     
-    TMA_VERSION = "1.9.1 Build 4500";
+    TMA_VERSION = "1.9.2 Build 350";
 
 
     public apiUrl: string;

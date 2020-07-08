@@ -29,7 +29,7 @@ export class AttributeInputComponent implements OnInit, ControlValueAccessor, Va
     @Output() saveItemAttributes = new EventEmitter<any>();
 
     constructor(
-        @Self() public controlDir: NgControl,
+        @Self()  @Optional() public controlDir: NgControl,
         private auth: AuthService
     ) {
         if (controlDir) {

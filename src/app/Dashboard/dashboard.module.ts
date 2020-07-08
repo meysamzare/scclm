@@ -193,6 +193,7 @@ import { CKEditorModule } from 'ckeditor4-angular';
 import { HtmlToolsModule } from "../html-tools/html-tools.module";
 import { DoubleClickDirective } from '../shared/Directive/double-click.directive';
 import { SetItemAttributeScoreComponent } from '../Dashboard/item/list/set-item-attribute-score/set-item-attribute-score.component';
+import { ImageIconModule } from "projects/ParentsMobileApp/src/app/shared/components/image-icon/image-icon/image-icon.module";
 
 @NgModule({
     imports: [
@@ -216,7 +217,8 @@ import { SetItemAttributeScoreComponent } from '../Dashboard/item/list/set-item-
         NgxDropzoneModule,
         ChartsModule,
         CKEditorModule,
-        HtmlToolsModule
+        HtmlToolsModule,
+        ImageIconModule
     ],
     declarations: [
         DashboardComponent,

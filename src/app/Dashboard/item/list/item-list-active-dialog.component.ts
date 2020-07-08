@@ -1,19 +1,17 @@
-import { Component, Inject } from "@angular/core";
+import { Component, Inject, OnDestroy } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
-import { Router, ActivatedRoute } from "@angular/router";
 import { AuthService, jsondata } from "src/app/shared/Auth/auth.service";
 import { MessageService } from "src/app/shared/services/message.service";
-import { IAttr } from "../../attribute/attribute";
 import { IItemAttr } from "../item-attr";
-
-declare var $: any;
+import { Subject } from "rxjs/internal/Subject";
+import { debounceTime } from "rxjs/operators";
 
 @Component({
     templateUrl: "./item-list-active-dialog.component.html"
 })
-export class ItemListActiveDialogComponent {
+export class ItemListActiveDialogComponent implements OnDestroy {
     // managment Attrs
-    attrs: IAttr[] = [];
+    attrs: any[] = [];
 
     itemId: number = null;
     catId: number = null;
@@ -22,57 +20,64 @@ export class ItemListActiveDialogComponent {
 
     isAttrLoad = true;
 
+    setItemAttr$ = new Subject<{ val, attrId }>();
+
     constructor(
         public dialogRef: MatDialogRef<ItemListActiveDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data,
-        private router: Router,
-        private activeroute: ActivatedRoute,
         private auth: AuthService,
         private message: MessageService
     ) {
         this.itemId = data.id;
         this.catId = data.catId;
 
-        this.auth
-            .post("/api/Attribute/getNonClientAttrsForCat", this.catId)
-            .subscribe(
-                (data: jsondata) => {
-                    if (data.success) {
-                        this.attrs = data.data;
-                    } else {
-                        this.message.showMessageforFalseResult(data);
-                    }
-
-                    this.isAttrLoad = false;
-                },
-                er => {
-                    this.auth.handlerError(er);
-                    this.isAttrLoad = false;
-                }
-            );
-
-        this.auth.post("/api/Item/getItemAttrForItem", this.itemId).subscribe(
-            (data: jsondata) => {
-                if (data.success) {
-                    this.itemAttrs = data.data;
-                } else {
-                    this.message.showMessageforFalseResult(data);
-                }
-            },
-            er => {
-                this.auth.handlerError(er);
+        this.auth.post("/api/Attribute/getNonClientAttrsForCat", this.catId).subscribe(data => {
+            if (data.success) {
+                this.attrs = data.data;
+            } else {
+                this.message.showMessageforFalseResult(data);
             }
-        );
+
+            this.isAttrLoad = false;
+        }, er => {
+            this.auth.handlerError(er);
+            this.isAttrLoad = false;
+        });
+
+        this.auth.post("/api/Item/getItemAttrForItem", this.itemId).subscribe(data => {
+            if (data.success) {
+                this.itemAttrs = data.data;
+            } else {
+                this.message.showMessageforFalseResult(data);
+            }
+        }, er => {
+            this.auth.handlerError(er);
+        });
+
+        this.setItemAttr$.pipe(
+            debounceTime(600)
+        ).subscribe(result => {
+            this.setItemAttr(result.val, result.attrId);
+        });
+    }
+
+    ngOnDestroy(): void {
+        if (this.setItemAttr$) {
+            this.setItemAttr$.unsubscribe();
+        }
     }
 
     openc(picker1) {
         picker1.open();
     }
 
-    getShiftedItem(items: string) {
-        var a = items.substring(1);
 
-        return a.split(",");
+    getAttrPlaceholder(placeholder: string, title: string): string {
+        if (placeholder) {
+            return placeholder;
+        }
+
+        return title;
     }
 
     setItemAttrforselect(event, attrId) {
@@ -247,15 +252,6 @@ export class ItemListActiveDialogComponent {
                     this.auth.handlerError(er);
                 }
             );
-
-        let allInputs = $("input[tabindex]").toArray();
-
-        var nextInput = allInputs[allInputs.findIndex(c => c.tabIndex == event.target.tabIndex) + 1];
-
-        if (nextInput) {
-            nextInput.focus();
-        }
-
     }
 
     getItemAttrVal(attrId): string {
