@@ -12,6 +12,7 @@ import '@ckeditor/ckeditor5-build-classic/build/translations/fa';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NgForm } from '@angular/forms';
+import { PictureSelectModalComponent } from 'src/app/html-tools/picture-select-modal/picture-select-modal.component';
 
 export class IReciver {
     reciverType: TicketType;
@@ -405,6 +406,16 @@ export class ViewTicketConversationComponent implements OnInit, OnDestroy {
                 this.auth.handlerError(er);
             });
         }
+    }
+
+    insertPicture() {
+        const dialog = this.dialog.open(PictureSelectModalComponent);
+
+        dialog.afterClosed().subscribe(content => {
+            if (content) {
+                this.Conversation.content += content
+            }
+        });
     }
 
 }

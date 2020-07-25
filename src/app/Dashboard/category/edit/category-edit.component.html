@@ -14,8 +14,9 @@
 
             <div class="ibox-content">
                 <form #fm1="ngForm" id="fm11">
+
                     <div class="row">
-                        <div class="col-sm-6  b-r">
+                        <div class="col-lg-12">
                             <div class="form-group">
                                 <label>نام</label>
                                 <input type="text" required #name="ngModel" name="name" [(ngModel)]="category.title"
@@ -26,397 +27,651 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label>تاریخ شروع</label>
-                                <mat-form-field class="example-full-width">
-                                    <input tabindex="7" #datePublish="ngModel" readonly name="datePublish" required
-                                        matInput [matDatepicker]="picker1" [(ngModel)]="category.datePublish"
-                                        (click)="openc(picker1)" placeholder="تاریخ شروع">
-                                    <mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker1">
-                                    </mat-datepicker-toggle>
-                                    <mat-datepicker #picker1 touchUi="true"></mat-datepicker>
-                                </mat-form-field>
-                                <div *ngIf="datePublish.touched && datePublish.invalid" class="error">
-                                    <div>
-                                        وارد کردن تاریخ شروع الزامی است
-                                    </div>
-                                </div>
-                                <br>
-                                <input class="form-control" [ngxTimepicker]="pickerTime1" name="timePu" [format]="24"
-                                    readonly [(ngModel)]="category.timePublish" placeholder="زمان شروع" required
-                                    #timePu>
-                                <ngx-material-timepicker [cancelBtnTmpl]="cancelBtn" [confirmBtnTmpl]="confirmBtn"
-                                    #pickerTime1></ngx-material-timepicker>
-                                <div *ngIf="timePu.touched && timePu.invalid" class="error">
-                                    <div>
-                                        وارد کردن زمان شروع الزامی است
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="form-group">
-                                <label>تاریخ انقضا</label>
-                                <mat-form-field class="example-full-width">
-                                    <input tabindex="7" #dateExpire="ngModel" (click)="openc(picker2)" readonly
-                                        name="dateExpire" required matInput [matDatepicker]="picker2"
-                                        [(ngModel)]="category.dateExpire" placeholder="تاریخ انقضا">
-                                    <mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker2">
-                                    </mat-datepicker-toggle>
-                                    <mat-datepicker #picker2 touchUi="true"></mat-datepicker>
-                                </mat-form-field>
-                                <div *ngIf="dateExpire.touched && dateExpire.invalid" class="error">
-                                    <div>
-                                        وارد کردن تاریخ انقضا الزامی است
-                                    </div>
-                                </div>
-                                <br>
-                                <input class="form-control" [ngxTimepicker]="pickerTime2" name="timeEx" readonly
-                                    [format]="24" [(ngModel)]="category.timeExpire" placeholder="زمان انقضا" required
-                                    #timeEx>
-                                <ngx-material-timepicker [cancelBtnTmpl]="cancelBtn" [confirmBtnTmpl]="confirmBtn"
-                                    #pickerTime2></ngx-material-timepicker>
-                                <div *ngIf="timeEx.touched && timeEx.invalid" class="error">
-                                    <div>
-                                        وارد کردن زمان انقضا الزامی است
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label>آیا این {{ pageTitle }} فعال است؟</label>
-                                <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="category.isActive">فعال
-                                </mat-checkbox>
-                            </div>
-
-                            <div class="form-group">
-                                <label>آیا این {{ pageTitle }} دارای اطلاع رسانی است؟</label>
-                                <mat-checkbox [ngModelOptions]="{standalone: true}"
-                                    (change)="category.isInfoShow = category.haveInfo" [(ngModel)]="category.haveInfo">
-                                    اطلاع رسانی</mat-checkbox>
-                            </div>
-
-                            <div class="form-group">
-                                <label>آیا زمان اطلاع رسانی {{ pageTitle }} فرا رسیده است؟</label>
-                                <mat-checkbox [ngModelOptions]="{standalone: true}"
-                                    [disabled]="category.haveInfo == false" [(ngModel)]="category.isInfoShow">زمان اطلاع
-                                    رسانی</mat-checkbox>
-                            </div>
-
-                            <div class="form-group">
-                                <label>پیام اطلاع رسانی درصورت فعال بودن</label>
-                                <input type="text" [disabled]="category.haveInfo == false" name="activeMessage"
-                                    [(ngModel)]="category.activeMessage"
-                                    placeholder="پیام اطلاع رسانی درصورت فعال بودن " class="form-control">
-                            </div>
-
-                            <div class="form-group">
-                                <label>پیام اطلاع رسانی درصورت غیر فعال بودن</label>
-                                <input type="text" [disabled]="category.haveInfo == false" name="deActiveMessage"
-                                    [(ngModel)]="category.deActiveMessage"
-                                    placeholder="پیام اطلاع رسانی درصورت غیر فعال بودن " class="form-control">
-                            </div>
-
-
-                            <div class="form-group">
-                                <label>عنوان دکمه ثبت نام</label>
-                                <input type="text" #menuname="ngModel" name="menuname" [(ngModel)]="category.btnTitle"
-                                    placeholder="عنوان دکمه ثبت نام" class="form-control">
-                            </div>
-
-                            <div class="form-group">
-                                <label>انتخاب ردیف نمایش در صفحه اصلی</label>
-                                <ng-select #showRow="ngModel" name="showRow" [(ngModel)]="category.showRow" required>
-                                    <ng-option [value]="1">ردیف بالا</ng-option>
-                                    <ng-option [value]="2">ردیف پایین</ng-option>
-                                </ng-select>
-                                <mat-error *ngIf="showRow.hasError('required')">
-                                    انتخاب ردیف نمایش در صفحه اصلی الزامی است
-                                </mat-error>
-                            </div>
-
-                            <div class="form-group">
-                                <label>انتخاب نوع پست مرتبط به این {{ pageTitle }}</label>
-                                <ng-select #type="ngModel" name="type" [(ngModel)]="category.postType" required>
-                                    <ng-option [value]="0">صفحه اصلی</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_feed', false)" [value]="1">
-                                        {{ getPostTypeString(1) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_post', false)" [value]="2">
-                                        {{ getPostTypeString(2) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_fadak', false)" [value]="3">
-                                        {{ getPostTypeString(3) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_amoozesh', false)" [value]="4">
-                                        {{ getPostTypeString(4) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_enzebati', false)" [value]="5">
-                                        {{ getPostTypeString(5) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_parvaresh', false)" [value]="6">
-                                        {{ getPostTypeString(6) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_mali', false)" [value]="7">
-                                        {{ getPostTypeString(7) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_it', false)" [value]="8">
-                                        {{ getPostTypeString(8) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_moshaver', false)" [value]="9">
-                                        {{ getPostTypeString(9) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_voroodBeSystem', false)" [value]="10">
-                                        {{ getPostTypeString(10) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_sabteNam', false)" [value]="11">
-                                        {{ getPostTypeString(11) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_mokatebat', false)" [value]="12">
-                                        {{ getPostTypeString(12) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_ghesmathayeSamane', false)" [value]="13">
-                                        {{ getPostTypeString(13) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_faq', false)" [value]="14">
-                                        {{ getPostTypeString(14) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_ehrazeHoviat', false)" [value]="15">
-                                        {{ getPostTypeString(15) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_sharayetSabteNam', false)" [value]="16">
-                                        {{ getPostTypeString(16) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_darkhastTajdidNazar', false)"
-                                        [value]="17">{{ getPostTypeString(17) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_enteghadVaPishnahad', false)"
-                                        [value]="18">{{ getPostTypeString(18) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_daneshAmoozan', false)" [value]="19">
-                                        {{ getPostTypeString(19) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_daneshAmookhtegan', false)" [value]="20">
-                                        {{ getPostTypeString(20) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_forsatHayeShoghli', false)" [value]="21">
-                                        {{ getPostTypeString(21) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_tamasBaTaha', false)" [value]="22">
-                                        {{ getPostTypeString(22) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_darbareTaha', false)" [value]="23">
-                                        {{ getPostTypeString(23) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_dabirKhaneBargozidegan', false)"
-                                        [value]="24">{{ getPostTypeString(24) }}</ng-option>
-                                    <ng-option *ngIf="auth.isUserAccess('post_hedayatTahsil', false)" [value]="25">
-                                        {{ getPostTypeString(25) }}</ng-option>
-                                </ng-select>
-                                <mat-error *ngIf="type.hasError('required')">
-                                    انتخاب نوع پست مرتبط به این {{ pageTitle }} الزامی است
-                                </mat-error>
-                            </div>
-
-                            <ng-container *ngIf="TYPE == 1">
-
-                                <div class="form-group">
-                                    <label>پایه تحصیلی</label>
-                                    <ng-select #grade="ngModel" name="grade" [(ngModel)]="category.gradeId"
-                                        (change)="getClassbyGrade()" [required]="true">
-                                        <ng-option *ngFor="let u of grades" [value]="u.id">{{u.name}}</ng-option>
-                                    </ng-select>
-                                    <mat-error *ngIf="grade.hasError('required')">
-                                        انتخاب پایه تحصیلی الزامی است
-                                    </mat-error>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>کلاس</label>
-                                    <ng-select #classId="ngModel" name="classId" [(ngModel)]="category.classId"
-                                        [disabled]="!category.gradeId">
-                                        <ng-option *ngFor="let u of classes" [value]="u.id">{{u.name}}</ng-option>
-                                    </ng-select>
-                                    <mat-hint>انتخاب کلاس اختیاری است</mat-hint>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>سوالات به صورت تصادفی</label>
-                                    <mat-checkbox [ngModelOptions]="{standalone: true}"
-                                        [(ngModel)]="category.randomAttribute">
-                                        سوالات تصادفی
-                                    </mat-checkbox>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>جواب های سوال به صورت تصادفی</label>
-                                    <mat-checkbox [ngModelOptions]="{standalone: true}"
-                                        [(ngModel)]="category.randomAttributeOption">
-                                        جواب های تصادفی
-                                    </mat-checkbox>
-                                </div>
-
-                            </ng-container>
-
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>انتخاب ریشه</label>
-                                <ng-select [clearable]="true" name="categoryParent" [(ngModel)]="category.parentId">
-                                    <ng-option *ngFor="let u of Categories" [value]="u.id">{{u.title}}</ng-option>
-                                </ng-select>
-                                <mat-hint>انتخاب ریشه اختیاری است</mat-hint>
-                            </div>
-                            <div class="form-group">
-                                <label>توضیحات {{ pageTitle }}</label>
-                                <ckeditor name="desc" [(ngModel)]="category.desc">
-                                </ckeditor>
-                            </div>
-                            <div class="form-group">
-                                <label>تفاهم نامه {{ pageTitle }}</label>
-                                <ckeditor name="licence" [(ngModel)]="category.license">
-                                </ckeditor>
-                                <mat-hint>درصورت پرکردن این فیلد قبل از وارد کردن داده، کاربر می بایست مفاد این تفاهم
-                                    نامه را بپذیرد</mat-hint>
-                            </div>
-                            <div class="form-group">
-                                <label>پیغام پایان {{ category.btnTitle ? category.btnTitle : "ثبت نام" }}</label>
-                                <input type="text" name="endMessage" [(ngModel)]="category.endMessage"
-                                    placeholder="پیغام پایان {{ category.btnTitle ? category.btnTitle : 'ثبت نام' }} "
-                                    class="form-control">
-                            </div>
+                    </div>
 
 
-                            <div class="form-group">
-                                <label>انتخاب سطح دسترسی</label>
-                                <ng-select #role="ngModel" name="role" [(ngModel)]="category.roleAccess" required>
-                                    <ng-option [value]="0">تمامی سطوح دسترسی</ng-option>
-                                    <ng-option *ngFor="let u of roles" [value]="u.id">{{u.name}}
-                                    </ng-option>
-                                </ng-select>
-                                <mat-hint>سطح دسترسی مجاز به مشاهده {{ pageTitle }}</mat-hint>
-                                <mat-error *ngIf="role.hasError('required')">
-                                    انتخاب سطح دسترسی الزامی است
-                                </mat-error>
-                            </div>
-
-                            <div class="form-group">
-                                <label>انتخاب وضعیت احراز هویت</label>
-                                <ng-select #authorize="ngModel" name="authorize" [(ngModel)]="category.authorizeState"
-                                    required>
-                                    <ng-option [value]="0">بدون احراز هویت (ورود برای عموم)</ng-option>
-                                    <ng-option [value]="1">احراز هویت دبیران</ng-option>
-                                    <ng-option [value]="2">احراز هویت اولیای دانش آموز</ng-option>
-                                    <ng-option [value]="3">احراز هویت دانش آموز</ng-option>
-                                    <ng-option [value]="4">تمامی کاربران سایت (دبیران - اولیا و دانش آموزان)</ng-option>
-                                </ng-select>
-                                <mat-hint>آیا کاربر برای وارد شدن به {{ pageTitle }} و وارد کردن داده نیاز است به
-                                    حساب کاربری خود وارد شود یا خیر
-                                </mat-hint>
-                                <mat-error *ngIf="authorize.hasError('required')">
-                                    انتخاب وضعیت احراز هویت الزامی است
-                                </mat-error>
-                            </div>
-
-                            <hr>
+                    <div class="row">
+                        <div class="col-lg-6">
 
                             <div class="row">
-                                <div class="col-lg-12">
-
-                                    <div class="row">
-                                        <div class="col-lg-9">
-                                            <div class="form-group">
-                                                <label>انتخاب دسترسی دبیران</label>
-                                                <ng-select name="teacherSelect" [(ngModel)]="selectedTeacherId">
-                                                    <ng-option *ngFor="let u of Teachers" [value]="u.id">{{u.name}}
-                                                    </ng-option>
-                                                </ng-select>
-                                                <mat-hint>افزودن دبیر مجاز به مشاهده و ویرایش {{ pageTitle }}</mat-hint>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>تاریخ شروع</label>
+                                        <mat-form-field class="example-full-width">
+                                            <input tabindex="7" #datePublish="ngModel" readonly name="datePublish"
+                                                required matInput [matDatepicker]="picker1"
+                                                [(ngModel)]="category.datePublish" (click)="openc(picker1)"
+                                                placeholder="تاریخ شروع">
+                                            <mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker1">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #picker1 touchUi="true"></mat-datepicker>
+                                        </mat-form-field>
+                                        <div *ngIf="datePublish.touched && datePublish.invalid" class="error">
+                                            <div>
+                                                وارد کردن تاریخ شروع الزامی است
                                             </div>
                                         </div>
-                                        <div class="col-lg-3">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6" style="margin-top: 35px;">
+                                    <div class="form-group">
+                                        <input class="form-control" [ngxTimepicker]="pickerTime1" name="timePu"
+                                            [format]="24" readonly [(ngModel)]="category.timePublish"
+                                            placeholder="زمان شروع" required #timePu>
+                                        <ngx-material-timepicker [cancelBtnTmpl]="cancelBtn"
+                                            [confirmBtnTmpl]="confirmBtn" #pickerTime1></ngx-material-timepicker>
+                                        <div *ngIf="timePu.touched && timePu.invalid" class="error">
+                                            <div>
+                                                وارد کردن زمان شروع الزامی است
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                                            <button [disabled]="!selectedTeacherId" mat-stroked-button style="width: 100%; margin-top: 35px;"
-                                                (click)="addTeacherToCategoryAccess()">
-                                                افزودن
-                                            </button>
+                        </div>
+                        <div class="col-lg-6">
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>تاریخ انقضا</label>
+                                        <mat-form-field class="example-full-width">
+                                            <input tabindex="7" #dateExpire="ngModel" (click)="openc(picker2)" readonly
+                                                name="dateExpire" required matInput [matDatepicker]="picker2"
+                                                [(ngModel)]="category.dateExpire" placeholder="تاریخ انقضا">
+                                            <mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker2">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #picker2 touchUi="true"></mat-datepicker>
+                                        </mat-form-field>
+                                        <div *ngIf="dateExpire.touched && dateExpire.invalid" class="error">
+                                            <div>
+                                                وارد کردن تاریخ انقضا الزامی است
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6" style="margin-top: 35px;">
+                                    <div class="form-group">
+                                        <input class="form-control" [ngxTimepicker]="pickerTime2" name="timeEx" readonly
+                                            [format]="24" [(ngModel)]="category.timeExpire" placeholder="زمان انقضا"
+                                            required #timeEx>
+                                        <ngx-material-timepicker [cancelBtnTmpl]="cancelBtn"
+                                            [confirmBtnTmpl]="confirmBtn" #pickerTime2></ngx-material-timepicker>
+                                        <div *ngIf="timeEx.touched && timeEx.invalid" class="error">
+                                            <div>
+                                                وارد کردن زمان انقضا الزامی است
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <mat-accordion>
+
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    وضعیت کلی
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+
+
+                            <div class="row">
+                                <div class="col-lg-6" style="margin-top: 40px;">
+
+                                    <div class="form-group">
+                                        <label>آیا این {{ pageTitle }} فعال است؟</label>
+                                        <mat-checkbox [ngModelOptions]="{standalone: true}"
+                                            [(ngModel)]="category.isActive">فعال
+                                        </mat-checkbox>
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>انتخاب ریشه</label>
+                                        <ng-select [clearable]="true" name="categoryParent"
+                                            [(ngModel)]="category.parentId">
+                                            <ng-option *ngFor="let u of Categories" [value]="u.id">{{u.title}}
+                                            </ng-option>
+                                        </ng-select>
+                                        <mat-hint>انتخاب ریشه اختیاری است</mat-hint>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6">
+
+                                    <div class="form-group">
+                                        <label>عنوان دکمه ثبت نام</label>
+                                        <input type="text" #menuname="ngModel" name="menuname"
+                                            [(ngModel)]="category.btnTitle" placeholder="عنوان دکمه ثبت نام"
+                                            class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>پیغام پایان
+                                            {{ category.btnTitle ? category.btnTitle : "ثبت نام" }}</label>
+                                        <input type="text" name="endMessage" [(ngModel)]="category.endMessage"
+                                            placeholder="پیغام پایان {{ category.btnTitle ? category.btnTitle : 'ثبت نام' }} "
+                                            class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </mat-expansion-panel>
+
+                        <mat-expansion-panel *ngIf="TYPE == 1" [expanded]="TYPE == 1">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    گزینه های آزمون آنلاین
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+
+                            <div class="row">
+                                <div class="col-lg-4">
+
+                                    <div class="form-group">
+                                        <label>پایه تحصیلی</label>
+                                        <ng-select #grade="ngModel" name="grade" [(ngModel)]="category.gradeId"
+                                            (change)="getClassbyGrade();" [required]="true">
+                                            <ng-option *ngFor="let u of grades" [value]="u.id">{{u.name}}</ng-option>
+                                        </ng-select>
+                                        <mat-error *ngIf="grade.hasError('required')">
+                                            انتخاب پایه تحصیلی الزامی است
+                                        </mat-error>
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-4">
+
+                                    <div class="form-group">
+                                        <label>درس</label>
+                                        <ng-select #course="ngModel" name="course" [(ngModel)]="category.courseId"
+                                            [required]="true" [disabled]="!category.gradeId">
+                                            <ng-option *ngFor="let u of getCourseByCatGrade()" [value]="u.id">{{u.name}}
+                                            </ng-option>
+                                        </ng-select>
+                                        <mat-error *ngIf="course.hasError('required')">
+                                            انتخاب درس الزامی است
+                                        </mat-error>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+
+                                    <div class="form-group">
+                                        <label>کلاس</label>
+                                        <ng-select name="classSelect" [(ngModel)]="category.classId"
+                                            [disabled]="!category.gradeId">
+                                            <ng-option *ngFor="let u of classes" [value]="u.id">{{u.name}}</ng-option>
+                                        </ng-select>
+                                        <mat-hint>انتخاب کلاس اختیاری است</mat-hint>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3">
+
+                                    <div class="form-group">
+                                        <label>نوع آزمون</label>
+                                        <ng-select #examType="ngModel" name="examType"
+                                            [(ngModel)]="category.examTypeId">
+                                            <ng-option *ngFor="let u of examTypes" [value]="u.id">{{u.name}}</ng-option>
+                                        </ng-select>
+                                        <mat-hint>انتخاب نوع آزمون اختیاری است</mat-hint>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+
+                                    <div class="form-group">
+                                        <label>کارنامه</label>
+                                        <ng-select #workbook="ngModel" name="workbook"
+                                            [(ngModel)]="category.workbookId">
+                                            <ng-option *ngFor="let u of workbooks" [value]="u.id">{{u.name}}</ng-option>
+                                        </ng-select>
+                                        <mat-hint>انتخاب کارنامه اختیاری است</mat-hint>
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-3">
+
+                                    <div class="form-group">
+                                        <label>سوالات به صورت تصادفی</label>
+                                        <mat-checkbox [ngModelOptions]="{standalone: true}"
+                                            [(ngModel)]="category.randomAttribute">
+                                            سوالات تصادفی
+                                        </mat-checkbox>
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-3">
+
+                                    <div class="form-group">
+                                        <label>جواب های سوال به صورت تصادفی</label>
+                                        <mat-checkbox [ngModelOptions]="{standalone: true}"
+                                            [(ngModel)]="category.randomAttributeOption">
+                                            جواب های تصادفی
+                                        </mat-checkbox>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </mat-expansion-panel>
+
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    اطلاع رسانی
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+
+                            <div class="row">
+                                <div class="col-lg-6">
+
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label>آیا این {{ pageTitle }} دارای اطلاع رسانی است؟</label>
+                                                <mat-checkbox [ngModelOptions]="{standalone: true}"
+                                                    (change)="category.isInfoShow = category.haveInfo"
+                                                    [(ngModel)]="category.haveInfo">
+                                                    اطلاع رسانی</mat-checkbox>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+
+                                            <div class="form-group">
+                                                <label>آیا زمان اطلاع رسانی {{ pageTitle }} فرا رسیده است؟</label>
+                                                <mat-checkbox [ngModelOptions]="{standalone: true}"
+                                                    [disabled]="category.haveInfo == false"
+                                                    [(ngModel)]="category.isInfoShow">زمان اطلاع
+                                                    رسانی</mat-checkbox>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="row margin-top-10">
+                                </div>
+                                <div class="col-lg-6">
+
+                                    <div class="form-group">
+                                        <label>پیام اطلاع رسانی درصورت فعال بودن</label>
+                                        <input type="text" [disabled]="category.haveInfo == false" name="activeMessage"
+                                            [(ngModel)]="category.activeMessage"
+                                            placeholder="پیام اطلاع رسانی درصورت فعال بودن " class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6">
+
+                                    <div class="form-group">
+                                        <label>آیا این {{ pageTitle }} دارای کارت ورود به جلسه است؟</label>
+                                        <mat-checkbox [ngModelOptions]="{standalone: true}"
+                                            [(ngModel)]="category.haveEntringCard">
+                                            کارت ورود به جلسه</mat-checkbox>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+
+                                    <div class="form-group">
+                                        <label>پیام اطلاع رسانی درصورت غیر فعال بودن</label>
+                                        <input type="text" [disabled]="category.haveInfo == false"
+                                            name="deActiveMessage" [(ngModel)]="category.deActiveMessage"
+                                            placeholder="پیام اطلاع رسانی درصورت غیر فعال بودن " class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </mat-expansion-panel>
+
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    توضیحات
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>توضیحات {{ pageTitle }}</label>
+                                        <ckeditor name="desc" [(ngModel)]="category.desc">
+
+                                            <ckbutton [name]="'image'" [command]="'insert_pic'"
+                                                (click)="insertPicture('Desc')" [icon]="'plugins/icons.png?t=K24B'"
+                                                [label]="'انتخاب تصویر ار آلبوم تصاویر'"></ckbutton>
+
+                                        </ckeditor>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>تفاهم نامه {{ pageTitle }}</label>
+                                        <ckeditor name="licence" [(ngModel)]="category.license">
+                                            <ckbutton [name]="'image'" [command]="'insert_pic'"
+                                                (click)="insertPicture('License')" [icon]="'plugins/icons.png?t=K24B'"
+                                                [label]="'انتخاب تصویر ار آلبوم تصاویر'"></ckbutton>
+                                        </ckeditor>
+                                        <mat-hint>درصورت پرکردن این فیلد قبل از وارد کردن داده، کاربر می بایست مفاد این
+                                            تفاهم
+                                            نامه را بپذیرد</mat-hint>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </mat-expansion-panel>
+
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    دسترسی ها
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+
+                            <div class="row">
+
+                                <div class="col-lg-12">
+
+
+                                    <div class="row">
+                                        <div class="col-lg-6">
+
+                                            <div class="form-group">
+                                                <label>انتخاب ردیف نمایش در صفحه اصلی</label>
+                                                <ng-select #showRow="ngModel" name="showRow"
+                                                    [(ngModel)]="category.showRow" required>
+                                                    <ng-option [value]="1">ردیف بالا</ng-option>
+                                                    <ng-option [value]="2">ردیف پایین</ng-option>
+                                                </ng-select>
+                                                <mat-error *ngIf="showRow.hasError('required')">
+                                                    انتخاب ردیف نمایش در صفحه اصلی الزامی است
+                                                </mat-error>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label>انتخاب نوع پست مرتبط به این {{ pageTitle }}</label>
+                                                <ng-select #type="ngModel" name="type" [(ngModel)]="category.postType"
+                                                    required>
+                                                    <ng-option [value]="0">صفحه اصلی</ng-option>
+                                                    <ng-option *ngIf="auth.isUserAccess('post_feed', false)"
+                                                        [value]="1">
+                                                        {{ getPostTypeString(1) }}</ng-option>
+                                                    <ng-option *ngIf="auth.isUserAccess('post_post', false)"
+                                                        [value]="2">
+                                                        {{ getPostTypeString(2) }}</ng-option>
+                                                    <ng-option *ngIf="auth.isUserAccess('post_fadak', false)"
+                                                        [value]="3">
+                                                        {{ getPostTypeString(3) }}</ng-option>
+                                                    <ng-option *ngIf="auth.isUserAccess('post_amoozesh', false)"
+                                                        [value]="4">
+                                                        {{ getPostTypeString(4) }}</ng-option>
+                                                    <ng-option *ngIf="auth.isUserAccess('post_enzebati', false)"
+                                                        [value]="5">
+                                                        {{ getPostTypeString(5) }}</ng-option>
+                                                    <ng-option *ngIf="auth.isUserAccess('post_parvaresh', false)"
+                                                        [value]="6">
+                                                        {{ getPostTypeString(6) }}</ng-option>
+                                                    <ng-option *ngIf="auth.isUserAccess('post_mali', false)"
+                                                        [value]="7">
+                                                        {{ getPostTypeString(7) }}</ng-option>
+                                                    <ng-option *ngIf="auth.isUserAccess('post_it', false)" [value]="8">
+                                                        {{ getPostTypeString(8) }}</ng-option>
+                                                    <ng-option *ngIf="auth.isUserAccess('post_moshaver', false)"
+                                                        [value]="9">
+                                                        {{ getPostTypeString(9) }}</ng-option>
+                                                    <ng-option *ngIf="auth.isUserAccess('post_voroodBeSystem', false)"
+                                                        [value]="10">
+                                                        {{ getPostTypeString(10) }}</ng-option>
+                                                    <ng-option *ngIf="auth.isUserAccess('post_sabteNam', false)"
+                                                        [value]="11">
+                                                        {{ getPostTypeString(11) }}</ng-option>
+                                                    <ng-option *ngIf="auth.isUserAccess('post_mokatebat', false)"
+                                                        [value]="12">
+                                                        {{ getPostTypeString(12) }}</ng-option>
+                                                    <ng-option
+                                                        *ngIf="auth.isUserAccess('post_ghesmathayeSamane', false)"
+                                                        [value]="13">
+                                                        {{ getPostTypeString(13) }}</ng-option>
+                                                    <ng-option *ngIf="auth.isUserAccess('post_faq', false)"
+                                                        [value]="14">
+                                                        {{ getPostTypeString(14) }}</ng-option>
+                                                    <ng-option *ngIf="auth.isUserAccess('post_ehrazeHoviat', false)"
+                                                        [value]="15">
+                                                        {{ getPostTypeString(15) }}</ng-option>
+                                                    <ng-option *ngIf="auth.isUserAccess('post_sharayetSabteNam', false)"
+                                                        [value]="16">
+                                                        {{ getPostTypeString(16) }}</ng-option>
+                                                    <ng-option
+                                                        *ngIf="auth.isUserAccess('post_darkhastTajdidNazar', false)"
+                                                        [value]="17">
+                                                        {{ getPostTypeString(17) }}</ng-option>
+                                                    <ng-option
+                                                        *ngIf="auth.isUserAccess('post_enteghadVaPishnahad', false)"
+                                                        [value]="18">
+                                                        {{ getPostTypeString(18) }}</ng-option>
+                                                    <ng-option *ngIf="auth.isUserAccess('post_daneshAmoozan', false)"
+                                                        [value]="19">
+                                                        {{ getPostTypeString(19) }}</ng-option>
+                                                    <ng-option
+                                                        *ngIf="auth.isUserAccess('post_daneshAmookhtegan', false)"
+                                                        [value]="20">
+                                                        {{ getPostTypeString(20) }}</ng-option>
+                                                    <ng-option
+                                                        *ngIf="auth.isUserAccess('post_forsatHayeShoghli', false)"
+                                                        [value]="21">
+                                                        {{ getPostTypeString(21) }}</ng-option>
+                                                    <ng-option *ngIf="auth.isUserAccess('post_tamasBaTaha', false)"
+                                                        [value]="22">
+                                                        {{ getPostTypeString(22) }}</ng-option>
+                                                    <ng-option *ngIf="auth.isUserAccess('post_darbareTaha', false)"
+                                                        [value]="23">
+                                                        {{ getPostTypeString(23) }}</ng-option>
+                                                    <ng-option
+                                                        *ngIf="auth.isUserAccess('post_dabirKhaneBargozidegan', false)"
+                                                        [value]="24">
+                                                        {{ getPostTypeString(24) }}</ng-option>
+                                                    <ng-option *ngIf="auth.isUserAccess('post_hedayatTahsil', false)"
+                                                        [value]="25">
+                                                        {{ getPostTypeString(25) }}</ng-option>
+                                                </ng-select>
+                                                <mat-error *ngIf="type.hasError('required')">
+                                                    انتخاب نوع پست مرتبط به این {{ pageTitle }} الزامی است
+                                                </mat-error>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-6">
+
+                                            <div class="form-group">
+                                                <label>انتخاب سطح دسترسی</label>
+                                                <ng-select #role="ngModel" name="role" [(ngModel)]="category.roleAccess"
+                                                    required>
+                                                    <ng-option [value]="0">تمامی سطوح دسترسی</ng-option>
+                                                    <ng-option *ngFor="let u of roles" [value]="u.id">{{u.name}}
+                                                    </ng-option>
+                                                </ng-select>
+                                                <mat-hint>سطح دسترسی مجاز به مشاهده {{ pageTitle }}</mat-hint>
+                                                <mat-error *ngIf="role.hasError('required')">
+                                                    انتخاب سطح دسترسی الزامی است
+                                                </mat-error>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+
+                                            <div class="form-group">
+                                                <label>انتخاب وضعیت احراز هویت</label>
+                                                <ng-select #authorize="ngModel" name="authorize"
+                                                    [(ngModel)]="category.authorizeState" required>
+                                                    <ng-option [value]="0">بدون احراز هویت (ورود برای عموم)</ng-option>
+                                                    <ng-option [value]="1">احراز هویت دبیران</ng-option>
+                                                    <ng-option [value]="2">احراز هویت اولیای دانش آموز</ng-option>
+                                                    <ng-option [value]="3">احراز هویت دانش آموز</ng-option>
+                                                    <ng-option [value]="4">تمامی کاربران سایت (دبیران - اولیا و دانش
+                                                        آموزان)</ng-option>
+                                                </ng-select>
+                                                <mat-hint>آیا کاربر برای وارد شدن به {{ pageTitle }} و وارد کردن داده
+                                                    نیاز است به
+                                                    حساب کاربری خود وارد شود یا خیر
+                                                </mat-hint>
+                                                <mat-error *ngIf="authorize.hasError('required')">
+                                                    انتخاب وضعیت احراز هویت الزامی است
+                                                </mat-error>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row" *ngIf="TYPE == 0">
                                         <div class="col-lg-12">
-                                            <mat-chip-list>
-                                                <mat-chip *ngFor="let i of category.teachersIdAccess">
-                                                    {{ getTeacherName(i) }}
-                                                    <mat-icon matChipRemove (click)="removeTeacher(i)"
-                                                        style="margin-right: 5px; margin-left: 0;">cancel</mat-icon>
-                                                </mat-chip>
-                                            </mat-chip-list>
+
+                                            <div class="row">
+                                                <div class="col-lg-9">
+                                                    <div class="form-group">
+                                                        <label>انتخاب دسترسی دبیران</label>
+                                                        <ng-select name="teacherSelect" [(ngModel)]="selectedTeacherId">
+                                                            <ng-option *ngFor="let u of Teachers" [value]="u.id">
+                                                                {{u.name}}
+                                                            </ng-option>
+                                                        </ng-select>
+                                                        <mat-hint>افزودن دبیر مجاز به مشاهده و ویرایش {{ pageTitle }}
+                                                        </mat-hint>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+
+                                                    <button [disabled]="!selectedTeacherId" mat-stroked-button
+                                                        style="width: 100%; margin-top: 35px;"
+                                                        (click)="addTeacherToCategoryAccess()">
+                                                        افزودن
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="row margin-top-10">
+                                                <div class="col-lg-12">
+                                                    <mat-chip-list>
+                                                        <mat-chip *ngFor="let i of category.teachersIdAccess">
+                                                            {{ getTeacherName(i) }}
+                                                            <mat-icon matChipRemove (click)="removeTeacher(i)"
+                                                                style="margin-right: 5px; margin-left: 0;">cancel
+                                                            </mat-icon>
+                                                        </mat-chip>
+                                                    </mat-chip-list>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-
-
                                 </div>
                             </div>
 
-                            <hr>
+                        </mat-expansion-panel>
 
-                            <div class="form-group">
-                                <label>آیا این {{ pageTitle }} دارای کارت ورود به جلسه است؟</label>
-                                <mat-checkbox [ngModelOptions]="{standalone: true}"
-                                    [(ngModel)]="category.haveEntringCard">
-                                    کارت ورود به جلسه</mat-checkbox>
-                            </div>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    تصاویر
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label>تصویر ثبت اطلاعات</label>
+                                        <br>
+                                        <button (click)="removePic(1)"
+                                            [disabled]="category.registerFileData.length == 0" mat-raised-button>
+                                            حذف تصویر </button>
+
+                                        <a target="_blank" mat-raised-button style="margin: 5px;"
+                                            *ngIf="category.registerPicUrl && isEdit"
+                                            [href]="getFileUrl(category.registerPicUrl)">نمایش تصویر ثبت اطلاعات</a>
+
+                                        <ngx-dropzone #d1 [disabled]="category.registerFileData.length != 0"
+                                            (filesRejected)="removePic(1)" (filesAdded)="setPic($event, 1)"
+                                            [multiple]="false" [showPreviews]="true" [accept]="'image/png,image/jpeg'"
+                                            [label]="'تصویر خود را اینجا رها کنید یا کلیک کنید'">
+                                        </ngx-dropzone>
+
+                                        <mat-error *ngIf="!isEdit && category.registerFileData.length == 0">
+                                            انتخاب تصویر ثبت اطلاعات الزامی است
+                                        </mat-error>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label>تصویر اطلاع رسانی</label>
+                                        <br>
+                                        <button (click)="removePic(2)"
+                                            [disabled]="category.showInfoFileData.length == 0" mat-raised-button>
+                                            حذف تصویر </button>
+
+                                        <a target="_blank" mat-raised-button style="margin: 5px;"
+                                            *ngIf="category.showInfoPicUrl && isEdit"
+                                            [href]="getFileUrl(category.showInfoPicUrl)">نمایش تصویر اطلاع رسانی</a>
+
+                                        <ngx-dropzone #d2 [disabled]="category.showInfoFileData.length != 0"
+                                            (filesRejected)="removePic(2)" (filesAdded)="setPic($event, 2)"
+                                            [multiple]="false" [showPreviews]="true" [accept]="'image/png,image/jpeg'"
+                                            [label]="'تصویر خود را اینجا رها کنید یا کلیک کنید'"></ngx-dropzone>
 
 
-                        </div>
+                                        <mat-error *ngIf="!isEdit && category.showInfoFileData.length == 0">
+                                            انتخاب تصویر اطلاع رسانی الزامی است
+                                        </mat-error>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label>تصویر ابتدای صفحه</label>
+                                        <br>
+                                        <button (click)="removePic(3)" [disabled]="category.headerPicData.length == 0"
+                                            mat-raised-button> حذف تصویر </button>
 
-                        <div class="col-lg-12">
-                            <div class="form-group">
-                                <label>تصویر ابتدای صفحه</label>
-                                <br>
-                                <button (click)="removePic(3)" [disabled]="category.headerPicData.length == 0"
-                                    mat-raised-button> حذف تصویر </button>
+                                        <a target="_blank" mat-raised-button style="margin: 5px;"
+                                            *ngIf="category.headerPicUrl && isEdit"
+                                            [href]="getFileUrl(category.headerPicUrl)">نمایش
+                                            تصویر ابتدای صفحه</a>
 
-                                <a target="_blank" mat-raised-button style="margin: 5px;"
-                                    *ngIf="category.headerPicUrl && isEdit"
-                                    [href]="getFileUrl(category.headerPicUrl)">نمایش تصویر ابتدای صفحه</a>
-
-                                <ngx-dropzone #d3 [disabled]="category.headerPicData.length != 0"
-                                    (filesRejected)="removePic(3)" (filesAdded)="setPic($event, 3)" [multiple]="false"
-                                    [showPreviews]="true" [accept]="'image/png,image/jpeg'"
-                                    [label]="'تصویر خود را اینجا رها کنید یا کلیک کنید'">
-                                </ngx-dropzone>
-                            </div>
-                        </div>
-
-                        <div class="col-md-12">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>تصویر ثبت اطلاعات</label>
-                                    <br>
-                                    <button (click)="removePic(1)" [disabled]="category.registerFileData.length == 0"
-                                        mat-raised-button> حذف تصویر </button>
-
-                                    <a target="_blank" mat-raised-button style="margin: 5px;"
-                                        *ngIf="category.registerPicUrl && isEdit"
-                                        [href]="getFileUrl(category.registerPicUrl)">نمایش تصویر ثبت اطلاعات</a>
-
-                                    <ngx-dropzone #d1 [disabled]="category.registerFileData.length != 0"
-                                        (filesRejected)="removePic(1)" (filesAdded)="setPic($event, 1)"
-                                        [multiple]="false" [showPreviews]="true" [accept]="'image/png,image/jpeg'"
-                                        [label]="'تصویر خود را اینجا رها کنید یا کلیک کنید'">
-                                    </ngx-dropzone>
-
-                                    <mat-error *ngIf="!isEdit && category.registerFileData.length == 0">
-                                        انتخاب تصویر ثبت اطلاعات الزامی است
-                                    </mat-error>
+                                        <ngx-dropzone #d3 [disabled]="category.headerPicData.length != 0"
+                                            (filesRejected)="removePic(3)" (filesAdded)="setPic($event, 3)"
+                                            [multiple]="false" [showPreviews]="true" [accept]="'image/png,image/jpeg'"
+                                            [label]="'تصویر خود را اینجا رها کنید یا کلیک کنید'">
+                                        </ngx-dropzone>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>تصویر اطلاع رسانی</label>
-                                    <br>
-                                    <button (click)="removePic(2)" [disabled]="category.showInfoFileData.length == 0"
-                                        mat-raised-button> حذف تصویر </button>
 
-                                    <a target="_blank" mat-raised-button style="margin: 5px;"
-                                        *ngIf="category.showInfoPicUrl && isEdit"
-                                        [href]="getFileUrl(category.showInfoPicUrl)">نمایش تصویر اطلاع رسانی</a>
+                        </mat-expansion-panel>
 
-                                    <ngx-dropzone #d2 [disabled]="category.showInfoFileData.length != 0"
-                                        (filesRejected)="removePic(2)" (filesAdded)="setPic($event, 2)"
-                                        [multiple]="false" [showPreviews]="true" [accept]="'image/png,image/jpeg'"
-                                        [label]="'تصویر خود را اینجا رها کنید یا کلیک کنید'"></ngx-dropzone>
+                    </mat-accordion>
 
-
-                                    <mat-error *ngIf="!isEdit && category.showInfoFileData.length == 0">
-                                        انتخاب تصویر اطلاع رسانی الزامی است
-                                    </mat-error>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <br>
-                        <br>
-
+                    <div class="row margin-top-10">
                         <div class="col-md-12">
                             <button type="button" mat-raised-button color="warn" style="margin: 5px;"
                                 routerLink="/dashboard/{{ pageUrl }}">لغو</button>
@@ -425,84 +680,25 @@
                                 (click)="sts()">{{ btnTitle }}</button>
                         </div>
                     </div>
+
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-<ng-container *ngIf="TYPE == 1 && isEdit">
+<ng-container *ngIf="isEdit">
     <div class="row margin-top-10">
-        <div class="col-lg-12">
-            <div class="ibox float-e-margins">
-
-                <div class="ibox-title">
-                    افزودن گروهی سوال
-                </div>
-
-                <div class="ibox-content">
-                    <form #fm3="ngForm">
-                        <div class="row">
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <label>انتخاب پایه</label>
-                                    <ng-select name="gradeSelect" [(ngModel)]="selectedGradeForCourse" required>
-                                        <ng-option *ngFor="let u of grades" [value]="u.id">{{u.name}}</ng-option>
-                                    </ng-select>
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <label>انتخاب درس</label>
-                                    <ng-select #Course="ngModel" name="courseSelect"
-                                        [(ngModel)]="selectedCourseForQuestion" [disabled]="!selectedGradeForCourse"
-                                        required>
-                                        <ng-option *ngFor="let u of getCourseByGrade()" [value]="u.id">{{u.name}}
-                                        </ng-option>
-                                    </ng-select>
-                                </div>
-                            </div>
-                            <div class="col-lg-2">
-
-                                <div class="form-group">
-                                    <label>سوال سخت</label>
-                                    <input type="text" inputmode="numeric" pattern="[0-9]*" name="hardQuestion"
-                                        [(ngModel)]="hardQuestionNumber" placeholder="تعداد سوال سخت"
-                                        class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-lg-2">
-
-                                <div class="form-group">
-                                    <label>سوال متوسط</label>
-                                    <input type="text" inputmode="numeric" pattern="[0-9]*" name="mediumQuestion"
-                                        [(ngModel)]="mediumQuestionNumber" placeholder="تعداد سوال متوسط"
-                                        class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-lg-2">
-
-                                <div class="form-group">
-                                    <label>سوال آسان</label>
-                                    <input type="text" inputmode="numeric" pattern="[0-9]*" name="easyQuestion"
-                                        [(ngModel)]="easyQuestionNumber" placeholder="تعداد سوال آسان"
-                                        class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <mat-progress-bar mode="buffer" *ngIf="isLoadingQuestions"></mat-progress-bar>
-                                <button mat-stroked-button style="width: 100%;" (click)="addRandomQuestions()"
-                                    [disabled]="fm3.invalid || isLoadingQuestions || !selectedCourseForQuestion || (!hardQuestionNumber && !mediumQuestionNumber && !easyQuestionNumber)">
-                                    افزودن گروهی سوالات
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-            </div>
+        <div [class.col-lg-4]="TYPE == 1" [class.col-lg-12]="TYPE != 1">
+            <button mat-flat-button color="primary" style="width: 100%;" (click)="addTemplateAttribute()">
+                افزودن فیلد
+            </button>
+        </div>
+        <div [class.col-lg-4]="true" *ngIf="TYPE == 1">
+            <button mat-flat-button color="accent" style="width: 100%;" (click)="addQuestion()">افزودن سوال</button>
+        </div>
+        <div [class.col-lg-4]="true" *ngIf="TYPE == 1">
+            <button mat-flat-button style="width: 100%;" (click)="addGroupQuestions()">افزودن گروهی سوال</button>
         </div>
     </div>
 </ng-container>

@@ -6,11 +6,12 @@ import { AuthService, jsondata } from 'src/app/shared/Auth/auth.service';
 import { IPost, getPostTypeString, getPostTypeRoleString } from '../post';
 import { ITags } from 'src/app/Dashboard/item/tags';
 import { ENTER } from '@angular/cdk/keycodes';
-import { MatChipInputEvent } from '@angular/material';
+import { MatChipInputEvent, MatDialog } from '@angular/material';
 import { IMainSlideShow } from '../../main-slide-show/main-slide-show';
 import { ISchedule } from '../../schedule/schedule';
 
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { PictureSelectModalComponent } from 'src/app/html-tools/picture-select-modal/picture-select-modal.component';
 
 @Component({
     selector: 'app-post-edit',
@@ -66,7 +67,8 @@ export class PostEditComponent implements OnInit, OnDestroy {
         private route: Router,
         private activeRoute: ActivatedRoute,
         private message: MessageService,
-        public auth: AuthService
+        public auth: AuthService,
+        private dialog: MatDialog
     ) {
         activeRoute.params.subscribe(params => {
             this.activeRoute.data.subscribe(data => {
@@ -385,6 +387,16 @@ export class PostEditComponent implements OnInit, OnDestroy {
         } else {
             this.message.showWarningAlert("مقادیر خواسته شده را تکمیل نمایید");
         }
+    }
+
+    insertPicture() {
+        const dialog = this.dialog.open(PictureSelectModalComponent);
+
+        dialog.afterClosed().subscribe(content => {
+            if (content) {
+                this.post.content += content
+            }
+        });
     }
 
 

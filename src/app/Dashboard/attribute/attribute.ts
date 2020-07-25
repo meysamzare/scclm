@@ -21,6 +21,8 @@ export class IAttr {
 
     categoryId: number = null;
 
+    isTemplate = false;
+
     unitId: number = null;
 
     placeholder: string;

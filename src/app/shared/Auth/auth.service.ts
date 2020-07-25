@@ -37,6 +37,9 @@ export interface IData {
 
     pushNotificationPublicKeyTMA: string;
     pushNotificationPrivateKeyTMA: string;
+
+    BBBServer?: string;
+    BBBSS?: string;
 }
 
 
@@ -86,7 +89,7 @@ export class AuthService {
 
 
 
-    DASHBOARD_VERSION = "1.0.0 Beta 10";
+    DASHBOARD_VERSION = "1.0.0 Beta 13";
 
     INDEX_VERSION = "3.2.0 Build 760";
 
@@ -112,6 +115,8 @@ export class AuthService {
     public pushNotificationPublicKeyPMA: string;
     public pushNotificationPrivateKeyPMA: string;
 
+    public BBBServer?: string;
+    public BBBSS?: string;
 
 
     load(http: HttpClient, type: "promise" | "observable" = "promise") {
@@ -129,6 +134,9 @@ export class AuthService {
                 this.pushNotificationPrivateKeyPMA = data.pushNotificationPrivateKeyPMA;
                 this.pushNotificationPublicKeyTMA = data.pushNotificationPublicKeyTMA;
                 this.pushNotificationPrivateKeyTMA = data.pushNotificationPrivateKeyTMA;
+
+                this.BBBServer = data.BBBServer;
+                this.BBBSS = data.BBBSS;
 
                 this.idb.getObjectStore(this.idb.dbApiStoreName).then((obstore) => {
                     obstore.getAll().onsuccess = (e) => {
@@ -595,7 +603,7 @@ export class AuthService {
         serverLog.deleteObjects = log.deleteObjects;
 
         serverLog.responseData = JsonData;
-        
+
         serverLog.desc = log.desc;
 
 

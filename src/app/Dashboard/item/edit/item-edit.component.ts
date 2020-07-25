@@ -43,7 +43,6 @@ declare let $: any;
 
             .radio-button {
                 margin: 0;
-                pointer-events: none;
             }
         `
     ]

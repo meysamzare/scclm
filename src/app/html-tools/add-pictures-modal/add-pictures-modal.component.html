@@ -1,0 +1,17 @@
+<div style="font-size: 15px; min-width: 650px;" dir="rtl">
+
+    <div mat-dialog-title>
+        <b>افزودن گروهی تصاویر</b>
+    </div>
+
+    <div mat-dialog-content>
+
+        <app-add-picture-group [fromModal]="true" (done)="$event ? closeNodal() : null"></app-add-picture-group>
+
+    </div>
+
+    <div mat-dialog-actions>
+        <button mat-stroked-button color="warn" style="margin-right: 5px;" [mat-dialog-close]="false">لغو</button>
+    </div>
+
+</div>

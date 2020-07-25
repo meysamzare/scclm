@@ -130,6 +130,10 @@
                                     <div class="form-group">
                                         <label>توضیحات {{ PAGE_TITLE }}</label>
                                         <ckeditor name="desc" [(ngModel)]="PAGE_Data.desc">
+                                            <ckbutton [name]="'image'" [command]="'insert_pic'"
+                                                (click)="insertPicture()" [icon]="'plugins/icons.png?t=K24B'"
+                                                [label]="'انتخاب تصویر ار آلبوم تصاویر'">
+                                            </ckbutton>
                                         </ckeditor>
                                     </div>
                                 </div>

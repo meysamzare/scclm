@@ -10,5 +10,7 @@
     "pushNotificationPublicKeyPMA": "BLVeEtt6RZBeLG8RBTlxrabRzLzpNrPgs88dDaBlLqVq4a-GsAvNQnOqlvEMndvk63qftAoBgytY9u9jnk-ZSLU",
     "pushNotificationPrivateKeyPMA": "h8kiT4-U2Tw-Sd2xggU1KohOM4tmwrCWYJ9m8-ybpC4",
     "pushNotificationPublicKeyTMA": "BLVeEtt6RZBeLG8RBTlxrabRzLzpNrPgs88dDaBlLqVq4a-GsAvNQnOqlvEMndvk63qftAoBgytY9u9jnk-ZSLU",
-    "pushNotificationPrivateKeyTMA": "h8kiT4-U2Tw-Sd2xggU1KohOM4tmwrCWYJ9m8-ybpC4"
+    "pushNotificationPrivateKeyTMA": "h8kiT4-U2Tw-Sd2xggU1KohOM4tmwrCWYJ9m8-ybpC4",
+    "BBBServer": "https://vs.taha.sch.ir/bigbluebutton/",
+    "BBBSS": "x4YpONp6tRxMVPoICxqPsdrllqG5kfJaA9qQcQW4"
 }

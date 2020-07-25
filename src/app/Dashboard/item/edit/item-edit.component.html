@@ -226,7 +226,7 @@
                                 <hr>
                                 <ng-container *ngIf="i.questionType == 1">
                                     <label>جواب شما:</label>
-                                    <ckeditor [data]="getItemAttrVal(i.id)"
+                                    <ckeditor [ngModel]="getItemAttrVal(i.id)"
                                         (dataChange)="setItemAttrforselect($event, i.id);">
                                     </ckeditor>
                                 </ng-container>
@@ -244,7 +244,7 @@
 
                                 <ng-container *ngIf="i.questionType == 3">
                                     <mat-hint>محتوای زیر را تکمیل کنید</mat-hint>
-                                    <ckeditor [data]="i.complatabelContent"
+                                    <ckeditor [ngModel]="i.complatabelContent"
                                         (dataChange)="setItemAttrforselect($event, i.id)">
                                     </ckeditor>
                                 </ng-container>

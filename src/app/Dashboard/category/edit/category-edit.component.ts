@@ -17,6 +17,13 @@ import { ICourse } from "../../course/course";
 import { finalize } from "rxjs/operators";
 import { IQuestionOption } from "../../Question/questionoption/questionoption";
 import { ITeacher } from "../../teacher/teacher";
+import { IExamType } from "../../Exam/examtype/examtype";
+import { IWorkbook } from "../../workbook/workbook";
+import { PictureSelectModalComponent } from "src/app/html-tools/picture-select-modal/picture-select-modal.component";
+import { MatDialog } from "@angular/material";
+import { AddTemplateAttributeModalComponent } from "./modals/add-template-attribute-modal/add-template-attribute-modal.component";
+import { AddQuestionModalComponent } from "./modals/add-question-modal/add-question-modal.component";
+import { AddGroupQuestionModalComponent } from "./modals/add-group-question-modal/add-group-question-modal.component";
 
 declare var $: any;
 // import * as $ from 'jquery';
@@ -96,12 +103,15 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
     Teachers: ITeacher[] = [];
     selectedTeacherId = null;
 
+    examTypes: IExamType[] = [];
+    workbooks: IWorkbook[] = [];
+
     constructor(
         private route: Router,
         private activeRoute: ActivatedRoute,
         private message: MessageService,
         public auth: AuthService,
-        private sanitizer: DomSanitizer
+        private dialog: MatDialog
     ) {
         this.activeRoute.params.subscribe(params => {
 
@@ -135,18 +145,39 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
                     this.pageTitles = "آزمون های آنلاین";
                     this.pageUrl = "online-exam";
 
-                    this.auth.post("/api/Grade/getAll", null).subscribe(
-                        (data: jsondata) => {
-                            if (data.success) {
-                                this.grades = data.data;
-                            } else {
-                                this.message.showMessageforFalseResult(data);
-                            }
-                        },
-                        er => {
-                            this.auth.handlerError(er);
+                    this.auth.post("/api/Grade/getAll", null).subscribe(data => {
+                        if (data.success) {
+                            this.grades = data.data;
+                        } else {
+                            this.message.showMessageforFalseResult(data);
                         }
-                    );
+                    }, er => {
+                        this.auth.handlerError(er);
+                    });
+                    this.auth.post("/api/Course/getAll").subscribe(data => {
+                        if (data.success) {
+                            this.courses = data.data;
+                        } else {
+                            this.message.showMessageforFalseResult(data);
+                        }
+                    });
+                    this.auth.post("/api/ExamType/getAll").subscribe(data => {
+                        if (data.success) {
+                            this.examTypes = data.data;
+                        } else {
+                            this.message.showMessageforFalseResult(data);
+                        }
+                    });
+
+                    this.auth.post("/api/Workbook/getAll").subscribe(data => {
+                        if (data.success) {
+                            this.workbooks = data.data;
+                        } else {
+                            this.message.showMessageforFalseResult(data);
+                        }
+                    });
+
+                    this.getClassbyGrade();
                 }
 
                 this.auth.post("/api/Category/getAllByType", this.TYPE).subscribe((data: jsondata) => {
@@ -171,17 +202,6 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
                         `ویرایش ${this.pageTitle} ${this.category.title}`;
                     this.btnTitle = "ویرایش";
                     this.isEdit = true;
-
-                    if (this.category.type == 1 && this.category.gradeId) {
-                        this.auth.post("/api/Course/getAllByGrade", this.category.gradeId).subscribe((data: jsondata) => {
-                            if (data.success) {
-                                this.courses = data.data;
-                            } else {
-                                this.message.showMessageforFalseResult(data);
-                            }
-                        });
-                    }
-
                 } else {
                     this.message.showWarningAlert("invalid Data");
                     this.route.navigate(["/dashboard"]);
@@ -350,6 +370,16 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
         }, er => {
             this.auth.handlerError(er);
         });
+    }
+
+    getCourseByCatGrade() {
+        let gradeId = this.category.gradeId;
+
+        if (gradeId) {
+            return this.courses.filter(c => c.gradeId == gradeId);
+        }
+
+        return [];
     }
 
     getCourseByGrade() {
@@ -592,4 +622,58 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
             this.message.showWarningAlert("مقادیر خواسته شده را تکمیل نمایید");
         }
     }
+
+    insertPicture(type: "Desc" | "License") {
+        const dialog = this.dialog.open(PictureSelectModalComponent);
+
+        dialog.afterClosed().subscribe(content => {
+            if (content) {
+                if (type == "Desc") {
+                    this.category.desc += content
+                }
+                if (type == "License") {
+                    this.category.license += content
+                }
+            }
+        });
+    }
+
+    addTemplateAttribute() {
+        const dialog = this.dialog.open(AddTemplateAttributeModalComponent, {
+            data: {
+                catId: this.category.id
+            }
+        });
+
+        dialog.afterClosed().subscribe(result => {
+            this.refreshAttributes();
+        });
+    }
+
+    addQuestion() {
+        const dialog = this.dialog.open(AddQuestionModalComponent, {
+            data: {
+                catId: this.category.id
+            }
+        });
+
+        dialog.afterClosed().subscribe(result => {
+            this.refreshAttributes();
+        });
+    }
+
+    addGroupQuestions() {
+        const dialog = this.dialog.open(AddGroupQuestionModalComponent, {
+            data: {
+                catId: this.category.id
+            }
+        });
+
+        dialog.afterClosed().subscribe(result => {
+            if (result) {
+                this.refreshAttributes();
+            }
+        });
+    }
+
 }

@@ -1,0 +1,69 @@
+<div dir="rtl" style="min-width: 250px;">
+    <div mat-dialog-title>
+        <p><b>افزودن گروهی سوال</b></p>
+
+        <ng-container *ngIf="isLoading">
+            <mat-progress-bar class="margin-top-10" mode="buffer"></mat-progress-bar>
+        </ng-container>
+    </div>
+
+    <div mat-dialog-content>
+
+        <form #fm3="ngForm">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label>انتخاب پایه</label>
+                        <ng-select name="gradeSelect" [(ngModel)]="selectedGradeForCourse" required>
+                            <ng-option *ngFor="let u of grades" [value]="u.id">{{u.name}}</ng-option>
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label>انتخاب درس</label>
+                        <ng-select #Course="ngModel" name="courseSelect" [(ngModel)]="selectedCourseForQuestion"
+                            [disabled]="!selectedGradeForCourse" required>
+                            <ng-option *ngFor="let u of getCourseByGrade()" [value]="u.id">{{u.name}}
+                            </ng-option>
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+
+                    <div class="form-group">
+                        <label>سوال سخت</label>
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" name="hardQuestion"
+                            [(ngModel)]="hardQuestionNumber" placeholder="تعداد سوال سخت" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+
+                    <div class="form-group">
+                        <label>سوال متوسط</label>
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" name="mediumQuestion"
+                            [(ngModel)]="mediumQuestionNumber" placeholder="تعداد سوال متوسط" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+
+                    <div class="form-group">
+                        <label>سوال آسان</label>
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" name="easyQuestion"
+                            [(ngModel)]="easyQuestionNumber" placeholder="تعداد سوال آسان" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+    <div mat-dialog-actions>
+        <button mat-stroked-button color="warn" style="margin-right: 5px;" [mat-dialog-close]="false">لغو</button>
+        <button mat-stroked-button (click)="addRandomQuestions()"
+            [disabled]="fm3.invalid || isLoading || !selectedCourseForQuestion || (!hardQuestionNumber && !mediumQuestionNumber && !easyQuestionNumber)">
+            افزودن گروهی سوالات
+        </button>
+    </div>
+
+</div>

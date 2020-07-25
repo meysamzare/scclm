@@ -38,7 +38,7 @@ export class ICategory {
 
     roleAccess: number = 0;
 
-    showRow: ShowRow;
+    showRow: ShowRow = 1;
 
     
     type = 0;
@@ -46,6 +46,10 @@ export class ICategory {
     classId: number = null;
     randomAttribute: boolean = false;
     randomAttributeOption: boolean = false;
+
+    courseId: number = null;
+    examTypeId: number = null;
+    workbookId: number = null;
 
     gradeString = "";
     classString = "";
@@ -57,7 +61,7 @@ export class ICategory {
 
     formatedDateEnd = "";
 
-    postType: number;
+    postType: number = 1;
 
     registerPicUrl = "";
     showInfoPicUrl = "";

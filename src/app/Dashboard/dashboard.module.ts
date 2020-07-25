@@ -189,11 +189,14 @@ import { WorkbookReportByClassComponent } from '../Dashboard/chart-report/workbo
 import { WorkbookComparisonComponent } from '../Dashboard/chart-report/workbook-comparison/workbook-comparison.component';
 import { TreeComponent, TreeDialogComponent } from '../shared/components/tree/tree.component';
 
-import { CKEditorModule } from 'ckeditor4-angular';
+import { CKEditorModule } from 'ng2-ckeditor';
 import { HtmlToolsModule } from "../html-tools/html-tools.module";
 import { DoubleClickDirective } from '../shared/Directive/double-click.directive';
 import { SetItemAttributeScoreComponent } from '../Dashboard/item/list/set-item-attribute-score/set-item-attribute-score.component';
 import { ImageIconModule } from "projects/ParentsMobileApp/src/app/shared/components/image-icon/image-icon/image-icon.module";
+import { AddTemplateAttributeModalComponent } from '../Dashboard/category/edit/modals/add-template-attribute-modal/add-template-attribute-modal.component';
+import { AddQuestionModalComponent } from '../Dashboard/category/edit/modals/add-question-modal/add-question-modal.component';
+import { AddGroupQuestionModalComponent } from '../Dashboard/category/edit/modals/add-group-question-modal/add-group-question-modal.component';
 
 @NgModule({
     imports: [
@@ -347,7 +350,7 @@ import { ImageIconModule } from "projects/ParentsMobileApp/src/app/shared/compon
         DataListComponent,
         DataListItemDirective,
         DataListActionButton,
-        AddPictureGroupComponent,
+        // AddPictureGroupComponent,
         LogListComponent,
         ViewLogDescComponent,
         NotificationSeenModalComponent,
@@ -360,7 +363,10 @@ import { ImageIconModule } from "projects/ParentsMobileApp/src/app/shared/compon
         TreeComponent,
         TreeDialogComponent,
         DoubleClickDirective,
-        SetItemAttributeScoreComponent
+        SetItemAttributeScoreComponent,
+        AddTemplateAttributeModalComponent,
+        AddQuestionModalComponent,
+        AddGroupQuestionModalComponent
     ],
     providers: [
         AuthGuardService,

@@ -25,9 +25,9 @@ export class WorkBookComponent implements OnInit {
     coursesByGrade: ICourse[] = [];
     selectedCourse: number = null;
 
-    examsByGrade: IExam[] = [];
+    examsByGrade: any[] = [];
 
-    examScoreByGrade: IExamScore[] = [];
+    examScoreByGrade: any[] = [];
 
     classBooks: IClassBook[] = [];
 

@@ -59,8 +59,12 @@
                                 <button (click)="addCommend('{date}')" mat-menu-item>تاریخ پرینت قرارداد </button>
                             </mat-menu>
 
-                            
-                            <ckeditor name="content" required #questionTitle="ngModel" [(ngModel)]="contrcttype.content">
+
+                            <ckeditor name="content" required #questionTitle="ngModel"
+                                [(ngModel)]="contrcttype.content">
+                                <ckbutton [name]="'image'" [command]="'insert_pic'" (click)="insertPicture()"
+                                    [icon]="'plugins/icons.png?t=K24B'" [label]="'انتخاب تصویر ار آلبوم تصاویر'">
+                                </ckbutton>
                             </ckeditor>
                             <div *ngIf="(questionTitle.touched || questionTitle.dirty) && questionTitle.invalid">
                                 <p *ngIf="questionTitle.hasError('required')" class="error">

@@ -1,5 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { IStudentType } from 'src/app/Dashboard/student/StudentType/student-type';
+import { Component, OnInit, ViewChild, Output, EventEmitter, Input } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MessageService } from 'src/app/shared/services/message.service';
@@ -38,6 +37,10 @@ export class AddPictureGroupComponent implements OnInit {
     doneRequestSize = 0;
 
     @ViewChild("fm1", { static: false }) public fm1: NgForm;
+
+    @Output() done = new EventEmitter<boolean>();
+
+    @Input() fromModal = false;
 
     constructor(
         private route: Router,
@@ -162,11 +165,20 @@ export class AddPictureGroupComponent implements OnInit {
                                 tableObjectIds: [this.PAGE_Data.id]
                             }, data);
 
-                            this.route.navigate(["/dashboard/" + this.PAGE_URL]);
+                            if (this.fromModal) {
+                                this.done.emit(true);
+                            } else {
+                                this.route.navigate(["/dashboard/" + this.PAGE_URL]);
+                            }
+
                         } else {
                             this.message.showMessageforFalseResult(data);
-
-                            this.route.navigate(["/dashboard/" + this.PAGE_URL]);
+                            
+                            if (this.fromModal) {
+                                this.done.emit(false);
+                            } else {
+                                this.route.navigate(["/dashboard/" + this.PAGE_URL]);
+                            }
                         }
                         break;
                 }

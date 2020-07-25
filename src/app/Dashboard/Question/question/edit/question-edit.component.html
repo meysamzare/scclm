@@ -91,7 +91,8 @@
                                 <label>انتخاب درس</label>
                                 <ng-select #courseselect="ngModel" name="course" [(ngModel)]="question.courseId"
                                     required [disabled]="!question.gradeId">
-                                    <ng-option *ngFor="let cor of getCourseByGrade()" [value]="cor.id">{{cor.name}}</ng-option>
+                                    <ng-option *ngFor="let cor of getCourseByGrade()" [value]="cor.id">{{cor.name}}
+                                    </ng-option>
                                 </ng-select>
                                 <mat-error *ngIf="courseselect.hasError('required')">
                                     انتخاب درس الزامی است
@@ -148,6 +149,10 @@
                         <div class="col-lg-12">
                             <label>صورت سوال</label>
                             <ckeditor name="qtitle" #questionTitle="ngModel" [(ngModel)]="question.title" required>
+                                <ckbutton [name]="'image'" [command]="'insert_pic'"
+                                    (click)="insertPicture('title')" [icon]="'plugins/icons.png?t=K24B'"
+                                    [label]="'انتخاب تصویر ار آلبوم تصاویر'">
+                                </ckbutton>
                             </ckeditor>
                             <div *ngIf="(questionTitle.touched || questionTitle.dirty) && questionTitle.invalid">
                                 <p *ngIf="questionTitle.hasError('required')" class="error">
@@ -160,6 +165,10 @@
                             <label>محتوایی که باید توسط کاربر تکمیل شود</label>
                             <ckeditor name="completeContent" #complatabelContent="ngModel"
                                 [(ngModel)]="question.complatabelContent" required>
+                                <ckbutton [name]="'image'" [command]="'insert_pic'"
+                                    (click)="insertPicture('complatabelContent')" [icon]="'plugins/icons.png?t=K24B'"
+                                    [label]="'انتخاب تصویر ار آلبوم تصاویر'">
+                                </ckbutton>
                             </ckeditor>
                             <div
                                 *ngIf="(complatabelContent.touched || complatabelContent.dirty) && complatabelContent.invalid">
@@ -227,6 +236,12 @@
                                                             <label>عنوان گزینه</label>
                                                             <ckeditor [ngModelOptions]="{ standalone: true }"
                                                                 [(ngModel)]="options[index].name" required>
+                                                                <ckbutton [name]="'image'"
+                                                                    [command]="'insert_pic'"
+                                                                    (click)="insertPicture('option', index)"
+                                                                    [icon]="'plugins/icons.png?t=K24B'"
+                                                                    [label]="'انتخاب تصویر ار آلبوم تصاویر'">
+                                                                </ckbutton>
                                                             </ckeditor>
                                                         </div>
                                                     </div>
@@ -237,7 +252,7 @@
                                     </div>
                                 </div>
 
-                                
+
                                 <button mat-stroked-button style="width: 100%; margin-bottom: 10px;"
                                     (click)="addOptionTemp()">
                                     افزودن گزینه جدید
@@ -249,8 +264,7 @@
                         <br>
                         <br>
                         <div class="col-md-12">
-                            <a mat-raised-button color="warn" style="margin: 5px;"
-                                (click)="location.back()">لغو</a>
+                            <a mat-raised-button color="warn" style="margin: 5px;" (click)="location.back()">لغو</a>
                             <button type="submit" mat-raised-button color="primary" [disabled]="!fm1.valid"
                                 (click)="sts()">{{ btnTitle }}</button>
                         </div>

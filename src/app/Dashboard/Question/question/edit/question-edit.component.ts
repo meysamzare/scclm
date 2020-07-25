@@ -11,6 +11,8 @@ import { startWith, map, finalize } from "rxjs/operators";
 import { IQuestionOption } from "../../questionoption/questionoption";
 import Swal from "sweetalert2";
 import { Location } from "@angular/common";
+import { PictureSelectModalComponent } from "src/app/html-tools/picture-select-modal/picture-select-modal.component";
+import { MatDialog } from "@angular/material";
 
 @Component({
     templateUrl: "./question-edit.component.html",
@@ -54,6 +56,7 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
         private message: MessageService,
         private auth: AuthService,
         public location: Location,
+        private dialog: MatDialog
     ) {
         activeRoute.params.subscribe(params => {
             this.activeRoute.data.subscribe(data => {
@@ -350,5 +353,23 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
         this.question.complatabelContent = '';
 
         this.options = [];
+    }
+
+    insertPicture(type: "title" | "complatabelContent" | "option", optionIndex?) {
+        const dialog = this.dialog.open(PictureSelectModalComponent);
+
+        dialog.afterClosed().subscribe(content => {
+            if (content) {
+                if (type == "title") {
+                    this.question.title += content;
+                }
+                if (type == "complatabelContent") {
+                    this.question.complatabelContent += content;
+                }
+                if (type == "option") {
+                    this.options[optionIndex].name += content;
+                }
+            }
+        });
     }
 }

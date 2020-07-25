@@ -127,10 +127,15 @@
 
                                 <div class="form-group">
                                     <label>متن پست</label>
-                                    <ckeditor name="content" required #questionTitle="ngModel" [(ngModel)]="post.content">
+                                    <ckeditor name="content" required #questionTitle="ngModel"
+                                        [(ngModel)]="post.content">
+                                        <ckbutton [name]="'image'" [command]="'insert_pic'"
+                                            (click)="insertPicture()" [icon]="'plugins/icons.png?t=K24B'"
+                                            [label]="'انتخاب تصویر ار آلبوم تصاویر'"></ckbutton>
                                     </ckeditor>
 
-                                    <div *ngIf="(questionTitle.touched || questionTitle.dirty) && questionTitle.invalid">
+                                    <div
+                                        *ngIf="(questionTitle.touched || questionTitle.dirty) && questionTitle.invalid">
                                         <p *ngIf="questionTitle.hasError('required')" class="error">
                                             وارد کردن متن پست الزامی است
                                         </p>

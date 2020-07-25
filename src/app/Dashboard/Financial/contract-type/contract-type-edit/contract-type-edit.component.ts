@@ -9,6 +9,8 @@ declare var $: any;
 // declare var CKEDITOR: any;
 
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { PictureSelectModalComponent } from "src/app/html-tools/picture-select-modal/picture-select-modal.component";
+import { MatDialog } from "@angular/material";
 
 @Component({
 	selector: "app-contract-type-edit",
@@ -46,7 +48,8 @@ export class ContractTypeEditComponent implements OnInit, OnDestroy {
 		private route: Router,
 		private activeRoute: ActivatedRoute,
 		private message: MessageService,
-		private auth: AuthService
+        private auth: AuthService,
+        private dialog: MatDialog
 	) {
 		activeRoute.params.subscribe(params => {
 			this.activeRoute.data.subscribe(data => {
@@ -156,5 +159,15 @@ export class ContractTypeEditComponent implements OnInit, OnDestroy {
 		} else {
 			this.message.showWarningAlert("مقادیر خواسته شده را تکمیل نمایید");
 		}
-	}
+    }
+    
+    insertPicture() {
+        const dialog = this.dialog.open(PictureSelectModalComponent);
+
+        dialog.afterClosed().subscribe(content => {
+            if (content) {
+                this.contrcttype.content += content
+            }
+        });
+    }
 }

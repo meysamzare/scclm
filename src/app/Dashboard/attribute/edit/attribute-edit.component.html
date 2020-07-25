@@ -5,17 +5,20 @@
                 <h5>{{ Title }}</h5>
             </div>
             <div class="ibox-content">
-                <div class="form-group">
-                    <label>انتخاب فیلد</label>
-                    <ng-select [disabled]="isEdit" #clone="ngModel" name="attrClone" [(ngModel)]="selectedCloneAttr"
-                        (change)="cloneAttrChange()">
-                        <ng-option *ngFor="let i of attributes" [value]="i.id">{{ i.title }}</ng-option>
-                    </ng-select>
-                    <mat-hint>کپی کردن داده های مورد انتخاب شده در صفحه جاری</mat-hint>
-                </div>
-                <hr>
+                <ng-container *ngIf="TYPE != 2">
+                    <div class="form-group">
+                        <label>انتخاب فیلد</label>
+                        <ng-select [disabled]="isEdit" #clone="ngModel" name="attrClone" [(ngModel)]="selectedCloneAttr"
+                            (change)="cloneAttrChange()">
+                            <ng-option *ngFor="let i of attributes" [value]="i.id">{{ i.title }}</ng-option>
+                        </ng-select>
+                        <mat-hint>کپی کردن داده های مورد انتخاب شده در صفحه جاری</mat-hint>
+                    </div>
+                    <hr>
+                </ng-container>
+
                 <div class="row">
-                    <form #fm1="ngForm" id="fm11" (keydown.esc)="goToList()">
+                    <form #fm1="ngForm" id="fm11">
                         <div class="col-sm-6 b-r">
                             <div class="form-group">
                                 <label>عنوان</label>
@@ -117,7 +120,8 @@
 
                                 <div class="form-group">
                                     <label>انتخاب سوال</label>
-                                    <ng-select #question="ngModel" name="question" [(ngModel)]="attr.questionId" required>
+                                    <ng-select #question="ngModel" name="question" [(ngModel)]="attr.questionId"
+                                        required>
                                         <ng-option *ngFor="let i of Questions" [value]="i.id">{{i.name}}
                                         </ng-option>
                                     </ng-select>
@@ -163,7 +167,7 @@
 
                         </div>
                         <div class="col-sm-6 ">
-                            <div class="form-group">
+                            <div class="form-group" *ngIf="TYPE != 2">
                                 <label>{{ pageTitle }}</label>
                                 <ng-select [clearable]="false" #cat="ngModel" name="category"
                                     [(ngModel)]="attr.categoryId" required>

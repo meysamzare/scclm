@@ -121,6 +121,10 @@
                                     <label>متن</label>
                                     <ckeditor name="qtitle" #questionTitle="ngModel" [(ngModel)]="Conversation.content"
                                         required>
+                                        <ckbutton [name]="'image'" [command]="'insert_pic'"
+                                            (click)="insertPicture()" [icon]="'plugins/icons.png?t=K24B'"
+                                            [label]="'انتخاب تصویر ار آلبوم تصاویر'">
+                                        </ckbutton>
                                     </ckeditor>
                                     <div
                                         *ngIf="(questionTitle.touched || questionTitle.dirty) && questionTitle.invalid">

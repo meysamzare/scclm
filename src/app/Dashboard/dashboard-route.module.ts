@@ -363,6 +363,29 @@ import { CommentTotalType } from "./WebSiteManagment/comment/product-comment";
                         ]
                     },
                     {
+                        path: "attribute-template",
+                        children: [
+                            {
+                                path: "",
+                                component: AttributeListComponent,
+                                pathMatch: "full",
+                                data: {
+                                    role: ["view_Attribute"],
+                                    Type: 2
+                                }
+                            },
+                            {
+                                path: "edit/:id",
+                                component: AttributeEditComponent,
+                                data: {
+                                    role: ["add_Attribute", "edit_Attribute"],
+                                    Type: 2
+                                },
+                                resolve: { unit: UnitListResolverService }
+                            }
+                        ]
+                    },
+                    {
                         path: "item",
                         children: [
                             {

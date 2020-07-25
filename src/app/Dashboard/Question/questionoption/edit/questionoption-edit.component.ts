@@ -5,6 +5,8 @@ import { MessageService } from 'src/app/shared/services/message.service';
 import { AuthService, jsondata } from 'src/app/shared/Auth/auth.service';
 import { IQuestionOption } from '../questionoption';
 import { IQuestion } from '../../question/question';
+import { MatDialog } from '@angular/material';
+import { PictureSelectModalComponent } from 'src/app/html-tools/picture-select-modal/picture-select-modal.component';
 
 @Component({
     templateUrl: './questionoption-edit.component.html'
@@ -26,7 +28,8 @@ export class QuestionOptionEditComponent implements OnDestroy{
         private route: Router,
         private activeRoute: ActivatedRoute,
         private message: MessageService,
-        private auth: AuthService
+        private auth: AuthService,
+        private dialog: MatDialog
     ) {
         activeRoute.params.subscribe(params => {
             this.activeRoute.data.subscribe(data => {
@@ -142,5 +145,15 @@ export class QuestionOptionEditComponent implements OnDestroy{
         } else {
             this.message.showWarningAlert("مقادیر خواسته شده را تکمیل نمایید");
         }
+    }
+
+    insertPicture() {
+        const dialog = this.dialog.open(PictureSelectModalComponent);
+
+        dialog.afterClosed().subscribe(content => {
+            if (content) {
+                this.questionoption.name += content
+            }
+        });
     }
 }

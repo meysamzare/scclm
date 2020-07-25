@@ -30,8 +30,8 @@ export class StudentWorkbookComponent implements OnInit {
 
 
     coursesByGrade: ICourse[] = [];
-    examByGrade: IExam[] = [];
-    examScoreByGrade_Student: IExamScore[] = [];
+    examByGrade: any[] = [];
+    examScoreByGrade_Student: any[] = [];
 
     examTypes: IExamType[] = [];
     selectedExamType: number = null;

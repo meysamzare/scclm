@@ -8,8 +8,9 @@ import { IWriter } from '../../Writer/writer';
 import { IProductCategory } from '../../ProductCategory/product-category';
 import { ITags } from 'src/app/Dashboard/item/tags';
 import { ENTER } from '@angular/cdk/keycodes';
-import { MatChipInputEvent } from '@angular/material';
+import { MatChipInputEvent, MatDialog } from '@angular/material';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { PictureSelectModalComponent } from 'src/app/html-tools/picture-select-modal/picture-select-modal.component';
 
 @Component({
     selector: 'app-product-edit',
@@ -64,7 +65,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         private route: Router,
         private activeRoute: ActivatedRoute,
         private message: MessageService,
-        public auth: AuthService
+        public auth: AuthService,
+        private dialog: MatDialog
     ) {
         activeRoute.params.subscribe(params => {
             this.activeRoute.data.subscribe(data => {
@@ -141,7 +143,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         });
     }
 
-    
+
     ngOnDestroy(): void {
         let title = this.PAGE_APIURL;
         if (!this.fm1.submitted) {
@@ -309,6 +311,16 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+    }
+
+    insertPicture() {
+        const dialog = this.dialog.open(PictureSelectModalComponent);
+
+        dialog.afterClosed().subscribe(content => {
+            if (content) {
+                this.PAGE_Data.desc += content
+            }
+        });
     }
 
 }

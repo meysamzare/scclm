@@ -33,6 +33,16 @@ iframe#FMathEd1_ads {
     min-width: 104px !important;
 }
 
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.radio-button {
+    margin: 0;
+}
+
 .example-loading-shade {
     position: absolute;
     top: 0;

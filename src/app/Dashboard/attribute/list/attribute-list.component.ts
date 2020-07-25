@@ -36,15 +36,7 @@ declare var $: any;
     ]
 })
 export class AttributeListComponent implements OnInit, AfterViewInit, AfterContentInit {
-    displayedColumns: string[] = [
-        "select",
-        "id",
-        "title",
-        "catTitle",
-        "attrTypeString",
-        "unitTitle",
-        "action"
-    ];
+    displayedColumns: string[] = [];
     dataSource: MatTableDataSource<IAttr>;
     selection = new SelectionModel<IAttr>(true, []);
 
@@ -65,7 +57,13 @@ export class AttributeListComponent implements OnInit, AfterViewInit, AfterConte
 
     Categories: ICategory[] = [];
 
+    Title = "فهرست فیلد ها";
 
+    /**
+     * Type 0 is Attribute
+     * Type 1 is For OnlineExams
+     * Type 2 is For AttributeTemplate
+     */
     TYPE = 0;
 
     pageTitle = "نمون برگ";
@@ -90,6 +88,10 @@ export class AttributeListComponent implements OnInit, AfterViewInit, AfterConte
                 this.pageUrl = "online-exam/option";
             }
 
+            if (this.TYPE == 2) {
+                this.pageUrl = "attribute-template";
+            }
+
             this.auth.post("/api/Category/getAllByType", this.TYPE).subscribe((data: jsondata) => {
                 if (data.success) {
                     this.Categories = data.data;
@@ -97,6 +99,24 @@ export class AttributeListComponent implements OnInit, AfterViewInit, AfterConte
                     this.message.showMessageforFalseResult(data);
                 }
             });
+
+            this.displayedColumns.push(...[
+                "select",
+                "id",
+                "title",
+            ]);
+
+            if (this.TYPE != 2) {
+                this.displayedColumns.push("catTitle");
+            }
+
+            this.displayedColumns.push(...[
+                "attrTypeString",
+                "unitTitle",
+                "action"
+            ]);
+
+            this.Title += this.TYPE == 2 ? 'ی نمونه' : '';
         });
     }
 

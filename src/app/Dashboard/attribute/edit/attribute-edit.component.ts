@@ -109,6 +109,9 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
 
             if (id === '0') {
                 this.attr = new IAttr();
+
+                this.attr.isTemplate = this.TYPE == 2 ? true : false;
+
                 this.Title = 'افزودن فیلد';
                 this.btnTitle = 'افزودن';
                 this.isEdit = false;
@@ -125,6 +128,9 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
                                 this.Title = 'ویرایش فیلد ' + this.attr.title;
                                 this.btnTitle = 'ویرایش';
                                 this.isEdit = true;
+
+                                this.attr.isTemplate = this.TYPE == 2 ? true : false;
+
                                 this.refreshAttributeOptions();
                             } else {
                                 this.message.showMessageforFalseResult(data);
@@ -408,7 +414,10 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
     }
 
     isCatSelected(): boolean {
-        return this.attr.categoryId == null ? false : true;
+        if (this.TYPE != 2) {
+            return this.attr.categoryId == null ? false : true;
+        }
+        return true;
     }
 
     isUnitSelected(): boolean {
@@ -417,10 +426,6 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
 
     isTypeSelected(): boolean {
         return this.attr.attrTypeInt == 0 ? false : true;
-    }
-
-    goToList() {
-        this.route.navigate(['/dashboard/attribute']);
     }
 
     sts() {
