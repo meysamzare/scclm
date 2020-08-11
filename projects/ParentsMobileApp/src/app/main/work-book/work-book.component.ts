@@ -283,9 +283,9 @@ export class WorkBookComponent implements OnInit {
 
     getBackColorOfPanel(avg, stdAvg) {
         if (stdAvg >= avg) {
-            return "#aaff70";
+            return "#acf57aa1";
         } else {
-            return "#ff7070";
+            return "#ff6363a1";
         }
     }
 

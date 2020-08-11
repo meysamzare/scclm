@@ -1,4 +1,4 @@
-<app-toolbar [Title]="'خانه'" [showRefresh]="false">
+<app-toolbar [Title]="'خانه'" [showRefresh]="false" [showColorButton]="true">
     <app-toolbar-item-left>
         <button mat-icon-button [matMenuTriggerFor]="menu"
             [style.background-color]="isNewUpdateAvalable ? '#c3c32d' : 'unset'">
@@ -106,6 +106,8 @@
     <app-mobile-advertising class="margin-top-10" [Type]="5"></app-mobile-advertising>
 
     <app-hpost-view Type="special"></app-hpost-view>
+
+    <app-mobile-schedule-view></app-mobile-schedule-view>
 
 
 </div>

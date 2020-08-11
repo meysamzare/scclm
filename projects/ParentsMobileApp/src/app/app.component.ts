@@ -33,7 +33,7 @@ export class AppComponent implements AfterViewInit {
             this.onSetTheme(theme + "-theme");
         });
 
-        this.themeServ.setThemeColor("light", true);
+        this.themeServ.setCurrentTheme();
     }
 
     ngAfterViewInit(): void {

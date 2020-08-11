@@ -1,0 +1,47 @@
+<div class="margin-top-10 margin-down-10" *ngIf="schedules.length != 0">
+    <div class="row">
+        <div class="col-12 al-right">
+            <p>
+                جدیدترین رویدادها
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 hscroll">
+            <mat-card matRipple *ngFor="let i of schedules">
+                <a target="_blank" [href]="auth.indexUrl + '#/post/'+ i.postId + '/'+ i.post.url" style="color: black;">
+
+                    <div class="row">
+                        <div class="col-5">
+                            <img [src]="auth.getFileUrl(i.picUrl)" class="header-image">
+                        </div>
+                        <div class="col-7">
+                            <b class="title">{{ i.title }}</b>
+
+                            <p class="content">
+                                {{ i.content }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <hr style="margin: 7px">
+
+                    <div class="row">
+                        <div class="col-12 al-center">
+                            <ng-container *ngIf="!i.isOver">
+                                <countdown-timer
+                                    style="font-size: 20px; color: rgba(255, 0, 0, 0.534); font-weight: bold; margin: 7px;"
+                                    [end]="i.formatedDateEnd"></countdown-timer>
+                            </ng-container>
+
+                            <ng-container *ngIf="i.isOver">
+                                <b> رویداد پایان یافت </b>
+                            </ng-container>
+                        </div>
+
+                    </div>
+                </a>
+            </mat-card>
+        </div>
+    </div>
+</div>

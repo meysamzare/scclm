@@ -4,6 +4,7 @@ import { AuthService } from 'src/app/shared/Auth/auth.service';
 import { Subject } from 'rxjs/internal/Subject';
 import { debounceTime } from 'rxjs/internal/operators/debounceTime';
 import { finalize } from 'rxjs/internal/operators/finalize';
+import { IQuestion } from 'src/app/Dashboard/Question/question/question';
 
 @Component({
     selector: 'app-add-question-modal',
@@ -25,6 +26,8 @@ export class AddQuestionModalComponent implements OnInit {
 
     stayOnPage = false;
 
+    addedQuestionsIds = [];
+
     constructor(
         public dialogRef: MatDialogRef<AddQuestionModalComponent>,
         @Inject(MAT_DIALOG_DATA) public data,
@@ -39,6 +42,19 @@ export class AddQuestionModalComponent implements OnInit {
         this.refreshData$.pipe(
             debounceTime(700)
         ).subscribe(() => this.refreshQuestions(true));
+
+        this.isLoading = true;
+        this.auth.post("/api/Category/getQuestionIds", this.catId)
+            .pipe(finalize(() => this.isLoading = false))
+            .subscribe(data => {
+                if (data.success) {
+                    this.addedQuestionsIds = data.data;
+                } else {
+                    this.auth.message.showMessageforFalseResult(data);
+                }
+            }, er => {
+                this.auth.handlerError(er);
+            });
     }
 
 
@@ -73,24 +89,28 @@ export class AddQuestionModalComponent implements OnInit {
 
         this.auth.post("/api/Question/getQuestions", obj)
             .pipe(finalize(() => this.isLoading = false))
-        .subscribe(data => {
-            if (data.success) {
-                if (clearList) {
-                    this.questions = [];
+            .subscribe(data => {
+                if (data.success) {
+                    if (clearList) {
+                        this.questions = [];
+                    }
+
+                    this.totalItems = +data.type;
+
+                    var questions: any[] = data.data;
+                    questions.forEach(question => {
+                        this.questions.push(question);
+                    });
+                } else {
+                    this.auth.message.showMessageforFalseResult(data);
                 }
+            }, er => {
+                this.auth.handlerError(er);
+            });
+    }
 
-                this.totalItems = +data.type;
-
-                var questions: any[] = data.data;
-                questions.forEach(question => {
-                    this.questions.push(question);
-                });
-            } else {
-                this.auth.message.showMessageforFalseResult(data);
-            }
-        }, er => {
-            this.auth.handlerError(er);
-        });
+    isContainsAddedQuestionIds(id) {
+        return this.addedQuestionsIds.some(c => c == id);
     }
 
     addQuestionForCat(questionId) {
@@ -98,6 +118,8 @@ export class AddQuestionModalComponent implements OnInit {
             catId: this.catId,
             questionId: questionId
         };
+
+        this.isLoading = true;
 
         this.auth.post("/api/Attribute/AddQuestionForCat", obj, {
             type: 'Add',
@@ -109,9 +131,13 @@ export class AddQuestionModalComponent implements OnInit {
             object: obj,
             table: "Attribute",
             tableObjectIds: [questionId, this.catId]
-        }).subscribe(data => {
+        })
+        .pipe(finalize(() => this.isLoading = false))
+        .subscribe(data => {
             if (data.success) {
                 this.auth.message.showSuccessAlert();
+
+                this.addedQuestionsIds.push(questionId);
 
                 if (!this.stayOnPage) {
                     this.dialogRef.close(true);

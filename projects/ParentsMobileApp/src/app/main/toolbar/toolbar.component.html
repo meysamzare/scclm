@@ -22,7 +22,6 @@
                     <mat-icon>refresh</mat-icon>
                 </button>
 
-                <ng-content select="app-toolbar-item-left"></ng-content>
 
                 <button *ngIf="showColorButton" mat-icon-button [matMenuTriggerFor]="menu">
                     <mat-icon>format_color_fill</mat-icon>
@@ -44,6 +43,9 @@
                         <span>تاریک</span>
                     </button>
                 </mat-menu>
+
+                <ng-content select="app-toolbar-item-left"></ng-content>
+
             </div>
         </div>
     </mat-toolbar-row>

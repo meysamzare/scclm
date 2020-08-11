@@ -48,8 +48,11 @@ export class ICategory {
     randomAttributeOption: boolean = false;
 
     courseId: number = null;
+    courseString = "";
     examTypeId: number = null;
+    examTypeString = "";
     workbookId: number = null;
+    workbookString = "";
 
     gradeString = "";
     classString = "";

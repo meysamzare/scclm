@@ -1,0 +1,36 @@
+.hscroll {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    mat-card {
+        padding: 0;
+        flex: 0 0 auto;
+        margin: 3px;
+        width: 460px;
+    }
+}
+
+.more-link {
+    display: inline-flex;
+}
+
+.title {
+    padding: 5px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.content {
+    font-size: 12px;
+    padding: 5px;
+    margin: 2px;
+}
+
+.header-image {
+    border-radius: 5px;
+    width: 100%;
+}

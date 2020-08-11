@@ -22,39 +22,47 @@
 
 
         <div class="row">
-            <div class="col-lg-6 margin-top-10 bordered" *ngFor="let question of questions">
+            <div class="col-lg-12 margin-top-10 bordered" *ngFor="let i of questions">
 
-                <div class="row" matRipple (click)="addQuestionForCat(question.id)">
-                    <div class="col-lg-12">
-                        <h3>{{ question.title }}</h3>
-                        <p>{{ question.typeString }}</p>
+                <div class="row">
+
+                    <div class="col-lg-1">
+                        <button [tooltip]="'افزودن سوال به آزمون آنلاین'"
+                            [disabled]="isContainsAddedQuestionIds(i.id) || isLoading" mat-icon-button
+                            (click)="addQuestionForCat(i.id)">
+                            <mat-icon>{{ isContainsAddedQuestionIds(i.id) ? 'done_all' : 'done' }}</mat-icon>
+                        </button>
                     </div>
-                </div>
+                    <div class="col-lg-7">
+                        <div [innerHTML]="i.title | safeHtml"></div>
 
-                <mat-accordion *ngIf="question.type == 2 || question.type == 3">
-                    <mat-expansion-panel>
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                {{ question.type == 2 ? "گزینه ها" : "متن جایگزین" }}
-                            </mat-panel-title>
-                        </mat-expansion-panel-header>
+                        <hr>
 
-                        <ng-container *ngIf="question.type == 2">
+                        <ng-container *ngIf="i.type == 1">
+                            <label>جواب کاربر:</label>
+                        </ng-container>
+
+                        <ng-container *ngIf="i.type == 2">
                             <mat-radio-group class="radio-group">
-                                <mat-radio-button class="radio-button" *ngFor="let v of question.options"
-                                    [style.color]="v.isTrue ? 'green' : 'unset'" [value]="v.id.toString()">
-                                    <div [innerHTML]="v.name | safeHtml"></div>
+                                <mat-radio-button class="radio-button" *ngFor="let v of i.options" [value]="v.id">
+                                    <div [innerHTML]="v.title | safeHtml"></div>
                                 </mat-radio-button>
                             </mat-radio-group>
                         </ng-container>
 
-                        <ng-container *ngIf="question.type == 3">
-                            <div [innerHTML]="question.complatabelContent | safeHtml">
-                            </div>
+                        <ng-container *ngIf="i.type == 3">
+                            <mat-hint>محتوای زیر را تکمیل کنید</mat-hint>
+                            <div [innerHTML]="i.complatabelContent | safeHtml"></div>
                         </ng-container>
+                    </div>
+                    <div class="col-lg-4" style="padding: 20px;">
+                        <p>نوع سوال: <b>{{ i.typeString }}</b></p>
+                        <p>طراح سوال: <b>{{ i.person }}</b></p>
+                        <p>سطح سوال: <b>{{ i.defactString }}</b></p>
+                        <p>نمره: <b>{{ i.score }}</b></p>
+                    </div>
 
-                    </mat-expansion-panel>
-                </mat-accordion>
+                </div>
 
             </div>
         </div>

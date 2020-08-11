@@ -40,7 +40,7 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
     dataSource: MatTableDataSource<ICategory>;
     selection = new SelectionModel<ICategory>(true, []);
 
-    Category: ICategory[];
+    Category: ICategory[] = [];
 
     isLoading: boolean;
 
@@ -48,32 +48,38 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
 
     txtSearch: string = "";
 
-    itemLength;
+    itemLength = 0;
 
-    @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-    @ViewChild(MatSort, { static: true }) sort: MatSort;
-    @ViewChild("tree", { static: true }) tree: ElementRef;
+    // @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+    // @ViewChild(MatSort, { static: true }) sort: MatSort;
+    // @ViewChild("tree", { static: true }) tree: ElementRef;
 
-    Categories: ICategory[] = [];
+    // Categories: ICategory[] = [];
 
     selectedCatId = null;
 
     TYPE = 0;
 
     pageTitle = "نمون برگ";
+    pageSubTitle = "نمون برگ";
     pageTitles = "نمون برگ ها";
     pageUrl = "category";
 
     grades: IGrade[] = [];
-    classes: IClass[] = [];
+    courses = [];
+    examTypes = [];
+
 
     selectedGradeId = null;
-    selectedClassId = null;
+    selectedCourseId = null;
+    selectedExamTypeId = null;
+
+    page = 1;
 
     constructor(
         private router: Router,
         private activeroute: ActivatedRoute,
-        private auth: AuthService,
+        public auth: AuthService,
         private message: MessageService
     ) {
 
@@ -97,9 +103,19 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
                     this.auth.handlerError(er);
                 });
 
-                this.auth.post("/api/Class/getAll").subscribe(data => {
+                this.auth.post("/api/Course/getAll").subscribe(data => {
                     if (data.success) {
-                        this.classes = data.data;
+                        this.courses = data.data;
+                    } else {
+                        this.message.showMessageforFalseResult(data);
+                    }
+                }, er => {
+                    this.auth.handlerError(er);
+                });
+
+                this.auth.post("/api/ExamType/getAll").subscribe(data => {
+                    if (data.success) {
+                        this.examTypes = data.data;
                     } else {
                         this.message.showMessageforFalseResult(data);
                     }
@@ -124,23 +140,23 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
                 "action"
             ]);
 
-            this.auth.post("/api/Category/getAllByType", this.TYPE).subscribe((data: jsondata) => {
-                if (data.success) {
-                    this.Categories = data.data;
-                } else {
-                    this.message.showMessageforFalseResult(data);
-                }
-            });
+            // this.auth.post("/api/Category/getAllByType", this.TYPE).subscribe((data: jsondata) => {
+            //     if (data.success) {
+            //         this.Categories = data.data;
+            //     } else {
+            //         this.message.showMessageforFalseResult(data);
+            //     }
+            // });
         });
 
 
     }
 
-    getClassByGrade() {
+    getCourseByGrade() {
         let gradeId = this.selectedGradeId;
 
         if (gradeId) {
-            return this.classes.filter(c => c.gradeId == gradeId);
+            return this.courses.filter(c => c.gradeId == gradeId);
         }
 
         return [];
@@ -158,16 +174,16 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
         });
     }
 
-    onCategorySelectChange() {
-        if (this.selectedCatId) {
-            let cat = this.Categories.find(c => c.id == this.selectedCatId);
-            this.txtSearch = cat.title;
-            this.refreshDataSource();
-        } else {
-            this.txtSearch = "";
-            this.refreshDataSource();
-        }
-    }
+    // onCategorySelectChange() {
+    //     if (this.selectedCatId) {
+    //         let cat = this.Categories.find(c => c.id == this.selectedCatId);
+    //         this.txtSearch = cat.title;
+    //         this.refreshDataSource();
+    //     } else {
+    //         this.txtSearch = "";
+    //         this.refreshDataSource();
+    //     }
+    // }
 
 
     getRowCanSelected(): number {
@@ -288,58 +304,86 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
         );
     }
 
-    refreshDataSource() {
+    refreshDataSource(clearList = false) {
+
+        if (clearList) {
+            this.page = 1;
+        }
+
         this.selection.clear();
 
         let obj = {
             getparams: {
-                sort: this.sort.active,
-                direction: this.sort.direction,
-                pageIndex: this.paginator.pageIndex,
-                pageSize: this.paginator.pageSize,
+                sort: "",
+                direction: "",
+                pageIndex: this.page,
+                pageSize: 12,
                 q: this.txtSearch,
             },
             type: this.TYPE,
             selectedGradeId: this.selectedGradeId,
-            selectedClassId: this.selectedClassId
+            selectedCourseId: this.selectedCourseId,
+            selectedExamTypeId: this.selectedExamTypeId
         };
 
-        this.auth
-            .post("/api/Category/Get", obj, {
-                type: 'View',
-                agentId: this.auth.getUserId(),
-                agentType: 'User',
-                agentName: this.auth.getUser().fullName,
-                tableName: 'Category List',
-                logSource: 'dashboard',
-                object: obj,
-                table: "Category"
-            })
-            .subscribe(
-                (data: jsondata) => {
-                    if (data.success) {
-                        this.isLoadingResults = false;
-                        this.itemLength = data.type;
-                        this.Category = data.data;
+        this.auth.post("/api/Category/Get", obj, {
+            type: 'View',
+            agentId: this.auth.getUserId(),
+            agentType: 'User',
+            agentName: this.auth.getUser().fullName,
+            tableName: 'Category List',
+            logSource: 'dashboard',
+            object: obj,
+            table: "Category"
+        }).subscribe(data => {
+            if (data.success) {
 
-                        this.dataSource = new MatTableDataSource(this.Category);
-                    } else {
-                        this.isLoadingResults = false;
-                        this.message.showMessageforFalseResult(data);
-                    }
-                },
-                er => {
-                    this.auth.handlerError(er);
+                if (clearList) {
+                    this.Category = [];
                 }
-            );
+
+                this.isLoadingResults = false;
+                this.itemLength = +data.type;
+
+                const cats: ICategory[] = data.data;
+
+                cats.forEach(cat => {
+                    this.Category.push(cat);
+                });
+            } else {
+                this.isLoadingResults = false;
+                this.message.showMessageforFalseResult(data);
+            }
+        }, er => {
+            this.auth.handlerError(er);
+        });
+    }
+
+
+    canShowMoreButton(): boolean {
+        var nowItemCount = this.Category.length;
+        var nowPage = this.page + 1;
+        var totalItemCount = this.itemLength;
+
+        if (nowItemCount < totalItemCount) {
+            return true;
+        }
+
+        return false;
+    }
+
+    nextPage() {
+        this.page += 1;
+
+        this.refreshDataSource();
     }
 
     ngOnInit() {
-        const changeed = merge(this.sort.sortChange, this.paginator.page);
+        // const changeed = merge(this.sort.sortChange, this.paginator.page);
 
-        changeed.subscribe(() => {
-            this.refreshDataSource();
-        });
+        // changeed.subscribe(() => {
+        //     this.refreshDataSource();
+        // });
 
 
     }
@@ -375,11 +419,7 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
     }
 
     applyFilter(filterValue: string) {
-        this.refreshDataSource();
-
-        if (this.dataSource.paginator) {
-            this.dataSource.paginator.firstPage();
-        }
+        this.refreshDataSource(true);
     }
 
     changeCheckableProperty(catId, type, check) {
@@ -389,7 +429,7 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
             check: check,
         }).subscribe(data => {
             if (data.success) {
-                this.refreshDataSource();
+                this.refreshDataSource(true);
             } else {
                 this.auth.message.showMessageforFalseResult(data);
             }

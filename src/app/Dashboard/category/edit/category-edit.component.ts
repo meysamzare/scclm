@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, AfterViewInit, AfterViewChecked } from "@angular/core";
+import { Component, ViewChild, OnInit, AfterViewInit, AfterViewChecked, ViewEncapsulation } from "@angular/core";
 import { jsondata, AuthService } from "src/app/shared/Auth/auth.service";
 import { NgForm } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
@@ -30,6 +30,7 @@ declare var $: any;
 
 @Component({
     templateUrl: "./category-edit.component.html",
+    encapsulation: ViewEncapsulation.None,
     styles: [
         `
             .example-radio-group {
@@ -50,11 +51,16 @@ declare var $: any;
             .radio-button {
                 margin: 0;
             }
+
+            .attrSection img {
+                width: 100%;
+            }
         `
     ]
 })
 export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewChecked {
     Title: string;
+    subTitle: string = "";
     btnTitle: string;
     isEdit: boolean = false;
 
@@ -71,7 +77,7 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
 
     units: IUnit[] = [];
 
-    attributes: IAttr[] = [];
+    attributes: any[] = [];
     isLoading = false;
 
 
@@ -177,7 +183,13 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
                         }
                     });
 
-                    this.getClassbyGrade();
+                    this.auth.post("/api/Class/getAll").subscribe(data => {
+                        if (data.success) {
+                            this.classes = data.data;
+                        } else {
+                            this.message.showMessageforFalseResult(data);
+                        }
+                    });
                 }
 
                 this.auth.post("/api/Category/getAllByType", this.TYPE).subscribe((data: jsondata) => {
@@ -202,6 +214,8 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
                         `ویرایش ${this.pageTitle} ${this.category.title}`;
                     this.btnTitle = "ویرایش";
                     this.isEdit = true;
+
+                    this.refreshAttributes();
                 } else {
                     this.message.showWarningAlert("invalid Data");
                     this.route.navigate(["/dashboard"]);
@@ -290,16 +304,37 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
         let gradeId = this.category.gradeId;
 
         if (gradeId) {
-            this.auth.post("/api/Class/getClassByGrade", gradeId).subscribe((data: jsondata) => {
-                if (data.success) {
-                    this.category.classId = null;
-                    this.classes = data.data;
-                } else {
-                    this.message.showMessageforFalseResult(data);
-                }
-            });
-        } else {
-            this.category.classId = null;
+            return this.classes.filter(c => c.gradeId == gradeId);
+        }
+
+        return [];
+    }
+
+    autoSetCatTitle() {
+        if (!this.isEdit) {
+
+            let gradeName = "";
+            let courseName = "";
+            let className = "";
+            let examTypeName = "";
+
+            if (this.category.gradeId) {
+                gradeName = this.grades.find(c => c.id == this.category.gradeId).name;
+            }
+
+            if (this.category.courseId) {
+                courseName = this.courses.find(c => c.id == this.category.courseId).name;
+            }
+
+            if (this.category.classId) {
+                className = this.classes.find(c => c.id == this.category.classId).name;
+            }
+
+            if (this.category.examTypeId) {
+                examTypeName = this.examTypes.find(c => c.id == this.category.examTypeId).name;
+            }
+
+            this.category.title = `${courseName} ${gradeName} ${className} ${examTypeName}`;
         }
     }
 
@@ -483,7 +518,10 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
     }
 
     refreshAttributes() {
-        this.auth.post("/api/Attribute/getAttrsForCat", this.activeRoute.snapshot.params["id"]).subscribe(data => {
+        this.isLoading = true;
+        this.auth.post("/api/Attribute/getAttrsForCat", this.activeRoute.snapshot.params["id"])
+            .pipe(finalize(() => this.isLoading = false))
+        .subscribe(data => {
             if (data.success) {
                 this.attributes = data.data;
             } else {

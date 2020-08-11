@@ -1,5 +1,14 @@
 @import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
 
+.mat-tab-body-content {
+    overflow: hidden;
+    padding: 15px;
+}
+
+.mat-ink-bar {
+    background-color: rgb(0, 47, 255) !important;
+}
+
 a {
     text-decoration: none !important;
 }
