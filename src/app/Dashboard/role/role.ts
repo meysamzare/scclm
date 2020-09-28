@@ -311,6 +311,13 @@ export class RoleClass {
     remove_OnlineExamResult = false;
     view_OnlineExamResult = false;
 
+    add_OnlineClass = false;
+    edit_OnlineClass = false;
+    remove_OnlineClass = false;
+    view_OnlineClass = false;
+
+    view_StudentDailySchedule = false;
+
     view_Log = false;
 
     haveAnyUser = false;

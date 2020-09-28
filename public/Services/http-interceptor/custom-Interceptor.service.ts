@@ -31,7 +31,7 @@ export class CustomInterceptor implements HttpInterceptor {
         // });
         
         return next.handle(request).pipe(
-            timeout(70000),
+            timeout(700000),
             tap(
                 event => {
                     

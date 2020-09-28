@@ -66,7 +66,10 @@
         <button mat-stroked-button color="warn" style="margin-right: 5px;" [mat-dialog-close]="false">لغو</button>
         &nbsp; &nbsp; &nbsp;
 
-        <mat-checkbox name="stayOn" [(ngModel)]="stayOnPage">ماندن در این پاپ آپ</mat-checkbox>
+        <mat-checkbox name="stayOn" [(ngModel)]="stayOnPage"
+        matTooltip="در صورت فعال بودن این گزینه شما در صفحه جاری، پس از انتخاب فیلد باقی می مانید ">
+            ثبت و بعدی
+        </mat-checkbox>
     </div>
 
 </div>

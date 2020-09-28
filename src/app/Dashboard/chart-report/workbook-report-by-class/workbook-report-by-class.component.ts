@@ -22,6 +22,8 @@ export class WorkbookReportByClassComponent implements OnInit, AfterViewInit {
     classes: IClass[] = [];
     selectedClass: number = null;
 
+    onlyShowCourseHaveScore = false;
+
     isLoading = false;
 
     constructor(
@@ -75,7 +77,8 @@ export class WorkbookReportByClassComponent implements OnInit, AfterViewInit {
         courses: ICourse[],
         results: WorkbookDetailResult[],
         displayedColumns: string[],
-        dataSource: MatTableDataSource<WorkbookDetailResult>
+        dataSource: MatTableDataSource<WorkbookDetailResult>,
+        courseScores: {courseId: string, courseScore: number}[]
     }[] = [];
 
     @ViewChildren(MatSort) sorts: QueryList<MatSort>;
@@ -118,6 +121,7 @@ export class WorkbookReportByClassComponent implements OnInit, AfterViewInit {
                 workbookId: this.selectedWorkbook,
                 gradeId: this.selectedGrade,
                 classId: this.selectedClass,
+                onlyShowCourseHaveScore: this.onlyShowCourseHaveScore
             };
 
             this.auth.post("/api/ExamScore/getWorkbookDetail", obj, {
@@ -136,25 +140,51 @@ export class WorkbookReportByClassComponent implements OnInit, AfterViewInit {
 
                     let dspCols = ['rate', 'name', 'totalAvg'];
 
-                    courses.forEach((course, index) => {
+                    courses.forEach(course => {
                         let courseId = course.id.toString();
                         dspCols.push(courseId);
                     });
 
+                    let courseScores: {courseId: string, courseScore: number}[] = [];
+
                     results.forEach((result, index, resultArray) => {
                         courses.forEach((course, courseIndex) => {
                             (resultArray as any[])[index][course.id.toString()] = result.courseAvgs[courseIndex];
+
+                            courseScores.push({courseId: course.id.toString(), courseScore: result.courseAvgs[courseIndex]});
                         });
                     });
 
+                    let averageOfCourseAvgs = [];
 
+                    courses.forEach(course => {
+                        let avgOfCourse = this.average(courseScores.filter(c => c.courseId == course.id.toString()).map(c => c.courseScore));
+
+                        averageOfCourseAvgs.push(avgOfCourse);
+                    });
+
+                    let rs = {
+                        name: "معدل دروس",
+                        rate: null,
+                        totalAvg: this.average(results.map(c => c.totalAvg)),
+                        courseAvgs: averageOfCourseAvgs,
+                        isLast: true
+                    };
+
+                    courses.forEach((course, courseIndex) => {
+                        rs[course.id.toString()] = rs.courseAvgs[courseIndex];
+                    });
+
+
+                    results.push(rs);
 
                     this.datas.unshift({
                         title: title,
                         courses: courses,
                         results: results,
                         displayedColumns: dspCols,
-                        dataSource: new MatTableDataSource(results)
+                        dataSource: new MatTableDataSource(results),
+                        courseScores: courseScores
                     });
 
 
@@ -178,11 +208,21 @@ export class WorkbookReportByClassComponent implements OnInit, AfterViewInit {
     }
 
 
+    average = (array: number[]) => array ? array.reduce((a, b) => a + b) / array.length : null;
+
+    getRateOfCourse(courseId: number, courseScore: number, courseScores: {courseId: string, courseScore: number}[]) {
+        let scores = courseScores.filter(c => c.courseId == courseId.toString()).map(c => c.courseScore);
+        let uniqScores = Array.from(new Set(scores)).sort((a, b) => b - a);
+
+        return uniqScores.findIndex(c => c == courseScore) + 1;
+    }
+
 }
 
 export class WorkbookDetailResult {
     rate: number;
     name: string;
     totalAvg: number;
-    courseAvgs: number[]
+    courseAvgs: number[];
+    isLast = false;
 }

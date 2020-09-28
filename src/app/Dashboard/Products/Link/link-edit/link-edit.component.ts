@@ -7,6 +7,8 @@ import { AuthService } from 'src/app/shared/Auth/auth.service';
 import { IProduct } from '../../Product/product';
 import { HttpClient, HttpEventType, HttpRequest, HttpHeaders } from '@angular/common/http';
 import { map, last } from 'rxjs/operators';
+import { PictureSelectModalComponent } from 'src/app/html-tools/picture-select-modal/picture-select-modal.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
     selector: 'app-link-edit',
@@ -54,7 +56,8 @@ export class LinkEditComponent implements OnInit, OnDestroy {
         private activeRoute: ActivatedRoute,
         private message: MessageService,
         public auth: AuthService,
-        private http: HttpClient
+        private http: HttpClient,
+        private dialog: MatDialog
     ) {
         activeRoute.params.subscribe(params => {
             this.activeRoute.data.subscribe(data => {
@@ -277,6 +280,17 @@ export class LinkEditComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+    }
+
+    
+    insertPicture() {
+        const dialog = this.dialog.open(PictureSelectModalComponent);
+
+        dialog.afterClosed().subscribe(content => {
+            if (content) {
+                this.PAGE_Data.desc += content
+            }
+        });
     }
 
 }

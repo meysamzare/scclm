@@ -25,42 +25,53 @@
 <hr>
 
 <div class="row margin-top-10">
-    <div class="col-lg-12" style="margin-bottom: 10px;">
+    <div class="col-lg-12" style="margin-bottom: 15px;">
         <input type="text" [(ngModel)]="txtSearch" id="text1" (keyup)="applyFilter($event.target.value)"
             placeholder="جستجو" class="form-control">
     </div>
-    <div class="col-lg-4">
-        <div class="form-group">
-            <label>پایه تحصیلی</label>
-            <ng-select [clearable]="true" name="grade" [(ngModel)]="selectedGradeId"
-                (change)="refreshDataSource(true); selectedCourseId = null;">
-                <ng-option *ngFor="let u of grades" [value]="u.id">{{u.name}}</ng-option>
-            </ng-select>
-        </div>
+    <div class="col-lg-12" style="margin-bottom: 10px; text-align: center;">
+        <p matTooltip="قابلیت آرشیو کردن {{ TYPE == 1 ? 'آزمون های آنلاین' : 'نمون برگ ها' }} برای سهولت کار شما با سیستم طراحی شده است"><b>نحوه نمایش آرشیو ها</b></p>
+        <mat-button-toggle-group name="archiveShow" [(ngModel)]="archiveType" (change)="refreshDataSource(true)">
+            <mat-button-toggle [value]="3">همه</mat-button-toggle>
+            <mat-button-toggle [value]="2">فقط آرشیو ها</mat-button-toggle>
+            <mat-button-toggle [value]="1">بدون آرشیو ها</mat-button-toggle>
+        </mat-button-toggle-group>
     </div>
-    <div class="col-lg-4">
-        <div class="form-group">
-            <label>درس</label>
-            <ng-select [clearable]="true" name="course" [(ngModel)]="selectedCourseId"
-                (change)="refreshDataSource(true)" [disabled]="!selectedGradeId">
-                <ng-option *ngFor="let u of getCourseByGrade()" [value]="u.id">{{u.name}}</ng-option>
-            </ng-select>
+    <ng-container *ngIf="TYPE == 1">
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label>پایه تحصیلی</label>
+                <ng-select [clearable]="true" name="grade" [(ngModel)]="selectedGradeId"
+                    (change)="refreshDataSource(true); selectedCourseId = null;">
+                    <ng-option *ngFor="let u of grades" [value]="u.id">{{u.name}}</ng-option>
+                </ng-select>
+            </div>
         </div>
-    </div>
-    <div class="col-lg-4">
-        <div class="form-group">
-            <label>نوع آزمون</label>
-            <ng-select [clearable]="true" name="examType" [(ngModel)]="selectedExamTypeId"
-                (change)="refreshDataSource(true)">
-                <ng-option *ngFor="let u of examTypes" [value]="u.id">{{u.name}}</ng-option>
-            </ng-select>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label>درس</label>
+                <ng-select [clearable]="true" name="course" [(ngModel)]="selectedCourseId"
+                    (change)="refreshDataSource(true)" [disabled]="!selectedGradeId">
+                    <ng-option *ngFor="let u of getCourseByGrade()" [value]="u.id">{{u.name}}</ng-option>
+                </ng-select>
+            </div>
         </div>
-    </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label>نوع آزمون</label>
+                <ng-select [clearable]="true" name="examType" [(ngModel)]="selectedExamTypeId"
+                    (change)="refreshDataSource(true)">
+                    <ng-option *ngFor="let u of examTypes" [value]="u.id">{{u.name}}</ng-option>
+                </ng-select>
+            </div>
+        </div>
+    </ng-container>
 </div>
 
 <hr>
 
-<div class="row">
+<div class="row" style="display: flex; flex-flow: wrap;">
+
     <div class="col-lg-4 margin-top-10" *ngFor="let cat of Category">
         <mat-card>
             <div class="row">
@@ -111,6 +122,13 @@
                         <mat-icon>{{ cat.isPined ? 'bookmark' : 'bookmark_border' }}</mat-icon>
                     </button>
 
+                    <button mat-icon-button matTooltip="آرشیو" (click)="changeCheckableProperty(cat.id, 'isArchived',
+                        !cat.isArchived)">
+                        <mat-icon [style.color]="cat.isArchived ? 'blue' : 'orange'">
+                            {{ cat.isArchived ? 'unarchive' : 'archive' }}
+                        </mat-icon>
+                    </button>
+
                     <button mat-icon-button matTooltip="فعال" (click)="changeCheckableProperty(cat.id, 'isActive',
                         !cat.isActive)">
                         <mat-icon>{{ cat.isActive ? 'visibility' : 'visibility_off' }}</mat-icon>
@@ -127,6 +145,10 @@
                     </button>
                 </div>
                 <div class="col-lg-12" style="text-align: left;">
+                    <button matTooltip="حذف {{cat.title}}" matTooltipPosition="before" mat-button
+                        (click)="removeCat(cat.id)" color="warn">
+                        حذف
+                    </button>
                     <button matTooltip="ویرایش {{cat.title}}" matTooltipPosition="before" mat-button
                         (click)="onEdit(cat.id)" color="primary">
                         ویرایش
@@ -141,6 +163,6 @@
     </div>
 
     <div class="col-lg-12 margin-top-10" *ngIf="canShowMoreButton()">
-        <button mat-flat-button style="width: 100%;" (click)="nextPage()">نمایش بیشتر</button>
+        <button mat-flat-button style="width: 100%;" [disabled]="isLoading" (click)="nextPage()">نمایش بیشتر</button>
     </div>
 </div>

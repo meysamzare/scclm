@@ -222,6 +222,19 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
                 }
             }
 
+            this.auth.post("/api/Unit/GetAll").subscribe(data => {
+                if (data.success) {
+                    this.units = data.data;
+
+                    if (this.isEdit) {
+                        this.refreshAttributes();
+                    }
+    
+                } else {
+                    this.message.showMessageforFalseResult(data);
+                }
+            });
+
             this.auth.post("/api/Role/GetAll").subscribe((data: jsondata) => {
                 if (data.success) {
                     this.roles = data.data;
@@ -501,35 +514,21 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
     }
 
     ngOnInit(): void {
-        if (this.isEdit) {
-            this.auth.post("/api/Unit/GetAll").subscribe(data => {
-                if (data.success) {
-                    this.units = data.data;
-
-                    this.refreshAttributes();
-
-                } else {
-                    this.message.showMessageforFalseResult(data);
-                }
-            });
-        }
-
-
     }
 
     refreshAttributes() {
         this.isLoading = true;
-        this.auth.post("/api/Attribute/getAttrsForCat", this.activeRoute.snapshot.params["id"])
+        this.auth.post("/api/Attribute/getAttrsForCat", this.category.id)
             .pipe(finalize(() => this.isLoading = false))
-        .subscribe(data => {
-            if (data.success) {
-                this.attributes = data.data;
-            } else {
-                this.message.showMessageforFalseResult(data);
-            }
-        }, er => {
-            this.auth.handlerError(er);
-        });
+            .subscribe(data => {
+                if (data.success) {
+                    this.attributes = data.data;
+                } else {
+                    this.message.showMessageforFalseResult(data);
+                }
+            }, er => {
+                this.auth.handlerError(er);
+            });
     }
 
     ngAfterViewChecked(): void {
@@ -646,7 +645,8 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
                         if (data.success) {
                             this.message.showSuccessAlert("با موفقیت ثبت شد");
 
-                            this.route.navigate([`/dashboard/${this.pageUrl}`]);
+                            this.d3.reset();
+                            this.route.navigate([`/dashboard/${this.pageUrl}/edit/${data.data}`]);
                         } else {
                             this.message.showMessageforFalseResult(data);
                         }
@@ -691,7 +691,9 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
     addQuestion() {
         const dialog = this.dialog.open(AddQuestionModalComponent, {
             data: {
-                catId: this.category.id
+                catId: this.category.id,
+                selectedGrade: this.category.gradeId,
+                selectedCourse: this.category.courseId
             }
         });
 

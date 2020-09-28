@@ -191,78 +191,82 @@
                                 </div>
                             </ng-container>
                             <li class="col-xl-12 col-lg-12 col-md-6 col-12 no-padding" *ngFor="let po of posts"
-                                style="cursor: pointer;" routerLink="/post/{{po.id}}/{{po.url}}">
+                                style="cursor: pointer;">
+                                <a target="_blank" routerLink="/post/{{po.id}}/{{po.url}}">
 
-                                <div class="label-check" [ngStyle]="{ 'background-color' : getColor(po.type) }" style="margin-top: 5px;">
-                                    {{ getTypeString(po.type) }}
-                                </div>
-                                <div class="label-check" style="background-color: #00bfd6; margin-top: 35px;">
-                                    {{ po.dateCreateString }}
-                                </div>
-                                <div *ngIf="po.isHighLight" class="label-check" style="background-color: #d60084; margin-top: 65px;">
-                                    ویژه
-                                </div>
-                                <div class="product-box" style="border-radius: 10px;">
-                                    <div class="row">
+                                    <div class="label-check" [ngStyle]="{ 'background-color' : getColor(po.type) }"
+                                        style="margin-top: 5px;">
+                                        {{ getTypeString(po.type) }}
+                                    </div>
+                                    <div class="label-check" style="background-color: #00bfd6; margin-top: 35px;">
+                                        {{ po.dateCreateString }}
+                                    </div>
+                                    <div *ngIf="po.isHighLight" class="label-check"
+                                        style="background-color: #d60084; margin-top: 65px;">
+                                        ویژه
+                                    </div>
+                                    <div class="product-box" style="border-radius: 10px;">
+                                        <div class="row">
 
-                                        <div class="col-lg-4">
-                                            <a class="product-box-img">
-                                                <img *ngIf="!po.haveVideo" [src]="auth.getFileUrl(po.headerPicUrl)"
-                                                    [alt]="po.title" style="border-radius: 10px;">
+                                            <div class="col-lg-4">
+                                                <a class="product-box-img">
+                                                    <img *ngIf="!po.haveVideo" [src]="auth.getFileUrl(po.headerPicUrl)"
+                                                        [alt]="po.title" style="border-radius: 10px;">
 
-                                                <video *ngIf="po.haveVideo" [currentTime]="10" width="300px"
-                                                    [preload]="false" [autoplay]="false" [controls]="false"
-                                                    [textContent]="po.title" [title]="po.title" style="direction: ltr"
-                                                    [src]="auth.getFileUrl(po.headerPicUrl)"
-                                                    style="opacity: .6; pointer-events: none;">
-                                                </video>
-                                            </a>
-                                        </div>
-                                        <div class="col-lg-8">
-                                            <div class="product-box-content">
-                                                <div class="product-box-content-row">
-                                                    <div class="product-box-title titleBox"
-                                                        style="display: flex; width: 75%;">
-                                                        <a>
-                                                            {{ po.title }}
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <div class="product-box-row product-box-row-price"
-                                                    style="display: inline-block">
-                                                    <div class="price" style="text-align: right;">
-                                                        {{ po.shortContent }}
-                                                    </div>
-                                                    <div style="margin-top: 100px">
-                                                        <div class="row">
-                                                            <div class="col-lg-4" style="text-align: right;">
-                                                                نویسنده : <strong>{{ po.author }}</strong>
-
-                                                            </div>
-                                                            <div class="col-lg-4"></div>
-                                                            <div class="col-lg-4" style="text-align: left;">
-
-                                                                {{po.viewCount}} <i class="fa fa-eye"></i><span> |
-                                                                </span>
-                                                                {{po.commentCount}} <i class="fa fa-comment"></i>
-                                                            </div>
+                                                    <video *ngIf="po.haveVideo" [currentTime]="10" width="300px"
+                                                        [preload]="false" [autoplay]="false" [controls]="false"
+                                                        [textContent]="po.title" [title]="po.title"
+                                                        style="direction: ltr" [src]="auth.getFileUrl(po.headerPicUrl)"
+                                                        style="opacity: .6; pointer-events: none;">
+                                                    </video>
+                                                </a>
+                                            </div>
+                                            <div class="col-lg-8">
+                                                <div class="product-box-content">
+                                                    <div class="product-box-content-row">
+                                                        <div class="product-box-title titleBox"
+                                                            style="display: flex; width: 75%;">
+                                                            <a>
+                                                                {{ po.title }}
+                                                            </a>
                                                         </div>
+                                                    </div>
+                                                    <div class="product-box-row product-box-row-price"
+                                                        style="display: inline-block">
+                                                        <div class="price" style="text-align: right;">
+                                                            {{ po.shortContent }}
+                                                        </div>
+                                                        <div style="margin-top: 100px">
+                                                            <div class="row">
+                                                                <div class="col-lg-4" style="text-align: right;">
+                                                                    نویسنده : <strong>{{ po.author }}</strong>
 
+                                                                </div>
+                                                                <div class="col-lg-4"></div>
+                                                                <div class="col-lg-4" style="text-align: left;">
+
+                                                                    {{po.viewCount}} <i class="fa fa-eye"></i><span> |
+                                                                    </span>
+                                                                    {{po.commentCount}} <i class="fa fa-comment"></i>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </a>
                             </li>
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="pager default text-center">
-                <pagination (pageChanged)="setPage($event)" [totalItems]="totalCount"
-                    [pageBtnClass]="'pager-item'" [maxSize]="7" [nextText]="'صفحه بعد'" [previousText]="'صفحه قبل'"
-                    [itemsPerPage]="pageSize" [(ngModel)]="page">
+                <pagination (pageChanged)="setPage($event)" [totalItems]="totalCount" [pageBtnClass]="'pager-item'"
+                    [maxSize]="7" [nextText]="'صفحه بعد'" [previousText]="'صفحه قبل'" [itemsPerPage]="pageSize"
+                    [(ngModel)]="page">
                 </pagination>
             </div>
         </div>

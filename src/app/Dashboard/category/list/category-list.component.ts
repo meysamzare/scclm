@@ -13,6 +13,7 @@ import { MessageService } from "src/app/shared/services/message.service";
 import { merge } from "rxjs";
 import { IGrade } from "../../grade/grade";
 import { IClass } from "../../class/class";
+import { finalize } from "rxjs/operators";
 
 declare var $: any;
 
@@ -73,6 +74,8 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
     selectedGradeId = null;
     selectedCourseId = null;
     selectedExamTypeId = null;
+
+    archiveType = 1;
 
     page = 1;
 
@@ -165,7 +168,9 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
     togglePin(id) {
         this.auth.post("/api/Category/togglePin", id).subscribe(data => {
             if (data.success) {
-                this.refreshDataSource();
+                // this.refreshDataSource();
+                this.Category.find(c => c.id == id).isPined = !this.Category.find(c => c.id == id).isPined;
+                this.auth.message.showSuccessAlert();
             } else {
                 this.auth.message.showMessageforFalseResult(data);
             }
@@ -185,6 +190,9 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
     //     }
     // }
 
+    getCatsByPined(isPined = true) {
+        return isPined ? this.Category.filter(c => c.isPined) : this.Category;
+    }
 
     getRowCanSelected(): number {
         let rowCanSelect: number = 0;
@@ -270,6 +278,33 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
         }
     }
 
+    removeCat(id) {
+        if (confirm("آیا از حذف این مورد اطمینان دارید؟")) {
+            let cat = this.Category.find(c => c.id == id);
+            this.auth.post("/api/Category/Delete", [id], {
+                type: 'Delete',
+                agentId: this.auth.getUserId(),
+                agentType: 'User',
+                agentName: this.auth.getUser().fullName,
+                tableName: 'Category',
+                logSource: 'dashboard',
+                deleteObjects: [cat],
+                table: "Category",
+                tableObjectIds: [id]
+            }).subscribe(data => {
+                if (data.success) {
+                    this.message.showSuccessAlert();
+
+                    this.Category.splice(this.Category.indexOf(cat), 1);
+                } else {
+                    this.message.showMessageforFalseResult(data);
+                }
+            }, er => {
+                this.auth.handlerError(er);
+            });
+        }
+    }
+
     onEdit(id) {
         if (this.auth.isUserAccess(this.TYPE == 0 ? "edit_Category" : "edit_OnlineExam")) {
             this.router.navigate(["/dashboard/" + this.pageUrl + "/edit/" + id]);
@@ -306,6 +341,8 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
 
     refreshDataSource(clearList = false) {
 
+        this.isLoading = true;
+
         if (clearList) {
             this.page = 1;
         }
@@ -323,7 +360,8 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
             type: this.TYPE,
             selectedGradeId: this.selectedGradeId,
             selectedCourseId: this.selectedCourseId,
-            selectedExamTypeId: this.selectedExamTypeId
+            selectedExamTypeId: this.selectedExamTypeId,
+            archiveType: this.archiveType
         };
 
         this.auth.post("/api/Category/Get", obj, {
@@ -335,7 +373,7 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
             logSource: 'dashboard',
             object: obj,
             table: "Category"
-        }).subscribe(data => {
+        }).pipe(finalize(() => this.isLoading = false)).subscribe(data => {
             if (data.success) {
 
                 if (clearList) {
@@ -365,7 +403,7 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
         var nowPage = this.page + 1;
         var totalItemCount = this.itemLength;
 
-        if (nowItemCount < totalItemCount) {
+        if (nowItemCount != 0 && nowItemCount < totalItemCount) {
             return true;
         }
 
@@ -423,18 +461,43 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
     }
 
     changeCheckableProperty(catId, type, check) {
-        this.auth.post("/api/Category/ChangeCheckableProperty", {
-            catId: catId,
-            type: type,
-            check: check,
-        }).subscribe(data => {
-            if (data.success) {
-                this.refreshDataSource(true);
-            } else {
-                this.auth.message.showMessageforFalseResult(data);
-            }
-        }, er => {
-            this.auth.handlerError(er);
-        });
+        if (this.auth.isUserAccess(this.TYPE == 0 ? "edit_Category" : "edit_OnlineExam")) {
+            let obj = {
+                catId: catId,
+                type: type,
+                check: check,
+            };
+
+            this.auth.post("/api/Category/ChangeCheckableProperty", obj, {
+                type: 'Edit',
+                agentId: this.auth.getUserId(),
+                agentType: 'User',
+                agentName: this.auth.getUser().fullName,
+                tableName: 'Change checkable properties',
+                logSource: 'dashboard',
+                object: obj,
+                oldObject: null,
+                table: "Category",
+                tableObjectIds: [catId]
+            }).subscribe(data => {
+                if (data.success) {
+                    // this.refreshDataSource(true);
+
+                    let cat = this.Category.find(c => c.id == catId);
+
+                    this.Category.find(c => c.id == catId)[type] = check;
+                    if (type == "isArchived") {
+                        if (this.archiveType == 1 || this.archiveType == 2) {
+                            this.Category.splice(this.Category.indexOf(cat), 1);
+                        }
+                    }
+                    this.auth.message.showSuccessAlert();
+                } else {
+                    this.auth.message.showMessageforFalseResult(data);
+                }
+            }, er => {
+                this.auth.handlerError(er);
+            });
+        }
     }
 }

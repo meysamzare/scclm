@@ -11,17 +11,17 @@ import { RouterModule } from '@angular/router';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { BootstrapModule } from '../shared/bootstrap/bootstrap.module';
-import { LongpressDirective } from 'projects/ParentsMobileApp/src/app/shared/directives/longpress.directive';
+import { LongPressModule } from 'projects/ParentsMobileApp/src/app/shared/directives/long-press/long-press.module';
 
 
 
 @NgModule({
-    declarations: [SafeHtmlPipe, 
+    declarations: [
+        SafeHtmlPipe, 
         ShuffleArrayPipe, 
         PictureSelectModalComponent, 
         AddPicturesModalComponent,
-        AddPictureGroupComponent,
-        LongpressDirective
+        AddPictureGroupComponent
     ],
     imports: [
         CommonModule,
@@ -31,6 +31,7 @@ import { LongpressDirective } from 'projects/ParentsMobileApp/src/app/shared/dir
         NgxDropzoneModule,
         NgSelectModule,
         BootstrapModule,
+        LongPressModule
     ],
     exports: [SafeHtmlPipe, 
         ShuffleArrayPipe, 

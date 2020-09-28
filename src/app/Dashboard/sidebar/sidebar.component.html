@@ -55,7 +55,7 @@
 
 				</ul>
 			</li>
-			<li *ngIf="auth.isUserAccessGroup(['view_Student', 'view_StudentStudyRecord', 'view_StudentWorkbook', 'view_StudentType', 'view_ClassBook'])" routerLinkActive="">
+			<li *ngIf="auth.isUserAccessGroup(['view_Student', 'view_StudentStudyRecord', 'view_StudentWorkbook', 'view_StudentType', 'view_ClassBook', 'view_Workbook', 'view_StudentDailySchedule'])" routerLinkActive="">
 				<a><i class="fa fa-users"></i> <span class="nav-label">مدیریت دانش آموز</span>
 					<span class="fa arrow"></span></a>
 				<ul class="nav nav-second-level collapse">
@@ -65,6 +65,7 @@
 					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_StudentWorkbook', false)" routerLink="/dashboard/student/workbook"> کارنامه دانش آموز </a></li>
 					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_ClassBook', false)" routerLink="/dashboard/student/class-book"> دفتر کلاسی الکترونیک </a></li>
 					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Workbook', false)" routerLink="/dashboard/workbook"> کارنامه ها </a></li>
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_StudentDailySchedule', false)" routerLink="/dashboard/student/daily-schedule"> وظایف دانش آموزان </a></li>
 				</ul>
 			</li>
 			<li *ngIf="auth.isUserAccessGroup(['view_ScoreThemplate', 'view_StudentScore'])" routerLinkActive="">
@@ -127,6 +128,13 @@
 					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_PaymentType', false)" routerLink="/dashboard/paymenttype"> نوع های پرداخت </a></li>
 					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_StdPayment', false)" routerLink="/dashboard/stdpayment"> پرداخت های دانش آموزان </a>
 					</li>
+				</ul>
+			</li>
+			<li *ngIf="auth.isUserAccessGroup(['view_OnlineClass'])" routerLinkActive="">
+				<a><i class="fa fa-comments-o"></i> <span class="nav-label">کلاس های مجازی</span>
+					<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+                    <li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_OnlineClass', false)" routerLink="/dashboard/online-class"> لیست کلاس های مجازی </a></li>
 				</ul>
 			</li>
 			<li *ngIf="false" routerLinkActive="">

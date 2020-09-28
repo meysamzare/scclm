@@ -19,6 +19,8 @@ import { RouterModule } from '@angular/router';
 import { ViewVirtualTeachingComponent } from './Product/view-virtual-teaching/view-virtual-teaching.component';
 import { OnlineExamsComponent } from './online-exams/online-exams.component';
 import { AttributeInputModule } from '../register-item/attribute-input/attribute-input.module';
+import { HtmlToolsModule } from 'src/app/html-tools/html-tools.module';
+import { ShowImageComponent } from 'src/app/shared/Modal/show-image.component';
 
 @NgModule({
     declarations: [
@@ -34,6 +36,7 @@ import { AttributeInputModule } from '../register-item/attribute-input/attribute
         ProductComponent,
         ViewVirtualTeachingComponent,
         OnlineExamsComponent,
+        ShowImageComponent
     ],
     imports: [
         CommonModule,
@@ -43,7 +46,8 @@ import { AttributeInputModule } from '../register-item/attribute-input/attribute
         ReactiveFormsModule,
         MaterialModule,
         RouterModule,
-        AttributeInputModule
+        AttributeInputModule,
+        HtmlToolsModule,
     ],
     entryComponents: [ViewImageModalComponent]
 })

@@ -1,4 +1,4 @@
-import { Component, ViewChild, AfterViewInit, OnInit, AfterViewChecked, AfterContentInit, AfterContentChecked, ElementRef } from "@angular/core";
+import { Component, ViewChild, AfterViewInit, OnInit, AfterViewChecked, AfterContentInit, AfterContentChecked, ElementRef, ViewEncapsulation } from "@angular/core";
 import {
     MatTableDataSource,
     MatPaginator,
@@ -40,6 +40,7 @@ declare var $: any;
 
 @Component({
     templateUrl: "./item-list.component.html",
+    encapsulation: ViewEncapsulation.None,
     animations: [
         trigger("detailExpand", [
             state(
@@ -153,6 +154,10 @@ declare var $: any;
                 border-radius: 15px;
                 padding: 10px;
                 margin-bottom: 20px;
+            }
+
+            .bordered img {
+                width: 100%;
             }
 
         `

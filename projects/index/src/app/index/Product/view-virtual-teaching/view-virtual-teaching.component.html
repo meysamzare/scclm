@@ -62,6 +62,12 @@
 
                     <hr>
 
+                    <ng-container *ngIf="link.desc">
+                        <div [innerHTML]="link.desc | safeHtml"></div>
+
+                        <hr>
+                    </ng-container>
+
                     <div class="row" style="text-align: center;">
                         <div class="col-lg-6">
                             <button mat-icon-button color="warn" (click)="setLike(link.id)">

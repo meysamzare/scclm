@@ -19,7 +19,13 @@ export class ICategory {
     dateExpire: string;
     timeExpire: string = "00:00";
 
-    isActive: boolean;
+    isActive: boolean = true;
+
+    showScoreAfterDone = false;
+    
+    calculateNegativeScore = false;
+
+    isArchived = false;
 
     authorizeState: CategoryAuthorizeState = CategoryAuthorizeState.none;
 

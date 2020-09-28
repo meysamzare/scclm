@@ -14,6 +14,9 @@ import { ComplateStudentInfoComponent } from './complate-student-info/complate-s
 import { ChatComponent } from './chat/chat.component';
 import { ViewChatComponent } from './chat/view-chat/view-chat.component';
 import { ViewChatRepositoryService } from './chat/view-chat/view-chat-repository.service';
+import { ViewCatDetailComponent } from './view-cat-detail/view-cat-detail.component';
+import { AddStudentDailySchduleComponent } from './work-book/student-daily-schdule/add-student-daily-schdule/add-student-daily-schdule.component';
+import { StudentDailyScheduleDetailComponent } from './work-book/student-daily-schdule/student-daily-schedule-detail/student-daily-schedule-detail.component';
 
 
 const routes: Routes = [
@@ -30,6 +33,23 @@ const routes: Routes = [
             {
                 path: "work-book",
                 component: WorkBookComponent
+            },
+            {
+                path: "student-daily-schedule",
+                children: [
+                    {
+                        path: "add/:stdClassMngId/:gradeId",
+                        component: AddStudentDailySchduleComponent
+                    },
+                    {
+                        path: "view/:id",
+                        component: StudentDailyScheduleDetailComponent
+                    }
+                ]
+            },
+            {
+                path: "view-cat-detail/:catId/:itemId/:catName",
+                component: ViewCatDetailComponent
             },
             {
                 path: "chat",

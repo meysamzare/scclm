@@ -197,6 +197,11 @@ import { ImageIconModule } from "projects/ParentsMobileApp/src/app/shared/compon
 import { AddTemplateAttributeModalComponent } from '../Dashboard/category/edit/modals/add-template-attribute-modal/add-template-attribute-modal.component';
 import { AddQuestionModalComponent } from '../Dashboard/category/edit/modals/add-question-modal/add-question-modal.component';
 import { AddGroupQuestionModalComponent } from '../Dashboard/category/edit/modals/add-group-question-modal/add-group-question-modal.component';
+import { OnlineClassEditComponent } from '../Dashboard/OnlineClass/online-class-edit/online-class-edit.component';
+import { OnlineClassListComponent } from '../Dashboard/OnlineClass/online-class-list/online-class-list.component';
+import { EditStudentDailyScheduleComponent } from '../Dashboard/student/student-daily-schedule/edit-student-daily-schedule/edit-student-daily-schedule.component';
+import { ListStudentDailyScheduleComponent } from '../Dashboard/student/student-daily-schedule/list-student-daily-schedule/list-student-daily-schedule.component';
+import { StudentDailyScheduleDetailComponent } from '../Dashboard/student/student-daily-schedule/list-student-daily-schedule/student-daily-schedule-detail/student-daily-schedule-detail.component';
 
 @NgModule({
     imports: [
@@ -366,7 +371,12 @@ import { AddGroupQuestionModalComponent } from '../Dashboard/category/edit/modal
         SetItemAttributeScoreComponent,
         AddTemplateAttributeModalComponent,
         AddQuestionModalComponent,
-        AddGroupQuestionModalComponent
+        AddGroupQuestionModalComponent,
+        OnlineClassEditComponent,
+        OnlineClassListComponent,
+        EditStudentDailyScheduleComponent,
+        ListStudentDailyScheduleComponent,
+        StudentDailyScheduleDetailComponent
     ],
     providers: [
         AuthGuardService,

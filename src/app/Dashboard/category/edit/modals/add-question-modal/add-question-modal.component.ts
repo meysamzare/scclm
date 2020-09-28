@@ -1,19 +1,24 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewEncapsulation } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { AuthService } from 'src/app/shared/Auth/auth.service';
 import { Subject } from 'rxjs/internal/Subject';
 import { debounceTime } from 'rxjs/internal/operators/debounceTime';
 import { finalize } from 'rxjs/internal/operators/finalize';
-import { IQuestion } from 'src/app/Dashboard/Question/question/question';
 
 @Component({
     selector: 'app-add-question-modal',
+    encapsulation: ViewEncapsulation.None,
     templateUrl: './add-question-modal.component.html',
     styleUrls: ['./add-question-modal.component.scss']
 })
 export class AddQuestionModalComponent implements OnInit {
 
     catId = 0;
+    selectedGrade = null;
+    selectedCourse = null;
+
+    grades = [];
+    courses = [];
 
     refreshData$ = new Subject();
 
@@ -34,6 +39,8 @@ export class AddQuestionModalComponent implements OnInit {
         private auth: AuthService,
     ) {
         this.catId = data.catId;
+        this.selectedGrade = data.selectedGrade;
+        this.selectedCourse = data.selectedCourse;
 
         this.refreshQuestions();
     }
@@ -55,7 +62,36 @@ export class AddQuestionModalComponent implements OnInit {
             }, er => {
                 this.auth.handlerError(er);
             });
+
+        this.auth.post("/api/Grade/getAll", null).subscribe(data => {
+            if (data.success) {
+                this.grades = data.data;
+            } else {
+                this.auth.message.showMessageforFalseResult(data);
+            }
+        }, er => {
+            this.auth.handlerError(er);
+        });
+        this.auth.post("/api/Course/getAll").subscribe(data => {
+            if (data.success) {
+                this.courses = data.data;
+            } else {
+                this.auth.message.showMessageforFalseResult(data);
+            }
+        });
     }
+
+
+    getCourseByGrade() {
+        let gradeId = this.selectedGrade;
+
+        if (gradeId) {
+            return this.courses.filter(c => c.gradeId == gradeId);
+        }
+
+        return [];
+    }
+
 
 
     canShowMoreButton(): boolean {
@@ -84,7 +120,9 @@ export class AddQuestionModalComponent implements OnInit {
 
         let obj = {
             searchText: this.searchText,
-            page: this.page
+            page: this.page,
+            selectedGrade: this.selectedGrade,
+            selectedCourse: this.selectedCourse,
         };
 
         this.auth.post("/api/Question/getQuestions", obj)
@@ -132,22 +170,22 @@ export class AddQuestionModalComponent implements OnInit {
             table: "Attribute",
             tableObjectIds: [questionId, this.catId]
         })
-        .pipe(finalize(() => this.isLoading = false))
-        .subscribe(data => {
-            if (data.success) {
-                this.auth.message.showSuccessAlert();
+            .pipe(finalize(() => this.isLoading = false))
+            .subscribe(data => {
+                if (data.success) {
+                    this.auth.message.showSuccessAlert();
 
-                this.addedQuestionsIds.push(questionId);
+                    this.addedQuestionsIds.push(questionId);
 
-                if (!this.stayOnPage) {
-                    this.dialogRef.close(true);
+                    if (!this.stayOnPage) {
+                        this.dialogRef.close(true);
+                    }
+                } else {
+                    this.auth.message.showMessageforFalseResult(data);
                 }
-            } else {
-                this.auth.message.showMessageforFalseResult(data);
-            }
-        }, er => {
-            this.auth.handlerError(er);
-        });
+            }, er => {
+                this.auth.handlerError(er);
+            });
     }
 
 }

@@ -127,11 +127,11 @@ export class ProductsComponent implements OnInit {
 
     getProductTypeString(type, value) {
         if (type == 0 || type == 1) {
-            return `${value} صفحه`;
+            return `${value} فایل`;
         }
 
         if (type == 2 || type == 3) {
-            return `${value} دقیقه`;
+            return `${value} فایل`;
         }
     }
 

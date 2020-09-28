@@ -44,6 +44,10 @@
     </mat-card-content>
 </mat-card>
 
+<app-online-class-mobile-list *ngFor="let course of registredCourses" [additionalTitle]="course.name" [isAdmin]="true"
+    [courseId]="course.id" [userFullName]="tchAuth.getTeacherName()" [userId]="tchAuth.getTeacherId()">
+</app-online-class-mobile-list>
+
 
 <div class="row">
     <div class="col-sm-12" style="margin-top: 20px;" *ngIf="upComingExams.length != 0">

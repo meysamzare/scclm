@@ -1,0 +1,245 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <form #fm1="ngForm" id="fm11">
+                        <div class="col-lg-6">
+
+                            <div class="form-group">
+                                <label>انتخاب پایه تحصیلی</label>
+                                <ng-select #gradeselect="ngModel" name="grade" [(ngModel)]="PAGE_Data.gradeId" required>
+                                    <ng-option *ngFor="let i of grades" [value]="i.id">{{i.name}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="gradeselect.hasError('required')">
+                                    انتخاب پایه تحصیلی الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب درس</label>
+                                <ng-select #courseSelect="ngModel" name="course" [(ngModel)]="PAGE_Data.courseId"
+                                    required>
+                                    <ng-option *ngFor="let i of getCourseByGrade()" [value]="i.id">{{i.name}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="courseSelect.hasError('required')">
+                                    انتخاب درس الزامی است
+                                </mat-error>
+                            </div>
+
+                            <div class="form-group">
+                                <label>نام {{ PAGE_TITLE }}</label>
+                                <input type="text" required #name="ngModel" name="name" [(ngModel)]="PAGE_Data.name"
+                                    placeholder="نام" class="form-control">
+                                <div *ngIf="(name.touched || name.dirty) && name.invalid">
+                                    <p *ngIf="name.hasError('required')" class="error">
+                                        وارد کردن نام {{ PAGE_TITLE }} الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>حداکثر مدت زمان {{ PAGE_TITLE }}</label>
+                                <input type="text" inputmode="numeric" pattern="*[0-9]" required #duration="ngModel"
+                                    name="duration" [(ngModel)]="PAGE_Data.duration" placeholder="حداکثر مدت زمان"
+                                    class="form-control">
+                                <div *ngIf="(duration.touched || duration.dirty) && duration.invalid">
+                                    <p *ngIf="name.hasError('required')" class="error">
+                                        وارد کردن حداکثر مدت زمان {{ PAGE_TITLE }} الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <label>کپی رایت {{ PAGE_TITLE }}</label>
+                                <input type="text" #copyright="ngModel" name="copyright"
+                                    [(ngModel)]="PAGE_Data.copyright" placeholder="کپی رایت" class="form-control">
+                            </div>
+
+                        </div>
+                        <div class="col-lg-6 b-r-r">
+
+
+                            <div class="form-group">
+                                <label>انتخاب کلاس</label>
+                                <ng-select [disabled]="!PAGE_Data.gradeId" #classelect="ngModel" name="class"
+                                    [(ngModel)]="PAGE_Data.classId">
+                                    <ng-option *ngFor="let i of getClassByGrade()" [value]="i.id">{{i.name}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-hint>
+                                    انتخاب کلاس اختیاری است
+                                </mat-hint>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>حداکثر تعداد شرکت کننده {{ PAGE_TITLE }}</label>
+                                <input type="text" inputmode="numeric" pattern="*[0-9]" required
+                                    #maxParticipants="ngModel" name="maxParticipants"
+                                    [(ngModel)]="PAGE_Data.maxParticipants" placeholder="حداکثر تعداد شرکت کننده"
+                                    class="form-control">
+                                <div
+                                    *ngIf="(maxParticipants.touched || maxParticipants.dirty) && maxParticipants.invalid">
+                                    <p *ngIf="name.hasError('required')" class="error">
+                                        وارد کردن حداکثر تعداد شرکت کننده {{ PAGE_TITLE }} الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>متاتگ {{ PAGE_TITLE }}</label>
+                                <input type="text" #meta="ngModel" name="meta" [(ngModel)]="PAGE_Data.meta"
+                                    placeholder="متاتگ" class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <label>پیام خوش آمدگویی</label>
+                                <textarea type="text" #desc="ngModel" name="desc" [(ngModel)]="PAGE_Data.welcome"
+                                    placeholder="پیام خوش آمدگویی" class="form-control" rows="10"></textarea>
+                            </div>
+
+                        </div>
+
+                        <hr>
+                        <br>
+                        <br>
+
+                        <div class="row">
+
+                            <div class="col-lg-6">
+
+                                <div class="form-group">
+                                    <mat-checkbox name="record" [(ngModel)]="PAGE_Data.record">
+                                        آیا ادمین بتواند کلاس را ظبط کند؟
+                                    </mat-checkbox>
+                                </div>
+
+                                <div class="form-group">
+                                    <mat-checkbox name="autoStartRecording" [(ngModel)]="PAGE_Data.autoStartRecording">
+                                        ظبط خودکار کلاس
+                                    </mat-checkbox>
+                                </div>
+
+                                <div class="form-group">
+                                    <mat-checkbox name="allowStartStopRecording"
+                                        [(ngModel)]="PAGE_Data.allowStartStopRecording">
+                                        اجازه متوقف کردن و شروع مجدد ظبط کلاس به ادمین
+                                    </mat-checkbox>
+                                </div>
+
+                                <div class="form-group">
+                                    <mat-checkbox name="muteOnStart" [(ngModel)]="PAGE_Data.muteOnStart">
+                                        بی صدا کردن تمام کاربران زمان شروع کلاس
+                                    </mat-checkbox>
+                                </div>
+
+                                <div class="form-group">
+                                    <mat-checkbox name="lockSettingsDisableCam"
+                                        [(ngModel)]="PAGE_Data.lockSettingsDisableCam">
+                                        جلوگیری از اشتراک گذاری وب کم کاربران حین اجرای کلاس
+                                    </mat-checkbox>
+                                </div>
+
+                                <div class="form-group">
+                                    <mat-checkbox name="lockSettingsDisablePrivateChat"
+                                        [(ngModel)]="PAGE_Data.lockSettingsDisablePrivateChat">
+                                        غیر فعال سازی چت خصوصی حین اجرای کلاس
+                                    </mat-checkbox>
+                                </div>
+
+                                <div class="form-group">
+                                    <mat-checkbox name="lockSettingsDisableNote"
+                                        [(ngModel)]="PAGE_Data.lockSettingsDisableNote">
+                                        غیر فعال سازی یادداشت حین اجرای کلاس
+                                    </mat-checkbox>
+                                </div>
+
+                                <div class="form-group">
+                                    <mat-checkbox name="lockSettingsLockedLayout"
+                                        [(ngModel)]="PAGE_Data.lockSettingsLockedLayout">
+                                        قفل کردن ساختار صفحه
+                                    </mat-checkbox>
+                                </div>
+
+                            </div>
+
+                            <div class="col-lg-6 b-r-r">
+                                <div class="form-group">
+                                    <mat-checkbox name="isBreakout" [(ngModel)]="PAGE_Data.isBreakout">
+                                        ایجاد کلاس Brakeout
+                                    </mat-checkbox>
+                                </div>
+
+                                <div class="form-group">
+                                    <mat-checkbox name="freeJoin" [(ngModel)]="PAGE_Data.freeJoin">
+                                        کاربر آزاد است هر کلاس Brakeout را که مایل است، انتخاب کند
+                                    </mat-checkbox>
+                                </div>
+
+                                <div class="form-group">
+                                    <mat-checkbox name="webcamsOnlyForModerator"
+                                        [(ngModel)]="PAGE_Data.webcamsOnlyForModerator">
+                                        وب کم فقط برای ادمین قابل دسترسی باشد
+                                    </mat-checkbox>
+                                </div>
+
+                                <div class="form-group">
+                                    <mat-checkbox name="allowModsToUnmuteUsers"
+                                        [(ngModel)]="PAGE_Data.allowModsToUnmuteUsers">
+                                        تغییر وضعیت صدای کاربر برای ادمین فراهم باشد
+                                    </mat-checkbox>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <mat-checkbox name="lockSettingsDisableMic"
+                                        [(ngModel)]="PAGE_Data.lockSettingsDisableMic">
+                                        جلوگیری از اشتراک گذاری میکروفون کاربران حین اجرای کلاس
+                                    </mat-checkbox>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <mat-checkbox name="lockSettingsDisablePublicChat"
+                                        [(ngModel)]="PAGE_Data.lockSettingsDisablePublicChat">
+                                        غیر فعال سازی چت عمومی حین اجرای کلاس
+                                    </mat-checkbox>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <mat-checkbox name="lockSettingsLockOnJoin"
+                                        [(ngModel)]="PAGE_Data.lockSettingsLockOnJoin">
+                                        فعال سازی محدودیت ها برای کاربر
+                                    </mat-checkbox>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+
+                        <br>
+                        <br>
+                        <div class="col-lg-12">
+                            <a mat-raised-button color="warn" style="margin: 5px;"
+                                [routerLink]="'/dashboard/' + PAGE_URL">لغو</a>
+                            <button type="submit" mat-raised-button color="primary" [disabled]="!fm1.valid"
+                                (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -4,7 +4,7 @@ export class ILink {
     id: number;
 
     title: string;
-    value: number;
+    value: number = 0;
     desc: string;
     
     fileUrl: string;

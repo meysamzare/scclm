@@ -193,7 +193,7 @@
                                     <ng-container *ngIf="i.attrTypeInt == 10">
                                         <p *ngIf="group.get('p'+getIndexForAttr(i.id)).hasError('required') || group.get('p'+getIndexForAttr(i.id)).invalid"
                                             class="error">
-                                            وارد کردن {{i.title}} الزامی است
+                                            وارد کردن این فیلد الزامی است
                                         </p>
                                     </ng-container>
 
@@ -204,7 +204,7 @@
 
                                             <p *ngIf="group.get('p'+getIndexForAttr(i.id)).hasError('required')"
                                                 class="error">
-                                                وارد کردن {{i.title}} الزامی است
+                                                وارد کردن این فیلد الزامی است
                                             </p>
                                             <p *ngIf="group.get('p'+getIndexForAttr(i.id)).hasError('meliCode') && group.get('p'+getIndexForAttr(i.id)).value"
                                                 class="error">
@@ -219,7 +219,7 @@
                                     </p>
 
                                     <p *ngIf="isFileExist(i.id)" class="error">
-                                        وارد کردن {{i.title}} الزامی است
+                                        وارد کردن این فیلد الزامی است
                                     </p>
 
                                     <div class="row" *ngIf="canShowDesc(i.desc)">
@@ -412,7 +412,7 @@
                                         <ng-container *ngIf="i.attrTypeInt == 10">
                                             <p *ngIf="group.get('p'+getIndexForAttr(i.id)).hasError('required') || group.get('p'+getIndexForAttr(i.id)).invalid"
                                                 class="error">
-                                                وارد کردن {{i.title}} الزامی است
+                                                وارد کردن این فیلد الزامی است
                                             </p>
                                         </ng-container>
 
@@ -423,7 +423,7 @@
 
                                                 <p *ngIf="group.get('p'+getIndexForAttr(i.id)).hasError('required')"
                                                     class="error">
-                                                    وارد کردن {{i.title}} الزامی است
+                                                    وارد کردن این فیلد الزامی است
                                                 </p>
                                                 <p *ngIf="group.get('p'+getIndexForAttr(i.id)).hasError('meliCode') && group.get('p'+getIndexForAttr(i.id)).value"
                                                     class="error">
@@ -438,7 +438,7 @@
                                         </p>
 
                                         <p *ngIf="isFileExist(i.id)" class="error">
-                                            وارد کردن {{i.title}} الزامی است
+                                            وارد کردن این فیلد الزامی است
                                         </p>
 
                                         <div class="row" *ngIf="canShowDesc(i.desc)">

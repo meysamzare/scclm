@@ -116,7 +116,7 @@
             <div class="col-12">
 
                 <div class="card" matRipple *ngFor="let i of getFiltredStudents()" long-press
-                    (onLongPress)="menuTrigger.openMenu()" [routerLink]="['./view-student/' + i.id]">
+                    (click)="menuTrigger.openMenu()" (onLongPress)="goToViewStudent(i.id)" >
                     <div class="card-body">
                         <div class="row">
                             <div class="col-3 auto-margin">

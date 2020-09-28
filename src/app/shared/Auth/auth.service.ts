@@ -89,13 +89,13 @@ export class AuthService {
 
 
 
-    DASHBOARD_VERSION = "1.0.0 Beta 16";
+    DASHBOARD_VERSION = "1.0.0 Beta 19";
 
-    INDEX_VERSION = "3.2.0 Build 760";
+    INDEX_VERSION = "3.2.1 Build 750";
 
-    PARENTMOBILEAPP_VERSION = "3.0.0 Build 300";
+    PARENTMOBILEAPP_VERSION = "3.1.3 Build 9502";
     
-    TMA_VERSION = "1.9.2 Build 350";
+    TMA_VERSION = "1.9.4 Build 8600";
 
 
     public apiUrl: string;
@@ -187,7 +187,11 @@ export class AuthService {
 
 
     getFileUrl(url): string {
-        return this.apiUrl + url.substr(1);
+        if (url) {
+            return this.apiUrl + url.substr(1);
+        }
+
+        return "";
     }
 
     Login(username, password, log?: ILogParam, redirect = "dashboard") {

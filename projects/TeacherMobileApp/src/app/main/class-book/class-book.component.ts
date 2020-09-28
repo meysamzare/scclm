@@ -292,4 +292,8 @@ export class ClassBookComponent implements OnInit, OnDestroy {
         this.router.navigate(["/class-book/set-class-book"]);
     }
 
+    goToViewStudent(id) {
+        this.router.navigateByUrl("/class-book/view-student/" + id);
+    }
+
 }

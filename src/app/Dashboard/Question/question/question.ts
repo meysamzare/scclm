@@ -19,7 +19,7 @@ export class IQuestion{
 
     mark: number = 1;
 
-    defact: number;
+    defact: number = 2;
 
     answer: string;
 

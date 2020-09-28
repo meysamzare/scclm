@@ -1,0 +1,69 @@
+<app-toolbar [Title]="'جزئیات وظیفه'" [showBackButton]="true" [showRefresh]="true" (RefreshClick)="refreshSDS()">
+</app-toolbar>
+
+
+<ng-container *ngIf="isLoading">
+    <mat-progress-bar mode="buffer"></mat-progress-bar>
+</ng-container>
+
+<ng-container *ngIf="!isLoading">
+    <p>
+        روز: &nbsp;
+        <b>{{ studentDailySchedule.dateExecuteDayString }}</b>
+    </p>
+    <p>
+        تاریخ: &nbsp;
+        <b>{{ studentDailySchedule.dateExecuteString }}</b>
+    </p>
+    <p>
+        درس: &nbsp;
+        <b>{{ studentDailySchedule.courseName }}</b>
+    </p>
+    <p>
+        زمان: &nbsp;
+        <b>{{ 'از ' + studentDailySchedule.fromTime  + ' الی ' + studentDailySchedule.toTime }}</b>
+    </p>
+    <p>
+        نوع: &nbsp;
+        <b>{{ studentDailySchedule.typeString }}</b>
+    </p>
+    <p>
+        حجم: &nbsp;
+        <b>{{ studentDailySchedule.volume }}</b>
+    </p>
+
+
+    <p>
+        نظر مربی مشاور {{ studentDailySchedule.consultantCommentDateString }}: &nbsp;
+        <b>{{ studentDailySchedule.consultantComment }}</b>
+    </p>
+
+
+    <div class="form-group">
+        <label>
+            نظر اولیای دانش آموز {{ studentDailySchedule.studentParentCommentDateString }}: &nbsp;
+        </label>
+
+        <ng-container *ngIf="studentDailySchedule.studentParentComment">
+            <b>{{ studentDailySchedule.studentParentComment }}</b>
+        </ng-container>
+
+        <ng-container *ngIf="!studentDailySchedule.studentParentComment">
+            <textarea class="form-control" name="parentCommnet" [(ngModel)]="stdParentCommnet"></textarea>
+
+            <br>
+
+            <button type="button" style="width: 100%;" (click)="setParentCommnet()" [disabled]="!stdParentCommnet" class="btn btn-success">
+                ثبت نظر
+            </button>
+        </ng-container>
+
+    </div>
+
+
+    <br>
+    <br>
+
+
+    <button type="button" style="width: 100%;" (click)="closeTab()" class="btn btn-primary">بازگشت</button>
+</ng-container>

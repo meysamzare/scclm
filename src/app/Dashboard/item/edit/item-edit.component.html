@@ -134,7 +134,7 @@
                     <h5 style="color: #1ab394"> {{ unit.title }} </h5>
                 </div>
                 <div class="ibox-content">
-                    <div class="form-group" *ngFor="let i of getAttrsForUnit(unit.id); let ind = index">
+                    <div class="form-group attrSection" *ngFor="let i of getAttrsForUnit(unit.id); let ind = index">
 
                         <label *ngIf="i.attrTypeInt != 4 && i.attrTypeInt != 11">{{i.title}}</label>
 

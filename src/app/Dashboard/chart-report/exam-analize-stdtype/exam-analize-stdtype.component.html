@@ -65,7 +65,7 @@
                     <button mat-flat-button color="warn" (click)="removeExamChart(i.ID)">
                         <mat-icon>remove</mat-icon> &nbsp; حذف آزمون از لیست
                     </button>
-                    <button style="margin-right: 5px;" mat-flat-button color="primary" (click)="showExamDetail(i.exam.id)">
+                    <button *ngIf="!i.isOE" style="margin-right: 5px;" mat-flat-button color="primary" (click)="showExamDetail(i.exam.id)">
                         <mat-icon>remove_red_eye</mat-icon> &nbsp; لیست نمرات
                     </button>
                 </div>

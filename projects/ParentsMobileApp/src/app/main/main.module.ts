@@ -28,6 +28,12 @@ import { ViewChatComponent } from './chat/view-chat/view-chat.component';
 import { PostMobileViewModule } from '../shared/components/post-mobile-view/post-mobile-view.module';
 import { NgSwitcheryModule } from 'angular-switchery-ios';
 import { SelectChatReciverDialogComponent } from './chat/select-chat-reciver-dialog/select-chat-reciver-dialog.component';
+import { ViewCatDetailComponent } from './view-cat-detail/view-cat-detail.component';
+import { HtmlToolsModule } from 'src/app/html-tools/html-tools.module';
+import { ShowImageComponent } from 'src/app/shared/Modal/show-image.component';
+import { OnlineClassModule } from '../shared/components/online-class/online-class.module';
+import { AddStudentDailySchduleComponent } from './work-book/student-daily-schdule/add-student-daily-schdule/add-student-daily-schdule.component';
+import { StudentDailyScheduleDetailComponent } from './work-book/student-daily-schdule/student-daily-schedule-detail/student-daily-schedule-detail.component';
 
 @NgModule({
     declarations: [
@@ -48,7 +54,11 @@ import { SelectChatReciverDialogComponent } from './chat/select-chat-reciver-dia
         ComplateStudentInfoComponent,
         ChatComponent,
         ViewChatComponent,
-        SelectChatReciverDialogComponent
+        SelectChatReciverDialogComponent,
+        ViewCatDetailComponent,
+        ShowImageComponent,
+        AddStudentDailySchduleComponent,
+        StudentDailyScheduleDetailComponent
     ],
     imports: [
         CommonModule,
@@ -63,7 +73,9 @@ import { SelectChatReciverDialogComponent } from './chat/select-chat-reciver-dia
         ReactiveFormsModule,
         ImageIconModule,
         PostMobileViewModule,
-        NgSwitcheryModule
+        NgSwitcheryModule,
+        HtmlToolsModule,
+        OnlineClassModule
     ],
     entryComponents: [
         SelectChatReciverDialogComponent

@@ -7,10 +7,12 @@
         <image-icon icon="grade"></image-icon>
         انتخاب پایه تحصیلی
     </label>
-    <select class="form-control" [disabled]="registredGrades.length == 0" name="grade" [(ngModel)]="selectedGrade"
-        (change)="onGradeSelect($event.srcElement.value)" #gradeselect="ngModel">
+    <select class="form-control" [disabled]="stdClassMngs.length == 0" name="grade" [(ngModel)]="selectedStdClassMng"
+        (change)="onGradeSelect()" #gradeselect="ngModel">
         <option [value]="null">---</option>
-        <option *ngFor="let i of registredGrades" [value]="i.id">{{ i.name }}</option>
+        <option *ngFor="let i of stdClassMngs" [value]="i.id">
+            {{ i.gradeName + ' (' + i.yeareducationName + ')' }}
+        </option>
     </select>
 </div>
 
@@ -20,7 +22,7 @@
         <mat-tab-group mat-stretch-tabs color="primary">
 
 
-            <mat-tab label="درسنامه" [disabled]="coursesByGrade.length == 0 || isLoading">
+            <mat-tab label="درسنامه" [disabled]="!selectedGrade || isLoading">
 
                 <div class="form-group">
                     <label [class.disabled]="!selectedGrade">
@@ -127,6 +129,13 @@
                                                         و غیر
                                                         موجه</strong>
                                                 </p>
+
+                                                <p *ngIf="i.isOnlineExam" style="text-align: center;">
+                                                    <a class="btn btn-primary" style="width: 100%;" target="_blank"
+                                                        routerLink="/view-cat-detail/{{getOnlineExamId(i.id)}}/{{getItemId(getExamScoreForExam(i.id).id)}}/{{i.name}}">
+                                                        نمایش جزئیات آزمون آنلاین
+                                                    </a>
+                                                </p>
                                             </mat-expansion-panel>
                                         </ng-container>
 
@@ -190,6 +199,13 @@
                                                     غیر
                                                     موجه</strong>
                                             </p>
+
+                                            <p *ngIf="i.isOnlineExam" style="text-align: center;">
+                                                <a class="btn btn-primary" style="width: 100%;" target="_blank"
+                                                    routerLink="/view-cat-detail/{{getOnlineExamId(i.id)}}/{{getItemId(getExamScoreForExam(i.id).id)}}/{{i.name}}">
+                                                    نمایش جزئیات آزمون آنلاین
+                                                </a>
+                                            </p>
                                         </mat-expansion-panel>
                                     </ng-container>
 
@@ -219,15 +235,15 @@
                     </div>
                 </div>
             </mat-tab>
-            <mat-tab label="کارنامه" [disabled]="coursesByGrade.length == 0 || isLoading">
+            <mat-tab label="کارنامه" [disabled]="!selectedGrade || isLoading">
                 <mat-tab-group mat-align-tabs="center" [selectedIndex]="0">
-                    <mat-tab label="کارنامه" [disabled]="coursesByGrade.length == 0 || isLoading">
+                    <mat-tab label="کارنامه" [disabled]="!selectedGrade || isLoading">
                         <div class="form-group">
                             <label [class.disabled]="!selectedGrade">
                                 <image-icon icon="course"></image-icon>
                                 انتخاب کارنامه
                             </label>
-                            <select class="form-control" [disabled]="coursesByGrade.length == 0 || isLoading" name="wb"
+                            <select class="form-control" [disabled]="!selectedGrade || isLoading" name="wb"
                                 [(ngModel)]="selectedWorkbook" (change)="onWorkBookSelect($event.srcElement.value)">
                                 <option [value]="null">---</option>
 
@@ -342,8 +358,78 @@
                     </mat-tab>
                 </mat-tab-group>
             </mat-tab>
-            <mat-tab label="برنامه" [disabled]="coursesByGrade.length == 0 || isLoading"></mat-tab>
+            <mat-tab label="برنامه" [disabled]="!selectedGrade || isLoading">
 
+                <div class="row">
+                    <div class="col-6">
+                        <p><b>فهرست وظایف</b></p>
+                    </div>
+                    <div class="col-6" style="text-align: left;">
+                        <button style="background-color: yellowgreen; margin-left: 5px;" (click)="refreshStudentDailySchedule()" mat-mini-fab>
+                            <mat-icon>refresh</mat-icon>
+                        </button>
+                        <a target="_blank" [disabled]="!selectedStdClassMng"
+                            routerLink="/student-daily-schedule/add/{{ selectedStdClassMng }}/{{ selectedGrade }}"
+                            mat-mini-fab color="accent">
+                            <mat-icon>add</mat-icon>
+                        </a>
+                    </div>
+                </div>
+
+                <mat-card class="margin-top-10" *ngFor="let i of studentDailySchedules" 
+                    [style.backgroundColor]="getSDSBackgroundColor(i.state)">
+                    <mat-card-content>
+
+                        <div class="row">
+                            <div class="col-2" style="padding: 0;">
+                                <img src="data:image/jpeg;base64,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"
+                                    style="width: 50px; height: 50px;">
+
+                                <br>
+                                <div style="margin-right: 10px;" *ngIf="i.state == 1">
+                                    <button (click)="setStudentDailyScheduleState(i.id, 2)" mat-mini-fab
+                                        style="background-color: green;">
+                                        <mat-icon>done</mat-icon>
+                                    </button>
+                                    <br>
+                                    <button (click)="setStudentDailyScheduleState(i.id, 3)" mat-mini-fab
+                                        style="background-color: rgb(197, 0, 0);">
+                                        <mat-icon>clear</mat-icon>
+                                    </button>
+                                    <br>
+                                    <button (click)="setStudentDailyScheduleState(i.id, 4)" mat-mini-fab
+                                        style="background-color: rgb(182, 182, 0);">
+                                        <mat-icon>panorama_fish_eye</mat-icon>
+                                    </button>
+                                </div>
+
+                            </div>
+                            <div class="col-9" style="padding-left: 0;">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <p>{{ i.dateExecuteDayString }}</p>
+                                    </div>
+                                    <div class="col-6" style="text-align: left;">
+                                        <p>{{ i.dateExecuteString }}</p>
+                                    </div>
+                                </div>
+
+
+                                <p><b>{{ i.typeString }}</b> &nbsp; <span>{{ i.courseName }}</span></p>
+
+                                <p>از ساعت <b>{{ i.fromTime }}</b> الی <b>{{ i.toTime }}</b></p>
+                            </div>
+                        </div>
+
+                    </mat-card-content>
+
+                    <mat-card-footer>
+                        <a target="_blank" routerLink="/student-daily-schedule/view/{{ i.id }}" mat-stroked-button
+                            style="width: 100%;" color="primary">جزئیات بیشتر...</a>
+                    </mat-card-footer>
+                </mat-card>
+
+            </mat-tab>
 
         </mat-tab-group>
 

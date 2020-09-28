@@ -1,0 +1,68 @@
+<ng-container *ngIf="isLoading">
+    <mat-progress-bar mode="buffer"></mat-progress-bar>
+</ng-container>
+
+<ng-container *ngIf="!isLoading">
+    <p>
+        روز: &nbsp;
+        <b>{{ studentDailySchedule.dateExecuteDayString }}</b>
+    </p>
+    <p>
+        تاریخ: &nbsp;
+        <b>{{ studentDailySchedule.dateExecuteString }}</b>
+    </p>
+    <p>
+        درس: &nbsp;
+        <b>{{ studentDailySchedule.courseName }}</b>
+    </p>
+    <p>
+        زمان: &nbsp;
+        <b>{{ 'از ' + studentDailySchedule.fromTime  + ' الی ' + studentDailySchedule.toTime }}</b>
+    </p>
+    <p>
+        نوع: &nbsp;
+        <b>{{ studentDailySchedule.typeString }}</b>
+    </p>
+    <p>
+        حجم: &nbsp;
+        <b>{{ studentDailySchedule.volume }}</b>
+    </p>
+
+
+    <p>
+        نظر اولیای دانش آموز {{ studentDailySchedule.studentParentCommentDateString }}: &nbsp;
+        <b>{{ studentDailySchedule.studentParentComment }}</b>
+    </p>
+
+
+    <div class="form-group">
+        <label>
+            نظر مربی مشاور {{ studentDailySchedule.consultantCommentDateString }}: &nbsp;
+        </label>
+
+        <ng-container *ngIf="studentDailySchedule.consultantComment">
+            <b>{{ studentDailySchedule.consultantComment }}</b>
+        </ng-container>
+
+        <ng-container *ngIf="!studentDailySchedule.consultantComment">
+            <textarea class="form-control" name="consultantComment" [(ngModel)]="stdConsultantComment"></textarea>
+
+            <br>
+
+            <button type="button" style="width: 100%;" (click)="setConsultantComment()" [disabled]="!stdConsultantComment"
+                class="btn btn-success">
+                ثبت نظر
+            </button>
+        </ng-container>
+
+    </div>
+    
+    <br>
+
+    <hr>
+
+    <br>
+
+
+    <button type="button" style="width: 100%;" (click)="closeTab()" class="btn btn-primary">بازگشت</button>
+</ng-container>

@@ -1,0 +1,16 @@
+<div class="margin-top-10 margin-down-10" *ngIf="onlineClasses.length != 0">
+    <div class="row">
+        <div class="col-12 al-right">
+            <p>
+                کلاس های مجازی {{ additionalTitle }}
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 hscroll">
+            <app-online-class-mobile-item *ngFor="let onlineClass of onlineClasses" [onlineClass]="onlineClass"
+                [isAdmin]="isAdmin" [userFullName]="userFullName" [userId]="userId">
+            </app-online-class-mobile-item>
+        </div>
+    </div>
+</div>

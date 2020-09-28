@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MessageService } from 'src/app/shared/services/message.service';
 import { ThemeService } from '../../service/theme.service';
 import { StudentAuthService } from '../../service/parent-student-auth.service';
@@ -11,19 +11,28 @@ import { Label } from 'ng2-charts';
 import { IWorkbook } from 'src/app/Dashboard/workbook/workbook';
 import { IClassBook, getClassBookTypeString, ClassBookType, getClassBookResult } from 'src/app/Dashboard/student/class-book/class-book';
 import { IExamType } from 'src/app/Dashboard/Exam/examtype/examtype';
+import { StdClassMng } from 'src/app/Dashboard/student/stdClassMng';
+import { IStudentDailySchedule } from './student-daily-schdule/student-daily-schdule';
+import { StudentDailyScheduleService } from './student-daily-schdule/student-daily-schedule.service';
+import { finalize } from 'rxjs/internal/operators/finalize';
 
 @Component({
     selector: 'app-work-book',
     templateUrl: './work-book.component.html',
+    encapsulation: ViewEncapsulation.None,
     styleUrls: ['./work-book.component.scss']
 })
 export class WorkBookComponent implements OnInit {
 
-    registredGrades: IGrade[] = [];
+    stdClassMngs: StdClassMng[] = [];
+    selectedStdClassMng: number = null;
+
     selectedGrade: number = null;
 
     coursesByGrade: ICourse[] = [];
     selectedCourse: number = null;
+
+    studentDailySchedules: IStudentDailySchedule[] = [];
 
     examsByGrade: any[] = [];
 
@@ -52,12 +61,17 @@ export class WorkBookComponent implements OnInit {
     constructor(
         private message: MessageService,
         private theme: ThemeService,
-        public stdAuth: StudentAuthService
+        public stdAuth: StudentAuthService,
+        private studentDailyScheduleService: StudentDailyScheduleService
     ) { }
 
     ngOnInit() {
 
-        this.stdAuth.auth.post("/api/StdClassMng/getRegistredGradeByStudent", this.stdId, {
+        this.studentDailyScheduleService.refreshDatas$.subscribe(() => {
+            this.refreshStudentDailySchedule();
+        });
+
+        this.stdAuth.auth.post("/api/StdClassMng/getAllRegisteredByStudent", this.stdId, {
             type: 'View',
             agentId: this.stdAuth.getStudent().id,
             agentType: 'StudentParent',
@@ -68,7 +82,7 @@ export class WorkBookComponent implements OnInit {
             table: "Workbook"
         }).subscribe(data => {
             if (data.success) {
-                this.registredGrades = data.data;
+                this.stdClassMngs = data.data;
             } else {
                 this.message.showMessageforFalseResult(data);
             }
@@ -297,84 +311,144 @@ export class WorkBookComponent implements OnInit {
         return this.examsForSelectedCourse.filter(c => c.workbookId == workbookId);
     }
 
-    onGradeSelect(selectedGrade) {
-        if (selectedGrade != "null") {
-
-            this.selectedCourse = null;
-
-            this.isLoading = true;
-
-
-            this.stdAuth.auth.post("/api/ClassBook/getAllByStd_Grade", {
+    refreshStudentDailySchedule() {
+        if (this.selectedGrade) {
+            this.stdAuth.auth.post("/api/StudentDailySchedule/getAllByStd", {
                 studentId: this.stdAuth.getStudent().id,
-                gradeId: this.selectedGrade
+                stdClassMngId: this.selectedStdClassMng
             }).subscribe(data => {
                 if (data.success) {
-                    this.classBooks = data.data;
+                    this.studentDailySchedules = data.data;
                 } else {
                     this.stdAuth.auth.message.showMessageforFalseResult(data);
                 }
             }, er => {
                 this.stdAuth.auth.handlerError(er);
             });
+        }
+    }
 
-            this.stdAuth.auth.post("/api/Course/getAllByGrade", this.selectedGrade).subscribe(data => {
-                if (data.success) {
-                    this.coursesByGrade = data.data;
+    setStudentDailyScheduleState(id, state) {
+        this.isLoading = true;
+
+        this.stdAuth.auth.post("/api/StudentDailySchedule/SetState", {
+            id: id,
+            state: state
+        }).pipe(finalize(() => this.isLoading = false)).subscribe(data => {
+            if (data.success) {
+                this.stdAuth.auth.message.showSuccessAlert();
+                this.refreshStudentDailySchedule();
+            } else {
+                this.stdAuth.auth.message.showMessageforFalseResult(data);
+            }
+        }, er => {
+            this.stdAuth.auth.handlerError(er);
+        });
+    }
+
+    getSDSBackgroundColor(type) {
+
+        if (type == 2) {
+            return "#41a141";
+        }
+        if (type == 3) {
+            return "#a74242";
+        }
+        if (type == 4) {
+            return "#a7a442";
+        }
+
+        return "";
+    }
+
+    onGradeSelect() {
+        if (this.selectedStdClassMng) {
+
+            let stdClassMng = this.stdClassMngs.find(c => c.id == this.selectedStdClassMng);
+
+            if (stdClassMng) {
+
+                this.selectedGrade = stdClassMng.gradeId;
+
+                this.selectedCourse = null;
+
+                this.isLoading = true;
+
+                this.refreshStudentDailySchedule();
+
+                this.stdAuth.auth.post("/api/ClassBook/getAllByStd_Grade", {
+                    studentId: this.stdAuth.getStudent().id,
+                    gradeId: this.selectedGrade
+                }).subscribe(data => {
+                    if (data.success) {
+                        this.classBooks = data.data;
+                    } else {
+                        this.stdAuth.auth.message.showMessageforFalseResult(data);
+                    }
+                }, er => {
+                    this.stdAuth.auth.handlerError(er);
+                });
+
+                this.stdAuth.auth.post("/api/Course/getAllByGrade", this.selectedGrade).subscribe(data => {
+                    if (data.success) {
+                        this.coursesByGrade = data.data;
 
 
-                    this.stdAuth.auth.post("/api/Exam/getAllByGrade", this.selectedGrade).subscribe(data => {
-                        if (data.success) {
+                        this.stdAuth.auth.post("/api/Exam/getAllByGrade", this.selectedGrade).subscribe(data => {
+                            if (data.success) {
 
-                            var exams: any[] = data.data;
+                                var exams: any[] = data.data;
 
-                            this.examsByGrade = exams.filter(c => c.canShowByWorkBook == true);
+                                this.examsByGrade = exams.filter(c => c.canShowByWorkBook == true);
 
 
-                            this.stdAuth.auth.post("/api/ExamScore/getAllByGrade_Student", {
-                                studentId: this.stdId,
-                                gradeId: this.selectedGrade
-                            }, {
-                                type: 'View',
-                                agentId: this.stdAuth.getStudent().id,
-                                agentType: 'StudentParent',
-                                agentName: this.stdAuth.getStudentFullName(),
-                                tableName: 'Select StudentGrade in WorkBook Page (maybe Chart is Shown)',
-                                logSource: 'PMA',
-                                object: {
+                                this.stdAuth.auth.post("/api/ExamScore/getAllByGrade_Student", {
                                     studentId: this.stdId,
                                     gradeId: this.selectedGrade
-                                },
-                                table: "Workbook"
-                            }).subscribe(data => {
-                                if (data.success) {
-                                    this.examScoreByGrade = data.data;
+                                }, {
+                                    type: 'View',
+                                    agentId: this.stdAuth.getStudent().id,
+                                    agentType: 'StudentParent',
+                                    agentName: this.stdAuth.getStudentFullName(),
+                                    tableName: 'Select StudentGrade in WorkBook Page (maybe Chart is Shown)',
+                                    logSource: 'PMA',
+                                    object: {
+                                        studentId: this.stdId,
+                                        gradeId: this.selectedGrade
+                                    },
+                                    table: "Workbook"
+                                }).subscribe(data => {
+                                    if (data.success) {
+                                        this.examScoreByGrade = data.data;
 
-                                    this.updateCourseChartData();
-                                } else {
-                                    this.message.showMessageforFalseResult(data);
-                                }
-                            }, er => {
-                                this.stdAuth.auth.handlerError(er);
-                            }, () => {
-                                this.isLoading = false;
-                            });
+                                        this.updateCourseChartData();
+                                    } else {
+                                        this.message.showMessageforFalseResult(data);
+                                    }
+                                }, er => {
+                                    this.stdAuth.auth.handlerError(er);
+                                }, () => {
+                                    this.isLoading = false;
+                                });
 
 
-                        } else {
-                            this.message.showMessageforFalseResult(data);
-                        }
-                    }, er => {
-                        this.stdAuth.auth.handlerError(er);
-                    });
+                            } else {
+                                this.message.showMessageforFalseResult(data);
+                            }
+                        }, er => {
+                            this.stdAuth.auth.handlerError(er);
+                        });
 
 
-                } else {
-                    this.message.showMessageforFalseResult(data);
-                }
-            }, er => {
-                this.stdAuth.auth.handlerError(er);
-            });
+                    } else {
+                        this.message.showMessageforFalseResult(data);
+                    }
+                }, er => {
+                    this.stdAuth.auth.handlerError(er);
+                });
+            } else {
+                this.selectedGrade = null;
+            }
         }
     }
 
@@ -461,7 +535,7 @@ export class WorkBookComponent implements OnInit {
     chartDataByCourse: ChartDataSets[] = [];
     chartLabelByCourse: Label[] = [];
 
-    examsForSelectedCourse: IExam[] = [];
+    examsForSelectedCourse: any[] = [];
 
     classBookForSelectedCourse: IClassBook[] = [];
 
@@ -504,6 +578,13 @@ export class WorkBookComponent implements OnInit {
     }
 
 
+    getOnlineExamId(id: string) {
+        return id.slice(2);
+    }
+
+    getItemId(id: string) {
+        return id.slice(3);
+    }
 
 
 }

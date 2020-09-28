@@ -4,7 +4,7 @@ export class IProduct {
     id: number;
     title: string;
     type: ProductType;
-    value: number;
+    value: number = 0;
     desc: string = "";
     totalPrice: number;
 

@@ -34,7 +34,7 @@ import { LoaderComponent } from './shared/components/loader/loader.component';
         NotFoundComponent,
         MobileMessageComponent,
         LoginComponent,
-        LongpressDirective,
+        // LongpressDirective,
         LoaderComponent
     ],
     imports: [

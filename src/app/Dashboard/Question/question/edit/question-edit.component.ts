@@ -16,7 +16,6 @@ import { MatDialog } from "@angular/material";
 
 @Component({
     templateUrl: "./question-edit.component.html",
-
     styles: [
         `
             .panel-main.disabled {
@@ -371,5 +370,22 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
                 }
             }
         });
+    }
+
+    onQuestionTypeSelect() {
+        if (!this.isEdit && this.question.type == 2) {
+            this.options = [];
+
+            for (let index = 0; index < 4; index++) {
+                this.options.push({
+                    id: 0,
+                    isTrue: index == 0,
+                    title: `${this.question.name} - گزینه ${index + 1}`,
+                    questionId: this.question.id,
+                    name: "",
+                    questionName: this.question.name
+                });
+            }
+        }
     }
 }

@@ -44,6 +44,10 @@ declare let $: any;
             .radio-button {
                 margin: 0;
             }
+
+            .attrSection img {
+                width: 100%;
+            }
         `
     ]
 })

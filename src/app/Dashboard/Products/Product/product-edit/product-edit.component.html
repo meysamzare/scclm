@@ -25,14 +25,18 @@
 
 
                                     <div class="form-group">
-                                        <label>نوع {{ PAGE_TITLE }}</label>
-                                        <ng-select #type="ngModel" name="type" [(ngModel)]="PAGE_Data.type"
-                                            (change)="onProductTypeChange()" required>
-                                            <ng-option *ngFor="let i of [0,1,2,3]"
-                                                [disabled]="(i == 0 || i == 1) && TYPE == 1" [value]="i">
-                                                {{ getProductTypeString(i) }}
-                                            </ng-option>
-                                        </ng-select>
+                                        <p><label>نوع {{ PAGE_TITLE }}</label></p>
+
+                                        <mat-button-toggle-group #type="ngModel" name="type"
+                                            [(ngModel)]="PAGE_Data.type" (change)="onProductTypeChange()" required>
+                                            <ng-container *ngFor="let i of [0,1,2,3]">
+                                                <mat-button-toggle *ngIf="((i == 0 || i == 1) && TYPE == 1) == false"
+                                                    [value]="i">
+                                                    {{ getProductTypeString(i) }}
+                                                </mat-button-toggle>
+                                            </ng-container>
+                                        </mat-button-toggle-group>
+
                                         <mat-error *ngIf="type.hasError('required')">
                                             انتخاب نوع {{ PAGE_TITLE }} الزامی است
                                         </mat-error>
@@ -84,9 +88,9 @@
 
                                     <div class="form-group">
                                         <label>{{ valueTitle }}</label>
-                                        <input [disabled]="PAGE_Data.type == null" type="number" required
-                                            #value="ngModel" name="value" [(ngModel)]="PAGE_Data.value"
-                                            placeholder="{{ valueTitle }}" class="form-control">
+                                        <input [disabled]="PAGE_Data.type == null" type="number" #value="ngModel"
+                                            name="value" [(ngModel)]="PAGE_Data.value" placeholder="{{ valueTitle }}"
+                                            class="form-control">
                                         <div *ngIf="(value.touched || value.dirty) && value.invalid">
                                             <p *ngIf="value.hasError('required')" class="error">
                                                 وارد کردن {{ valueTitle }} {{ PAGE_TITLE }} الزامی است

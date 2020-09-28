@@ -23,7 +23,7 @@
                             <div class="form-group">
                                 <label>انتخاب نوع سوال</label>
                                 <ng-select #typeselect="ngModel" [disabled]="isEdit" name="type"
-                                    [(ngModel)]="question.type" required>
+                                    [(ngModel)]="question.type" required (change)="onQuestionTypeSelect()">
                                     <ng-option [value]="1">تشریحی</ng-option>
                                     <ng-option [value]="2">تستی</ng-option>
                                     <ng-option [value]="3">جایگزینی</ng-option>
@@ -35,12 +35,14 @@
                             </div>
 
                             <div class="form-group">
-                                <label>انتخاب سطح سوال</label>
-                                <ng-select #defactselect="ngModel" name="defact" [(ngModel)]="question.defact" required>
-                                    <ng-option [value]="1">سخت</ng-option>
-                                    <ng-option [value]="2">متوسط</ng-option>
-                                    <ng-option [value]="3">آسان</ng-option>
-                                </ng-select>
+                                <p><label>انتخاب سطح سوال</label></p>
+                                
+                                <mat-button-toggle-group #defactselect="ngModel" name="defact"
+                                    [(ngModel)]="question.defact" required>
+                                    <mat-button-toggle [value]="1">سخت</mat-button-toggle>
+                                    <mat-button-toggle [value]="2">متوسط</mat-button-toggle>
+                                    <mat-button-toggle [value]="3">آسان</mat-button-toggle>
+                                </mat-button-toggle-group>
                                 <mat-error *ngIf="defactselect.hasError('required')">
                                     انتخاب سطح سوال الزامی است
                                 </mat-error>
@@ -149,9 +151,8 @@
                         <div class="col-lg-12">
                             <label>صورت سوال</label>
                             <ckeditor name="qtitle" #questionTitle="ngModel" [(ngModel)]="question.title" required>
-                                <ckbutton [name]="'image'" [command]="'insert_pic'"
-                                    (click)="insertPicture('title')" [icon]="'plugins/icons.png?t=K24B'"
-                                    [label]="'انتخاب تصویر ار آلبوم تصاویر'">
+                                <ckbutton [name]="'image'" [command]="'insert_pic'" (click)="insertPicture('title')"
+                                    [icon]="'plugins/icons.png?t=K24B'" [label]="'انتخاب تصویر ار آلبوم تصاویر'">
                                 </ckbutton>
                             </ckeditor>
                             <div *ngIf="(questionTitle.touched || questionTitle.dirty) && questionTitle.invalid">
@@ -194,7 +195,7 @@
                                 <div class="row">
                                     <div class="col-lg-6" *ngFor="let option of options; index as index">
                                         <div class="form-group">
-                                            <div class="panel"
+                                            <div class="panel" (dblclick)="editOptionIndex = index"
                                                 style="cursor: pointer; border-radius: 15px; background-color: whitesmoke;">
 
                                                 <button [tooltip]="'حذف دائمی گزینه'" mat-icon-button
@@ -236,8 +237,7 @@
                                                             <label>عنوان گزینه</label>
                                                             <ckeditor [ngModelOptions]="{ standalone: true }"
                                                                 [(ngModel)]="options[index].name" required>
-                                                                <ckbutton [name]="'image'"
-                                                                    [command]="'insert_pic'"
+                                                                <ckbutton [name]="'image'" [command]="'insert_pic'"
                                                                     (click)="insertPicture('option', index)"
                                                                     [icon]="'plugins/icons.png?t=K24B'"
                                                                     [label]="'انتخاب تصویر ار آلبوم تصاویر'">

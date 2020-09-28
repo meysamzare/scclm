@@ -157,6 +157,11 @@ import { WorkbookEditResolverService } from "./workbook/workbook-edit-resolver.s
 import { WorkbookReportByClassComponent } from "./chart-report/workbook-report-by-class/workbook-report-by-class.component";
 import { WorkbookComparisonComponent } from "./chart-report/workbook-comparison/workbook-comparison.component";
 import { CommentTotalType } from "./WebSiteManagment/comment/product-comment";
+import { OnlineClassListComponent } from "./OnlineClass/online-class-list/online-class-list.component";
+import { OnlineClassResolverService } from "./OnlineClass/online-class-resolver.service";
+import { OnlineClassEditComponent } from "./OnlineClass/online-class-edit/online-class-edit.component";
+import { ListStudentDailyScheduleComponent } from "./student/student-daily-schedule/list-student-daily-schedule/list-student-daily-schedule.component";
+import { StudentDailyScheduleDetailComponent } from "./student/student-daily-schedule/list-student-daily-schedule/student-daily-schedule-detail/student-daily-schedule-detail.component";
 
 @NgModule({
     imports: [
@@ -789,6 +794,23 @@ import { CommentTotalType } from "./WebSiteManagment/comment/product-comment";
                                         resolve: {
                                             studentType: StudentTypeEditResolveService
                                         }
+                                    }
+                                ]
+                            },
+                            {
+                                path: "daily-schedule",
+                                children: [
+                                    {
+                                        path: "",
+                                        pathMatch: "full",
+                                        component: ListStudentDailyScheduleComponent,
+                                        data: {
+                                            role: ["view_StudentDailySchedule"]
+                                        }
+                                    },
+                                    {
+                                        path: "view/:id",
+                                        component: StudentDailyScheduleDetailComponent
                                     }
                                 ]
                             },
@@ -1606,6 +1628,32 @@ import { CommentTotalType } from "./WebSiteManagment/comment/product-comment";
                                 },
                                 resolve: {
                                     workbook: WorkbookEditResolverService
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        path: "online-class",
+                        children: [
+                            {
+                                path: "",
+                                pathMatch: "full",
+                                component: OnlineClassListComponent,
+                                data: {
+                                    role: ["view_OnlineClass"]
+                                }
+                            },
+                            {
+                                path: "edit/:id",
+                                component: OnlineClassEditComponent,
+                                data: {
+                                    role: [
+                                        "add_OnlineClass",
+                                        "edit_OnlineClass"
+                                    ]
+                                },
+                                resolve: {
+                                    onlineClass: OnlineClassResolverService
                                 }
                             }
                         ]

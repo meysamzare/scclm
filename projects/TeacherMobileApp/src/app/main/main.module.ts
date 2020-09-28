@@ -33,6 +33,8 @@ import { ViewItemDataComponent } from './more/teacher-category-list/category-dat
 import { HtmlToolsModule } from 'src/app/html-tools/html-tools.module';
 import { SetItemAttributeScoreComponent } from 'src/app/Dashboard/item/list/set-item-attribute-score/set-item-attribute-score.component';
 import { ShowImageComponent } from 'src/app/shared/Modal/show-image.component';
+import { OnlineClassModule } from 'projects/ParentsMobileApp/src/app/shared/components/online-class/online-class.module';
+import { LongPressModule } from 'projects/ParentsMobileApp/src/app/shared/directives/long-press/long-press.module';
 
 
 @NgModule({
@@ -52,7 +54,6 @@ import { ShowImageComponent } from 'src/app/shared/Modal/show-image.component';
         ViewTicketComponent,
         ViewChatComponent,
         ClassBookComponent,
-        LongpressDirective,
         ViewStudentComponent,
         SetClassBookComponent,
         TeacherCategoryListComponent,
@@ -74,7 +75,9 @@ import { ShowImageComponent } from 'src/app/shared/Modal/show-image.component';
         ChartsModule,
         ReactiveFormsModule,
         ImageIconModule,
-        HtmlToolsModule
+        HtmlToolsModule,
+        OnlineClassModule,
+        LongPressModule
     ],
     entryComponents: [
         SetItemAttributeScoreComponent,

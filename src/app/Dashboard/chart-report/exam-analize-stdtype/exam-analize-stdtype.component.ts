@@ -33,7 +33,7 @@ import { ExamDetailsComponent } from '../../home/exam-details/exam-details.compo
     ]
 })
 export class ExamAnalizeStdtypeComponent implements OnInit {
-    selectedExam: number = null;
+    selectedExam = null;
     exams: IExam[] = [];
 
 
@@ -51,7 +51,7 @@ export class ExamAnalizeStdtypeComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.auth.post("/api/Exam/getAll").subscribe(data => {
+        this.auth.post("/api/Exam/getAllWithOE").subscribe(data => {
             if (data.success) {
                 this.exams = data.data;
             } else {
@@ -164,6 +164,7 @@ export class ExamAnalizeStdtypeComponent implements OnInit {
                         typesAvgs: typesAvgs,
                         typesMin: typesMin,
                         typesMax: typesMax,
+                        isOE: data.data.exam.isOE
                     });
 
                     this.selectedExam = null;

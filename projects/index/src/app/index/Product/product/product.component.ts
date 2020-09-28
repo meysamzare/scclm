@@ -83,11 +83,11 @@ export class ProductComponent implements OnInit, OnDestroy {
 
     getProductTypeString(type, value) {
         if (type == 0 || type == 1) {
-            return `${value} صفحه`;
+            return `${this.links.length} فایل`;
         }
 
         if (type == 2) {
-            return `${value} دقیقه`;
+            return `${this.links.length} فایل`;
         }
     }
 
