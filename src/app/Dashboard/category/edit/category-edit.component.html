@@ -205,7 +205,7 @@
 
                     <ng-container *ngIf="TYPE == 1">
                         <div class="row">
-                            <div class="col-lg-2">
+                            <div class="col-lg-4">
 
                                 <div class="form-group">
                                     <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="category.isActive">
@@ -213,7 +213,7 @@
                                     </mat-checkbox>
                                 </div>
                             </div>
-                            <div class="col-lg-2">
+                            <div class="col-lg-4">
 
                                 <div class="form-group">
                                     <mat-checkbox [ngModelOptions]="{standalone: true}"
@@ -222,7 +222,7 @@
                                     </mat-checkbox>
                                 </div>
                             </div>
-                            <div class="col-lg-2">
+                            <div class="col-lg-4">
 
                                 <div class="form-group">
                                     <mat-checkbox [ngModelOptions]="{standalone: true}"
@@ -231,7 +231,7 @@
                                     </mat-checkbox>
                                 </div>
                             </div>
-                            <div class="col-lg-2">
+                            <div class="col-lg-4">
 
                                 <div class="form-group">
                                     <mat-checkbox [ngModelOptions]="{standalone: true}"
@@ -240,7 +240,7 @@
                                     </mat-checkbox>
                                 </div>
                             </div>
-                            <div class="col-lg-2">
+                            <div class="col-lg-4">
 
                                 <div class="form-group">
                                     <mat-checkbox [ngModelOptions]="{standalone: true}"
@@ -249,7 +249,74 @@
                                     </mat-checkbox>
                                 </div>
                             </div>
+                            <div class="col-lg-4" *ngIf="isEdit">
+                                <div class="form-group">
+                                    <mat-checkbox [ngModelOptions]="{standalone: true}"
+                                        [(ngModel)]="category.useLimitedRandomQuestionNumber">
+                                        سوالات تصادفی برای شرکت در آزمون
+                                    </mat-checkbox>
+                                </div>
+                            </div>
                         </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="category.useLimitedRandomQuestionNumber">
+                        <br>
+
+                        <label>تعداد سوالات نمایش داده شده به دانش آموز را براساس میزان سختی وارد کنید: </label>
+
+                        <form #fmQuestionLimit="ngForm">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label>تعداد سوال خیلی دشوار</label>
+                                        <input type="number" inputmode="numeric" pattern="[0-9]*"
+                                            name="veryHardQuestion" [(ngModel)]="category.veryHardQuestionNumber"
+                                            placeholder="تعداد سوال خیلی دشوار" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label>تعداد سوال دشوار</label>
+                                        <input type="number" inputmode="numeric" pattern="[0-9]*" name="hardQuestion"
+                                            [(ngModel)]="category.hardQuestionNumber" placeholder="تعداد سوال دشوار"
+                                            class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label>تعداد سوال متوسط</label>
+                                        <input type="number" inputmode="numeric" pattern="[0-9]*"
+                                            name="moderateQuestion" [(ngModel)]="category.moderateQuestionNumber"
+                                            placeholder="تعداد سوال متوسط" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label>تعداد سوال آسان</label>
+                                        <input type="number" inputmode="numeric" pattern="[0-9]*" name="easyQuestion"
+                                            [(ngModel)]="category.easyQuestionNumber" placeholder="تعداد سوال آسان"
+                                            class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        <ng-container *ngIf="fmQuestionLimit.valid">
+                            <p
+                                [class.error]="getQuestionNumber() < getSumOfDefctQuestionNumbers()">
+                                جمع سوالات تصادفی : &nbsp; &nbsp;
+                                <b>{{ getSumOfDefctQuestionNumbers() }} / {{ getQuestionNumber() }}</b>
+                            </p>
+
+                            <p class="error"
+                                *ngIf="!category.veryHardQuestionNumber && !category.hardQuestionNumber && !category.moderateQuestionNumber && !category.easyQuestionNumber">
+                                وارد کردن حداقل یکی از میزان سختی سوالات الزامی است
+                            </p>
+                        </ng-container>
+
+
+                        <br>
                     </ng-container>
 
                     <mat-accordion>

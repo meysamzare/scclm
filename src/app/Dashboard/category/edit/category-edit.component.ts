@@ -25,9 +25,6 @@ import { AddTemplateAttributeModalComponent } from "./modals/add-template-attrib
 import { AddQuestionModalComponent } from "./modals/add-question-modal/add-question-modal.component";
 import { AddGroupQuestionModalComponent } from "./modals/add-group-question-modal/add-group-question-modal.component";
 
-declare var $: any;
-// import * as $ from 'jquery';
-
 @Component({
     templateUrl: "./category-edit.component.html",
     encapsulation: ViewEncapsulation.None,
@@ -229,7 +226,7 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
                     if (this.isEdit) {
                         this.refreshAttributes();
                     }
-    
+
                 } else {
                     this.message.showMessageforFalseResult(data);
                 }
@@ -714,6 +711,24 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
                 this.refreshAttributes();
             }
         });
+    }
+
+    getQuestionNumber() {
+        if (this.isEdit) {
+            return this.attributes.filter(c => c.attrTypeInt == 11).length;
+        }
+
+        return 0;
+    }
+
+    getSumOfDefctQuestionNumbers() {
+        const veryHardQuestionNumber = this.category.veryHardQuestionNumber || 0;
+        const hardQuestionNumber = this.category.hardQuestionNumber || 0;
+        const moderateQuestionNumber = this.category.moderateQuestionNumber || 0;
+        const easyQuestionNumber = this.category.easyQuestionNumber || 0;
+
+
+        return veryHardQuestionNumber + hardQuestionNumber + moderateQuestionNumber + easyQuestionNumber;
     }
 
 }

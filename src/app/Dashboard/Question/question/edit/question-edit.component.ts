@@ -215,6 +215,15 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
             });
     }
 
+    onCourseSelect() {
+        const courseId = this.question.courseId;
+        const course = this.courses.find(c => c.id == courseId);
+
+        if (course) {
+            this.question.person = course.teacherName;
+        }
+    }
+
     getCourseByGrade() {
         let gradeId = this.question.gradeId;
 

@@ -22,7 +22,7 @@ const routes: Routes = [
                 component: RegisterItemCatComponent,
                 resolve: {
                     units: UnitsResolverService,
-                    attrs: RegisterItemService,
+                    // attrs: RegisterItemService,
                     cat: RegisterItemCategoryService
                 },
                 canDeactivate: [CanDeActiveRegisterItem]

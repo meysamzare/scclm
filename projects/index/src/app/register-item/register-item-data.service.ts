@@ -3,6 +3,7 @@ import { IItemAttr } from 'src/app/Dashboard/item/item-attr';
 import { CategoryAuthorizeState } from 'src/app/Dashboard/category/category';
 import { IDBService } from 'projects/ParentsMobileApp/src/app/service/idb.service';
 import { MessageService } from 'src/app/shared/services/message.service';
+import { IAttr } from 'src/app/Dashboard/attribute/attribute';
 
 @Injectable({
     providedIn: 'root'
@@ -20,7 +21,8 @@ export class RegisterItemDataService {
         authorizeUsername: string,
         authorizeType: CategoryAuthorizeState,
         activeStep: number,
-        files: any[]) {
+        files: any[],
+        attrs: IAttr[]) {
 
         let data: IRegisterItemData = {
             catId: catId,
@@ -28,7 +30,8 @@ export class RegisterItemDataService {
             authorizeUsername: authorizeUsername,
             authorizeType: authorizeType,
             activeStep: activeStep,
-            files: files
+            files: files,
+            attrs: attrs
         };
 
         let registerItemOS = await this.idb.getObjectStore(this.idb.dbRegisterItemStoreName);
@@ -98,7 +101,8 @@ export interface IRegisterItemData {
     catId: number
     itemAttrs: IItemAttr[]
     authorizeUsername: string
-    authorizeType: CategoryAuthorizeState,
+    authorizeType: CategoryAuthorizeState
     activeStep: number
     files: any[]
+    attrs: IAttr[]
 }

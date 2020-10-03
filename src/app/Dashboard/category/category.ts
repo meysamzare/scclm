@@ -22,7 +22,7 @@ export class ICategory {
     isActive: boolean = true;
 
     showScoreAfterDone = false;
-    
+
     calculateNegativeScore = false;
 
     isArchived = false;
@@ -46,7 +46,7 @@ export class ICategory {
 
     showRow: ShowRow = 1;
 
-    
+
     type = 0;
     gradeId: number = null;
     classId: number = null;
@@ -60,10 +60,17 @@ export class ICategory {
     workbookId: number = null;
     workbookString = "";
 
+    useLimitedRandomQuestionNumber = false;
+
+    veryHardQuestionNumber: number = null;
+    hardQuestionNumber: number = null;
+    moderateQuestionNumber: number = null;
+    easyQuestionNumber: number = null;
+
     gradeString = "";
     classString = "";
 
-    
+
     teachersIdAccess: number[] = [];
 
 

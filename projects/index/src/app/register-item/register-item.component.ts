@@ -13,7 +13,7 @@ import { RegisterItemLoginService } from './login-for-register-item/register-ite
 import { RegisterItemLicenseService } from './license-for-register-item/register-item-license.service';
 import { HttpRequest, HttpHeaders, HttpEventType, HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/internal/operators/map';
-import { last, catchError, debounceTime } from 'rxjs/operators';
+import { last, catchError, debounceTime, finalize, take } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
 import { EMPTY } from 'rxjs/internal/observable/empty';
 import { IAttributeOption } from 'src/app/Dashboard/attribute/attribute-option';
@@ -35,7 +35,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
     itemAttrs: IItemAttr[] = [];
 
-    catId;
+    catId: number = 0;
 
     cat: ICategory;
 
@@ -73,6 +73,9 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
     @ViewChild(StepsDirective, { static: false }) RegisterSteps: StepsDirective;
 
+    isLoading = false;
+    isAttrSetted = false;
+
     constructor(
         private router: Router,
         private activeRoute: ActivatedRoute,
@@ -83,12 +86,30 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         private licenseService: RegisterItemLicenseService,
         private http: HttpClient,
         private registerItemDataService: RegisterItemDataService
-    ) {
+    ) { }
+
+    async refreshCat() {
+        let data = await this.auth.post("/api/Category/getCategory", this.catId).toPromise();
+
+        if (data.success) {
+            this.cat = data.data;
+        }
+    }
+
+    catRefreshInterval = null;
+
+    async ngOnInit() {
+        this.catRefreshInterval = interval(30 * 1000).subscribe(() => this.refreshCat());
+
         this.activeRoute.params.subscribe(params => {
             this.catId = params["id"];
         });
 
         this.cat = this.activeRoute.snapshot.data.cat;
+        this.units = this.activeRoute.snapshot.data.units;
+        this.catDesc = this.sanitizer.bypassSecurityTrustHtml(this.cat.desc);
+        // this.attrs = this.activeRoute.snapshot.data.attrs;
+
 
         if (!this.cat.canShowByDate) {
             let title = `مهلت ${this.cat.btnTitle ? this.cat.btnTitle : "ثبت نام"} به پایان رسیده است`;
@@ -120,40 +141,29 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
         }
 
-        this.catDesc = this.sanitizer.bypassSecurityTrustHtml(this.cat.desc);
+        const data = await this.registerItemDataService.getRegisterItemData(this.cat.id);
 
-        this.attrs = this.activeRoute.snapshot.data.attrs;
+        if (data) {
+            if (data.authorizeType == this.authorizedType && data.authorizeUsername == this.authorizedUsername) {
 
-        if (this.cat.randomAttribute) {
-            let questionAttrs = this.attrs.filter(c => c.attrTypeInt == 11);
-            let nonQuestionAttrs = this.attrs.filter(c => c.attrTypeInt != 11);
-
-            questionAttrs = this.shuffleArray(questionAttrs);
-
-            this.attrs = [];
-
-            nonQuestionAttrs.forEach(attr => this.attrs.push(attr));
-            questionAttrs.forEach(attr => this.attrs.push(attr));
-        }
-
-        this.units = this.activeRoute.snapshot.data.units;
-
-        this.registerItemDataService.getRegisterItemData(this.cat.id).then(data => {
-            if (data) {
-                if (data.authorizeType == this.authorizedType && data.authorizeUsername == this.authorizedUsername) {
-
-                    if (data.itemAttrs) {
-                        this.itemAttrs = data.itemAttrs;
-                    }
-
-                    if (data.files) {
-                        this._files = data.files;
-                    }
-
-                    this.haveSavedData = true;
+                if (data.itemAttrs) {
+                    this.itemAttrs = data.itemAttrs;
                 }
-            }
 
+                if (data.files) {
+                    this._files = data.files;
+                }
+
+                if (data.attrs) {
+                    this.attrs = data.attrs;
+                } else {
+                    await this.refreshAttrs();
+                }
+
+                this.haveSavedData = true;
+            }
+        } else {
+            await this.refreshAttrs();
 
             this.attrs.forEach(attr => {
                 let itemAttr = this.itemAttrs.find(c => c.attributeId == attr.id);
@@ -168,29 +178,35 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                     });
                 }
             });
-
-            this.group = this.toFormGroup(this.attrs);
-        });
+        }
 
         if (this.attrs.length == 0) {
             this.router.navigate(["/"]);
+            return;
         }
 
         this.group = this.toFormGroup(this.attrs);
+
+        this.isAttrSetted = true;
+
     }
 
-    async refreshCat() {
-        let data = await this.auth.post("/api/Category/getCategory", this.catId).toPromise();
+    async refreshAttrs() {
 
-        if (data.success) {
-            this.cat = data.data;
+        this.isLoading = true;
+
+        let { success, data } = await this.auth.post("/api/Attribute/getAttrsForCat_C", this.catId)
+            .pipe(
+                take(1),
+                finalize(() => this.isLoading = false)
+            )
+            .toPromise();
+
+        if (success) {
+            this.attrs = data;
         }
-    }
 
-    catRefreshInterval = null;
-
-    ngOnInit() {
-        this.catRefreshInterval = interval(30 * 1000).subscribe(() => this.refreshCat());
+        return success;
     }
 
 
@@ -298,7 +314,8 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
             this.authorizedUsername,
             this.authorizedType,
             this.activeStep,
-            this._files);
+            this._files,
+            this.attrs);
     }
 
 

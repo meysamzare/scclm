@@ -39,7 +39,8 @@
                                 
                                 <mat-button-toggle-group #defactselect="ngModel" name="defact"
                                     [(ngModel)]="question.defact" required>
-                                    <mat-button-toggle [value]="1">سخت</mat-button-toggle>
+                                    <mat-button-toggle [value]="1">دشوار</mat-button-toggle>
+                                    <mat-button-toggle [value]="4">خیلی دشوار</mat-button-toggle>
                                     <mat-button-toggle [value]="2">متوسط</mat-button-toggle>
                                     <mat-button-toggle [value]="3">آسان</mat-button-toggle>
                                 </mat-button-toggle-group>
@@ -92,7 +93,7 @@
                             <div class="form-group">
                                 <label>انتخاب درس</label>
                                 <ng-select #courseselect="ngModel" name="course" [(ngModel)]="question.courseId"
-                                    required [disabled]="!question.gradeId">
+                                    required [disabled]="!question.gradeId" (change)="onCourseSelect()">
                                     <ng-option *ngFor="let cor of getCourseByGrade()" [value]="cor.id">{{cor.name}}
                                     </ng-option>
                                 </ng-select>
