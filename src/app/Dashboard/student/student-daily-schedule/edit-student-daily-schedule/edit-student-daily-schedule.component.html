@@ -5,91 +5,123 @@
 
 <ng-container *ngIf="!isLoading">
 
-    <form #fm1="ngForm">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>{{ Title }}</h5>
+                </div>
+                <div class="ibox-content">
 
-        <div class="form-group">
-            <label>تاریخ </label>
-            <mat-form-field style="width: 100%;">
-                <input #dateStart="ngModel" (click)="picker1.open()" readonly name="dateStart" required matInput
-                    [matDatepicker]="picker1" [(ngModel)]="studentDailySchedule.dateExecute" placeholder="تاریخ">
-                <mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker1">
-                </mat-datepicker-toggle>
-                <mat-datepicker #picker1 touchUi="true"></mat-datepicker>
-            </mat-form-field>
-            <div *ngIf="dateStart.touched && dateStart.invalid" class="error">
-                <div>
-                    وارد کردن تاریخ الزامی است
+                    <form #fm1="ngForm">
+
+                        <div class="row">
+                            <div class="col-lg-12">
+
+
+                                <div class="form-group">
+                                    <label>تاریخ </label>
+                                    <mat-form-field style="width: 100%;">
+                                        <input #dateStart="ngModel" (click)="picker1.open()" readonly name="dateStart"
+                                            required matInput [matDatepicker]="picker1"
+                                            [(ngModel)]="studentDailySchedule.dateExecute" placeholder="تاریخ">
+                                        <mat-datepicker-toggle style="font-size: 25px;" matSuffix [for]="picker1">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #picker1 touchUi="true"></mat-datepicker>
+                                    </mat-form-field>
+                                    <div *ngIf="dateStart.touched && dateStart.invalid" class="error">
+                                        <div>
+                                            وارد کردن تاریخ الزامی است
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        انتخاب درس
+                                    </label>
+                                    <ng-select name="course" [(ngModel)]="studentDailySchedule.courseId"
+                                        #courseselect="ngModel" required>
+                                        <ng-option *ngFor="let i of courses" [value]="i.id">
+                                            {{ i.name }}
+                                        </ng-option>
+                                    </ng-select>
+                                    <div *ngIf="courseselect.touched && courseselect.invalid" class="error">
+                                        <div>
+                                            انتخاب درس الزامی است
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        انتخاب نوع
+                                    </label>
+                                    <ng-select name="type" [(ngModel)]="studentDailySchedule.type" #typeselect="ngModel"
+                                        required>
+                                        <ng-option [value]="1">مطالعه</ng-option>
+                                        <ng-option [value]="2">تست مطالعه</ng-option>
+                                        <ng-option [value]="3">تست مرور</ng-option>
+                                        <ng-option [value]="4">مرور</ng-option>
+                                        <ng-option [value]="5">جمع بندی</ng-option>
+                                        <ng-option [value]="6">حل تمرین</ng-option>
+                                    </ng-select>
+                                    <div *ngIf="typeselect.touched && typeselect.invalid" class="error">
+                                        <div>
+                                            انتخاب نوع الزامی است
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label>
+                                        حجم
+                                    </label>
+
+                                    <textarea class="form-control" name="vol" [(ngModel)]="studentDailySchedule.volume"
+                                        placeholder="حجم"></textarea>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label>
+                                        زمان
+                                    </label>
+
+                                    <p>
+                                        از &nbsp;
+
+                                        <input class="form-control" placeholder="از ساعت"
+                                            style="width: unset; display: inline;" type="text" name="FromTime"
+                                            [(ngModel)]="studentDailySchedule.fromTime">
+                                        &nbsp;
+                                        الی
+                                        &nbsp;
+
+                                        <input class="form-control" placeholder="تا ساعت"
+                                            style="width: unset; display: inline;" type="text" name="toTime"
+                                            [(ngModel)]="studentDailySchedule.toTime">
+
+                                    </p>
+
+                                </div>
+
+                                <br>
+                                <br>
+
+                                <div class="col-md-12">
+                                    <a mat-raised-button color="warn" style="margin: 5px;" (click)="closeTab()">لغو</a>
+                                    <button type="submit" mat-raised-button color="primary" [disabled]="fm1.invalid"
+                                        (click)="sts()">ویرایش</button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </form>
                 </div>
             </div>
         </div>
-
-        <div class="form-group">
-            <label>
-                انتخاب درس
-            </label>
-            <select class="form-control" name="course" [(ngModel)]="studentDailySchedule.courseId"
-                #courseselect="ngModel" required>
-                <option *ngFor="let i of courses" [value]="i.id">
-                    {{ i.name }}
-                </option>
-            </select>
-            <div *ngIf="courseselect.touched && courseselect.invalid" class="error">
-                <div>
-                    انتخاب درس الزامی است
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label>
-                انتخاب نوع
-            </label>
-            <select class="form-control" name="type"
-                [(ngModel)]="studentDailySchedule.type" #typeselect="ngModel" required>
-                <option [value]="1">مطالعه</option>
-                <option [value]="2">تست مطالعه</option>
-                <option [value]="3">تست مرور</option>
-                <option [value]="4">مرور</option>
-                <option [value]="5">جمع بندی</option>
-            </select>
-            <div *ngIf="typeselect.touched && typeselect.invalid" class="error">
-                <div>
-                    انتخاب نوع الزامی است
-                </div>
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            <label>
-                حجم
-            </label>
-
-            <textarea class="form-control" name="vol" [(ngModel)]="studentDailySchedule.volume"
-                placeholder="حجم"></textarea>
-        </div>
-
-
-        <div class="form-group">
-            <label>
-                زمان
-            </label>
-
-            <p>
-                از &nbsp;
-
-                <input class="form-control" placeholder="از ساعت" style="width: unset; display: inline;" type="text"
-                    name="FromTime" [(ngModel)]="studentDailySchedule.fromTime">
-                &nbsp;
-                الی
-                &nbsp;
-
-                <input class="form-control" placeholder="تا ساعت" style="width: unset; display: inline;" type="text"
-                    name="toTime" [(ngModel)]="studentDailySchedule.toTime">
-
-            </p>
-
-        </div>
-
-    </form>
+    </div>
 </ng-container>

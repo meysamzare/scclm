@@ -15,7 +15,7 @@
                     <br>
                     <countdown style="font-size: 20px; color: red;"
                         [config]="{leftTime: cat.formatedDateEnd, formatDate: formatDate}"
-                        (event)="countdownEvent($event.action)">
+                        (event)="countDown$.next($event.action)">
                     </countdown>
                 </div>
 
@@ -38,7 +38,7 @@
 
             <div class="col-md-2"></div>
             <div class="col-md-8" style="margin-top: 10px;">
-                <ng-container *ngIf="isLoading">
+                <ng-container *ngIf="isLoading || isLoadingForUniqAttr">
                     <div style="margin-top: 20px;">
                         <mat-progress-bar mode="buffer"></mat-progress-bar>
                     </div>
@@ -82,18 +82,17 @@
                                             [formControlName]="'p' + getIndexForAttr(i.id)" type="text"
                                             class="form-control"
                                             placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
-                                            (input)="setItemAttr($event, i.id); saveItemAttrs(); i.isUniq ? checkForUniqValue($event.target.value, i.id) : null" />
+                                            (input)="setItemAttr($event, i.id);  i.isUniq ? checkForUniqValue($event.target.value, i.id) : null" />
 
                                         <input *ngIf="i.attrTypeInt == 2"
                                             [formControlName]="'p' + getIndexForAttr(i.id)" type="tel"
                                             inputmode="numeric" pattern="[+-]?([0-9]*[.])?[0-9]+" class="form-control"
                                             placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
-                                            (input)="setItemAttr($event, i.id); saveItemAttrs(); i.isUniq ? checkForUniqValue($event.target.value, i.id) : null" />
+                                            (input)="setItemAttr($event, i.id);  i.isUniq ? checkForUniqValue($event.target.value, i.id) : null" />
 
                                         <mat-form-field class="example-full-width" *ngIf="i.attrTypeInt == 3">
                                             <input matInput [formControlName]="'p' + getIndexForAttr(i.id)" readonly
-                                                (click)="openc(picker)"
-                                                (dateChange)="setItemAttr($event, i.id); saveItemAttrs();"
+                                                (click)="openc(picker)" (dateChange)="setItemAttr($event, i.id); "
                                                 [matDatepicker]="picker"
                                                 placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}">
                                             <mat-datepicker-toggle style="font-size: 25px;" matTooltip="باز کردن تقویم"
@@ -103,19 +102,19 @@
 
                                         <mat-checkbox *ngIf="i.attrTypeInt == 4"
                                             [formControlName]="'p' + getIndexForAttr(i.id)"
-                                            (change)="setItemAttr($event, i.id); saveItemAttrs();">{{i.title}}
+                                            (change)="setItemAttr($event, i.id); ">{{i.title}}
                                         </mat-checkbox>
 
                                         <input *ngIf="i.attrTypeInt == 5"
                                             [formControlName]="'p' + getIndexForAttr(i.id)" class="form-control"
-                                            type="password" (input)="setItemAttr($event, i.id); saveItemAttrs();"
+                                            type="password" (input)="setItemAttr($event, i.id); "
                                             placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}" />
 
                                         <mat-form-field *ngIf="i.attrTypeInt == 6">
                                             <mat-label>{{i.title}}</mat-label>
                                             <mat-select style="direction: ltr"
                                                 [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                (valueChange)="setItemAttrforselect($event, i.id); saveItemAttrs();">
+                                                (valueChange)="setItemAttrforselect($event, i.id); ">
                                                 <mat-option
                                                     *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption"
                                                     [value]="v.id">{{v.title}}
@@ -125,7 +124,7 @@
 
                                         <mat-radio-group *ngIf="i.attrTypeInt == 10" class="radio-group"
                                             [formControlName]="'p' + getIndexForAttr(i.id)"
-                                            (change)="setItemAttrforselect($event.value, i.id); saveItemAttrs();">
+                                            (change)="setItemAttrforselect($event.value, i.id); ">
                                             <mat-radio-button class="radio-button"
                                                 *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption"
                                                 [value]="v.id">{{v.title}}</mat-radio-button>
@@ -134,17 +133,17 @@
                                         <input type="file" *ngIf="i.attrTypeInt == 7"
                                             [formControlName]="'p' + getIndexForAttr(i.id)"
                                             accept="image/x-png,image/jpeg" class="form-control"
-                                            (change)="setItemAttrforPic($event, i.id, 'pic'); saveItemAttrs();" />
+                                            (change)="setItemAttrforPic($event, i.id, 'pic'); " />
 
                                         <input type="file" *ngIf="i.attrTypeInt == 8"
                                             [formControlName]="'p' + getIndexForAttr(i.id)" class="form-control"
-                                            (change)="setItemAttrforPic($event, i.id, 'file'); saveItemAttrs();" />
+                                            (change)="setItemAttrforPic($event, i.id, 'file'); " />
 
                                         <textarea *ngIf="i.attrTypeInt == 9"
                                             [formControlName]="'p' + getIndexForAttr(i.id)" type="text"
                                             class="form-control"
                                             placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
-                                            (change)="setItemAttr($event, i.id); saveItemAttrs();"></textarea>
+                                            (change)="setItemAttr($event, i.id); "></textarea>
 
                                         <ng-container *ngIf="i.attrTypeInt == 11">
                                             <div [innerHTML]="i.title | safeHtml"></div>
@@ -154,14 +153,14 @@
                                             <ng-container *ngIf="i.questionType == 1">
                                                 <label>جواب شما:</label>
                                                 <ckeditor [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                    (dataChange)="setItemAttrDirectly($event, i.id); saveItemAttrs();">
+                                                    (dataChange)="setItemAttrDirectly($event, i.id); ">
                                                 </ckeditor>
                                             </ng-container>
 
                                             <ng-container *ngIf="i.questionType == 2">
                                                 <mat-radio-group class="radio-group"
                                                     [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                    (change)="setItemAttrforselect($event.value, i.id); saveItemAttrs();">
+                                                    (change)="setItemAttrforselect($event.value, i.id); ">
                                                     <mat-radio-button class="radio-button"
                                                         *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption"
                                                         [value]="v.id">
@@ -187,7 +186,7 @@
                                                 <mat-hint>محتوای زیر را تکمیل کنید</mat-hint>
                                                 <ckeditor [data]="i.complatabelContent"
                                                     [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                    (dataChange)="setItemAttrDirectly($event, i.id); saveItemAttrs();">
+                                                    (dataChange)="setItemAttrDirectly($event, i.id); ">
                                                 </ckeditor>
                                             </ng-container>
 
@@ -291,7 +290,8 @@
 
                                 <ng-container *ngFor="let i of attrs; index as index">
                                     <div [step]="getIndexForAttr(i.id)"
-                                        [style.display]="getIndexForAttr(i.id) == activeStep ? 'block' : 'none'">
+                                        [style.display]="getIndexForAttr(i.id) == activeStep ? 'block' : 'none'"
+                                        [style.pointer-events]="isUploading ? 'none' : ''">
 
                                         <ng-container *ngIf="getIndexForAttr(i.id) == activeStep">
 
@@ -305,7 +305,7 @@
                                                 </div>
                                                 <div class="col-lg-2" style="text-align: left;">
                                                     <button
-                                                        [disabled]="!group?.controls['p' + getIndexForAttr(i.id)].value"
+                                                        [disabled]="!group?.controls['p' + getIndexForAttr(i.id)].value || group?.controls['p' + getIndexForAttr(i.id)].disabled"
                                                         mat-icon-button [matTooltip]="'پاکسازی'" style="outline: none;"
                                                         (click)="clearItemAttr(i.id)">
                                                         <mat-icon>close</mat-icon>
@@ -315,21 +315,20 @@
 
                                             <input *ngIf="i.attrTypeInt == 1"
                                                 [formControlName]="'p' + getIndexForAttr(i.id)" type="text"
-                                                class="form-control"
+                                                class="form-control" [class.ng-invalid]="isAttrHasError(i.id)"
                                                 placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
-                                                (input)="setItemAttr($event, i.id); saveItemAttrs(); i.isUniq ? checkForUniqValue($event.target.value, i.id) : null" />
+                                                (input)="setItemAttr($event, i.id);  i.isUniq ? checkForUniqValue($event.target.value, i.id) : null" />
 
                                             <input *ngIf="i.attrTypeInt == 2"
                                                 [formControlName]="'p' + getIndexForAttr(i.id)" type="tel"
                                                 inputmode="numeric" pattern="[+-]?([0-9]*[.])?[0-9]+"
-                                                class="form-control"
+                                                class="form-control" [class.ng-invalid]="isAttrHasError(i.id)"
                                                 placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
-                                                (input)="setItemAttr($event, i.id); saveItemAttrs(); i.isUniq ? checkForUniqValue($event.target.value, i.id) : null" />
+                                                (input)="setItemAttr($event, i.id);  i.isUniq ? checkForUniqValue($event.target.value, i.id) : null" />
 
                                             <mat-form-field class="example-full-width" *ngIf="i.attrTypeInt == 3">
                                                 <input matInput [formControlName]="'p' + getIndexForAttr(i.id)" readonly
-                                                    (click)="openc(picker)"
-                                                    (dateChange)="setItemAttr($event, i.id); saveItemAttrs()"
+                                                    (click)="openc(picker)" (dateChange)="setItemAttr($event, i.id); "
                                                     [matDatepicker]="picker"
                                                     placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}">
                                                 <mat-datepicker-toggle style="font-size: 25px;"
@@ -340,19 +339,19 @@
 
                                             <mat-checkbox *ngIf="i.attrTypeInt == 4"
                                                 [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                (change)="setItemAttr($event, i.id); saveItemAttrs()">{{i.title}}
+                                                (change)="setItemAttr($event, i.id); ">{{i.title}}
                                             </mat-checkbox>
 
                                             <input *ngIf="i.attrTypeInt == 5"
                                                 [formControlName]="'p' + getIndexForAttr(i.id)" class="form-control"
-                                                type="password" (input)="setItemAttr($event, i.id); saveItemAttrs()"
+                                                type="password" (input)="setItemAttr($event, i.id); "
                                                 placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}" />
 
                                             <mat-form-field *ngIf="i.attrTypeInt == 6">
                                                 <mat-label>{{i.title}}</mat-label>
                                                 <mat-select style="direction: ltr"
                                                     [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                    (valueChange)="setItemAttrforselect($event, i.id); saveItemAttrs()">
+                                                    (valueChange)="setItemAttrforselect($event, i.id); ">
                                                     <mat-option
                                                         *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption"
                                                         [value]="v.id">
@@ -363,7 +362,7 @@
 
                                             <mat-radio-group *ngIf="i.attrTypeInt == 10" class="radio-group"
                                                 [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                (change)="setItemAttrforselect($event.value, i.id); saveItemAttrs()">
+                                                (change)="setItemAttrforselect($event.value, i.id); ">
                                                 <mat-radio-button class="radio-button"
                                                     *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption"
                                                     [value]="v.id">{{v.title}}</mat-radio-button>
@@ -382,7 +381,7 @@
                                                 [formControlName]="'p' + getIndexForAttr(i.id)" type="text"
                                                 class="form-control"
                                                 placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
-                                                (change)="setItemAttr($event, i.id); saveItemAttrs()"></textarea>
+                                                (change)="setItemAttr($event, i.id); "></textarea>
 
                                             <ng-container *ngIf="i.attrTypeInt == 11">
                                                 <div [innerHTML]="i.title | safeHtml"></div>
@@ -392,14 +391,14 @@
                                                 <ng-container *ngIf="i.questionType == 1">
                                                     <label>جواب شما:</label>
                                                     <ckeditor [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                        (dataChange)="setItemAttrDirectly($event, i.id); saveItemAttrs()">
+                                                        (dataChange)="setItemAttrDirectly($event, i.id); ">
                                                     </ckeditor>
                                                 </ng-container>
 
                                                 <ng-container *ngIf="i.questionType == 2">
                                                     <mat-radio-group class="radio-group"
                                                         [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                        (change)="setItemAttrforselect($event.value, i.id); saveItemAttrs()">
+                                                        (change)="setItemAttrforselect($event.value, i.id); ">
                                                         <mat-radio-button class="radio-button"
                                                             *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption"
                                                             [value]="v.id">
@@ -413,7 +412,7 @@
                                                     <ckeditor
                                                         [data]="haveSavedData ? getItemAttr(i.id) : i.complatabelContent"
                                                         [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                        (dataChange)="setItemAttrDirectly($event, i.id); saveItemAttrs()">
+                                                        (dataChange)="setItemAttrDirectly($event, i.id); ">
                                                     </ckeditor>
                                                 </ng-container>
 
@@ -500,7 +499,7 @@
                                 <div class="row" style="flex-flow: row;">
                                     <div class="col-lg-6" *ngIf="activeStep != attrs.length -1">
                                         <button class="btn btn-outline-success" style="width: 100%;"
-                                            [disabled]="!steps.isActiveStepValid() || attrUniqList.length != 0 || reqfilesAttrint.length != 0 || isUploading"
+                                            [disabled]="!steps.isActiveStepValid() || attrUniqList.length != 0 || reqfilesAttrint.length != 0 || isUploading || isLoadingForUniqAttr"
                                             (click)="nextStep()">
                                             <span class="fa fa-arrow-right" style="vertical-align: middle;"></span>
                                             &nbsp; &nbsp;
@@ -529,8 +528,8 @@
                                 <div class="row" *ngIf="activeStep == attrs.length -1">
                                     <div class="col-lg-12">
                                         <button class="btn btn-outline-success" style="width: 100%;"
-                                            [disabled]="!steps.isActiveStepValid() || attrUniqList.length != 0 || reqfilesAttrint.length != 0 || isUploading"
-                                            (click)="sts()">
+                                            [disabled]="!steps.isActiveStepValid() || attrUniqList.length != 0 || reqfilesAttrint.length != 0 || isUploading || isLoadingForUniqAttr"
+                                            (click)="!isUploading ? sts() : null">
                                             <span class="fa fa-check" style="vertical-align: middle;"></span>
                                             &nbsp; &nbsp;
                                             {{ cat.btnTitle ? cat.btnTitle : "ثبت نام" }}</button>
@@ -539,10 +538,11 @@
 
                                 <div style="text-align: center; margin-top: 50px; direction: ltr;">
                                     <ng-container *ngFor="let i of attrs">
-                                        <span class="step-dot" [tooltip]="getIndexForAttr(i.id) + 1"
+                                        <span class="step-dot" [style.cursor]="isPrevStepAllowed ? 'pointer' : ''"
+                                            [tooltip]="getIndexForAttr(i.id) + 1"
                                             [class.finished]="isItemAttrHasValue(i)"
                                             [class.active]="activeStep == getIndexForAttr(i.id)"
-                                            [class.error]="isAttrHasError(i)"></span>
+                                            [class.error]="isAttrHasError(i.id)" (click)="goToStep(i.id)"></span>
                                     </ng-container>
                                 </div>
 

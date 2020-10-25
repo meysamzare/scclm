@@ -7,7 +7,7 @@ import { CategoryAuthorizeState } from 'src/app/Dashboard/category/category';
 })
 export class RegisterItemLoginService {
 
-    pass = "HSH^@#&%  BBBSA+=sadh.333";
+    pss = "HSH^@#&%  BBBSA+=sadh.333";
     key = "icatreg";
 
     constructor() { }
@@ -15,14 +15,14 @@ export class RegisterItemLoginService {
     getLoginToken(catId: number): RegisterItemToken | null {
 
         if (this.isUserAccessToCat(catId)) {
-            return this.getTokens().find(c => c.categoryId == catId);
+            return this._getTokens().find(c => c.categoryId == catId);
         }
 
         return null;
     }
 
     isUserAccessToCat(catId: number): boolean {
-        let tokens = this.getTokens();
+        let tokens = this._getTokens();
 
         let catToken = tokens.find(c => c.categoryId == catId);
 
@@ -35,7 +35,7 @@ export class RegisterItemLoginService {
     
 
     addToken(token: RegisterItemToken) {
-        let tokens = this.getTokens();
+        let tokens = this._getTokens();
 
         let catToken = tokens.find(c => c.categoryId == token.categoryId);
 
@@ -45,10 +45,11 @@ export class RegisterItemLoginService {
 
         tokens.push(token);
 
-        this.setTokens(tokens);
+        this._setTokens(tokens);
     }
+
     removeToken(catId: number) {
-        let tokens = this.getTokens();
+        let tokens = this._getTokens();
 
         let catToken = tokens.find(c => c.categoryId == catId);
 
@@ -56,20 +57,23 @@ export class RegisterItemLoginService {
             tokens.splice(tokens.findIndex(c => c == catToken), 1);
         }
 
-        this.setTokens(tokens);
+        this._setTokens(tokens);
     }
-    setTokens(tokens: RegisterItemToken[]) {
+
+
+    private _setTokens(tokens: RegisterItemToken[]) {
         let textToEncript = JSON.stringify(tokens);
 
-        let encriptedText = this.encript(textToEncript);
+        let encriptedText = this._encript(textToEncript);
 
         localStorage.setItem(this.key, encriptedText);
     }
-    getTokens(): RegisterItemToken[] {
+    
+    private _getTokens(): RegisterItemToken[] {
         let encTokens = localStorage.getItem(this.key);
 
         if (encTokens) {
-            return JSON.parse(this.decript(encTokens));
+            return JSON.parse(this._decript(encTokens));
         }
 
         return [];
@@ -77,12 +81,12 @@ export class RegisterItemLoginService {
 
 
 
-    encript(value: string): string {
-        return CryptoJS.AES.encrypt(value, this.pass).toString();
+    private _encript(value: string): string {
+        return CryptoJS.AES.encrypt(value, this.pss).toString();
     }
 
-    decript(text: string): string {
-        return CryptoJS.AES.decrypt(text, this.pass).toString(CryptoJS.enc.Utf8);
+    private _decript(text: string): string {
+        return CryptoJS.AES.decrypt(text, this.pss).toString(CryptoJS.enc.Utf8);
     }
 }
 

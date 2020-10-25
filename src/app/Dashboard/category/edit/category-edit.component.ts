@@ -359,13 +359,19 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
         return this.attributes.filter(c => c.unitId == unitId);
     }
 
-    setIsTrueQuestionOption(option, questionId) {
+    setIsTrueQuestionOption(option, questionId, attr) {
 
         option.questionId = questionId;
         option.isTrue = false;
 
         this.auth.post("/api/Question/SetTrueOption", option).subscribe(data => {
             if (data.success) {
+                try {
+                    this.attributes.find(c => c == attr).attributeOptions.forEach(option => {
+                        option.isTrue = false;
+                    });
+                    this.attributes.find(c => c == attr).attributeOptions.find(c => c == option).isTrue = true;
+                } catch { }
                 this.message.showSuccessAlert("با موفقیت ثبت شد");
             } else {
                 this.message.showMessageforFalseResult(data);

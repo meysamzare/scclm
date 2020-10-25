@@ -18,9 +18,9 @@ export class EditStudentDailyScheduleComponent implements OnInit {
 
     Id = 0;
 
-    stdParentCommnet = "";
-
     courses: ICourse[] = [];
+
+    Title = "";
 
     constructor(
         private auth: AuthService,
@@ -30,30 +30,22 @@ export class EditStudentDailyScheduleComponent implements OnInit {
             this.Id = params["id"];
 
             this.refreshSDS();
-
-            
-            this.auth.post("/api/Course/getAllByGrade", 0).subscribe(data => {
-                if (data.success) {
-                    this.courses = data.data;
-                } else {
-                    this.auth.message.showMessageforFalseResult(data);
-                }
-            }, er => {
-                this.auth.handlerError(er);
-            });
         });
     }
 
     ngOnInit() {
     }
-    
+
     refreshSDS() {
         this.isLoading = true;
 
-        this.auth.post("/api/StudentDailySchedule/getStudentDailySchedule", this.Id)
+        this.auth.post("/api/StudentDailySchedule/getStudentDailyScheduleWithCourses", this.Id)
             .pipe(finalize(() => this.isLoading = false)).subscribe(data => {
                 if (data.success) {
-                    this.studentDailySchedule = data.data;
+                    this.studentDailySchedule = data.data.sds;
+                    this.courses = data.data.courses;
+
+                    this.Title = `ویرایش ${this.studentDailySchedule.typeString} ${this.studentDailySchedule.courseName}`
                 } else {
                     this.auth.message.showMessageforFalseResult(data);
                 }
@@ -62,23 +54,22 @@ export class EditStudentDailyScheduleComponent implements OnInit {
             });
     }
 
-    setParentCommnet() {
-        this.isLoading = true;
-
-        this.auth.post("/api/StudentDailySchedule/setParentComment", {
-            id: this.Id,
-            comment: this.stdParentCommnet
-        }).pipe(finalize(() => this.isLoading = false)).subscribe(data => {
+    sts() {
+        this.auth.post("/api/StudentDailySchedule/Edit", this.studentDailySchedule).subscribe(data => {
             if (data.success) {
-                this.refreshSDS();
-
                 this.auth.message.showSuccessAlert();
+
+                this.closeTab();
             } else {
                 this.auth.message.showMessageforFalseResult(data);
             }
         }, er => {
             this.auth.handlerError(er);
         });
+    }
+
+    closeTab() {
+        window.close();
     }
 
 

@@ -2,7 +2,7 @@
 
 <mat-progress-bar mode="buffer" *ngIf="isLoading"></mat-progress-bar>
 
-<div class="row">
+<div class="row viewCat">
     <div class="col-lg-12">
 
         <div class="row" style="flex-wrap: wrap !important;">
@@ -102,9 +102,7 @@
                                         <ng-container *ngIf="i.questionType == 2">
                                             <mat-radio-group class="radio-group" [value]="getItemAttrValDietale(i.id)">
                                                 <mat-radio-button class="radio-button"
-                                                    *ngFor="let v of getShiftedItem(i)"
-                                                    [style.color]="v.isTrue ? 'green' : 'unset'"
-                                                    [value]="v.id.toString()">
+                                                    *ngFor="let v of getShiftedItem(i)" [value]="v.id.toString()">
                                                     <div style="pointer-events: none;" [innerHTML]="v.title | safeHtml">
                                                     </div>
                                                 </mat-radio-button>

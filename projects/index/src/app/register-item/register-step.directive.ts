@@ -14,6 +14,10 @@ export class RegisterStepDirective {
 
     isStepControlValid() {
         if (this.control) {
+            if (this.control.disabled) {
+                return true;
+            }
+            
             return this.control.valid;
         }
 

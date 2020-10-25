@@ -162,6 +162,7 @@ import { OnlineClassResolverService } from "./OnlineClass/online-class-resolver.
 import { OnlineClassEditComponent } from "./OnlineClass/online-class-edit/online-class-edit.component";
 import { ListStudentDailyScheduleComponent } from "./student/student-daily-schedule/list-student-daily-schedule/list-student-daily-schedule.component";
 import { StudentDailyScheduleDetailComponent } from "./student/student-daily-schedule/list-student-daily-schedule/student-daily-schedule-detail/student-daily-schedule-detail.component";
+import { EditStudentDailyScheduleComponent } from "./student/student-daily-schedule/edit-student-daily-schedule/edit-student-daily-schedule.component";
 
 @NgModule({
     imports: [
@@ -811,6 +812,16 @@ import { StudentDailyScheduleDetailComponent } from "./student/student-daily-sch
                                     {
                                         path: "view/:id",
                                         component: StudentDailyScheduleDetailComponent
+                                    },
+                                    {
+                                        path: "edit/:id",
+                                        component: EditStudentDailyScheduleComponent,
+                                        data: {
+                                            role: [
+                                                "view_StudentDailySchedule",
+                                                "view_StudentDailySchedule"
+                                            ]
+                                        }
                                     }
                                 ]
                             },

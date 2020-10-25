@@ -30,7 +30,9 @@
             placeholder="جستجو" class="form-control">
     </div>
     <div class="col-lg-12" style="margin-bottom: 10px; text-align: center;">
-        <p matTooltip="قابلیت آرشیو کردن {{ TYPE == 1 ? 'آزمون های آنلاین' : 'نمون برگ ها' }} برای سهولت کار شما با سیستم طراحی شده است"><b>نحوه نمایش آرشیو ها</b></p>
+        <p
+            matTooltip="قابلیت آرشیو کردن {{ TYPE == 1 ? 'آزمون های آنلاین' : 'نمون برگ ها' }} برای سهولت کار شما با سیستم طراحی شده است">
+            <b>نحوه نمایش آرشیو ها</b></p>
         <mat-button-toggle-group name="archiveShow" [(ngModel)]="archiveType" (change)="refreshDataSource(true)">
             <mat-button-toggle [value]="3">همه</mat-button-toggle>
             <mat-button-toggle [value]="2">فقط آرشیو ها</mat-button-toggle>
@@ -152,6 +154,11 @@
                     <button matTooltip="ویرایش {{cat.title}}" matTooltipPosition="before" mat-button
                         (click)="onEdit(cat.id)" color="primary">
                         ویرایش
+                    </button>
+                    <button matTooltip="حضور غیاب {{cat.title}}" matTooltipPosition="before" mat-button
+                        (click)="absenceForOnlineExam(cat.id)" color="primary" [disabled]="isLoadingAbsence"
+                        *ngIf="TYPE == 1">
+                        حضور غیاب
                     </button>
                     <button matTooltip="خروجی اکسل از نتیجه {{ pageTitle }} {{cat.title}}" matTooltipPosition="before"
                         mat-icon-button (click)="getExcelFile(cat.id)" color="primary">

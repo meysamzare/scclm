@@ -218,7 +218,7 @@
                                 <div class="form-group">
                                     <mat-checkbox [ngModelOptions]="{standalone: true}"
                                         [(ngModel)]="category.randomAttribute">
-                                        سوالات تصادفی
+                                        ترتیب سوالات به صورت تصادفی
                                     </mat-checkbox>
                                 </div>
                             </div>
@@ -227,7 +227,7 @@
                                 <div class="form-group">
                                     <mat-checkbox [ngModelOptions]="{standalone: true}"
                                         [(ngModel)]="category.randomAttributeOption">
-                                        جواب های تصادفی
+                                        ترتیب جواب ها به صورت تصادفی
                                     </mat-checkbox>
                                 </div>
                             </div>
@@ -303,8 +303,7 @@
                         </form>
 
                         <ng-container *ngIf="fmQuestionLimit.valid">
-                            <p
-                                [class.error]="getQuestionNumber() < getSumOfDefctQuestionNumbers()">
+                            <p [class.error]="getQuestionNumber() < getSumOfDefctQuestionNumbers()">
                                 جمع سوالات تصادفی : &nbsp; &nbsp;
                                 <b>{{ getSumOfDefctQuestionNumbers() }} / {{ getQuestionNumber() }}</b>
                             </p>
@@ -916,7 +915,9 @@
                                                     <mat-radio-group class="radio-group">
                                                         <mat-radio-button class="radio-button"
                                                             *ngFor="let v of getShiftedItem(i)" [value]="v.id"
-                                                            (dblclick)="setIsTrueQuestionOption(v, i.questionId)">
+                                                            (dblclick)="setIsTrueQuestionOption(v, i.questionId, i)">
+                                                            <i *ngIf="v.isTrue" style="color: green;"
+                                                                class="fa fa-key"></i> &nbsp;
                                                             <div [innerHTML]="v.title | safeHtml"></div>
                                                         </mat-radio-button>
                                                     </mat-radio-group>

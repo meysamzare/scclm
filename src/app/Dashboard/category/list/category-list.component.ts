@@ -462,6 +462,7 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
 
     changeCheckableProperty(catId, type, check) {
         if (this.auth.isUserAccess(this.TYPE == 0 ? "edit_Category" : "edit_OnlineExam")) {
+
             let obj = {
                 catId: catId,
                 type: type,
@@ -500,4 +501,41 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
             });
         }
     }
+
+    isLoadingAbsence = false;
+
+    absenceForOnlineExam(catId) {
+        if (this.auth.isUserAccess(this.TYPE == 0 ? "edit_Category" : "edit_OnlineExam") && this.TYPE == 1) {
+
+            this.isLoadingAbsence = true;
+
+            this.auth.post("/api/Category/AbsenceForOnlineExam", catId, {
+                type: 'Edit',
+                agentId: this.auth.getUserId(),
+                agentType: 'User',
+                agentName: this.auth.getUser().fullName,
+                tableName: 'Absence For OnlineExam',
+                logSource: 'dashboard',
+                object: catId,
+                oldObject: null,
+                table: "Category",
+                tableObjectIds: [catId]
+            }).pipe(finalize(() => this.isLoadingAbsence = false)).subscribe(data => {
+                if (data.success) {
+                    this.auth.message.showSuccessAlert("حضور و غیاب آزمون با موفقیت انجام شد");
+                } else {
+                    this.auth.message.showMessageforFalseResult(data);
+                }
+            }, er => {
+                this.auth.handlerError(er);
+            });
+        }
+    }
+
+
+
+
+
+
+
 }

@@ -127,8 +127,7 @@
     </div>
     <div *ngFor="let unit of tys">
 
-        <div class="col-lg-4 ui-sortable" *ngIf="getAttrsForUnit(unit.id).length != 0"
-            [ngClass]="{ 'di': isEdit ? false : true }">
+        <div class="col-lg-4 ui-sortable" *ngIf="getAttrsForUnit(unit.id).length != 0">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5 style="color: #1ab394"> {{ unit.title }} </h5>

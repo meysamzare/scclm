@@ -30,7 +30,7 @@
                         انتخاب درس
                     </label>
                     <select class="form-control" [disabled]="coursesByGrade.length == 0 || isLoading" name="course"
-                        [(ngModel)]="selectedCourse" (change)="onCourseSelect($event.srcElement.value)">
+                        [(ngModel)]="selectedCourse" (change)="onCourseSelect()">
                         <option [value]="null">---</option>
 
                         <option *ngFor="let i of coursesByGrade" [value]="i.id">{{ i.name }}
@@ -130,12 +130,26 @@
                                                         موجه</strong>
                                                 </p>
 
-                                                <p *ngIf="i.isOnlineExam" style="text-align: center;">
-                                                    <a class="btn btn-primary" style="width: 100%;" target="_blank"
-                                                        routerLink="/view-cat-detail/{{getOnlineExamId(i.id)}}/{{getItemId(getExamScoreForExam(i.id).id)}}/{{i.name}}">
-                                                        نمایش جزئیات آزمون آنلاین
-                                                    </a>
-                                                </p>
+                                                <div class="row" *ngIf="i.isOnlineExam" style="text-align: center;">
+                                                    <div [class.col-lg-6]="i.canShowDetail"
+                                                        [class.col-lg-12]="!i.canShowDetail"
+                                                        *ngIf="!i.isFullDataLoaded">
+                                                        <button class="btn btn-success"
+                                                            [disabled]="isLoadingOnlineExamData"
+                                                            (click)="loadOnlineExamData(i.id)">
+                                                            بارگذاری آمار آزمون
+                                                        </button>
+                                                    </div>
+                                                    <div [class.col-lg-6]="!i.isFullDataLoaded"
+                                                        [class.col-lg-12]="i.isFullDataLoaded" *ngIf="i.canShowDetail">
+                                                        <a class="btn btn-primary" target="_blank"
+                                                            routerLink="/view-cat-detail/{{getOnlineExamId(i.id)}}/{{getItemId(getExamScoreForExam(i.id).id)}}/{{i.name}}"
+                                                            [queryParams]="{ 'token' : getCatDetailViewToken(getOnlineExamId(i.id), getItemId(getExamScoreForExam(i.id).id)) }">
+                                                            نمایش جزئیات آزمون آنلاین
+                                                        </a>
+                                                    </div>
+                                                </div>
+
                                             </mat-expansion-panel>
                                         </ng-container>
 
@@ -365,7 +379,8 @@
                         <p><b>فهرست وظایف</b></p>
                     </div>
                     <div class="col-6" style="text-align: left;">
-                        <button style="background-color: yellowgreen; margin-left: 5px;" (click)="refreshStudentDailySchedule()" mat-mini-fab>
+                        <button style="background-color: yellowgreen; margin-left: 5px;"
+                            (click)="refreshStudentDailySchedule()" mat-mini-fab>
                             <mat-icon>refresh</mat-icon>
                         </button>
                         <a target="_blank" [disabled]="!selectedStdClassMng"
@@ -376,7 +391,7 @@
                     </div>
                 </div>
 
-                <mat-card class="margin-top-10" *ngFor="let i of studentDailySchedules" 
+                <mat-card class="margin-top-10" *ngFor="let i of studentDailySchedules"
                     [style.backgroundColor]="getSDSBackgroundColor(i.state)">
                     <mat-card-content>
 

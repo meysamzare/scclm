@@ -23,16 +23,18 @@ export class RegisterItemDataService {
         activeStep: number,
         files: any[],
         attrs: IAttr[]) {
+        
+        let data = new IRegisterItemData();
 
-        let data: IRegisterItemData = {
-            catId: catId,
-            itemAttrs: itemAttrs,
-            authorizeUsername: authorizeUsername,
-            authorizeType: authorizeType,
-            activeStep: activeStep,
-            files: files,
-            attrs: attrs
-        };
+        data.catId = catId;
+        data.itemAttrs = itemAttrs;
+        data.authorizeUsername = authorizeUsername;
+        data.authorizeType = authorizeType;
+        data.activeStep = activeStep;
+        data.files = files;
+        data.attrs = attrs;
+
+        data.updateKey();
 
         let registerItemOS = await this.idb.getObjectStore(this.idb.dbRegisterItemStoreName);
 
@@ -48,11 +50,13 @@ export class RegisterItemDataService {
         }
     }
 
-    async getRegisterItemData(catId: number): Promise<IRegisterItemData> {
+    async getRegisterItemData(catId: number, username: string, authType: number): Promise<IRegisterItemData> {
         try {
             const registerItemOS = await this.idb.getObjectStore(this.idb.dbRegisterItemStoreName);
 
-            let registerItemRequest = registerItemOS.get(catId);
+            const KEY = `${catId}${username}${authType}`;
+
+            let registerItemRequest = registerItemOS.get(KEY);
 
             return new Promise((resolve, reject) => {
 
@@ -73,17 +77,19 @@ export class RegisterItemDataService {
         }
     }
 
-    
-    async removeRegisterItemData(catId: number) {
+
+    async removeRegisterItemData(catId: number, username: string, authType: number) {
         const registerItemOS = await this.idb.getObjectStore(this.idb.dbRegisterItemStoreName);
 
-        registerItemOS.delete(catId);
+        const KEY = `${catId}${username}${authType}`;
+
+        registerItemOS.delete(KEY);
     }
 
-    
-    async isAnyData(catId: number) {
+
+    async isAnyData(catId: number, username: string, authType: number) {
         try {
-            const data = await this.getRegisterItemData(catId);
+            const data = await this.getRegisterItemData(catId, username, authType);
             if (data) {
                 return true;
             }
@@ -97,7 +103,7 @@ export class RegisterItemDataService {
 
 }
 
-export interface IRegisterItemData {
+export class IRegisterItemData {
     catId: number
     itemAttrs: IItemAttr[]
     authorizeUsername: string
@@ -105,4 +111,11 @@ export interface IRegisterItemData {
     activeStep: number
     files: any[]
     attrs: IAttr[]
+
+    KEY?= "";
+
+
+    updateKey() {
+        this.KEY = `${this.catId}${this.authorizeUsername}${this.authorizeType}`;
+    }
 }

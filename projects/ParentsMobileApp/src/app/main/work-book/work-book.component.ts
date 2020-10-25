@@ -15,6 +15,7 @@ import { StdClassMng } from 'src/app/Dashboard/student/stdClassMng';
 import { IStudentDailySchedule } from './student-daily-schdule/student-daily-schdule';
 import { StudentDailyScheduleService } from './student-daily-schdule/student-daily-schedule.service';
 import { finalize } from 'rxjs/internal/operators/finalize';
+import { ViewCatDetailTokenService } from '../view-cat-detail/view-cat-detail-token.service';
 
 @Component({
     selector: 'app-work-book',
@@ -62,7 +63,8 @@ export class WorkBookComponent implements OnInit {
         private message: MessageService,
         private theme: ThemeService,
         public stdAuth: StudentAuthService,
-        private studentDailyScheduleService: StudentDailyScheduleService
+        private studentDailyScheduleService: StudentDailyScheduleService,
+        private viewCatDetailTokenService: ViewCatDetailTokenService
     ) { }
 
     ngOnInit() {
@@ -539,8 +541,9 @@ export class WorkBookComponent implements OnInit {
 
     classBookForSelectedCourse: IClassBook[] = [];
 
-    onCourseSelect(selectedCourse) {
-        if (selectedCourse != "null") {
+    onCourseSelect() {
+        const selectedCourse = this.selectedCourse;
+        if (selectedCourse) {
             this.chartDataByCourse = this.getChartDataByCourse(this.selectedCourse);
             this.chartLabelByCourse = this.getChartLabelByCourse(this.selectedCourse);
 
@@ -584,6 +587,38 @@ export class WorkBookComponent implements OnInit {
 
     getItemId(id: string) {
         return id.slice(3);
+    }
+
+    isLoadingOnlineExamData = false;
+
+    loadOnlineExamData(id: string) {
+        const catId = this.getOnlineExamId(id);
+
+        this.isLoadingOnlineExamData = true;
+
+        this.stdAuth.auth.post("/api/Exam/getOnlineExamFullData", catId)
+            .pipe(finalize(() => this.isLoadingOnlineExamData = false)).subscribe(data => {
+                if (data.success) {
+                    const exam = this.examsByGrade.find(c => c.id == id);
+                    if (exam) {
+                        this.examsByGrade[this.examsByGrade.indexOf(exam)] = data.data;
+
+                        this.updateCourseChartData();
+
+                        this.onCourseSelect();
+
+                        this.message.showSuccessAlert("داده ها با موفقیت بارگذاری شدند");
+                    }
+                } else {
+                    this.stdAuth.auth.message.showMessageforFalseResult(data);
+                }
+            }, er => {
+                this.stdAuth.auth.handlerError(er);
+            });
+    }
+
+    getCatDetailViewToken(catId: number, itemId: number) {
+        return this.viewCatDetailTokenService.getToken(catId, itemId);
     }
 
 

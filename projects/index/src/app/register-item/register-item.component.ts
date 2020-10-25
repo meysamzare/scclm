@@ -23,6 +23,7 @@ import { RegisterItemDataService } from './register-item-data.service';
 import { Observable } from 'rxjs/internal/Observable';
 import { interval } from 'rxjs/internal/observable/interval';
 import { AttributeInputSaveItemAttributeEvent } from './attribute-input/attribute-input/attribute-input.component';
+import { Subject } from 'rxjs/internal/Subject';
 
 @Component({
     selector: 'app-register-item',
@@ -76,6 +77,10 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     isLoading = false;
     isAttrSetted = false;
 
+    groupValueChanges$ = null;
+
+    countDown$ = new Subject<string>();
+
     constructor(
         private router: Router,
         private activeRoute: ActivatedRoute,
@@ -96,10 +101,11 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         }
     }
 
-    catRefreshInterval = null;
+    catRefresh$ = null;
 
     async ngOnInit() {
-        this.catRefreshInterval = interval(30 * 1000).subscribe(() => this.refreshCat());
+        this.catRefresh$ = interval(30 * 1000).subscribe(() => this.refreshCat());
+        this.countDown$.pipe(debounceTime(700)).subscribe(event => this.countdownEvent(event));
 
         this.activeRoute.params.subscribe(params => {
             this.catId = params["id"];
@@ -108,7 +114,6 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         this.cat = this.activeRoute.snapshot.data.cat;
         this.units = this.activeRoute.snapshot.data.units;
         this.catDesc = this.sanitizer.bypassSecurityTrustHtml(this.cat.desc);
-        // this.attrs = this.activeRoute.snapshot.data.attrs;
 
 
         if (!this.cat.canShowByDate) {
@@ -120,11 +125,13 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
             if (this.cat.authorizeState != CategoryAuthorizeState.none) {
                 if (!this.loginService.isUserAccessToCat(this.catId)) {
                     this.router.navigate([`/register-item/${this.catId}/login`], { skipLocationChange: true });
+                    return;
                 } else {
                     let token = this.loginService.getLoginToken(this.catId);
 
                     if (!token) {
                         this.router.navigate(['/']);
+                        return;
                     }
 
                     this.authorizedFullName = token.userFullName;
@@ -136,59 +143,71 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
             if (this.cat.haveLicense) {
                 if (!this.licenseService.isUserAcceptTheLicense(this.catId)) {
                     this.router.navigate([`/register-item/${this.catId}/license`], { skipLocationChange: true });
+                    return;
                 }
             }
 
-        }
 
-        const data = await this.registerItemDataService.getRegisterItemData(this.cat.id);
+            const savedData = await this.registerItemDataService.getRegisterItemData(this.cat.id, this.authorizedUsername, this.authorizedType);
 
-        if (data) {
-            if (data.authorizeType == this.authorizedType && data.authorizeUsername == this.authorizedUsername) {
-
-                if (data.itemAttrs) {
-                    this.itemAttrs = data.itemAttrs;
+            if (savedData) {
+                if (savedData.itemAttrs) {
+                    this.itemAttrs = savedData.itemAttrs;
                 }
 
-                if (data.files) {
-                    this._files = data.files;
+                if (savedData.files) {
+                    this._files = savedData.files;
                 }
 
-                if (data.attrs) {
-                    this.attrs = data.attrs;
+                if (savedData.attrs) {
+                    this.attrs = savedData.attrs;
                 } else {
                     await this.refreshAttrs();
                 }
 
                 this.haveSavedData = true;
+            } else {
+                await this.refreshAttrs();
+
+                this.attrs.forEach(attr => {
+                    let itemAttr = this.itemAttrs.find(c => c.attributeId == attr.id);
+                    if (!itemAttr) {
+                        this.itemAttrs.push({
+                            itemId: 0,
+                            attributeId: attr.id,
+                            attrubuteValue: "",
+                            attributeFilePath: attr.attrTypeInt == 7 || attr.attrTypeInt == 8 ? "1" : "",
+                            fileName: "",
+                            score: 0
+                        });
+                    }
+                });
+
+                this.saveItemAttrs();
             }
-        } else {
-            await this.refreshAttrs();
 
-            this.attrs.forEach(attr => {
-                let itemAttr = this.itemAttrs.find(c => c.attributeId == attr.id);
-                if (!itemAttr) {
-                    this.itemAttrs.push({
-                        itemId: 0,
-                        attributeId: attr.id,
-                        attrubuteValue: "",
-                        attributeFilePath: attr.attrTypeInt == 7 || attr.attrTypeInt == 8 ? "1" : "",
-                        fileName: "",
-                        score: 0
-                    });
-                }
+            if (this.attrs.length == 0) {
+                this.router.navigate(["/"]);
+                return;
+            }
+
+            if (this.authorizedUsername != "---") {
+                this.attrs.filter(c => c.isMeliCode && (c.attrTypeInt == 1 || c.attrTypeInt == 2)).forEach(attr => {
+                    this.itemAttrs.find(c => c.attributeId == attr.id).attrubuteValue = this.authorizedUsername;
+                });
+            }
+
+
+            this.group = this.toFormGroup(this.attrs);
+
+            await this.totallyCheckForUniqAttrs();
+
+            this.groupValueChanges$ = this.group.valueChanges.subscribe(() => {
+                this.saveItemAttrs();
             });
+
+            this.isAttrSetted = true;
         }
-
-        if (this.attrs.length == 0) {
-            this.router.navigate(["/"]);
-            return;
-        }
-
-        this.group = this.toFormGroup(this.attrs);
-
-        this.isAttrSetted = true;
-
     }
 
     async refreshAttrs() {
@@ -213,16 +232,25 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     ngOnDestroy(): void {
         this.licenseService.removeLicense(this.catId);
 
-        if (this.catRefreshInterval) {
-            this.catRefreshInterval.unsubscribe();
+        if (this.catRefresh$) {
+            this.catRefresh$.unsubscribe();
+        }
+
+        if (this.countDown$) {
+            this.countDown$.unsubscribe();
+        }
+
+        if (this.groupValueChanges$) {
+            this.groupValueChanges$.unsubscribe();
         }
 
         if (this.isFormDirty()) {
             this.saveItemAttrs();
         }
 
-        if (this.isFromSts || this.forceExit) {
-            this.registerItemDataService.removeRegisterItemData(this.cat.id);
+        if (this.isFromSts) {
+            this.registerItemDataService.removeRegisterItemData(this.cat.id, this.authorizedUsername, this.authorizedType);
+            this.loginService.removeToken(this.catId);
         }
     }
 
@@ -240,19 +268,28 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     prevStep() {
-        if (this.isPrevStepAllowed) {
+        if (this.isPrevStepAllowed && !this.isUploading) {
             if (this.activeStep != 0) {
                 this.activeStep -= 1;
             }
         }
     }
 
-    countdownEvent(action) {
+    goToStep(attrId) {
+        if (
+            this.RegisterSteps.isActiveStepValid() &&
+            this.isPrevStepAllowed &&
+            !this.isUploading &&
+            this.attrUniqList.length == 0 &&
+            this.reqfilesAttrint.length == 0
+        ) {
+            this.activeStep = this.getIndexForAttr(attrId);
+        }
+    }
+
+    async countdownEvent(action) {
         if (action == "done") {
-            this.forceExit = true;
-            let title = `مهلت ${this.cat.btnTitle ? this.cat.btnTitle : "ثبت نام"} به پایان رسید`;
-            this.message.showWarningAlert(title);
-            this.router.navigateByUrl("/");
+            this.sts(true);
         }
     }
 
@@ -328,7 +365,8 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
         attrs.forEach((attr, index) => {
             group["p" + index] = new FormControl(
-                this.getDefaultValueForAttr(attr),
+                { value: this.getDefaultValueForAttr(attr), 
+                    disabled: attr.isMeliCode && (attr.attrTypeInt == 1 || attr.attrTypeInt == 2) && this.authorizedUsername != "---" },
                 this.getValidationForAttr(attr)
             );
         });
@@ -358,11 +396,11 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     getValidationForAttr(attr: IAttr): any[] {
         let validations = [];
 
-        if (attr.isRequired && attr.attrTypeInt != 4) {
+        if (attr.isRequired) {
             validations.push(Validators.required);
         }
 
-        if (attr.isMeliCode && attr.attrTypeInt == 2) {
+        if (attr.isMeliCode && (attr.attrTypeInt == 2 || attr.attrTypeInt == 1)) {
             validations.push(validateMeliCode);
         }
 
@@ -436,7 +474,12 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         if (this.isFromSts || this.forceExit) {
             return false;
         }
-        return this.group.dirty;
+
+        if (this.group) {
+            return this.group.dirty;
+        }
+
+        return false
     }
 
     openc(picker1) {
@@ -520,11 +563,11 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         return shuffled;
     }
 
-    isAttrHasError(attr: IAttr): boolean {
-        let input = this.group.controls['p' + this.getIndexForAttr(attr.id)];
+    isAttrHasError(attrId: number, includeUniq = true): boolean {
+        let input = this.group.controls['p' + this.getIndexForAttr(attrId)];
         if (input.value && (input.invalid ||
-            this.attrUniqList.some(c => c == attr.id) ||
-            this.reqfilesAttrint.some(c => c == attr.id))) {
+            (includeUniq ? this.attrUniqList.some(c => c == attrId) : false) ||
+            this.reqfilesAttrint.some(c => c == attrId))) {
             return true
         }
 
@@ -548,19 +591,23 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         }
     }
 
+    isLoadingForUniqAttr = false;
+
     async checkForUniqValue(val: any, attrId: number) {
         try {
-            if (!val) {
+            if (!val || this.isAttrHasError(attrId, false)) {
                 return;
             }
 
             let catId = this.catId;
 
+            this.isLoadingForUniqAttr = true;
+
             let data = await this.auth.post("/api/Item/CheckForUniqAttr", {
                 catId: catId,
                 attrId: attrId,
                 val: val
-            }).toPromise();
+            }).pipe(finalize(() => this.isLoadingForUniqAttr = false)).toPromise();
 
             let un = this.attrUniqList.find(c => c == attrId);
             if (data.success) {
@@ -719,36 +766,89 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         }
     }
 
+    async totallyCheckForUniqAttrs() {
+        let reqAttrs = this.attrs.filter(c => c.isUniq && (c.attrTypeInt == 1 || c.attrTypeInt == 2));
+
+        await Promise.all(reqAttrs.map(async (attr) => {
+            await this.checkForUniqValue(this.group.controls['p' + this.getIndexForAttr(attr.id)].value, attr.id);
+        }));
+    }
+
     isUploading = false;
     fileSize_MB = 0;
     uploaded_MB = 0;
     uploaded_PS = 0;
 
-    async sts() {
-        let reqAttrs = this.attrs.filter(c => c.isUniq && (c.attrTypeInt == 1 || c.attrTypeInt == 2))
+    async sts(isFromCountDownEvent = false, repeatTime = 0) {
 
-        await Promise.all(reqAttrs.map(async (attr) => {
-            await this.checkForUniqValue(this.group.controls['p' + this.getIndexForAttr(attr.id)].value, attr.id);
-        }));
+        await this.totallyCheckForUniqAttrs();
 
         if (
             this.group.valid &&
             this.reqfilesAttrint.length == 0 &&
             this.attrUniqList.length == 0
         ) {
-            let swalData = await Swal.fire({
-                title: "آیا شما مایل به ثبت داده های فعلی هستید؟",
-                icon: "question",
-                text: "داده های وارد شده شما ثبت، و امکان ویرایش آن پس از ارسال و ثبت نهایی وجود ندارد",
-                confirmButtonText: "بله",
-                cancelButtonText: "خیر",
-                showCancelButton: true,
-                allowOutsideClick: false,
-                allowEnterKey: false,
-            });
+            let isAllowedToSendData = isFromCountDownEvent && repeatTime == 0;
 
-            if (swalData.value) {
-                this.disableButton = true;
+            this.isUploading = true;
+
+            if (!isFromCountDownEvent) {
+                let swalData = await Swal.fire({
+                    title: "آیا مایل به ثبت داده های فعلی هستید؟",
+                    icon: "question",
+                    text: "داده های وارد شده شما ثبت، و امکان ویرایش آن پس از ارسال و ثبت نهایی وجود ندارد",
+                    confirmButtonText: "بله",
+                    cancelButtonText: "خیر",
+                    showCancelButton: true,
+                    allowOutsideClick: false,
+                    allowEnterKey: false,
+                });
+
+                isAllowedToSendData = swalData.value ? true : false;
+            }
+
+
+            if (isFromCountDownEvent && repeatTime != 0) {
+
+                if (repeatTime > 20) {
+                    this.message.showWarningAlert("متاسفانه در حال حاضر امکان ثبت داده های شما وجود ندارد");
+                    this.router.navigateByUrl("/");
+                    return;
+                }
+
+                let timerInterval;
+                let result = await Swal.fire({
+                    title: 'تلاش مجدد خودکار',
+                    html: 'داده های شما تا <b></b> ثانیه دیگر به سرور ارسال میشود! لطفا صبور باشید و اتصال اینترنت خود را بررسی کنید.',
+                    timer: repeatTime * 30 * 1000,
+                    timerProgressBar: true,
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    allowEnterKey: false,
+                    onBeforeOpen: () => {
+                        Swal.showLoading();
+                        timerInterval = setInterval(() => {
+                            const content = Swal.getContent();
+                            if (content) {
+                                const b = content.querySelector('b');
+                                if (b) {
+                                    b.textContent = `${Number.parseFloat((Swal.getTimerLeft() / 1000).toString()).toFixed(0)}`;
+                                }
+                            }
+                        }, 1000);
+                    },
+                    onClose: () => {
+                        clearInterval(timerInterval);
+                    }
+                });
+
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    isAllowedToSendData = true;
+                }
+            }
+
+
+            if (isAllowedToSendData) {
 
                 let object = {
                     itemAttrs: this.itemAttrs,
@@ -823,8 +923,16 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                                         table: "Item"
                                     }, data);
 
+                                    let dialogTitle = "";
+
+                                    if (isFromCountDownEvent) {
+                                        dialogTitle = `مهلت ${this.cat.btnTitle ? this.cat.btnTitle : "ثبت نام"} به پایان رسید! و داده های شما به صورت خودکار ثبت شدند.`;
+                                    } else {
+                                        dialogTitle = "ثبت داده ها با موفقیت انجام شد";
+                                    }
+
                                     Swal.fire({
-                                        title: "ثبت داده ها با موفقیت انجام شد",
+                                        title: dialogTitle,
                                         icon: "success",
                                         text: data.message + " کد رهگیری شما : " + data.type,
                                         confirmButtonText: "کد رهگیری را یادداشت کردم",
@@ -835,14 +943,15 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                                         if (result.value) {
                                             this.isFromSts = true;
                                             this.router.navigate(["/"]);
-                                            this.loginService.removeToken(this.catId);
-                                            this.licenseService.removeLicense(this.catId);
                                         }
                                     });
                                 } else {
                                     this.message.showWarningAlert("خطایی روی داده است لطفا با راهبر سیستم تماس حاصل فرمایید");
                                     this.message.showMessageforFalseResult(data);
                                     this.isUploading = false;
+                                    if (isFromCountDownEvent) {
+                                        this.sts(isFromCountDownEvent, repeatTime + 1.5);
+                                    }
                                 }
                                 break;
                         }
@@ -850,13 +959,26 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                     catchError(() => {
                         this.message.showWarningAlert("خطایی روی داده است لطفا با راهبر سیستم تماس حاصل فرمایید");
                         this.isUploading = false;
+                        if (isFromCountDownEvent) {
+                            this.sts(isFromCountDownEvent, repeatTime + 1.5);
+                        }
                         return of(EMPTY);
                     }),
                     last()
                 ).subscribe();
+            } else {
+                if (isFromCountDownEvent) {
+                    this.router.navigateByUrl("/");
+                }
             }
         } else {
-            this.message.showWarningAlert("مقادیر خواسته شده را تکمیل نمایید");
+            if (isFromCountDownEvent) {
+                let title = `زمان ثبت اطلاعات به پایان رسیده است و اطلاعات شما ناقص است! در حال خروج از صفحه... `;
+                this.message.showWarningAlert(title);
+                this.router.navigateByUrl("/");
+            } else {
+                this.message.showWarningAlert("مقادیر خواسته شده را تکمیل نمایید");
+            }
         }
     }
 }
