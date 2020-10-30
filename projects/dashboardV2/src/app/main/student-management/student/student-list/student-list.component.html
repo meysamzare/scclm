@@ -130,12 +130,14 @@
 </app-card>
 
 
-<app-card title="لیست انتخاب شده ها">
-
+<app-card title="لیست انتخاب شده ها" *ngIf="selectedList.length != 0">
+    <app-data-list [staticData]="selectedList">
+        
+    </app-data-list>
 </app-card>
 
 
 
-<app-card title="لیست انتخاب شده ها">
+<app-card title="اطلاعات دانش آموز">
 
 </app-card>
