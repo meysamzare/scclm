@@ -4,7 +4,7 @@
         <div class="row">
 
             <div class="col-md-6">
-                <h2 class="font-bold">پرتال مجتمع آموزشی طاها</h2>
+                <h2 class="font-bold">پرتال مجتمع آموزشی {{ auth.schoolTitle }}</h2>
                 <app-login-messages [Type]="5"></app-login-messages>
             </div>
             <div class="col-md-6">
@@ -35,7 +35,7 @@
                             class="btn btn-primary block full-width m-b">
                             ورود
                         </button>
-                        <button routerLink="/login-student" class="btn btn-info block full-width m-b">
+                        <button *ngIf="false" routerLink="/login-student" class="btn btn-info block full-width m-b">
                             ورود دانش آموزان
                         </button>
                         <button (click)="back()" class="btn btn-warning block full-width m-b">
@@ -56,7 +56,8 @@
             <div class="col-md-12 text-center">
                 <b>طراحی و توسعه : شرکت نو آوران هوشمند سیناپس</b>
 
-                <p style="font-family: Arial, Helvetica, sans-serif !important; margin-top: 5px;"> Version: {{ auth.DASHBOARD_VERSION }}</p>
+                <p style="font-family: Arial, Helvetica, sans-serif !important; margin-top: 5px;"> Version:
+                    {{ auth.DASHBOARD_VERSION }}</p>
             </div>
         </div>
     </div>

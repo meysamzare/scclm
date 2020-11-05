@@ -89,12 +89,12 @@ export class AuthService {
 
 
 
-    DASHBOARD_VERSION = "1.0.0 Beta 23";
+    DASHBOARD_VERSION = "1.0.0 Alpha 1";
 
-    INDEX_VERSION = "3.3.2 Build 3645";
+    INDEX_VERSION = "3.3.5 Build 8400";
 
     PARENTMOBILEAPP_VERSION = "3.1.8 Build 407";
-    
+
     TMA_VERSION = "1.9.4 Build 8600";
 
 
@@ -118,10 +118,20 @@ export class AuthService {
     public BBBServer?: string;
     public BBBSS?: string;
 
+    public schoolTitle?: string;
+    public schoolEmail?: string;
+    public instagramUrl?: string;
+    public aboutTitle?: string;
+    public aboutContent?: string;
+    public schoolAditionalTitle?: string;
+    public tels?: string;
+    public activeHr?: string;
+    public copyRight?: string;
+
 
     load(http: HttpClient, type: "promise" | "observable" = "promise") {
         var req = http.get('./assets/config/data.json').pipe(
-            tap((data: IData) => {
+            tap((data: any) => {
                 this.apiUrl = data.apiUrl;
                 this.dashboardUrl = data.dashboardUrl;
                 this.indexUrl = data.indexUrl;
@@ -137,6 +147,16 @@ export class AuthService {
 
                 this.BBBServer = data.BBBServer;
                 this.BBBSS = data.BBBSS;
+
+                this.schoolTitle = data.schoolTitle || "";
+                this.schoolEmail = data.schoolEmail || "";
+                this.instagramUrl = data.instagramUrl || "";
+                this.aboutTitle = data.aboutTitle || "";
+                this.aboutContent = data.aboutContent || "";
+                this.schoolAditionalTitle = data.schoolAditionalTitle || "";
+                this.tels = data.tels || "";
+                this.activeHr = data.activeHr || "";
+                this.copyRight = data.copyRight || "";
 
                 this.idb.getObjectStore(this.idb.dbApiStoreName).then((obstore) => {
                     obstore.getAll().onsuccess = (e) => {

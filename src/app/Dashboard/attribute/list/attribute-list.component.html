@@ -51,7 +51,7 @@
 
                             <ng-container matColumnDef="select">
                                 <th mat-header-cell *matHeaderCellDef>
-                                    <mat-checkbox [disabled]="!haveAnyData()" matTooltipPosition="before"
+                                    <mat-checkbox [disabled]="!haveAnyData() || getRowCanSelected() == 0" matTooltipPosition="before"
                                         matTooltip=" تعداد {{ selection.selected.length }} مورد انتخاب شده است"
                                         (change)="$event ? masterToggle() : null"
                                         [checked]="selection.hasValue() && isAllSelected()"

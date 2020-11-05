@@ -128,7 +128,7 @@ export function getPostTypeString(type): string {
         return "رویه احراز هویت";
     }
     if (type == 16) {
-        return "شرایط ثبت نام در طاها";
+        return "شرایط ثبت نام";
     }
     if (type == 17) {
         return "درخواست تجدید نظر";
@@ -146,13 +146,13 @@ export function getPostTypeString(type): string {
         return "فرصت‌های شغلی";
     }
     if (type == 22) {
-        return "تماس با طاها";
+        return "تماس با ما";
     }
     if (type == 23) {
-        return "درباره طاها";
+        return "درباره ما";
     }
     if (type == 24) {
-        return "دبیرخانه برگزیدگان طاها";
+        return "دبیرخانه برگزیدگان";
     }
     if (type == 25) {
         return "هدایت تحصیلی";

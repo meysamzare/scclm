@@ -71,7 +71,7 @@ export class StudentStudyRecordComponent implements OnInit {
             this.auth.handlerError(er);
         });
 
-        this.auth.post("/api/Workbook/getAllActive").subscribe(data => {
+        this.auth.post("/api/Workbook/getAll").subscribe(data => {
             if (data.success) {
                 this.workbooks = data.data;
             } else {
@@ -149,59 +149,61 @@ export class StudentStudyRecordComponent implements OnInit {
     }
 
     onWorkbookSelect() {
-        var classId = this.registredStdClassMngs.find(c => c.isActive == true).classId;
-        if (!classId) {
-            return this.auth.message.showErrorAlert("این دانش آموز سال تحصیلی فعالی ندارد!");
-        }
-
-        var obj = {
-            studentId: this.selectedStudent,
-            gradeId: this.selectedGrade,
-            classId: classId,
-            workbookId: this.selectedWorkBook
-        }
-        this.auth.post("/api/ExamScore/getTotalAverageByStudentGrade", obj, {
-            type: 'View',
-            agentId: this.auth.getUserId(),
-            agentType: 'User',
-            agentName: this.auth.getUser().fullName,
-            tableName: 'View Student Workbook',
-            logSource: 'dashboard',
-            object: obj,
-            table: "Student",
-            tableObjectIds: [this.selectedStudent]
-        }).subscribe(data => {
-            if (data.success) {
-
-                var headers: string[] = data.data.headers;
-                var courseAvgs: number[] = data.data.courseAvgs;
-                var totalAvg: number = data.data.totalAvg;
-                var ratingsInClass: number[] = data.data.ratingsInClass;
-                var ratingsInGrade: number[] = data.data.ratingsInGrade;
-
-                var ratingOfTotalAvgClass: number = data.data.ratingOfTotalAvgClass;
-                var ratingOfTotalAvgGrade: number = data.data.ratingOfTotalAvgGrade;
-                var avgOfTotalAvrageGrade: number = data.data.avgOfTotalAvrageGrade;
-                var topTotalAvrageGrade: number = data.data.topTotalAvrageGrade;
-
-
-                this.coursesHeaders = headers;
-                this.courseAvgs = courseAvgs;
-                this.totalAvg = totalAvg;
-
-                this.ratingsInClass = ratingsInClass;
-                this.ratingsInGrade = ratingsInGrade;
-
-                this.ratingOfTotalAvgClass = ratingOfTotalAvgClass;
-                this.ratingOfTotalAvgGrade = ratingOfTotalAvgGrade;
-                this.avgOfTotalAvrageGrade = avgOfTotalAvrageGrade;
-                this.topTotalAvrageGrade = topTotalAvrageGrade;
-            } else {
-                this.auth.message.showMessageforFalseResult(data);
+        if (this.selectedWorkBook) {
+            var classId = this.registredStdClassMngs.find(c => c.isActive == true).classId;
+            if (!classId) {
+                return this.auth.message.showErrorAlert("این دانش آموز سال تحصیلی فعالی ندارد!");
             }
-        }, er => {
-            this.auth.handlerError(er);
-        });
+
+            var obj = {
+                studentId: this.selectedStudent,
+                gradeId: this.selectedGrade,
+                classId: classId,
+                workbookId: this.selectedWorkBook
+            }
+            this.auth.post("/api/ExamScore/getTotalAverageByStudentGrade", obj, {
+                type: 'View',
+                agentId: this.auth.getUserId(),
+                agentType: 'User',
+                agentName: this.auth.getUser().fullName,
+                tableName: 'View Student Workbook',
+                logSource: 'dashboard',
+                object: obj,
+                table: "Student",
+                tableObjectIds: [this.selectedStudent]
+            }).subscribe(data => {
+                if (data.success) {
+
+                    var headers: string[] = data.data.headers;
+                    var courseAvgs: number[] = data.data.courseAvgs;
+                    var totalAvg: number = data.data.totalAvg;
+                    var ratingsInClass: number[] = data.data.ratingsInClass;
+                    var ratingsInGrade: number[] = data.data.ratingsInGrade;
+
+                    var ratingOfTotalAvgClass: number = data.data.ratingOfTotalAvgClass;
+                    var ratingOfTotalAvgGrade: number = data.data.ratingOfTotalAvgGrade;
+                    var avgOfTotalAvrageGrade: number = data.data.avgOfTotalAvrageGrade;
+                    var topTotalAvrageGrade: number = data.data.topTotalAvrageGrade;
+
+
+                    this.coursesHeaders = headers;
+                    this.courseAvgs = courseAvgs;
+                    this.totalAvg = totalAvg;
+
+                    this.ratingsInClass = ratingsInClass;
+                    this.ratingsInGrade = ratingsInGrade;
+
+                    this.ratingOfTotalAvgClass = ratingOfTotalAvgClass;
+                    this.ratingOfTotalAvgGrade = ratingOfTotalAvgGrade;
+                    this.avgOfTotalAvrageGrade = avgOfTotalAvrageGrade;
+                    this.topTotalAvrageGrade = topTotalAvrageGrade;
+                } else {
+                    this.auth.message.showMessageforFalseResult(data);
+                }
+            }, er => {
+                this.auth.handlerError(er);
+            });
+        }
     }
 
     gradeSelected() {

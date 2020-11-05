@@ -9,7 +9,7 @@
 				</div>
 			</div>
 			<div class="col-lg-5 col-md-5 col-sm-8 col-7">
-				<div class="search-area default">
+				<div class="search-area default" style="opacity: .5;">
 					<form class="search">
 						<input type="text" [disabled]="true" placeholder="عناوین ، مطالب و هر آنچه نیاز دارید را جستجو کنید ...">
 						<button><img src="/assets/img/search.png" alt=""></button>
@@ -22,10 +22,10 @@
 						<i class="fa fa-question-circle"></i>
 						سوالات متداول
 					</a>
-					<a class="btn btn-neutral">
+					<!-- <a class="btn btn-neutral">
 						<i class="fa fa-life-ring"></i>
 						پشتیبانی
-					</a>
+					</a> -->
 					<a (click)="gotoLogin()" class="btn btn-neutral">
 						<i class="fa fa-sign-in"></i>
 						ورود به سیستم آموزشی
@@ -68,11 +68,11 @@
 				<li class="list-item">
 					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 1 }" class="nav-link">اخبار</a>
 				</li>
-				<li class="list-item">
+				<!-- <li class="list-item">
 					<a class="nav-link">همکاری با ما</a>
-				</li>
+				</li> -->
 				<li class="list-item">
-					<a class="nav-link">تماس با ما</a>
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 22 }" class="nav-link">تماس با ما</a>
 				</li>
 				<li class="list-item amazing-item">
 					<a class="nav-link" [routerLink]="['/gallery']">
