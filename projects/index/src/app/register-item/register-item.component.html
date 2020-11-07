@@ -151,10 +151,10 @@
                                             <hr>
 
                                             <ng-container *ngIf="i.questionType == 1">
-                                                <label>جواب شما:</label>
-                                                <ckeditor [formControlName]="'p' + getIndexForAttr(i.id)"
+                                                <app-custom-editor [formControlName]="'p' + getIndexForAttr(i.id)"
+                                                    label="جواب شما:"
                                                     (dataChange)="setItemAttrDirectly($event, i.id); ">
-                                                </ckeditor>
+                                                </app-custom-editor>
                                             </ng-container>
 
                                             <ng-container *ngIf="i.questionType == 2">
@@ -183,11 +183,11 @@
                                                 </button>
                                             </div>
                                         </div> -->
-                                                <mat-hint>محتوای زیر را تکمیل کنید</mat-hint>
-                                                <ckeditor [data]="i.complatabelContent"
+                                                <app-custom-editor [data]="i.complatabelContent"
                                                     [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                    (dataChange)="setItemAttrDirectly($event, i.id); ">
-                                                </ckeditor>
+                                                    label="محتوای زیر را تکمیل کنید"
+                                                    (dataChange)="setItemAttrDirectly($event, i.id);">
+                                                </app-custom-editor>
                                             </ng-container>
 
                                         </ng-container>
@@ -389,10 +389,10 @@
                                                 <hr>
 
                                                 <ng-container *ngIf="i.questionType == 1">
-                                                    <label>جواب شما:</label>
-                                                    <ckeditor [formControlName]="'p' + getIndexForAttr(i.id)"
+                                                    <app-custom-editor [formControlName]="'p' + getIndexForAttr(i.id)"
+                                                        label="جواب شما:"
                                                         (dataChange)="setItemAttrDirectly($event, i.id); ">
-                                                    </ckeditor>
+                                                    </app-custom-editor>
                                                 </ng-container>
 
                                                 <ng-container *ngIf="i.questionType == 2">
@@ -408,12 +408,11 @@
                                                 </ng-container>
 
                                                 <ng-container *ngIf="i.questionType == 3">
-                                                    <mat-hint>محتوای زیر را تکمیل کنید</mat-hint>
-                                                    <ckeditor
-                                                        [data]="haveSavedData ? getItemAttr(i.id) : i.complatabelContent"
+                                                    <app-custom-editor [data]="i.complatabelContent"
                                                         [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                        (dataChange)="setItemAttrDirectly($event, i.id); ">
-                                                    </ckeditor>
+                                                        label="محتوای زیر را تکمیل کنید"
+                                                        (dataChange)="setItemAttrDirectly($event, i.id);">
+                                                    </app-custom-editor>
                                                 </ng-container>
 
                                             </ng-container>

@@ -147,13 +147,4 @@ export class QuestionOptionEditComponent implements OnDestroy{
         }
     }
 
-    insertPicture() {
-        const dialog = this.dialog.open(PictureSelectModalComponent);
-
-        dialog.afterClosed().subscribe(content => {
-            if (content) {
-                this.questionoption.name += content
-            }
-        });
-    }
 }

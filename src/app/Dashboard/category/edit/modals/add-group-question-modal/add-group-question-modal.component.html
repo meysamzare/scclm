@@ -29,15 +29,23 @@
                         </ng-select>
                     </div>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-3">
 
                     <div class="form-group">
-                        <label>سوال سخت</label>
+                        <label>سوال خیلی دشوار</label>
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" name="hardQuestion"
+                            [(ngModel)]="veryHardQuestionNumber" placeholder="تعداد سوال سخت" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-3">
+
+                    <div class="form-group">
+                        <label>سوال دشوار</label>
                         <input type="text" inputmode="numeric" pattern="[0-9]*" name="hardQuestion"
                             [(ngModel)]="hardQuestionNumber" placeholder="تعداد سوال سخت" class="form-control">
                     </div>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-3">
 
                     <div class="form-group">
                         <label>سوال متوسط</label>
@@ -45,7 +53,7 @@
                             [(ngModel)]="mediumQuestionNumber" placeholder="تعداد سوال متوسط" class="form-control">
                     </div>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-3">
 
                     <div class="form-group">
                         <label>سوال آسان</label>
@@ -61,7 +69,7 @@
     <div mat-dialog-actions>
         <button mat-stroked-button color="warn" style="margin-right: 5px;" [mat-dialog-close]="false">لغو</button>
         <button mat-stroked-button (click)="addRandomQuestions()"
-            [disabled]="fm3.invalid || isLoading || !selectedCourseForQuestion || (!hardQuestionNumber && !mediumQuestionNumber && !easyQuestionNumber)">
+            [disabled]="fm3.invalid || isLoading || !selectedCourseForQuestion || (!veryHardQuestionNumber && !hardQuestionNumber && !mediumQuestionNumber && !easyQuestionNumber)">
             افزودن گروهی سوالات
         </button>
     </div>

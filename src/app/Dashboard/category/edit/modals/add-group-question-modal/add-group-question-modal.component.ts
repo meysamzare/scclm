@@ -16,6 +16,7 @@ export class AddGroupQuestionModalComponent implements OnInit {
 
     selectedGradeForCourse = null;
     selectedCourseForQuestion = null;
+    veryHardQuestionNumber = null;
     hardQuestionNumber = null;
     mediumQuestionNumber = null;
     easyQuestionNumber = null;
@@ -29,6 +30,8 @@ export class AddGroupQuestionModalComponent implements OnInit {
         private auth: AuthService,
     ) {
         this.catId = data.catId;
+        this.selectedGradeForCourse = data.selectedGrade;
+        this.selectedCourseForQuestion = data.selectedCourse;
     }
 
     ngOnInit() {
@@ -68,6 +71,7 @@ export class AddGroupQuestionModalComponent implements OnInit {
         this.auth.post("/api/Category/AddRandomQuestionAttribute", {
             catId: this.catId,
             selectedCourseForQuestion: this.selectedCourseForQuestion,
+            veryHardQuestionNumber: this.veryHardQuestionNumber,
             hardQuestionNumber: this.hardQuestionNumber,
             mediumQuestionNumber: this.mediumQuestionNumber,
             easyQuestionNumber: this.easyQuestionNumber,

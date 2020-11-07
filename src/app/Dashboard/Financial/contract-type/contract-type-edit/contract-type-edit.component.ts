@@ -161,13 +161,4 @@ export class ContractTypeEditComponent implements OnInit, OnDestroy {
 		}
     }
     
-    insertPicture() {
-        const dialog = this.dialog.open(PictureSelectModalComponent);
-
-        dialog.afterClosed().subscribe(content => {
-            if (content) {
-                this.contrcttype.content += content
-            }
-        });
-    }
 }

@@ -47,18 +47,10 @@
                         <br>
 
                         <div class="col-lg-12">
-                            <label>عنوان گزینه</label>
-                            <ckeditor name="qtitle" #questionTitle="ngModel" [(ngModel)]="questionoption.name" required>
-                                <ckbutton [name]="'image'" [command]="'insert_pic'"
-                                    (click)="insertPicture()" [icon]="'plugins/icons.png?t=K24B'"
-                                    [label]="'انتخاب تصویر ار آلبوم تصاویر'">
-                                </ckbutton>
-                            </ckeditor>
-                            <div *ngIf="(questionTitle.touched || questionTitle.dirty) && questionTitle.invalid">
-                                <p *ngIf="questionTitle.hasError('required')" class="error">
-                                    وارد کردن عنوان گزینه الزامی است
-                                </p>
-                            </div>
+
+                            <app-custom-editor label="عنوان گزینه" name="qtitle" [(ngModel)]="questionoption.name"
+                                [required]="true">
+                            </app-custom-editor>
                         </div>
 
                         <br>

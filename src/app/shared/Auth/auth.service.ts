@@ -91,7 +91,7 @@ export class AuthService {
 
     DASHBOARD_VERSION = "1.0.0 Alpha 1";
 
-    INDEX_VERSION = "3.3.5 Build 8400";
+    INDEX_VERSION = "3.3.6 Build 329";
 
     PARENTMOBILEAPP_VERSION = "3.1.8 Build 407";
 
@@ -127,6 +127,7 @@ export class AuthService {
     public tels?: string;
     public activeHr?: string;
     public copyRight?: string;
+    public fadakTitle?: string;
 
 
     load(http: HttpClient, type: "promise" | "observable" = "promise") {
@@ -157,6 +158,7 @@ export class AuthService {
                 this.tels = data.tels || "";
                 this.activeHr = data.activeHr || "";
                 this.copyRight = data.copyRight || "";
+                this.fadakTitle = data.fadakTitle || "";
 
                 this.idb.getObjectStore(this.idb.dbApiStoreName).then((obstore) => {
                     obstore.getAll().onsuccess = (e) => {

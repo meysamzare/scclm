@@ -313,14 +313,5 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     ngOnInit() {
     }
 
-    insertPicture() {
-        const dialog = this.dialog.open(PictureSelectModalComponent);
-
-        dialog.afterClosed().subscribe(content => {
-            if (content) {
-                this.PAGE_Data.desc += content
-            }
-        });
-    }
 
 }

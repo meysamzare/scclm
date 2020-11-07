@@ -445,25 +445,19 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label>توضیحات {{ pageTitle }}</label>
-                                            <ckeditor name="desc" [(ngModel)]="category.desc">
 
-                                                <ckbutton [name]="'image'" [command]="'insert_pic'"
-                                                    (click)="insertPicture('Desc')" [icon]="'plugins/icons.png?t=K24B'"
-                                                    [label]="'انتخاب تصویر ار آلبوم تصاویر'"></ckbutton>
+                                            <app-custom-editor name="desc" [(ngModel)]="category.desc"
+                                                label="توضیحات {{ pageTitle }}" [required]="false">
+                                            </app-custom-editor>
 
-                                            </ckeditor>
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label>تفاهم نامه {{ pageTitle }}</label>
-                                            <ckeditor name="licence" [(ngModel)]="category.license">
-                                                <ckbutton [name]="'image'" [command]="'insert_pic'"
-                                                    (click)="insertPicture('License')"
-                                                    [icon]="'plugins/icons.png?t=K24B'"
-                                                    [label]="'انتخاب تصویر ار آلبوم تصاویر'"></ckbutton>
-                                            </ckeditor>
+
+                                            <app-custom-editor [required]="false" name="licence"
+                                                [(ngModel)]="category.license" label="تفاهم نامه {{ pageTitle }}">
+                                            </app-custom-editor>
                                             <mat-hint>درصورت پرکردن این فیلد قبل از وارد کردن داده، کاربر می بایست
                                                 مفاد این
                                                 تفاهم

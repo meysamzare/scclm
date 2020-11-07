@@ -202,6 +202,7 @@ import { OnlineClassListComponent } from '../Dashboard/OnlineClass/online-class-
 import { EditStudentDailyScheduleComponent } from '../Dashboard/student/student-daily-schedule/edit-student-daily-schedule/edit-student-daily-schedule.component';
 import { ListStudentDailyScheduleComponent } from '../Dashboard/student/student-daily-schedule/list-student-daily-schedule/list-student-daily-schedule.component';
 import { StudentDailyScheduleDetailComponent } from '../Dashboard/student/student-daily-schedule/list-student-daily-schedule/student-daily-schedule-detail/student-daily-schedule-detail.component';
+import { CustomEditorModule } from "../shared/components/custom-editor/custom-editor.module";
 
 @NgModule({
     imports: [
@@ -226,7 +227,8 @@ import { StudentDailyScheduleDetailComponent } from '../Dashboard/student/studen
         ChartsModule,
         CKEditorModule,
         HtmlToolsModule,
-        ImageIconModule
+        ImageIconModule,
+        CustomEditorModule
     ],
     declarations: [
         DashboardComponent,

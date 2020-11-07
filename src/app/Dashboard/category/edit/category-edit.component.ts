@@ -664,20 +664,6 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
         }
     }
 
-    insertPicture(type: "Desc" | "License") {
-        const dialog = this.dialog.open(PictureSelectModalComponent);
-
-        dialog.afterClosed().subscribe(content => {
-            if (content) {
-                if (type == "Desc") {
-                    this.category.desc += content
-                }
-                if (type == "License") {
-                    this.category.license += content
-                }
-            }
-        });
-    }
 
     addTemplateAttribute() {
         const dialog = this.dialog.open(AddTemplateAttributeModalComponent, {
@@ -708,7 +694,9 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
     addGroupQuestions() {
         const dialog = this.dialog.open(AddGroupQuestionModalComponent, {
             data: {
-                catId: this.category.id
+                catId: this.category.id,
+                selectedGrade: this.category.gradeId,
+                selectedCourse: this.category.courseId
             }
         });
 

@@ -118,20 +118,9 @@
                                     <!-- <textarea class="form-control" required name="content" placeholder="متن" rows="5"
                                         [(ngModel)]="Conversation.content"></textarea> -->
 
-                                    <label>متن</label>
-                                    <ckeditor name="qtitle" #questionTitle="ngModel" [(ngModel)]="Conversation.content"
-                                        required>
-                                        <ckbutton [name]="'image'" [command]="'insert_pic'"
-                                            (click)="insertPicture()" [icon]="'plugins/icons.png?t=K24B'"
-                                            [label]="'انتخاب تصویر ار آلبوم تصاویر'">
-                                        </ckbutton>
-                                    </ckeditor>
-                                    <div
-                                        *ngIf="(questionTitle.touched || questionTitle.dirty) && questionTitle.invalid">
-                                        <p *ngIf="questionTitle.hasError('required')" class="error">
-                                            وارد کردن متن الزامی است
-                                        </p>
-                                    </div>
+                                    <app-custom-editor label="متن" name="qtitle" [(ngModel)]="Conversation.content"
+                                        [required]="true">
+                                    </app-custom-editor>
                                 </div>
                             </div>
 

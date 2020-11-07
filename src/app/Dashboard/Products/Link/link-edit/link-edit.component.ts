@@ -283,14 +283,5 @@ export class LinkEditComponent implements OnInit, OnDestroy {
     }
 
     
-    insertPicture() {
-        const dialog = this.dialog.open(PictureSelectModalComponent);
-
-        dialog.afterClosed().subscribe(content => {
-            if (content) {
-                this.PAGE_Data.desc += content
-            }
-        });
-    }
 
 }

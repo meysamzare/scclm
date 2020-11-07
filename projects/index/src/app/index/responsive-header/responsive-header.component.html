@@ -12,8 +12,8 @@
 				<span class="navbar-toggler-bar bar3"></span>
 			</button>
 			<div class="search-nav default">
-				<form>
-					<input type="text" placeholder="جستجو ...">
+				<form style="opacity: .5;">
+					<input disabled type="text" placeholder="جستجو ...">
 					<button type="submit"><img src="/assets/img/search.png" alt=""></button>
 				</form>
 				<ul>
@@ -55,17 +55,17 @@
 				<li>
 					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 1 }">اخبار</a>
 				</li>
-				<li>
+				<!-- <li>
 					<a>همکاری با ما</a>
-				</li>
+				</li> -->
 				<li>
-					<a>تماس با ما</a>
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 22 }">تماس با ما</a>
 				</li>
 				<li>
 					<a [routerLink]="['/gallery']"> آلبوم عکس</a>
 				</li>
 				<li>
-					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 3 }"> نشریه دانش آموزی فدک</a>
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 3 }"> نشریه دانش آموزی {{ auth.fadakTitle }}</a>
 				</li>
 			</ul>
 		</div>

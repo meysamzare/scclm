@@ -125,9 +125,10 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     addOptionTemp() {
+
         this.options.push({
             id: 0,
-            title: `گزینه ${this.options.length + 1}`,
+            title: `${this.question.name || ""} گزینه ${this.options.length + 1}`,
             isTrue: false,
             name: "",
             questionId: this.question.id || 0,
@@ -263,10 +264,12 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.filteredPerson = this.person.valueChanges.pipe(
-            startWith(""),
-            map(value => this._filter(value))
-        );
+        if (this.person) {
+            this.filteredPerson = this.person.valueChanges.pipe(
+                startWith(""),
+                map(value => this._filter(value))
+            );
+        }
     }
 
     private _filter(value: string): string[] {
@@ -363,23 +366,6 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
         this.options = [];
     }
 
-    insertPicture(type: "title" | "complatabelContent" | "option", optionIndex?) {
-        const dialog = this.dialog.open(PictureSelectModalComponent);
-
-        dialog.afterClosed().subscribe(content => {
-            if (content) {
-                if (type == "title") {
-                    this.question.title += content;
-                }
-                if (type == "complatabelContent") {
-                    this.question.complatabelContent += content;
-                }
-                if (type == "option") {
-                    this.options[optionIndex].name += content;
-                }
-            }
-        });
-    }
 
     onQuestionTypeSelect() {
         if (!this.isEdit && this.question.type == 2) {
@@ -389,10 +375,10 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
                 this.options.push({
                     id: 0,
                     isTrue: index == 0,
-                    title: `${this.question.name} - گزینه ${index + 1}`,
+                    title: `${this.question.name || ""} گزینه ${index + 1}`,
                     questionId: this.question.id,
                     name: "",
-                    questionName: this.question.name
+                    questionName: this.question.name || ""
                 });
             }
         }

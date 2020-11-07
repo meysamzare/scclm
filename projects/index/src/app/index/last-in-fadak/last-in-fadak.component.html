@@ -4,7 +4,7 @@
 			style="border-top-style:solid;border-top-width:3px;border-top-color:#f65156;">
 			<header class="card-header">
 				<h3 class="card-title">
-					<span>آخرین مطالب منتشر شده در فدک</span>
+					<span>آخرین مطالب منتشر شده در نشریه دانش آموزی {{ auth.fadakTitle }}</span>
 				</h3>
 				<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 3 }" class="view-all">مشاهده همه</a>
 			</header>

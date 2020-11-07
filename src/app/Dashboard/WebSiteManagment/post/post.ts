@@ -81,7 +81,7 @@ export enum PostType {
 }
 
 
-export function getPostTypeString(type): string {
+export function getPostTypeString(type, fadakTitle = ""): string {
     if (type == 1) {
         return "اخبار";
     }
@@ -89,7 +89,7 @@ export function getPostTypeString(type): string {
         return "بلاگ";
     }
     if (type == 3) {
-        return "فدک";
+        return `نشریه دانش آموزی ${fadakTitle}`;
     }
     if (type == 4) {
         return "معاونت آموزشی";

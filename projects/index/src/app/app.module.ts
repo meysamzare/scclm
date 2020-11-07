@@ -59,6 +59,7 @@ import { CKEditorModule } from 'ckeditor4-angular';
 import { RegisterStepDirective, StepsDirective } from './register-item/register-step.directive';
 import { CountdownModule } from 'ngx-countdown';
 import { AttributeInputModule } from './register-item/attribute-input/attribute-input.module';
+import { CustomEditorModule } from 'src/app/shared/components/custom-editor/custom-editor.module';
 
 @NgModule({
     declarations: [
@@ -110,7 +111,8 @@ import { AttributeInputModule } from './register-item/attribute-input/attribute-
         HtmlToolsModule,
         CKEditorModule,
         CountdownModule,
-        AttributeInputModule
+        AttributeInputModule,
+        CustomEditorModule
     ],
     providers: [
         AuthService,

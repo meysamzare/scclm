@@ -250,9 +250,9 @@ export class PostsComponent implements OnInit {
 
     getTypeString(type?) {
         if (type) {
-            return getPostTypeString(type);
+            return getPostTypeString(type, this.auth.fadakTitle);
         }
-        return getPostTypeString(this.type);
+        return getPostTypeString(this.type, this.auth.fadakTitle);
 
     }
 

@@ -408,14 +408,5 @@ export class ViewTicketConversationComponent implements OnInit, OnDestroy {
         }
     }
 
-    insertPicture() {
-        const dialog = this.dialog.open(PictureSelectModalComponent);
-
-        dialog.afterClosed().subscribe(content => {
-            if (content) {
-                this.Conversation.content += content
-            }
-        });
-    }
 
 }

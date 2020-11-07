@@ -69,13 +69,11 @@
                             <div class="col-lg-12">
 
                                 <div class="form-group">
-                                    <label>توضیحات</label>
 
-                                    <ckeditor name="desc" [(ngModel)]="PAGE_Data.desc">
-                                        <ckbutton [name]="'image'" [command]="'insert_pic'" (click)="insertPicture()"
-                                            [icon]="'plugins/icons.png?t=K24B'"
-                                            [label]="'انتخاب تصویر ار آلبوم تصاویر'"></ckbutton>
-                                    </ckeditor>
+                                    <app-custom-editor label="توضیحات" name="desc" [(ngModel)]="PAGE_Data.desc"
+                                        [required]="false">
+                                    </app-custom-editor>
+
                                 </div>
                             </div>
                         </div>

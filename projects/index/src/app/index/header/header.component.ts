@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/shared/Auth/auth.service';
-import { MessageService } from 'src/app/shared/services/message.service';
 
 @Component({
 	selector: 'app-header',
@@ -10,8 +9,7 @@ import { MessageService } from 'src/app/shared/services/message.service';
 export class HeaderComponent implements OnInit {
 
 	constructor(
-		private auth: AuthService,
-		private message: MessageService
+		public auth: AuthService
 	) { }
 
 	ngOnInit() {

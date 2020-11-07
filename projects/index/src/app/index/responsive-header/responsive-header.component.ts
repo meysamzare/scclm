@@ -10,7 +10,7 @@ import { MessageService } from 'src/app/shared/services/message.service';
 export class ResponsiveHeaderComponent implements OnInit {
 
 	constructor(
-		private auth: AuthService,
+		public auth: AuthService,
 		private message: MessageService
 	) { }
 

@@ -389,15 +389,5 @@ export class PostEditComponent implements OnInit, OnDestroy {
         }
     }
 
-    insertPicture() {
-        const dialog = this.dialog.open(PictureSelectModalComponent);
-
-        dialog.afterClosed().subscribe(content => {
-            if (content) {
-                this.post.content += content
-            }
-        });
-    }
-
 
 }

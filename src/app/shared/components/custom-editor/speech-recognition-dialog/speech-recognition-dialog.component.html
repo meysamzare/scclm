@@ -1,0 +1,40 @@
+<div dir="rtl" style="width: 400px;">
+    <div mat-dialog-title>
+        تبدیل گفتار به نوشتار
+    </div>
+    <div mat-dialog-content>
+        <div class="row">
+            <div class="col-lg-12" style="margin-bottom: 20px;">
+                <button mat-fab [color]="isStarted ? 'warn' : 'primary'" (click)="toggle()">
+                    <mat-icon>microphone</mat-icon>
+                </button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div *ngIf="isStarted" style="margin-bottom: 20px;">
+                    <mat-progress-bar mode="buffer"></mat-progress-bar>
+                </div>
+
+
+                <div>
+                    <textarea class="form-control" cols="10" rows="7" [(ngModel)]="content" name="cont"></textarea>
+                </div>
+
+                <div>
+                    <mat-form-field style="width: 100%">
+                        <input matInput type="text" [disabled]="true" [(ngModel)]="tempContent" name="tempCont">
+                    </mat-form-field>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div mat-dialog-actions>
+        <button mat-stroked-button color="warn" [mat-dialog-close]="">لغو</button>
+        <button mat-stroked-button color="primary" style="margin-right: 5px;" [mat-dialog-close]="content">ثبت</button>
+    </div>
+</div>
