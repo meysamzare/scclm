@@ -57,8 +57,8 @@
 
             <div class="form-group">
                 <label>شماره شناسنامه</label>
-                <input type="number" required #idNumber="ngModel" name="idNumber" [(ngModel)]="student.idNumber"
-                    placeholder="شماره شناسنامه" class="form-control">
+                <input type="text" inputmode="numeric" pattern="[0-9]*" required #idNumber="ngModel" name="idNumber"
+                    [(ngModel)]="student.idNumber" placeholder="شماره شناسنامه" class="form-control">
                 <div *ngIf="(idNumber.touched || idNumber.dirty) &&
             idNumber.invalid">
                     <p *ngIf="idNumber.hasError('required')" class="error">
@@ -69,8 +69,8 @@
 
             <div class="form-group">
                 <label>شماره ملی</label>
-                <input type="number" required #idNumber2="ngModel" name="idNumber2" [(ngModel)]="student.idNumber2"
-                    placeholder="شماره ملی" class="form-control">
+                <input type="text" inputmode="numeric" pattern="[0-9]*" required #idNumber2="ngModel" name="idNumber2"
+                    [(ngModel)]="student.idNumber2" placeholder="شماره ملی" class="form-control">
                 <div *ngIf="(idNumber2.touched || idNumber2.dirty) &&
             idNumber2.invalid">
                     <p *ngIf="idNumber2.hasError('required')" class="error">
@@ -95,7 +95,7 @@
 
     </div>
     <div mat-dialog-actions>
-        <button mat-stroked-button [disabled]="fm1.invalid" (click)="sts()" >ویرایش</button>
+        <button mat-stroked-button [disabled]="fm1.invalid" (click)="sts()">ویرایش</button>
         <button mat-stroked-button color="warn" style="margin-right: 5px;" [mat-dialog-close]="false">لغو</button>
     </div>
 </div>
