@@ -152,7 +152,6 @@ declare var $: any;
             .bordered {
                 border: 1px solid #ccc !important;
                 border-radius: 15px;
-                padding: 10px;
                 margin-bottom: 20px;
             }
 
@@ -272,8 +271,8 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
             );
     }
 
-    getCurrentDataOfPage(): ItemList[] {
-        let List: ItemList[];
+    getCurrentDataOfPage(): any[] {
+        let List: any[];
 
         this.dataSource.connect().subscribe(rows => (List = rows));
 
@@ -407,36 +406,6 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
             ) {
                 this.showDietaleItem = this.items.find(c => c.id == itemId);
                 this.showDietaleCatId = categoryId;
-
-                this.auth
-                    .post("/api/Item/getItemAttrForItem", itemId)
-                    .subscribe(
-                        (data: jsondata) => {
-                            if (data.success) {
-                                this.showDietaleItemAttrs = data.data;
-                            } else {
-                                this.message.showMessageforFalseResult(data);
-                            }
-                        },
-                        er => {
-                            this.auth.handlerError(er);
-                        }
-                    );
-
-                this.auth
-                    .post("/api/Attribute/getAttrsForCat", categoryId)
-                    .subscribe(
-                        (data: jsondata) => {
-                            if (data.success) {
-                                this.showDietaleAttrs = data.data;
-                            } else {
-                                this.message.showMessageforFalseResult(data);
-                            }
-                        },
-                        er => {
-                            this.auth.handlerError(er);
-                        }
-                    );
 
                 this.showDietaledBox = true;
             }
@@ -754,91 +723,56 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
     setIsActive(id, isActive) {
         if (this.auth.isUserAccess(this.TYPE == 0 ? "edit_Item" : "edit_OnlineExamResult")) {
             if (
-                this.auth.checkForMatchRole(
-                    this.items.find(c => c.id == id).categoryRoleAccess
-                )
+                this.auth.checkForMatchRole(this.items.find(c => c.id == id).categoryRoleAccess)
             ) {
                 if (isActive) {
-                    var catId = 0;
 
-                    if (this.selectedCatId) {
-                        catId = this.selectedCatId;
-                    } else {
-                        catId = this.getCurrentDataOfPage().find(
-                            c => c.id == id
-                        ).category.id;
-                    }
+                    let currentItem = this.getCurrentDataOfPage().find(c => c.id == id);
 
-                    const dialogRef = this.dialog.open(
-                        ItemListActiveDialogComponent,
-                        {
-                            data: {
-                                id: id,
-                                catId: catId,
-                                title: this.getCurrentDataOfPage().find(
-                                    c => c.id == id
-                                ).title
-                            }
+                    var catId = currentItem.categoryId;
+
+                    const dialogRef = this.dialog.open(ItemListActiveDialogComponent, {
+                        data: {
+                            id: id,
+                            catId: catId,
+                            catType: this.TYPE,
+                            title: currentItem.title
                         }
-                    );
+                    });
 
                     dialogRef.afterClosed().subscribe(result => {
                         if (result) {
-                            this.auth
-                                .post("/api/Item/ChangeActiveState", {
-                                    id: id,
-                                    isActive: true
-                                })
-                                .subscribe(
-                                    (data: jsondata) => {
-                                        if (data.success) {
-                                            this.items[
-                                                this.items.findIndex(
-                                                    c => c.id == id
-                                                )
-                                            ].isActive = isActive;
+                            this.auth.post("/api/Item/ChangeActiveState", {
+                                id: id,
+                                isActive: true
+                            }).subscribe(data => {
+                                if (data.success) {
+                                    this.items[this.items.findIndex()].isActive = isActive;
 
-                                            this.dataSource = new MatTableDataSource(
-                                                this.items
-                                            );
-                                        } else {
-                                            this.message.showMessageforFalseResult(
-                                                data
-                                            );
-                                        }
-                                    },
-                                    er => {
-                                        this.auth.handlerError(er);
-                                    }
-                                );
+                                    this.dataSource = new MatTableDataSource(this.items);
+                                } else {
+                                    this.message.showMessageforFalseResult(data);
+                                }
+                            }, er => {
+                                this.auth.handlerError(er);
+                            });
                         }
                     });
                 } else {
-                    this.auth
-                        .post("/api/Item/ChangeActiveState", {
-                            id: id,
-                            isActive: isActive
-                        })
-                        .subscribe(
-                            (data: jsondata) => {
-                                if (data.success) {
-                                    this.items[
-                                        this.items.findIndex(c => c.id == id)
-                                    ].isActive = isActive;
+                    this.auth.post("/api/Item/ChangeActiveState", {
+                        id: id,
+                        isActive: isActive
+                    }).subscribe(data => {
+                        if (data.success) {
+                            this.items[this.items.findIndex(c => c.id == id)].isActive = isActive;
 
-                                    this.dataSource = new MatTableDataSource(
-                                        this.items
-                                    );
-                                } else {
-                                    this.message.showMessageforFalseResult(
-                                        data
-                                    );
-                                }
-                            },
-                            er => {
-                                this.auth.handlerError(er);
-                            }
-                        );
+                            this.dataSource = new MatTableDataSource(this.items);
+                        } else {
+                            this.message.showMessageforFalseResult(data);
+                        }
+                    }, er => {
+                        this.auth.handlerError(er);
+                    });
                 }
             }
         }
@@ -854,9 +788,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
 
                 ids.forEach(id => {
                     if (
-                        !this.auth.checkForMatchRole(
-                            this.items.find(c => c.id == id).categoryRoleAccess
-                        )
+                        !this.auth.checkForMatchRole(this.items.find(c => c.id == id).categoryRoleAccess)
                     ) {
                         havePermision = false;
                         return;
@@ -866,36 +798,23 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
                 });
 
                 if (havePermision) {
-                    this.auth
-                        .post("/api/Item/ChangeActiveStateGroup", {
-                            ids: ids,
-                            isActive: isActive
-                        })
-                        .subscribe(
-                            (data: jsondata) => {
-                                if (data.success) {
-                                    ids.forEach(id => {
-                                        this.items[
-                                            this.items.findIndex(
-                                                c => c.id == id
-                                            )
-                                        ].isActive = isActive;
-                                    });
+                    this.auth.post("/api/Item/ChangeActiveStateGroup", {
+                        ids: ids,
+                        isActive: isActive
+                    }).subscribe(data => {
+                        if (data.success) {
+                            ids.forEach(id => {
+                                this.items[this.items.findIndex(c => c.id == id)].isActive = isActive;
+                            });
 
-                                    this.dataSource = new MatTableDataSource(
-                                        this.items
-                                    );
-                                    this.selection.clear();
-                                } else {
-                                    this.message.showMessageforFalseResult(
-                                        data
-                                    );
-                                }
-                            },
-                            er => {
-                                this.auth.handlerError(er);
-                            }
-                        );
+                            this.dataSource = new MatTableDataSource(this.items);
+                            this.selection.clear();
+                        } else {
+                            this.message.showMessageforFalseResult(data);
+                        }
+                    }, er => {
+                        this.auth.handlerError(er);
+                    });
                 }
             }
         }

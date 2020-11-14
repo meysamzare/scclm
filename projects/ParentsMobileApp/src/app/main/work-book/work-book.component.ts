@@ -253,7 +253,7 @@ export class WorkBookComponent implements OnInit {
                     workbookId: this.selectedWorkbook
                 },
                 table: "Workbook"
-            }).subscribe(data => {
+            }).pipe(finalize(() => this.isLoading = false)).subscribe(data => {
                 if (data.success) {
 
                     var headers: string[] = data.data.headers;

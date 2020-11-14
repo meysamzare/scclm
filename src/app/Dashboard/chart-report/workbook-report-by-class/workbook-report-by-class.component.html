@@ -98,16 +98,16 @@
 
                         <ng-container matColumnDef="totalAvg">
                             <th mat-header-cell *matHeaderCellDef mat-sort-header> معدل </th>
-                            <td mat-cell *matCellDef="let row"> {{row.totalAvg.toFixed(2)}} </td>
+                            <td mat-cell *matCellDef="let row"> {{(row.totalAvg || 0).toFixed(2)}} </td>
                         </ng-container>
 
                         <ng-container *ngFor="let course of data.courses; let courseIndex = index;"
                             matColumnDef="{{ course.id }}">
                             <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ course.name }} </th>
                             <td mat-cell *matCellDef="let row">
-                                <p *ngIf="row.isLast">{{ row[course.id].toFixed(2) }}</p>
+                                <p *ngIf="row.isLast">{{ (row[course.id] || 0).toFixed(2) }}</p>
                                 <p *ngIf="!row.isLast">
-                                    {{ row[course.id].toFixed(2) + '(رتبه: ' + getRateOfCourse(course.id, row[course.id], data.courseScores) + ')'}}
+                                    {{ (row[course.id] || 0).toFixed(2) + '(رتبه: ' + getRateOfCourse(course.id, row[course.id], data.courseScores) + ')'}}
                                 </p>
                             </td>
                         </ng-container>

@@ -34,6 +34,7 @@ import { ShowImageComponent } from 'src/app/shared/Modal/show-image.component';
 import { OnlineClassModule } from '../shared/components/online-class/online-class.module';
 import { AddStudentDailySchduleComponent } from './work-book/student-daily-schdule/add-student-daily-schdule/add-student-daily-schdule.component';
 import { StudentDailyScheduleDetailComponent } from './work-book/student-daily-schdule/student-daily-schedule-detail/student-daily-schedule-detail.component';
+import { CustomFormToolsModule } from '../shared/components/custom-form-tools/custom-form-tools.module';
 
 @NgModule({
     declarations: [
@@ -56,7 +57,6 @@ import { StudentDailyScheduleDetailComponent } from './work-book/student-daily-s
         ViewChatComponent,
         SelectChatReciverDialogComponent,
         ViewCatDetailComponent,
-        ShowImageComponent,
         AddStudentDailySchduleComponent,
         StudentDailyScheduleDetailComponent
     ],
@@ -75,7 +75,8 @@ import { StudentDailyScheduleDetailComponent } from './work-book/student-daily-s
         PostMobileViewModule,
         NgSwitcheryModule,
         HtmlToolsModule,
-        OnlineClassModule
+        OnlineClassModule,
+        CustomFormToolsModule
     ],
     entryComponents: [
         SelectChatReciverDialogComponent

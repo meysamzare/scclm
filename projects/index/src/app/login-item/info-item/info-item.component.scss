@@ -1,0 +1,19 @@
+.radio-group {
+    display: flex;
+    flex-direction: column;
+}
+.radio-button {
+    margin: 0;
+    pointer-events: none;
+}
+
+.bordered {
+    border: 1px solid #ccc !important;
+    border-radius: 15px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.bordered img {
+    width: 100%;
+}

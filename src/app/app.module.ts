@@ -73,6 +73,7 @@ import { LoginMessagesModule } from "./shared/components/login-messages/login-me
 import { AuthService } from "./shared/Auth/auth.service";
 import { CustomInterceptor } from "public/Services/http-interceptor/custom-Interceptor.service";
 import { LoaderComponent } from './shared/components/loader/loader.component';
+import { CustomFormToolsModule } from "projects/ParentsMobileApp/src/app/shared/components/custom-form-tools/custom-form-tools.module";
 
 const customNotifierOptions: NotifierOptions = {
     position: {
@@ -125,7 +126,6 @@ const customNotifierOptions: NotifierOptions = {
         LoginItemComponent,
         InfoItemComponent,
         OnReturnDirective,
-        ShowImageComponent,
         LockScreenComponent,
         LoginStudentComponent,
         StudentWorkBookComponent,
@@ -193,6 +193,7 @@ const customNotifierOptions: NotifierOptions = {
                 // paramsInheritanceStrategy: 'always' 
             }
         ),
+        CustomFormToolsModule,
         DashboardModule,
         SharedModule,
         MaterialModule,
@@ -216,7 +217,7 @@ const customNotifierOptions: NotifierOptions = {
         NgxMaterialTimepickerModule,
         // OnlineStatusModule
         DpDatePickerModule,
-        LoginMessagesModule
+        LoginMessagesModule,
     ],
     providers: [
         { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },

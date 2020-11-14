@@ -6,68 +6,65 @@ import { AuthService, jsondata } from 'src/app/shared/Auth/auth.service';
 import { MessageService } from 'src/app/shared/services/message.service';
 
 @Component({
-	selector: 'app-login-item',
-	templateUrl: './login-item.component.html',
-	styleUrls: ['./login-item.component.scss']
+    selector: 'app-login-item',
+    templateUrl: './login-item.component.html',
+    styleUrls: ['./login-item.component.scss']
 })
 export class LoginItemComponent implements OnInit {
 
-	catId;
-	type;
+    catId;
+    type;
 
-	category: ICategory;
+    category: ICategory;
 
-	rahCode: string;
+    rahCode: string;
 
-	ItemDataKEY: string = "_ie";
+    ItemDataKEY: string = "_ie";
 
-	@ViewChild("fm1", { static: false }) public fm1: NgForm;
+    @ViewChild("fm1", { static: false }) public fm1: NgForm;
 
-	constructor(
-		private router: Router,
-		private activeRoute: ActivatedRoute,
-		private auth: AuthService,
-		private message: MessageService
-	) {
-		this.activeRoute.params.subscribe(params => {
-			this.catId = params["catId"];
-			this.type = params["type"];
+    constructor(
+        private router: Router,
+        private activeRoute: ActivatedRoute,
+        private auth: AuthService,
+        private message: MessageService
+    ) {
+        this.activeRoute.params.subscribe(params => {
+            this.catId = params["catId"];
+            this.type = params["type"];
 
-			if (this.type == 1 || this.type == 2) {
-				// Do Nothing
-			} else {
-				this.router.navigateByUrl("/");
-			}
+            if (this.type == 1 || this.type == 2) {
+                // Do Nothing
+            } else {
+                this.router.navigateByUrl("/");
+            }
 
-			this.auth.post("/api/Category/getCategory", this.catId).subscribe(
-				(data: jsondata) => {
-					if (data.success) {
-						this.category = data.data;
+            this.auth.post("/api/Category/getCategory", this.catId).subscribe(data => {
+                if (data.success) {
+                    this.category = data.data;
 
-						if (!this.category.haveInfo) {
-							this.router.navigate(["/"]);
-						}
-						if (!this.category.isInfoShow) {
-							this.router.navigate(["/"]);
-						}
-					} else {
-						this.message.showMessageForSuccessResult(data);
-						this.router.navigate(["/"]);
-					}
-				},
-				er => {
-					this.auth.handlerError(er);
-					this.router.navigate(["/"]);
-				}
-			);
-		});
-	}
+                    if (!this.category.haveInfo) {
+                        this.router.navigate(["/"]);
+                    }
+                    if (!this.category.isInfoShow) {
+                        this.router.navigate(["/"]);
+                    }
+                } else {
+                    this.message.showMessageForSuccessResult(data);
+                    this.router.navigate(["/"]);
+                }
+            }, er => {
+                this.auth.handlerError(er);
+                this.router.navigate(["/"]);
+            });
+        });
+    }
 
-	login() {
-		if (this.fm1.valid) {
-            this.auth.post("/api/Item/IsRahCodeExist", { 
-                rahCode: this.rahCode, 
-                catId: this.catId 
+    login() {
+        if (this.fm1.valid) {
+            this.auth.post("/api/Item/IsRahCodeExist", {
+                rahCode: this.rahCode,
+                catId: this.catId
             }, {
                 type: 'View',
                 agentId: this.auth.getUserId(),
@@ -75,42 +72,39 @@ export class LoginItemComponent implements OnInit {
                 agentName: this.auth.getUser().fullName,
                 tableName: 'Login To Item (View Result)',
                 logSource: 'dashboard',
-                object: { 
-                    rahCode: this.rahCode, 
+                object: {
+                    rahCode: this.rahCode,
                     catId: this.catId,
                     type: this.type
                 },
-            }).subscribe(
-				(data: jsondata) => {
-					if (data.success) {
-						this.message.showSuccessAlert("با موفقیت وارد شدید");
+            }).subscribe(data => {
+                if (data.success) {
+                    this.message.showSuccessAlert("با موفقیت وارد شدید");
 
-						let itemData = {
-							catId: this.catId,
-							rahCode: this.rahCode,
-							date: new Date(Date.parse(data.data))
-						};
+                    let itemData = {
+                        catId: this.catId,
+                        rahCode: this.rahCode,
+                        date: new Date(Date.parse(data.data))
+                    };
 
-						localStorage.setItem(
-							this.ItemDataKEY,
-							JSON.stringify(itemData)
-						);
+                    localStorage.setItem(
+                        this.ItemDataKEY,
+                        JSON.stringify(itemData)
+                    );
 
-						this.router.navigate(["/item-info/" + this.catId + "/" + this.rahCode + "/" + this.type], { skipLocationChange: true });
-					} else {
-						this.message.showWarningAlert(
-							" کد رهگیری اشتباه است"
-						);
-					}
-				},
-				er => {
-					this.auth.handlerError(er);
-				}
-			);
-		}
-	}
+                    this.router.navigate(["/item-info/" + this.catId + "/" + this.rahCode + "/" + this.type], { skipLocationChange: true });
+                } else {
+                    this.message.showWarningAlert(
+                        " کد رهگیری اشتباه است"
+                    );
+                }
+            }, er => {
+                this.auth.handlerError(er);
+            });
+        }
+    }
 
-	ngOnInit() {
-	}
+    ngOnInit() {
+    }
 
 }

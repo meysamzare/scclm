@@ -219,18 +219,7 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
                 }
             }
 
-            this.auth.post("/api/Unit/GetAll").subscribe(data => {
-                if (data.success) {
-                    this.units = data.data;
-
-                    if (this.isEdit) {
-                        this.refreshAttributes();
-                    }
-
-                } else {
-                    this.message.showMessageforFalseResult(data);
-                }
-            });
+            this.refreshUnits();
 
             this.auth.post("/api/Role/GetAll").subscribe((data: jsondata) => {
                 if (data.success) {
@@ -519,8 +508,26 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
     ngOnInit(): void {
     }
 
+    refreshUnits(isFromRefreshAttrs = false) {
+        this.auth.post("/api/Unit/GetAll").subscribe(data => {
+            if (data.success) {
+                this.units = data.data;
+
+                if (this.isEdit && !isFromRefreshAttrs) {
+                    this.refreshAttributes();
+                }
+
+            } else {
+                this.message.showMessageforFalseResult(data);
+            }
+        });
+    }
+
     refreshAttributes() {
         this.isLoading = true;
+
+        this.refreshUnits(true);
+
         this.auth.post("/api/Attribute/getAttrsForCat", this.category.id)
             .pipe(finalize(() => this.isLoading = false))
             .subscribe(data => {

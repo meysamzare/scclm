@@ -381,7 +381,8 @@
 
                         <div class="ibox float-e-margins animated fadeInRight" *ngIf="showDietaledBox">
                             <div class="ibox-title">
-                                <h5>داده های ثبت شده در {{ pageTitle }} : <strong> {{ showDietaleItem.title + ' - ' + showDietaleItem.categoryString }} </strong>
+                                <h5>داده های ثبت شده در {{ pageTitle }} : <strong>
+                                        {{ showDietaleItem.title + ' - ' + showDietaleItem.categoryString }} </strong>
                                 </h5>
                                 <!-- <button style="float: left;" matTooltip="بستن" (click)="showDietaledBox = false;" mat-icon-button><mat-icon>close</mat-icon></button> -->
                                 <div class="ibox-tools">
@@ -392,148 +393,9 @@
                                 </div>
                             </div>
                             <div class="ibox-content">
-                                <div class="row">
-                                    <ng-container *ngFor="let unit of units">
-                                        <div class="col-lg-12" *ngIf="getAttrsForUnit(unit.id).length != 0">
-                                            <div class="panel panel-default">
-                                                <div class="panel-heading">
-                                                    {{unit.title}}
-                                                </div>
-                                                <div class="panel-body">
-                                                    <div class="bordered" *ngFor="let i of getAttrsForUnit(unit.id)">
-
-                                                        <button
-                                                            *ngIf="TYPE == 1 && i.attrTypeInt == 11 && (i.questionType == 1 || i.questionType == 3)"
-                                                            mat-stroked-button style="margin: 10px;"
-                                                            (click)="openSetItemAttributeScoreDialog(i)">
-                                                            ثبت نمره
-                                                        </button>
-
-                                                        <div
-                                                            *ngIf="i.attrTypeInt == 1 || i.attrTypeInt == 2 || i.attrTypeInt == 5 || i.attrTypeInt == 9">
-                                                            <strong> {{ i.title }} </strong> :
-                                                            <b style="color: blue; display: inline;">
-                                                                {{ getItemAttrValDietale(i.id) }}
-                                                            </b>
-                                                        </div>
-
-                                                        <div class="form-group" *ngIf="i.attrTypeInt == 6">
-                                                            <label>{{i.title}}
-                                                                -
-                                                                &nbsp;
-                                                                <b [tooltip]="'امتیاز'">{{ getScoreForAttr(i) }} از
-                                                                    {{ i.score }}</b>
-                                                            </label>
-                                                            <mat-form-field>
-                                                                <mat-label>{{i.title}}</mat-label>
-                                                                <mat-select style="direction: ltr"
-                                                                    [value]="getItemAttrValDietale(i.id)">
-                                                                    <mat-option style="pointer-events: none;"
-                                                                        *ngFor="let v of getShiftedItem(i)"
-                                                                        [style.color]="v.isTrue ? 'green' : 'unset'"
-                                                                        [value]="v.id.toString()">
-                                                                        {{v.title}}
-                                                                    </mat-option>
-                                                                </mat-select>
-                                                            </mat-form-field>
-                                                        </div>
-
-                                                        <ng-container *ngIf="i.attrTypeInt == 10">
-                                                            <div class="form-group">
-                                                                <label>{{i.title}}
-                                                                    -
-                                                                    &nbsp;
-                                                                    <b [tooltip]="'امتیاز'">{{ getScoreForAttr(i) }} از
-                                                                        {{ i.score }}</b>
-                                                                </label>
-                                                                <mat-radio-group class="radio-group"
-                                                                    [value]="getItemAttrValDietale(i.id)">
-                                                                    <mat-radio-button class="radio-button"
-                                                                        *ngFor="let v of getShiftedItem(i)"
-                                                                        [style.color]="v.isTrue ? 'green' : 'unset'"
-                                                                        [value]="v.id.toString()">
-                                                                        {{v.title}}
-                                                                    </mat-radio-button>
-                                                                </mat-radio-group>
-                                                            </div>
-                                                        </ng-container>
-
-                                                        <mat-form-field class="example-full-width"
-                                                            *ngIf="i.attrTypeInt == 3">
-                                                            <input required matInput [matTooltip]="i.desc" readonly
-                                                                [matDatepicker]="picker"
-                                                                [value]="getItemAttrValDietale(i.id)"
-                                                                placeholder="{{i.title}}">
-                                                            <mat-datepicker #picker touchUi="true"></mat-datepicker>
-                                                        </mat-form-field>
-
-                                                        <mat-checkbox *ngIf="i.attrTypeInt == 4" [disabled]="true"
-                                                            [matTooltip]="i.desc"
-                                                            [checked]="getItemAttrValDietale(i.id)">
-                                                            {{i.title}}</mat-checkbox>
-
-                                                        <strong *ngIf="i.attrTypeInt == 7 || i.attrTypeInt == 8">
-                                                            {{ i.title }}
-                                                        </strong>
-                                                        <img [src]="getItemAttrUrlDietale(i.id)"
-                                                            (click)="showPopupImage(getItemAttrUrlDietale(i.id))"
-                                                            [matTooltip]="i.desc" style="width: 100px; height: 100px;"
-                                                            class="img-circle"
-                                                            *ngIf="i.attrTypeInt == 7 && getItemAttrUrlDietale(i.id)">
-
-                                                        <a *ngIf="i.attrTypeInt == 8 && getItemAttrUrlDietale(i.id)"
-                                                            [matTooltip]="i.desc" style="margin-top: 5px;"
-                                                            [href]="getItemAttrUrlDietale(i.id)"
-                                                            mat-raised-button>دانلود
-                                                            فایل</a>
-
-
-                                                        <ng-container *ngIf="i.attrTypeInt == 11">
-                                                            <div class="form-group">
-                                                                <label>
-                                                                    <b [tooltip]="'امتیاز'">{{ getScoreForAttr(i) }} از
-                                                                        {{ i.score }}</b>
-                                                                </label>
-
-                                                                <div [innerHTML]="i.title | safeHtml"></div>
-
-                                                                <hr>
-
-                                                                <ng-container
-                                                                    *ngIf="i.questionType == 1 || i.questionType == 3">
-                                                                    <div
-                                                                        [innerHTML]="getItemAttrValDietale(i.id) | safeHtml">
-                                                                    </div>
-                                                                </ng-container>
-
-                                                                <ng-container *ngIf="i.questionType == 2">
-                                                                    <mat-radio-group class="radio-group"
-                                                                        [value]="getItemAttrValDietale(i.id)">
-                                                                        <mat-radio-button class="radio-button"
-                                                                            *ngFor="let v of getShiftedItem(i)"
-                                                                            [style.color]="v.isTrue ? 'green' : 'unset'"
-                                                                            [value]="v.id.toString()">
-                                                                            <div [innerHTML]="v.title | safeHtml"></div>
-                                                                        </mat-radio-button>
-                                                                    </mat-radio-group>
-                                                                </ng-container>
-
-                                                            </div>
-                                                        </ng-container>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </ng-container>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-12 al-center">
-                                        <b>امتیاز کل: {{ getTotalScoreOfDietale() }} از
-                                            {{ getSumScoreOfDietaleAttrs() }}</b>
-                                    </div>
-                                </div>
+                                <app-item-detail [isFromDashboard]="true" [canSetScore]="true" [CatId]="showDietaleItem.categoryId"
+                                    [ItemId]="showDietaleItem.id">
+                                </app-item-detail>
 
                             </div>
                         </div>

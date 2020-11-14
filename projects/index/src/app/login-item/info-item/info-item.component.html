@@ -1,101 +1,166 @@
 <body class="gray-bg" *ngIf="type == 1">
-	<div class="loginColumns animated fadeInDown text-center" style="padding: 50px;">
-		<div class="row">
+    <div class="loginColumns animated fadeInDown text-center" style="padding: 50px;">
+        <div class="row">
 
-			<div class="col-md-4"></div>
-			<div class="col-md-4">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
 
-				<div class="contact-box center-version" style="padding: 10px;">
-					<h3 [ngStyle]="{'color': Item.isActive == true ? 'green' : 'orange'}">
-						{{ Item.isActive == true ? category.activeMessage : category.deActiveMessage }} </h3>
-				</div>
+                <ng-container *ngIf="isLoading">
+                    <mat-progress-bar mode="buffer"></mat-progress-bar>
+                </ng-container>
 
-				<div class="contact-box center-version" style="padding: 20px;">
-					<div class="form-group" *ngFor="let i of attrs">
+                <div class="contact-box center-version" style="padding: 10px;">
+                    <h3 [ngStyle]="{'color': Item.isActive == true ? 'green' : 'orange'}">
+                        {{ Item.isActive == true ? category.activeMessage : category.deActiveMessage }} </h3>
+                </div>
 
-						<h4 *ngIf="i.attrTypeInt == 1 ||i.attrTypeInt == 2 || i.attrTypeInt == 3 || i.attrTypeInt == 5|| i.attrTypeInt == 6"
-							[matTooltip]="i.desc"> {{ i.title }} :
-							<h3 style="color: chocolate"> {{ getItemAttrVal(i.id) }} </h3>
-						</h4>
+                <div class="contact-box center-version" style="padding: 20px;">
+                    <div class="bordered" *ngFor="let i of attrs">
 
-						<mat-checkbox *ngIf="i.attrTypeInt == 4" [matTooltip]="i.desc" [disabled]="true">{{i.title}}
-						</mat-checkbox>
+                        <div *ngIf="i.attrTypeInt == 1 || i.attrTypeInt == 2 || i.attrTypeInt == 5 || i.attrTypeInt == 9">
+                            <strong> {{ i.title }} </strong> :
+                            <b style="color: blue; display: inline;">
+                                {{ getItemAttrVal(i.id) }}
+                            </b>
+                        </div>
+                        
+                        <div class="form-group" *ngIf="i.attrTypeInt == 6">
+                            <label>{{i.title}}</label>
+                            <mat-form-field>
+                                <mat-label>{{i.title}}</mat-label>
+                                <mat-select style="direction: ltr" [value]="getItemAttrVal(i.id)">
+                                    <mat-option style="pointer-events: none;" *ngFor="let v of getShiftedItem(i)"
+                                        [style.color]="v.isTrue ? 'green' : 'unset'" [value]="v.id.toString()">
+                                        {{v.title}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        
+                        <ng-container *ngIf="i.attrTypeInt == 10">
+                            <div class="form-group">
+                                <label>{{i.title}}
+                                </label>
+                                <mat-radio-group class="radio-group" [value]="getItemAttrVal(i.id)">
+                                    <mat-radio-button class="radio-button" *ngFor="let v of getShiftedItem(i)"
+                                        [style.color]="v.isTrue ? 'green' : 'unset'" [value]="v.id.toString()">
+                                        {{v.title}}
+                                    </mat-radio-button>
+                                </mat-radio-group>
+                            </div>
+                        </ng-container>
+                        
+                        <mat-form-field class="example-full-width" *ngIf="i.attrTypeInt == 3">
+                            <input required matInput [matTooltip]="i.desc" readonly [matDatepicker]="picker" [value]="getItemAttrVal(i.id)"
+                                placeholder="{{i.title}}">
+                            <mat-datepicker #picker touchUi="true"></mat-datepicker>
+                        </mat-form-field>
 
-						<img [src]="getItemAttrUrl(i.id)" [matTooltip]="i.desc" style="width: 100px; height: 100px;"
-							class="img-circle" *ngIf="i.attrTypeInt == 7 && getItemAttrUrl(i.id)">
+                        <mat-checkbox *ngIf="i.attrTypeInt == 4" [disabled]="true" [matTooltip]="i.desc" [checked]="getItemAttrVal(i.id)">
+                            {{i.title}}</mat-checkbox>
 
-						<a *ngIf="i.attrTypeInt == 8 && getItemAttrUrl(i.id)" [matTooltip]="i.desc"
-							style="margin-top: 5px;" [href]="getItemAttrUrl(i.id)" mat-raised-button>دانلود فایل</a>
+                        <strong *ngIf="i.attrTypeInt == 7 || i.attrTypeInt == 8">
+                            {{ i.title }}
+                        </strong>
+                        <img [src]="getItemAttrUrl(i.id)" [matTooltip]="i.desc" style="width: 100px; height: 100px;"
+                            class="img-circle" *ngIf="i.attrTypeInt == 7 && getItemAttrUrl(i.id)">
 
-					</div>
-
-
-					<br>
-				</div>
-
-
-
-				<a class="btn btn-sm btn-danger btn-block" (click)="logout()">خروج </a>
-			</div>
-			<div class="col-md-4"></div>
+                        <a *ngIf="i.attrTypeInt == 8 && getItemAttrUrl(i.id)" [matTooltip]="i.desc"
+                            style="margin-top: 5px;" [href]="getItemAttrUrl(i.id)" mat-raised-button>
+                            دانلود فایل
+                        </a>
 
 
-		</div>
-	</div>
+                        <ng-container *ngIf="i.attrTypeInt == 11">
+                            <div class="form-group">
+
+                                <div [innerHTML]="i.title | safeHtml"></div>
+
+                                <hr>
+
+                                <ng-container *ngIf="i.questionType == 1 || i.questionType == 3">
+                                    <div [innerHTML]="getItemAttrVal(i.id) | safeHtml">
+                                    </div>
+                                </ng-container>
+                                
+                                <ng-container *ngIf="i.questionType == 2">
+                                    <mat-radio-group class="radio-group" [value]="getItemAttrVal(i.id)">
+                                        <mat-radio-button class="radio-button" *ngFor="let v of getShiftedItem(i)" [value]="v.id.toString()">
+                                            <div [innerHTML]="v.title | safeHtml"></div>
+                                        </mat-radio-button>
+                                    </mat-radio-group>
+                                </ng-container>
+
+                            </div>
+                            </ng-container>
+
+                    </div>
+                    <br>
+                </div>
+
+
+
+                <a class="btn btn-sm btn-danger btn-block" style="color: white;" (click)="logout()">خروج </a>
+            </div>
+            <div class="col-md-2"></div>
+
+
+        </div>
+    </div>
 </body>
 
 <body class="gray-bg" *ngIf="type == 2">
-	<div class="loginColumns animated fadeInDown text-center">
-		<div class="contact-box center-version" style="padding: 10px;">
-			<h3 [ngStyle]="{'color': Item.isActive == true ? 'green' : 'orange'}">
-				{{ Item.isActive == true ? category.activeMessage : category.deActiveMessage }} </h3>
-		</div>
-		<div class="row">
+    <div class="loginColumns animated fadeInDown text-center">
+        <div class="contact-box center-version" style="padding: 10px;">
+            <h3 [ngStyle]="{'color': Item.isActive == true ? 'green' : 'orange'}">
+                {{ Item.isActive == true ? category.activeMessage : category.deActiveMessage }} </h3>
+        </div>
+        <div class="row">
 
-			<div class="col-md-6">
-				<div class="form-group" *ngFor="let i of getAttrZoje()">
+            <div class="col-md-6">
+                <div class="form-group" *ngFor="let i of getAttrZoje()">
 
-					<h4 *ngIf="i.attrTypeInt == 1 ||i.attrTypeInt == 2 || i.attrTypeInt == 3 || i.attrTypeInt == 5|| i.attrTypeInt == 6"
-						[matTooltip]="i.desc">
-						{{ i.title }} : <h3 style="color: chocolate; display: inline-block;"> {{ getItemAttrVal(i.id) }}
-						</h3>
-					</h4>
+                    <h4 *ngIf="i.attrTypeInt == 1 ||i.attrTypeInt == 2 || i.attrTypeInt == 3 || i.attrTypeInt == 5|| i.attrTypeInt == 6"
+                        [matTooltip]="i.desc">
+                        {{ i.title }} : <h3 style="color: chocolate; display: inline-block;"> {{ getItemAttrVal(i.id) }}
+                        </h3>
+                    </h4>
 
-					<mat-checkbox *ngIf="i.attrTypeInt == 4" [matTooltip]="i.desc" [disabled]="true">{{i.title}}
-					</mat-checkbox>
+                    <mat-checkbox *ngIf="i.attrTypeInt == 4" [matTooltip]="i.desc" [disabled]="true">{{i.title}}
+                    </mat-checkbox>
 
-					<img [src]="getItemAttrUrl(i.id)" [matTooltip]="i.desc" style="width: 100px; height: 100px;"
-						class="img-circle" *ngIf="i.attrTypeInt == 7 && getItemAttrUrl(i.id)">
+                    <img [src]="getItemAttrUrl(i.id)" [matTooltip]="i.desc" style="width: 100px; height: 100px;"
+                        class="img-circle" *ngIf="i.attrTypeInt == 7 && getItemAttrUrl(i.id)">
 
-					<a *ngIf="i.attrTypeInt == 8 && getItemAttrUrl(i.id)" [matTooltip]="i.desc" style="margin-top: 5px;"
-						[href]="getItemAttrUrl(i.id)" mat-raised-button>دانلود فایل</a>
+                    <a *ngIf="i.attrTypeInt == 8 && getItemAttrUrl(i.id)" [matTooltip]="i.desc" style="margin-top: 5px;"
+                        [href]="getItemAttrUrl(i.id)" mat-raised-button>دانلود فایل</a>
 
-				</div>
-			</div>
-			<div class="col-md-6">
-				<div class="form-group" *ngFor="let i of getAttrFard()">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group" *ngFor="let i of getAttrFard()">
 
-					<h4 *ngIf=" (i.attrTypeInt == 1 ||i.attrTypeInt == 2 || i.attrTypeInt == 3 || i.attrTypeInt == 5|| i.attrTypeInt == 6) && (getItemAttrVal(i.id)) "
-						[matTooltip]="i.desc">
-						{{ i.title }} : <h3 style="color: chocolate; display: inline-block;"> {{ getItemAttrVal(i.id) }}
-						</h3>
-					</h4>
+                    <h4 *ngIf=" (i.attrTypeInt == 1 ||i.attrTypeInt == 2 || i.attrTypeInt == 3 || i.attrTypeInt == 5|| i.attrTypeInt == 6) && (getItemAttrVal(i.id)) "
+                        [matTooltip]="i.desc">
+                        {{ i.title }} : <h3 style="color: chocolate; display: inline-block;"> {{ getItemAttrVal(i.id) }}
+                        </h3>
+                    </h4>
 
-					<mat-checkbox *ngIf="i.attrTypeInt == 4" [matTooltip]="i.desc" [disabled]="true">{{i.title}}
-					</mat-checkbox>
+                    <mat-checkbox *ngIf="i.attrTypeInt == 4" [matTooltip]="i.desc" [disabled]="true">{{i.title}}
+                    </mat-checkbox>
 
-					<img [src]="getItemAttrUrl(i.id)" [matTooltip]="i.desc" style="width: 100px; height: 100px;"
-						class="img-circle" *ngIf="i.attrTypeInt == 7 && getItemAttrUrl(i.id)">
+                    <img [src]="getItemAttrUrl(i.id)" [matTooltip]="i.desc" style="width: 100px; height: 100px;"
+                        class="img-circle" *ngIf="i.attrTypeInt == 7 && getItemAttrUrl(i.id)">
 
-					<a *ngIf="i.attrTypeInt == 8 && getItemAttrUrl(i.id)" [matTooltip]="i.desc" style="margin-top: 5px;"
-						[href]="getItemAttrUrl(i.id)" mat-raised-button>دانلود فایل</a>
+                    <a *ngIf="i.attrTypeInt == 8 && getItemAttrUrl(i.id)" [matTooltip]="i.desc" style="margin-top: 5px;"
+                        [href]="getItemAttrUrl(i.id)" mat-raised-button>دانلود فایل</a>
 
-				</div>
-			</div>
-		</div>
-		<br>
-		<a class="btn btn-sm btn-info btn-block" onclick="print()" (click)="printPage()"> پرینت </a>
-		<br>
-		<a class="btn btn-sm btn-danger btn-block" (click)="logout()">خروج </a>
-	</div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <a class="btn btn-sm btn-info btn-block" onclick="print()" (click)="printPage()"> پرینت </a>
+        <br>
+        <a class="btn btn-sm btn-danger btn-block" (click)="logout()">خروج </a>
+    </div>
 </body>

@@ -72,23 +72,24 @@
 
 <hr>
 
-<div class="card" *ngFor="let i of Items" [routerLink]="['/more/category/view-item/' + i.id + '/' + catId]"
-    style="margin-top: 3px;" matRipple>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-sm-7">
-                {{ i.title }}
+<div class="card" *ngFor="let i of Items" style="margin-top: 3px;" matRipple>
+    <a target="_blank" [routerLink]="['/more/category/view-item/' + i.id + '/' + catId + '/' + i.title]">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-7">
+                    {{ i.title }}
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-5">
+                    <small> کد رهگیری : {{ i.rahCode }} </small>
+                    <br>
+                    <small> تاریخ ثبت : {{ i.dateAddPersian }} </small>
+                </div>
             </div>
         </div>
-        <hr>
-        <div class="row">
-            <div class="col-sm-5">
-                <small> کد رهگیری : {{ i.rahCode }} </small>
-                <br>
-                <small> تاریخ ثبت : {{ i.dateAddPersian }} </small>
-            </div>
-        </div>
-    </div>
+    </a>
 </div>
 
 

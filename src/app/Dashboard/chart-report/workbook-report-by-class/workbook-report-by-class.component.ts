@@ -214,7 +214,7 @@ export class WorkbookReportByClassComponent implements OnInit, AfterViewInit {
         let scores = courseScores.filter(c => c.courseId == courseId.toString()).map(c => c.courseScore);
         let uniqScores = Array.from(new Set(scores)).sort((a, b) => b - a);
 
-        return uniqScores.findIndex(c => c == courseScore) + 1;
+        return uniqScores.findIndex(c => c == (courseScore || 0)) + 1;
     }
 
 }

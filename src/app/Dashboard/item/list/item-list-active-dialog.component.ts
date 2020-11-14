@@ -20,6 +20,9 @@ export class ItemListActiveDialogComponent implements OnDestroy {
 
     isAttrLoad = true;
 
+    catType = 0;
+    catTypeTitle = "";
+
     setItemAttr$ = new Subject<{ val, attrId }>();
 
     constructor(
@@ -30,6 +33,8 @@ export class ItemListActiveDialogComponent implements OnDestroy {
     ) {
         this.itemId = data.id;
         this.catId = data.catId;
+        this.catType = data.catType;
+        this.catTypeTitle = this.catType == 0 ? 'نمون برگ' : 'آزمون آنلاین';
 
         this.auth.post("/api/Attribute/getNonClientAttrsForCat", this.catId).subscribe(data => {
             if (data.success) {

@@ -60,6 +60,7 @@ import { RegisterStepDirective, StepsDirective } from './register-item/register-
 import { CountdownModule } from 'ngx-countdown';
 import { AttributeInputModule } from './register-item/attribute-input/attribute-input.module';
 import { CustomEditorModule } from 'src/app/shared/components/custom-editor/custom-editor.module';
+import { SpeechRecognitionDialogComponent } from 'src/app/shared/components/custom-editor/speech-recognition-dialog/speech-recognition-dialog.component';
 
 @NgModule({
     declarations: [
@@ -141,7 +142,8 @@ import { CustomEditorModule } from 'src/app/shared/components/custom-editor/cust
             multi: true
         },
     ],
-    bootstrap: [AppComponent]
+    bootstrap: [AppComponent],
+    entryComponents: [SpeechRecognitionDialogComponent]
 })
 export class AppModule { }
 

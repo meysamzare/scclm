@@ -35,6 +35,7 @@ import { SetItemAttributeScoreComponent } from 'src/app/Dashboard/item/list/set-
 import { ShowImageComponent } from 'src/app/shared/Modal/show-image.component';
 import { OnlineClassModule } from 'projects/ParentsMobileApp/src/app/shared/components/online-class/online-class.module';
 import { LongPressModule } from 'projects/ParentsMobileApp/src/app/shared/directives/long-press/long-press.module';
+import { CustomFormToolsModule } from 'projects/ParentsMobileApp/src/app/shared/components/custom-form-tools/custom-form-tools.module';
 
 
 @NgModule({
@@ -58,9 +59,7 @@ import { LongPressModule } from 'projects/ParentsMobileApp/src/app/shared/direct
         SetClassBookComponent,
         TeacherCategoryListComponent,
         CategoryDataListComponent,
-        ViewItemDataComponent,
-        SetItemAttributeScoreComponent,
-        ShowImageComponent
+        ViewItemDataComponent
     ],
     imports: [
         CommonModule,
@@ -77,7 +76,8 @@ import { LongPressModule } from 'projects/ParentsMobileApp/src/app/shared/direct
         ImageIconModule,
         HtmlToolsModule,
         OnlineClassModule,
-        LongPressModule
+        LongPressModule,
+        CustomFormToolsModule
     ],
     entryComponents: [
         SetItemAttributeScoreComponent,

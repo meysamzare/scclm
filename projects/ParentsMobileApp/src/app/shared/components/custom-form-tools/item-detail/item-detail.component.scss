@@ -1,0 +1,36 @@
+.bordered {
+    border: 1px solid #ccc !important;
+    border-radius: 15px;
+    margin-bottom: 20px;
+
+    :not(.attrHeader) {
+        padding: 5px;
+    }
+
+    .attrHeader {
+        width: 100%;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+        text-align: center;
+    }
+}
+
+.bottom-hr {
+    margin: 0;
+    margin-top: 10px;
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.radio-button {
+    margin: 0;
+    pointer-events: none;
+}
+.viewCat {
+    img:not(.logo) {
+        width: 100%;
+    }
+}

@@ -7,12 +7,14 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService, jsondata } from 'src/app/shared/Auth/auth.service';
 import { MessageService } from 'src/app/shared/services/message.service';
 import { LogService } from 'src/app/shared/services/log.service';
+import { IAttributeOption } from 'src/app/Dashboard/attribute/attribute-option';
+import { finalize } from 'rxjs/operators';
 
 @Component({
-	selector: 'app-info-item',
-	templateUrl: './info-item.component.html',
-	styleUrls: ['./info-item.component.scss'],
-	styles: [`
+    selector: 'app-info-item',
+    templateUrl: './info-item.component.html',
+    styleUrls: ['./info-item.component.scss'],
+    styles: [`
 			h3 {
 				font-size: 17px !important;
 			}
@@ -39,168 +41,170 @@ import { LogService } from 'src/app/shared/services/log.service';
 	`]
 })
 export class InfoItemComponent implements OnInit, AfterViewInit {
-	catId;
-	type: any = "1";
+    catId;
+    type: any = "1";
 
-	category: ICategory = new ICategory();
+    category: ICategory = new ICategory();
 
-	Item: IItem = new IItem();
+    Item: IItem = new IItem();
 
-	itemId;
+    itemId;
 
-	attrs: IAttr[] = [];
+    attrs: IAttr[] | any[] = [];
 
-	itemattrs: IItemAttr[] = [];
+    itemattrs: IItemAttr[] = [];
 
-	rahCode: string;
+    rahCode: string;
 
-	ItemDataKEY: string = "_ie";
+    ItemDataKEY: string = "_ie";
 
-	loadItemAttr = false;
+    loadItemAttr = false;
 
-	constructor(
-		private router: Router,
-		private activeRoute: ActivatedRoute,
-		private auth: AuthService,
-		private message: MessageService,
-		private log: LogService
-	) {
+    isLoading = true;
 
-		this.activeRoute.params.subscribe(params => {
-			this.catId = params["catId"];
-			this.rahCode = params["rahcode"];
-			this.type = params["type"];
+    constructor(
+        private router: Router,
+        private activeRoute: ActivatedRoute,
+        private auth: AuthService,
+        private message: MessageService,
+        private log: LogService
+    ) {
 
-			this.Item = this.activeRoute.snapshot.data.item;
+        this.activeRoute.params.subscribe(params => {
+            this.catId = params["catId"];
+            this.rahCode = params["rahcode"];
+            this.type = params["type"];
 
-			let itemData = JSON.parse(localStorage.getItem(this.ItemDataKEY));
+            this.Item = this.activeRoute.snapshot.data.item;
 
-			if (itemData) {
-				var nowDate = new Date();
-				if (nowDate > new Date(Date.parse(itemData.date))) {
-					localStorage.removeItem(this.ItemDataKEY);
-					this.router.navigate(["/"]);
-				}
+            let itemData = JSON.parse(localStorage.getItem(this.ItemDataKEY));
 
-				if (this.catId != itemData.catId) {
-					this.router.navigate(["/"]);
-				}
+            if (itemData) {
+                var nowDate = new Date();
+                if (nowDate > new Date(Date.parse(itemData.date))) {
+                    localStorage.removeItem(this.ItemDataKEY);
+                    this.router.navigate(["/"]);
+                }
 
-				if (this.rahCode != itemData.rahCode) {
-					this.router.navigate(["/"]);
-				}
-			} else {
-				this.router.navigate(["/"]);
-			}
+                if (this.catId != itemData.catId) {
+                    this.router.navigate(["/"]);
+                }
+
+                if (this.rahCode != itemData.rahCode) {
+                    this.router.navigate(["/"]);
+                }
+            } else {
+                this.router.navigate(["/"]);
+            }
 
 
-			this.auth.post("/api/Category/getCategory", this.catId).subscribe(
-				(data: jsondata) => {
-					if (data.success) {
-						this.category = data.data;
+            this.auth.post("/api/Category/getCategory", this.catId).subscribe(data => {
+                if (data.success) {
+                    this.category = data.data;
 
-						if (!this.category.haveInfo) {
-							this.router.navigate(["/"]);
-						}
-						if (!this.category.isInfoShow) {
-							this.router.navigate(["/"]);
-						}
+                    if (!this.category.haveInfo) {
+                        this.router.navigate(["/"]);
+                    }
+                    if (!this.category.isInfoShow) {
+                        this.router.navigate(["/"]);
+                    }
 
-						if (this.type == 2) {
-                            
-							// this.log.Log("Entring to printing page", "Entring to printing page for cat: " + this.category.title + " with rahcode: " + this.rahCode);
-						} else {
-							// this.log.Log("Entring to result page", "Entring to result page for cat: " + this.category.title + " with rahcode: " + this.rahCode);
-						}
-					} else {
-						this.message.showMessageForSuccessResult(data);
-						this.router.navigate(["/"]);
-					}
-				},
-				er => {
-					this.auth.handlerError(er);
-					this.router.navigate(["/"]);
-				}
-			);
+                    if (this.type == 2) {
 
-		});
-	}
+                        // this.log.Log("Entring to printing page", "Entring to printing page for cat: " + this.category.title + " with rahcode: " + this.rahCode);
+                    } else {
+                        // this.log.Log("Entring to result page", "Entring to result page for cat: " + this.category.title + " with rahcode: " + this.rahCode);
+                    }
+                } else {
+                    this.message.showMessageForSuccessResult(data);
+                    this.router.navigate(["/"]);
+                }
+            }, er => {
+                this.auth.handlerError(er);
+                this.router.navigate(["/"]);
+            });
 
-	ngOnInit(): void {
+        });
+    }
 
-		this.auth.post("/api/Item/getItemShowInfoAttr", this.Item.id).subscribe(
-			(data: jsondata) => {
-				if (data.success) {
-					this.attrs = data.data;
-				} else {
-					this.router.navigate(["/"]);
-				}
-			},
-			er => {
-				this.auth.handlerError(er);
-				this.router.navigate(["/"]);
-			}
-		);
+    ngOnInit(): void {
 
-		this.auth.post("/api/Item/getItemAttrForItem", this.Item.id).subscribe(
-			(data: jsondata) => {
-				if (data.success) {
-					this.itemattrs = data.data;
-					this.loadItemAttr = false;
-				} else {
-					this.message.showMessageforFalseResult(data);
-					this.loadItemAttr = false;
-					this.router.navigate(["/"]);
-				}
-				this.loadItemAttr = false;
-			},
-			er => {
-				this.auth.handlerError(er);
-				this.loadItemAttr = false;
-				this.router.navigate(["/"]);
-			}
-		);
-	}
+        this.auth.post("/api/Item/getItemShowInfoAttr", this.Item.id).subscribe(data => {
+            if (data.success) {
+                this.attrs = data.data;
+            } else {
+                this.router.navigate(["/"]);
+            }
+        }, er => {
+            this.auth.handlerError(er);
+            this.router.navigate(["/"]);
+        });
 
-	ngAfterViewInit(): void {
-	}
+        this.auth.post("/api/Item/getItemAttrForItem", this.Item.id)
+            .pipe(finalize(() => this.isLoading = false))
+            .subscribe(data => {
+                if (data.success) {
+                    this.itemattrs = data.data;
+                    this.loadItemAttr = false;
+                } else {
+                    this.message.showMessageforFalseResult(data);
+                    this.loadItemAttr = false;
+                    this.router.navigate(["/"]);
+                }
+                this.loadItemAttr = false;
+            }, er => {
+                this.auth.handlerError(er);
+                this.loadItemAttr = false;
+                this.router.navigate(["/"]);
+            });
+    }
 
-	getItemAttrVal(attrId): string {
-		var a = this.itemattrs.find(c => c.attributeId == attrId);
+    ngAfterViewInit(): void {
+    }
 
-		if (a) {
-			return a.attrubuteValue;
-		}
 
-		return "";
-	}
+    getShiftedItem(attr: IAttr) {
+        let options: IAttributeOption[] = (attr as any).attributeOptions || [];
 
-	getItemAttrUrl(attrId): string {
-		var a = this.itemattrs.find(c => c.attributeId == attrId);
+        return options;
+    }
 
-		if (a) {
-			return this.auth.apiUrl + a.attributeFilePath.substr(1);
-		}
+    getItemAttrVal(attrId): string {
+        let a = this.itemattrs.find(c => c.attributeId == attrId);
 
-		return "";
-	}
+        if (a) {
+            return a.attrubuteValue;
+        }
 
-	printPage() {
-		// this.log.Log("Print of printing page", "Print of printing page for cat: " + this.category.title + " with rahcode: " + this.rahCode);
-	}
+        return "";
+    }
 
-	getAttrZoje(): IAttr[] {
-		return this.attrs.filter((attr, index) => (index % 2) == 0);
-	}
+    getItemAttrUrl(attrId): string {
+        let itemAttr = this.itemattrs.find(c => c.attributeId == attrId);
 
-	getAttrFard(): IAttr[] {
-		return this.attrs.filter((attr, index) => (index % 2) != 0);
-	}
+        if (itemAttr && itemAttr.attributeFilePath) {
+            return this.auth.apiUrl + itemAttr.attributeFilePath.substr(1);
+        }
 
-	logout() {
-		localStorage.removeItem(this.ItemDataKEY);
+        return "";
+    }
 
-		this.router.navigate(['/']);
-	}
+    printPage() {
+        // this.log.Log("Print of printing page", "Print of printing page for cat: " + this.category.title + " with rahcode: " + this.rahCode);
+    }
+
+    getAttrZoje(): IAttr[] {
+        return this.attrs.filter((attr, index) => (index % 2) == 0);
+    }
+
+    getAttrFard(): IAttr[] {
+        return this.attrs.filter((attr, index) => (index % 2) != 0);
+    }
+
+    logout() {
+        localStorage.removeItem(this.ItemDataKEY);
+
+        this.router.navigate(['/']);
+    }
 
 }

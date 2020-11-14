@@ -33,7 +33,9 @@ export class CustomEditorComponent implements OnInit, ControlValueAccessor, Vali
     }
 
     ngOnInit() {
-        this.content = this.data;
+        if (this.data) {
+            this.content = this.data;
+        }
 
         if (this.controlDir) {
 

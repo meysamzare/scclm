@@ -53,6 +53,12 @@
 
 <ng-container *ngIf="!isLoading">
 
+    <ng-container *ngIf="studentDailySchedules.length == 0">
+        <div style="text-align: center;">
+            <b>موردی یافت نشد</b>
+        </div>
+    </ng-container>
+
     <div class="row">
 
         <div class="col-lg-6" *ngFor="let i of studentDailySchedules">

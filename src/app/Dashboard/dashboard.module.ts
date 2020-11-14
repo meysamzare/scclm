@@ -203,6 +203,7 @@ import { EditStudentDailyScheduleComponent } from '../Dashboard/student/student-
 import { ListStudentDailyScheduleComponent } from '../Dashboard/student/student-daily-schedule/list-student-daily-schedule/list-student-daily-schedule.component';
 import { StudentDailyScheduleDetailComponent } from '../Dashboard/student/student-daily-schedule/list-student-daily-schedule/student-daily-schedule-detail/student-daily-schedule-detail.component';
 import { CustomEditorModule } from "../shared/components/custom-editor/custom-editor.module";
+import { CustomFormToolsModule } from "projects/ParentsMobileApp/src/app/shared/components/custom-form-tools/custom-form-tools.module";
 
 @NgModule({
     imports: [
@@ -228,7 +229,8 @@ import { CustomEditorModule } from "../shared/components/custom-editor/custom-ed
         CKEditorModule,
         HtmlToolsModule,
         ImageIconModule,
-        CustomEditorModule
+        CustomEditorModule,
+        CustomFormToolsModule
     ],
     declarations: [
         DashboardComponent,
@@ -370,7 +372,6 @@ import { CustomEditorModule } from "../shared/components/custom-editor/custom-ed
         TreeComponent,
         TreeDialogComponent,
         DoubleClickDirective,
-        SetItemAttributeScoreComponent,
         AddTemplateAttributeModalComponent,
         AddQuestionModalComponent,
         AddGroupQuestionModalComponent,

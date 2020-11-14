@@ -108,7 +108,7 @@ const routes: Routes = [
                                 component: CategoryDataListComponent
                             },
                             {
-                                path: "view-item/:itemId/:catId",
+                                path: "view-item/:itemId/:catId/:itemTitle",
                                 component: ViewItemDataComponent
                             }
                         ]

@@ -49,6 +49,13 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
 
     editOptionIndex: number = null;
 
+    autoCounter = false;
+    counter = 1;
+
+    examTitle = "";
+
+    Id = "0";
+
     constructor(
         private route: Router,
         private activeRoute: ActivatedRoute,
@@ -64,14 +71,14 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
                 this.oldData = JSON.stringify(data.question);
             });
 
-            var id = params["id"];
+            this.Id = params["id"];
 
-            if (id === "0") {
+            if (this.Id === "0") {
                 this.Title = "تعریف سوال";
                 this.btnTitle = "افزودن";
                 this.isEdit = false;
             } else {
-                var idd = Number.parseInt(id);
+                var idd = Number.parseInt(this.Id);
                 if (Number.isInteger(idd)) {
                     this.Title = "ویرایش " + this.question.name;
                     this.btnTitle = "ویرایش";
@@ -122,6 +129,29 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
                 this.auth.handlerError(er);
             }
         );
+    }
+
+    autoSetQuestionName() {
+        if (!this.isEdit) {
+
+            let gradeName = "";
+            let courseName = "";
+
+            if (this.question.gradeId) {
+                gradeName = this.grades.find(c => c.id == this.question.gradeId).name;
+            }
+
+            if (this.question.courseId) {
+                courseName = this.courses.find(c => c.id == this.question.courseId).name;
+            }
+
+            if (this.autoCounter) {
+                this.question.name = `${gradeName} ${courseName} ${this.examTitle} سوال شماره ${this.counter}`;
+            } else {
+                this.question.name = `${gradeName} ${courseName}`;
+            }
+            
+        }
     }
 
     addOptionTemp() {
@@ -203,7 +233,7 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
 
     refreshOptions() {
         this.isLoading = true;
-        this.auth.post("/api/Question/getOptions", this.question.id)
+        this.auth.post("/api/Question/getOptions", this.Id)
             .pipe(finalize(() => this.isLoading = false))
             .subscribe(data => {
                 if (data.success) {
@@ -335,6 +365,11 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
                             this.message.showSuccessAlert("با موفقیت ثبت شد");
 
                             this.clearForm();
+
+                            if (this.autoCounter) {
+                                this.counter += 1;
+                                this.autoSetQuestionName();
+                            }
                         } else {
                             this.message.showMessageforFalseResult(data);
                         }
