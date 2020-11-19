@@ -336,7 +336,7 @@ export class SetScoreGroupModalComponent implements OnInit {
             (this.examscore.state == 0 && (this.examscore.score != null || this.examscore.score < this.examscore.topScore)) ||
             (this.examscore.state != 0 && this.examscore.score == null)
         ) {
-            if (!this.examscore.score && this.examscore.state == 0) {
+            if (this.examscore.score == null && this.examscore.state == 0) {
                 this.message.showErrorAlert("نمره را وارد کنید");
                 return;
             }

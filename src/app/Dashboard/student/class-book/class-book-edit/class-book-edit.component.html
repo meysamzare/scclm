@@ -127,7 +127,7 @@
 
                             <div class="form-group">
                                 <label>انتخاب نوع {{ PAGE_TITLE }}</label>
-                                <ng-select [disabled]="!PAGE_Data.teacherId" #typeselect="ngModel" name="type"
+                                <ng-select [disabled]="!PAGE_Data.teacherId || isEdit" #typeselect="ngModel" name="type"
                                     [(ngModel)]="PAGE_Data.type" required (change)="onTypeChaneg()">
                                     <ng-option [value]="0">{{ getClassBookTypeString(0) }}</ng-option>
                                     <ng-option [value]="1">{{ getClassBookTypeString(1) }}</ng-option>
@@ -171,7 +171,7 @@
 
                                 <div class="form-group">
                                     <label>انتخاب {{ getClassBookTypeString(4) }}</label>
-                                    <ng-select (change)="onExamSelect()" #desiplineS="ngModel" name="desipline"
+                                    <ng-select [disabled]="isEdit" (change)="onExamSelect()" #desiplineS="ngModel" name="desipline"
                                         [(ngModel)]="disiplineTypeSelected" required>
                                         <ng-option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12,13]" [value]="i">
                                             {{ getDesiplineTypeString(i) }}
@@ -182,10 +182,11 @@
                                     </mat-error>
                                 </div>
 
-                                <div class="form-group" *ngIf="disiplineTypeSelected">
+                                <div class="form-group" *ngIf="disiplineTypeSelected || isEdit">
                                     <label>توضیحات</label>
-                                    <input type="text" name="desc" [(ngModel)]="disiplineText" placeholder="توضیحات"
+                                    <textarea type="text" name="desc" [(ngModel)]="disiplineText" placeholder="توضیحات"
                                         class="form-control">
+                                    </textarea>
                                 </div>
                             </div>
 

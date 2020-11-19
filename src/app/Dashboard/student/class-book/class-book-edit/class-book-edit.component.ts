@@ -83,11 +83,15 @@ export class ClassBookEditComponent implements OnInit, OnDestroy {
                 }
             }
 
-            var type = this.PAGE_Data.type;
+            let type = this.PAGE_Data.type;
 
             if (type) {
                 if (type == 1) {
                     this.getAllExams();
+                }
+
+                if (type == 4) {
+                    this.disiplineText = this.PAGE_Data.value;
                 }
             }
         });
@@ -284,10 +288,10 @@ export class ClassBookEditComponent implements OnInit, OnDestroy {
 
     sts() {
         if (this.fm1.valid) {
-            if (this.PAGE_Data.type == 4) {
-                this.PAGE_Data.value = `${this.getDesiplineTypeString(this.disiplineTypeSelected)} - ${this.disiplineText}`;
-            }
             if (this.isEdit) {
+                if (this.PAGE_Data.type == 4) {
+                    this.PAGE_Data.value = this.disiplineText;
+                }
                 this.auth.post("/api/" + this.PAGE_APIURL + "/Edit", this.PAGE_Data, {
                     type: 'Edit',
                     agentId: this.auth.getUserId(),
@@ -314,6 +318,9 @@ export class ClassBookEditComponent implements OnInit, OnDestroy {
                     }
                 );
             } else {
+                if (this.PAGE_Data.type == 4) {
+                    this.PAGE_Data.value = `${this.getDesiplineTypeString(this.disiplineTypeSelected)} - ${this.disiplineText}`;
+                }
                 this.auth.post("/api/" + this.PAGE_APIURL + "/Add", this.PAGE_Data, {
                     type: 'Add',
                     agentId: this.auth.getUserId(),
