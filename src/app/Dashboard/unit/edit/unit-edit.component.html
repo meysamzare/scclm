@@ -18,6 +18,16 @@
                                     </p>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label>اولویت</label>
+                                <input type="number" required #order="ngModel" name="order" [(ngModel)]="unit.order"
+                                    placeholder="اولویت" class="form-control">
+                                <div *ngIf="(order.touched || order.dirty)  && order.invalid">
+                                    <p *ngIf="order.hasError('required')" class="error">
+                                        وارد کردن اولویت الزامی است
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-sm-6 b-r-r">
                             <div class="form-group">

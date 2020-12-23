@@ -81,12 +81,12 @@ export enum PostType {
 }
 
 
-export function getPostTypeString(type, fadakTitle = ""): string {
+export function getPostTypeString(type, fadakTitle = "", hedayatTahsilTitle = "", blogTitle = "", bargozideganTitle = ""): string {
     if (type == 1) {
         return "اخبار";
     }
     if (type == 2) {
-        return "بلاگ";
+        return `${blogTitle}`;
     }
     if (type == 3) {
         return `نشریه دانش آموزی ${fadakTitle}`;
@@ -107,7 +107,7 @@ export function getPostTypeString(type, fadakTitle = ""): string {
         return "انجمن اولیا و مربیان";
     }
     if (type == 9) {
-        return "واحد مشاوره و هدایت تحصیلی";
+        return "مشاوره";
     }
     if (type == 10) {
         return "نحوه ورود به سیستم";
@@ -152,10 +152,10 @@ export function getPostTypeString(type, fadakTitle = ""): string {
         return "درباره ما";
     }
     if (type == 24) {
-        return "دبیرخانه برگزیدگان";
+        return `${bargozideganTitle}`;
     }
     if (type == 25) {
-        return "هدایت تحصیلی";
+        return `${hedayatTahsilTitle}`;
     }
 
     return "همه مطالب";

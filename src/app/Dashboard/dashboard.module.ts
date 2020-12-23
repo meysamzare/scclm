@@ -204,6 +204,9 @@ import { ListStudentDailyScheduleComponent } from '../Dashboard/student/student-
 import { StudentDailyScheduleDetailComponent } from '../Dashboard/student/student-daily-schedule/list-student-daily-schedule/student-daily-schedule-detail/student-daily-schedule-detail.component';
 import { CustomEditorModule } from "../shared/components/custom-editor/custom-editor.module";
 import { CustomFormToolsModule } from "projects/ParentsMobileApp/src/app/shared/components/custom-form-tools/custom-form-tools.module";
+import { DescriptiveScoreEditComponent } from '../Dashboard/Exam/descriptive-score/descriptive-score-edit/descriptive-score-edit.component';
+import { DescriptiveScoreListComponent } from '../Dashboard/Exam/descriptive-score/descriptive-score-list/descriptive-score-list.component';
+import { CategoryComfirmAbsenceModalComponent } from '../Dashboard/category/list/category-comfirm-absence-modal/category-comfirm-absence-modal.component';
 
 @NgModule({
     imports: [
@@ -379,7 +382,10 @@ import { CustomFormToolsModule } from "projects/ParentsMobileApp/src/app/shared/
         OnlineClassListComponent,
         EditStudentDailyScheduleComponent,
         ListStudentDailyScheduleComponent,
-        StudentDailyScheduleDetailComponent
+        StudentDailyScheduleDetailComponent,
+        DescriptiveScoreEditComponent,
+        DescriptiveScoreListComponent,
+        CategoryComfirmAbsenceModalComponent
     ],
     providers: [
         AuthGuardService,
@@ -435,7 +441,8 @@ import { CustomFormToolsModule } from "projects/ParentsMobileApp/src/app/shared/
         NotificationSeenModalComponent,
         ExamDetailsComponent,
         TreeDialogComponent,
-        SetItemAttributeScoreComponent
+        SetItemAttributeScoreComponent,
+        CategoryComfirmAbsenceModalComponent
     ]
 })
 export class DashboardModule {}

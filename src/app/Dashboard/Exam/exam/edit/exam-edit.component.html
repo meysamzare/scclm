@@ -59,18 +59,6 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label>تعداد سوالات آزمون</label>
-                                <input type="number" #number="ngModel" name="number" [(ngModel)]="exam.numberQ"
-                                    placeholder="تعداد سوالات" class="form-control">
-
-                            </div>
-
-                            <div class="form-group">
-                                <label>بودجه آزمون</label>
-                                <input type="text" #source="ngModel" name="source" [(ngModel)]="exam.source"
-                                    placeholder="بودجه" class="form-control">
-                            </div>
 
                             <div class="form-group">
                                 <label>ملاک نمره آزمون</label>
@@ -82,6 +70,19 @@
                                         وارد کردن ملاک نمره آزمون الزامی است
                                     </p>
                                 </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>تعداد سوالات آزمون</label>
+                                <input type="number" #number="ngModel" name="number" [(ngModel)]="exam.numberQ"
+                                    placeholder="تعداد سوالات" class="form-control">
+
+                            </div>
+
+                            <div class="form-group">
+                                <label>بودجه آزمون</label>
+                                <input type="text" #source="ngModel" name="source" [(ngModel)]="exam.source"
+                                    placeholder="بودجه" class="form-control">
                             </div>
 
                             <div class="form-group">
@@ -159,29 +160,6 @@
                             <hr> -->
 
                             <div class="form-group">
-                                <label>انتخاب نوع آزمون</label>
-                                <ng-select #examtypeselect="ngModel" name="examtype" [(ngModel)]="exam.examTypeId"
-                                    required>
-                                    <ng-option *ngFor="let i of examTypes" [value]="i.id">{{i.name}}</ng-option>
-                                </ng-select>
-                                <mat-error *ngIf="examtypeselect.hasError('required')">
-                                    انتخاب نوع آزمون الزامی است
-                                </mat-error>
-                            </div>
-
-                            <div class="form-group">
-                                <label>انتخاب سال تحصیلی</label>
-                                <ng-select [disabled]="exam.haveScore" [activeyear]="isEdit" #yearselect="ngModel"
-                                    name="year" [(ngModel)]="exam.yeareducationId" required>
-                                    <ng-option *ngFor="let year of yeareducations" [value]="year.id">{{year.name}}
-                                    </ng-option>
-                                </ng-select>
-                                <mat-error *ngIf="yearselect.hasError('required')">
-                                    انتخاب سال تحصیلی الزامی است
-                                </mat-error>
-                            </div>
-
-                            <div class="form-group">
                                 <label>انتخاب پایه تحصیلی</label>
                                 <ng-select [disabled]="exam.haveScore" #gradeselect="ngModel" name="grade"
                                     [(ngModel)]="exam.gradeId" required (change)="exam.classId = null;">
@@ -190,22 +168,6 @@
                                 </ng-select>
                                 <mat-error *ngIf="gradeselect.hasError('required')">
                                     انتخاب پایه تحصیلی الزامی است
-                                </mat-error>
-                            </div>
-
-                            <div class="form-group">
-                                <label>انتخاب کلاس</label>
-                                <ng-select [disabled]="!exam.gradeId || exam.haveScore" #classselect="ngModel"
-                                    name="class" [(ngModel)]="exam.classId" required>
-                                    <ng-option *ngFor="let cls of getFiltredClass()" [value]="cls.id">{{cls.name}}
-                                    </ng-option>
-                                </ng-select>
-                                <mat-hint>در انتخاب کلاس، پایه و سال تحصیلی دقت شود که، تا زمانی که نمره ای برای این
-                                    آزمون ثبت نشده است
-                                    می توان آن را تغییر داد در غیر این صورت امکان تغییر کلاس، پایه و سال تحصیلی وجود
-                                    ندارد.</mat-hint>
-                                <mat-error *ngIf="classselect.hasError('required')">
-                                    انتخاب کلاس الزامی است
                                 </mat-error>
                             </div>
 
@@ -221,16 +183,41 @@
                                 </mat-error>
                             </div>
 
+                            <hr>
+
+                            <div class="form-group">
+                                <label>انتخاب نوع آزمون</label>
+                                <ng-select #examtypeselect="ngModel" name="examtype" [(ngModel)]="exam.examTypeId">
+                                    <ng-option *ngFor="let i of examTypes" [value]="i.id">{{i.name}}</ng-option>
+                                </ng-select>
+                                <mat-hint>
+                                    انتخاب نوع آزمون اختیاری است
+                                </mat-hint>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>انتخاب کلاس</label>
+                                <ng-select [disabled]="!exam.gradeId" #classselect="ngModel" name="class"
+                                    [(ngModel)]="exam.classId">
+                                    <ng-option *ngFor="let cls of getFiltredClass()" [value]="cls.id">{{cls.name}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-hint>
+                                    انتخاب کلاس اختیاری است
+                                </mat-hint>
+                            </div>
+
                             <div class="form-group">
                                 <label>انتخاب دبیر</label>
                                 <ng-select [disabled]="!exam.courseId" #teacherselect="ngModel" name="teacher"
-                                    [(ngModel)]="exam.teacherId" required>
+                                    [(ngModel)]="exam.teacherId">
                                     <ng-option *ngFor="let i of teachers" [value]="i.id">{{i.name}}
                                     </ng-option>
                                 </ng-select>
-                                <mat-error *ngIf="teacherselect.hasError('required')">
-                                    انتخاب دبیر الزامی است
-                                </mat-error>
+                                <mat-hint>
+                                    انتخاب دبیر اختیاری است
+                                </mat-hint>
                             </div>
 
                             <div class="form-group">

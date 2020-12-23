@@ -10,14 +10,19 @@ import { finalize } from 'rxjs/operators';
 })
 export class OnlineExamsComponent implements OnInit {
 
-    onlineExams: ICategory[] = [];
+    onlineExams: ICategory[] | any[] = [];
     isLoading = true;
 
     constructor(
-        private auth: AuthService
+        public auth: AuthService
     ) { }
 
     ngOnInit() {
+        this.refreshOnlineExams();
+    }
+
+    refreshOnlineExams() {
+        this.isLoading = true;
         this.auth.post("/api/Category/getOnlineExams").pipe(
             finalize(() => this.isLoading = false)
         ).subscribe(data => {

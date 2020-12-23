@@ -189,7 +189,6 @@
                         "tsConfig": "projects/index/tsconfig.app.json",
                         "aot": false,
                         "assets": [
-                            "projects/index/src/favicon.ico",
                             "projects/index/src/assets"
                         ],
                         "styles": [

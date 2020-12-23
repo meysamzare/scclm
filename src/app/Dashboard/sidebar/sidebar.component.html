@@ -88,7 +88,7 @@
 
 				</ul>
 			</li>
-			<li *ngIf="auth.isUserAccessGroup(['view_Exam','view_ExamType','view_ExamScore'])" routerLinkActive="">
+			<li *ngIf="auth.isUserAccessGroup(['view_Exam','view_ExamType','view_ExamScore','view_DescriptiveScore'])" routerLinkActive="">
 				<a><i class="fa fa-paper-plane-o"></i> <span class="nav-label">ارزشیابی های تحصیلی</span>
 					<span class="fa arrow"></span></a>
 				<ul class="nav nav-second-level collapse">
@@ -96,7 +96,7 @@
 					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Exam', false)" routerLink="/dashboard/exam"> آزمون ها</a></li>
 					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_ExamType', false)" routerLink="/dashboard/examtype"> نوع آزمون </a></li>
 					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_ExamScore', false)" routerLink="/dashboard/examscore"> نمرات </a></li>
-
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_DescriptiveScore', false)" routerLink="/dashboard/descriptive-score"> شابلون نمرات توصیفی </a></li>
 				</ul>
 			</li>
 			<li *ngIf="auth.isUserAccessGroup(['view_Question','view_QuestionOption'])" routerLinkActive="">

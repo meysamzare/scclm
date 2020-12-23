@@ -117,7 +117,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
 
         if (!this.cat.canShowByDate) {
-            let title = `مهلت ${this.cat.btnTitle ? this.cat.btnTitle : "ثبت نام"} به پایان رسیده است`;
+            const title = `مهلت ${this.cat.btnTitle ? this.cat.btnTitle : "ثبت نام"} به پایان رسیده است`;
             this.message.showWarningAlert(title);
             this.router.navigate(["/"]);
         } else {
@@ -127,7 +127,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                     this.router.navigate([`/register-item/${this.catId}/login`], { skipLocationChange: true });
                     return;
                 } else {
-                    let token = this.loginService.getLoginToken(this.catId);
+                    const token = this.loginService.getLoginToken(this.catId);
 
                     if (!token) {
                         this.router.navigate(['/']);
@@ -159,7 +159,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                     this._files = savedData.files;
                 }
 
-                if (savedData.attrs) {
+                if (savedData.attrs && this.cat.useLimitedRandomQuestionNumber) {
                     this.attrs = savedData.attrs;
                 } else {
                     await this.refreshAttrs();
@@ -218,11 +218,22 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
             .pipe(
                 take(1),
                 finalize(() => this.isLoading = false)
-            )
-            .toPromise();
+            ).toPromise();
 
         if (success) {
             this.attrs = data;
+
+            if (this.cat.randomAttribute) {
+                let questionAttrs = this.attrs.filter(c => c.attrTypeInt == 11);
+                let nonQuestionAttrs = this.attrs.filter(c => c.attrTypeInt != 11);
+
+                questionAttrs = this.shuffleArray(questionAttrs);
+
+                this.attrs = [];
+
+                nonQuestionAttrs.forEach(attr => this.attrs.push(attr));
+                questionAttrs.forEach(attr => this.attrs.push(attr));
+            }
         }
 
         return success;
@@ -275,6 +286,16 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         }
     }
 
+    lastStep() {
+        if (this.RegisterSteps.isActiveStepValid()
+            && !this.isUploading
+            && this.attrUniqList.length == 0
+            && this.reqfilesAttrint.length == 0) {
+
+            this.activeStep = this.attrs.length - 1
+        }
+    }
+
     goToStep(attrId) {
         if (
             this.RegisterSteps.isActiveStepValid() &&
@@ -288,7 +309,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     async countdownEvent(action) {
-        if (action == "done") {
+        if (action == "done" && !this.isUploading) {
             this.sts(true);
         }
     }
@@ -330,7 +351,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         }, formatStr);
     };
 
-    getAttrsForUnit(unitId): any[] {
+    getAttrsForUnit(unitId): IAttr[] | any[] {
         return this.attrs.filter(c => c.unitId == unitId);
     }
 
@@ -365,8 +386,10 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
         attrs.forEach((attr, index) => {
             group["p" + index] = new FormControl(
-                { value: this.getDefaultValueForAttr(attr), 
-                    disabled: attr.isMeliCode && (attr.attrTypeInt == 1 || attr.attrTypeInt == 2) && this.authorizedUsername != "---" },
+                {
+                    value: this.getDefaultValueForAttr(attr),
+                    disabled: attr.isMeliCode && (attr.attrTypeInt == 1 || attr.attrTypeInt == 2) && this.authorizedUsername != "---"
+                },
                 this.getValidationForAttr(attr)
             );
         });

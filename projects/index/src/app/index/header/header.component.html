@@ -60,10 +60,10 @@
 					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 8 }" class="nav-link">انجمن اولیا و مربیان</a>
 				</li>
 				<li class="list-item">
-					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 9 }" class="nav-link">واحد مشاوره و هدایت تحصیلی</a>
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 9 }" class="nav-link">مشاوره</a>
 				</li>
 				<li class="list-item">
-					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 2 }" class="nav-link">بلاگ</a>
+					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 2 }" class="nav-link">{{ auth.blogTitle }}</a>
 				</li>
 				<li class="list-item">
 					<a [routerLink]="['/posts']" [queryParams]="{ 'type' : 1 }" class="nav-link">اخبار</a>

@@ -16,6 +16,7 @@ export class AddQuestionModalComponent implements OnInit {
     catId = 0;
     selectedGrade = null;
     selectedCourse = null;
+    selectedDefct = null;
 
     grades = [];
     courses = [];
@@ -29,7 +30,7 @@ export class AddQuestionModalComponent implements OnInit {
     searchText = "";
     totalItems = 0;
 
-    stayOnPage = false;
+    stayOnPage = true;
 
     addedQuestionsIds = [];
 
@@ -123,6 +124,7 @@ export class AddQuestionModalComponent implements OnInit {
             page: this.page,
             selectedGrade: this.selectedGrade,
             selectedCourse: this.selectedCourse,
+            selectedDefct: this.selectedDefct
         };
 
         this.auth.post("/api/Question/getQuestions", obj)

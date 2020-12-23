@@ -305,7 +305,6 @@ export class ExamEditComponent implements AfterViewInit, OnInit, OnDestroy {
                         this.exam.parentId = examB.parentId;
 
                         this.exam.examTypeId = examB.examTypeId;
-                        this.exam.yeareducationId = examB.yeareducationId;
                         this.exam.gradeId = examB.gradeId;
                         this.exam.classId = examB.classId;
                         this.exam.courseId = examB.courseId;

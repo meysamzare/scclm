@@ -897,6 +897,9 @@
 
 
                                             <ng-container *ngIf="i.attrTypeInt == 11">
+
+                                                <p><b>{{ i.questionName }}</b></p>
+
                                                 <div [innerHTML]="i.title | safeHtml"></div>
 
                                                 <hr>
@@ -910,8 +913,9 @@
                                                         <mat-radio-button class="radio-button"
                                                             *ngFor="let v of getShiftedItem(i)" [value]="v.id"
                                                             (dblclick)="setIsTrueQuestionOption(v, i.questionId, i)">
-                                                            <i *ngIf="v.isTrue" style="color: green;"
-                                                                class="fa fa-key"></i> &nbsp;
+                                                            <mat-icon *ngIf="v.isTrue" style="color: green;">done_all
+                                                            </mat-icon>
+                                                            &nbsp;
                                                             <div [innerHTML]="v.title | safeHtml"></div>
                                                         </mat-radio-button>
                                                     </mat-radio-group>

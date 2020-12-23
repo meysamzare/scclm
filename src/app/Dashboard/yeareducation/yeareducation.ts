@@ -13,9 +13,16 @@ export class IYeareducation {
 
     isActive = false;
 
+    scoreType: YeareducationScoreType = YeareducationScoreType.Normal;
+
     haveGrade: boolean = false;
     haveExam = false;
 
     dateStartPersian: string = "";
     dateEndPersian: string = "";
+}
+
+export enum YeareducationScoreType {
+    Normal = 1,
+    Descriptive
 }

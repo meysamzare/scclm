@@ -252,7 +252,8 @@
 
                                             <ng-container matColumnDef="select">
                                                 <th mat-header-cell *matHeaderCellDef>
-                                                    <mat-checkbox [disabled]="!haveAnyData() || getRowCanSelected() == 0"
+                                                    <mat-checkbox
+                                                        [disabled]="!haveAnyData() || getRowCanSelected() == 0"
                                                         matTooltipPosition="before"
                                                         matTooltip=" تعداد {{ selection.selected.length }} مورد انتخاب شده است"
                                                         (change)="$event ? masterToggle() : null"
@@ -390,10 +391,14 @@
                                         (click)="showDietaledBox = false; showDietaleCatId = null; showDietaleItem = null;">
                                         <i class="fa fa-times"></i>
                                     </a>
+                                    <a class="close-link" matTooltip="دریافت PDF" (click)="itemDetail.downloadPdf()">
+                                        <i class="fa fa-download"></i>
+                                    </a>
                                 </div>
                             </div>
                             <div class="ibox-content">
-                                <app-item-detail [isFromDashboard]="true" [canSetScore]="true" [CatId]="showDietaleItem.categoryId"
+                                <app-item-detail #itemDetail [ItemTitle]="showDietaleItem.title"
+                                    [isFromDashboard]="true" [canSetScore]="true" [CatId]="showDietaleItem.categoryId"
                                     [ItemId]="showDietaleItem.id">
                                 </app-item-detail>
 

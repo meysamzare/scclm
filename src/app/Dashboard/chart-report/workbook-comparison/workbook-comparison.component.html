@@ -77,17 +77,17 @@
                 <h4>
                     <b>{{ result.title }}</b>
                 </h4>
-                <p [style.color]="result.totalAvg >= result.avgOfTotalAvrageGrade ? 'green' : 'red'"
-                    [tooltipHtml]="'رتبه در کلاس: ' + result.ratingOfTotalAvgClass + ' | رتبه در پایه: ' + result.ratingOfTotalAvgGrade">
-                    معدل کل: <b>{{ result.totalAvg.toFixed(2) }}</b>
+                <p [style.color]="result.workbook.isTotalAvgBiggerThanAvgOfTotalAvg ? 'green' : 'red'"
+                    [tooltipHtml]="'رتبه در کلاس: ' + result.workbook.ratingOfTotalAvgClass + ' | رتبه در پایه: ' + result.workbook.ratingOfTotalAvgGrade">
+                    معدل کل: <b>{{ result.workbook.totalAvg }}</b>
                 </p>
-                <div class="row" *ngFor="let head of result.coursesHeaders; let headIndex = index;">
+                <div class="row" *ngFor="let head of result.workbook.headers; let headIndex = index;">
                     <div class="col-lg-6" style="text-align: right;">
                         {{ head }}
                     </div>
                     <div class="col-lg-6" style="text-align: left; margin-bottom: 5px;"
-                        [tooltipHtml]="'رتبه در کلاس: ' + result.ratingsInClass[headIndex] + ' | رتبه در پایه: ' + result.ratingsInGrade[headIndex]">
-                        {{ result.courseAvgs[headIndex].toFixed(2) }}
+                        [tooltipHtml]="'رتبه در کلاس: ' + result.workbook.ratingsInClass[headIndex] + ' | رتبه در پایه: ' + result.workbook.ratingsInGrade[headIndex]">
+                        {{ result.workbook.courseAvgs[headIndex] }}
                     </div>
                     <hr>
                 </div>

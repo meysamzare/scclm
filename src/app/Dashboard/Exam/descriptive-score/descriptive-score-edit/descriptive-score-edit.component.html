@@ -1,0 +1,75 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ Title }}</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <form #fm1="ngForm" id="fm11">
+                        <div class="col-lg-6">
+
+                            <div class="form-group">
+                                <label>نام {{ PAGE_TITLE }}</label>
+                                <input type="text" required #name="ngModel" name="name" [(ngModel)]="PAGE_Data.name"
+                                    placeholder="نام" class="form-control">
+                                <div *ngIf="(name.touched || name.dirty) && name.invalid">
+                                    <p *ngIf="name.hasError('required')" class="error">
+                                        وارد کردن نام {{ PAGE_TITLE }} الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>نام انگلیسی {{ PAGE_TITLE }}</label>
+                                <input type="text" required #enName="ngModel" name="enName"
+                                    [(ngModel)]="PAGE_Data.enName" placeholder="نام انگلیسی" class="form-control">
+                                <div *ngIf="(enName.touched || enName.dirty) && enName.invalid">
+                                    <p *ngIf="enName.hasError('required')" class="error">
+                                        وارد کردن نام انگلیسی {{ PAGE_TITLE }} الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-6 b-r-r">
+
+
+                            <div class="form-group">
+                                <label>از نمره</label>
+                                <input type="number" required #fromNumber="ngModel" name="fromNumber"
+                                    [(ngModel)]="PAGE_Data.fromNumber" placeholder="از نمره" class="form-control">
+                                <div *ngIf="(fromNumber.touched || fromNumber.dirty) && fromNumber.invalid">
+                                    <p *ngIf="fromNumber.hasError('required')" class="error">
+                                        وارد کردن از نمره الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>تا نمره</label>
+                                <input type="number" required #toNumber="ngModel" name="toNumber"
+                                    [(ngModel)]="PAGE_Data.toNumber" placeholder="تا نمره" class="form-control">
+                                <div *ngIf="(toNumber.touched || toNumber.dirty) && toNumber.invalid">
+                                    <p *ngIf="toNumber.hasError('required')" class="error">
+                                        وارد کردن تا نمره الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-lg-12">
+                            <a mat-raised-button color="warn" style="margin: 5px;"
+                                [routerLink]="'/dashboard/' + PAGE_URL">لغو</a>
+                            <button type="submit" mat-raised-button color="primary" [disabled]="!fm1.valid"
+                                (click)="sts()">{{ btnTitle }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

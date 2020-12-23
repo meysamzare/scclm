@@ -603,7 +603,7 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
 
 
     getPostTypeString(type) {
-        return getPostTypeString(type);
+        return getPostTypeString(type, this.auth.fadakTitle, this.auth.hedayatTahsiliTitle, this.auth.blogTitle, this.auth.bargozideganTitle);
     }
 
     getFileUrl(url): string {

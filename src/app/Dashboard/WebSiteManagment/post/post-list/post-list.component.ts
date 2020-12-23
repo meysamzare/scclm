@@ -149,7 +149,7 @@ export class PostListComponent implements OnInit, AfterViewInit {
     }
 
     getPostTypeString(type) {
-        return getPostTypeString(type);
+        return getPostTypeString(type, this.auth.fadakTitle, this.auth.hedayatTahsiliTitle, this.auth.blogTitle, this.auth.bargozideganTitle);
     }
 
     getPostTypeColor(type) {

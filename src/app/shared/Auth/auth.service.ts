@@ -89,13 +89,13 @@ export class AuthService {
 
 
 
-    DASHBOARD_VERSION = "1.0.0 Alpha 5";
+    DASHBOARD_VERSION = "1.0.0 Alpha 14";
 
-    INDEX_VERSION = "3.4.1 Build 3021";
+    INDEX_VERSION = "3.5.2 Build 230";
 
-    PARENTMOBILEAPP_VERSION = "3.2.0 Build 4620";
+    PARENTMOBILEAPP_VERSION = "3.3.2 Build 8530";
 
-    TMA_VERSION = "1.9.8 Build 300";
+    TMA_VERSION = "1.9.93 Build 6952";
 
 
     public apiUrl: string;
@@ -128,6 +128,10 @@ export class AuthService {
     public activeHr?: string;
     public copyRight?: string;
     public fadakTitle?: string;
+    public hedayatTahsiliTitle?: string;
+    public blogTitle?: string;
+    public bargozideganTitle?: string;
+    public showForsatShoghli?: boolean;
 
 
     load(http: HttpClient, type: "promise" | "observable" = "promise") {
@@ -159,6 +163,11 @@ export class AuthService {
                 this.activeHr = data.activeHr || "";
                 this.copyRight = data.copyRight || "";
                 this.fadakTitle = data.fadakTitle || "";
+
+                this.showForsatShoghli = data.showForsatShoghli;
+                this.hedayatTahsiliTitle = data.hedayatTahsiliTitle || "هدایت تحصیلی";
+                this.blogTitle = data.blogTitle || "بلاگ";
+                this.bargozideganTitle = data.bargozideganTitle || "دبیرخانه برگزیدگان";
 
                 this.idb.getObjectStore(this.idb.dbApiStoreName).then((obstore) => {
                     obstore.getAll().onsuccess = (e) => {

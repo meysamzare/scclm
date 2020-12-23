@@ -163,6 +163,9 @@ import { OnlineClassEditComponent } from "./OnlineClass/online-class-edit/online
 import { ListStudentDailyScheduleComponent } from "./student/student-daily-schedule/list-student-daily-schedule/list-student-daily-schedule.component";
 import { StudentDailyScheduleDetailComponent } from "./student/student-daily-schedule/list-student-daily-schedule/student-daily-schedule-detail/student-daily-schedule-detail.component";
 import { EditStudentDailyScheduleComponent } from "./student/student-daily-schedule/edit-student-daily-schedule/edit-student-daily-schedule.component";
+import { DescriptiveScoreResolverService } from "./Exam/descriptive-score/descriptive-score-edit-resolver.service";
+import { DescriptiveScoreEditComponent } from "./Exam/descriptive-score/descriptive-score-edit/descriptive-score-edit.component";
+import { DescriptiveScoreListComponent } from "./Exam/descriptive-score/descriptive-score-list/descriptive-score-list.component";
 
 @NgModule({
     imports: [
@@ -1665,6 +1668,32 @@ import { EditStudentDailyScheduleComponent } from "./student/student-daily-sched
                                 },
                                 resolve: {
                                     onlineClass: OnlineClassResolverService
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        path: "descriptive-score",
+                        children: [
+                            {
+                                path: "",
+                                pathMatch: "full",
+                                component: DescriptiveScoreListComponent,
+                                data: {
+                                    role: ["view_DescriptiveScore"]
+                                }
+                            },
+                            {
+                                path: "edit/:id",
+                                component: DescriptiveScoreEditComponent,
+                                data: {
+                                    role: [
+                                        "add_DescriptiveScore",
+                                        "edit_DescriptiveScore"
+                                    ]
+                                },
+                                resolve: {
+                                    onlineClass: DescriptiveScoreResolverService
                                 }
                             }
                         ]

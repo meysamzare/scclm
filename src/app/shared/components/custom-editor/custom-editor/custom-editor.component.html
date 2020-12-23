@@ -8,7 +8,7 @@
 </button>
 
 <ckeditor (change)="dataChange.next($event); onChange($event)" (blur)="onTouched()" [disabled]="disabled" [(ngModel)]="content">
-    <ckbutton [name]="'image'" [command]="'insert_pic'" (click)="insertPicture()"
+    <ckbutton *ngIf="showPicSelection" [name]="'image'" [command]="'insert_pic'" (click)="insertPicture()"
         [icon]="'plugins/icons.png?t=K24B'" [label]="'انتخاب تصویر ار آلبوم تصاویر'">
     </ckbutton>
 </ckeditor>

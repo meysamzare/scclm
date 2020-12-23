@@ -43,6 +43,22 @@
         </mat-card-content>
     </mat-card>
 
+
+    <div *ngIf="stdAuth.isUserHaveToChangePass" class="alert alert-danger" role="alert">
+        <h4>
+            کلمه عبور خود را عوض کنید
+        </h4>
+        <p>
+            کلمه عبور فعلی شما دارای امنیت بسیار کم است و برای ادامه کار با این برنامه به شما پیشنهاد میدهیم که
+            کلمه عبور خود را تعویض کنید.
+        </p>
+        <p style="text-align: center;">
+            <button type="button" [routerLink]="['/more/change-password']" class="btn btn-block btn-success">
+                تغییر کلمه عبور
+            </button>
+        </p>
+    </div>
+
     <div *ngIf="!stdAuth.getStudent().isStudentInfoComplated" class="alert alert-warning margin-top-10"
         style="color: white;" role="alert">
         <p class="alert-content">
@@ -56,16 +72,7 @@
             </button>
         </p>
     </div>
-    <!-- 
-    <div *ngIf="stdAuth.isUserHaveToChangePass" class="alert alert-danger" role="alert">
 
-        <p>
-            تغییر کلمه عبور &nbsp;
-            <button type="button" [routerLink]="['/more/change-password']" class="btn btn-success">
-                کلیک کنید
-            </button>
-        </p>
-    </div> -->
 
 
     <div class="row">

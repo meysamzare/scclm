@@ -16,6 +16,40 @@
                     <P>موردی یافت نشد</P>
                 </div>
 
+
+                <div class="row" style="margin-top: 10px;">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>پایه تحصیلی</label>
+                            <ng-select name="grade" [(ngModel)]="selectedGrade" (change)="selectedCourse = null;"
+                                (change)="refreshDataSource()">
+                                <ng-option *ngFor="let u of grades" [value]="u.id">{{u.name}}</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>درس</label>
+                            <ng-select name="course" [(ngModel)]="selectedCourse" [disabled]="!selectedGrade"
+                                (change)="refreshDataSource()">
+                                <ng-option *ngFor="let u of getCourseByGrade()" [value]="u.id">{{u.name}}
+                                </ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>میزان سختی</label>
+                            <ng-select name="defct" [(ngModel)]="selectedDefct" (change)="refreshDataSource()">
+                                <ng-option [value]="4">خیلی دشوار</ng-option>
+                                <ng-option [value]="1">دشوار</ng-option>
+                                <ng-option [value]="2">متوسط</ng-option>
+                                <ng-option [value]="3">آسان</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                </div>
+
                 <div>
                     <div dir="rtl">
 
@@ -76,7 +110,7 @@
                                     <td mat-cell *matCellDef="let row">
                                         {{row.name}} </td>
                                 </ng-container>
-                                
+
                                 <ng-container matColumnDef="gradeName">
                                     <th mat-header-cell *matHeaderCellDef mat-sort-header> پایه تحصیلی </th>
                                     <td mat-cell *matCellDef="let row">

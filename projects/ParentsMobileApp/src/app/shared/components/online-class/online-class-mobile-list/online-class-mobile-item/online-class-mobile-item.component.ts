@@ -42,8 +42,32 @@ export class OnlineClassMobileItemComponent implements OnInit, OnDestroy {
         this.isRunning = await this.bbbRepo.isMeetingRunning(this.onlineClass.meetingId);
     }
 
-    openBBBClass() {
-        this.bbbRepo.join({
+    async openBBBClass() {
+        if (this.isAdmin) {
+            await this.bbbRepo.create({
+                name: this.onlineClass.name,
+                meetingID: this.onlineClass.meetingId,
+                attendeePW: this.onlineClass.attendeePW,
+                moderatorPW: this.onlineClass.moderatorPW,
+                welcome: this.onlineClass.welcome,
+                maxParticipants: this.onlineClass.maxParticipants,
+                record: this.onlineClass.record,
+                duration: this.onlineClass.duration,
+                isBreakout: this.onlineClass.isBreakout,
+                parentMeetingID: this.onlineClass.parentMeetingID,
+                sequence: this.onlineClass.sequence,
+                autoStartRecording: this.onlineClass.autoStartRecording,
+                allowStartStopRecording: this.onlineClass.allowStartStopRecording,
+                muteOnStart: this.onlineClass.muteOnStart,
+                allowModsToUnmuteUsers: this.onlineClass.allowModsToUnmuteUsers,
+                lockSettingsDisableCam: this.onlineClass.lockSettingsDisableCam,
+                lockSettingsDisablePrivateChat: this.onlineClass.lockSettingsDisablePrivateChat,
+                lockSettingsDisablePublicChat: this.onlineClass.lockSettingsDisablePublicChat,
+                lockSettingsDisableNote: this.onlineClass.lockSettingsDisableNote,
+            });
+        }
+
+        await this.bbbRepo.join({
             fullName: this.userFullName,
             meetingID: this.onlineClass.meetingId,
             password: this.isAdmin ? this.onlineClass.moderatorPW : this.onlineClass.attendeePW,

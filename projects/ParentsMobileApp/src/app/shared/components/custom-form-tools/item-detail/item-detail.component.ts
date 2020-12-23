@@ -9,6 +9,9 @@ import { SetItemAttributeScoreComponent } from 'src/app/Dashboard/item/list/set-
 import { AuthService } from 'src/app/shared/Auth/auth.service';
 import { ShowImageComponent } from 'src/app/shared/Modal/show-image.component';
 
+import { jsPDF } from "jspdf";
+import html2canvas from 'html2canvas';
+
 @Component({
     selector: 'app-item-detail',
     templateUrl: './item-detail.component.html',
@@ -18,6 +21,7 @@ export class ItemDetailComponent implements OnInit, OnChanges {
 
     @Input() ItemId = 0;
     @Input() CatId = 0;
+    @Input() ItemTitle = "";
     @Input() canSetScore = false;
     @Input() isFromDashboard = false;
 
@@ -41,6 +45,54 @@ export class ItemDetailComponent implements OnInit, OnChanges {
     ngOnInit() {
         this.refreshAllDatas();
     }
+
+    async downloadPdf() {
+
+        var element = document.getElementById('contentToConvert');
+        let positionInfo = element.getBoundingClientRect();
+
+        var divHeight = positionInfo.height;
+        var divWidth = positionInfo.width;
+
+        html2canvas(element, {
+            height: divHeight,
+            width: divWidth,
+        }).then(canvas => {
+            var image = canvas.toDataURL("image/jpeg");
+
+            var margin = 6.5;
+            var imgWidth = 210 - 2 * margin;
+            var pageHeight = 295;
+            var imgHeight = canvas.height * imgWidth / canvas.width;
+            var heightLeft = imgHeight;
+
+            var doc = new jsPDF('p', 'mm');
+            var position = 5;
+
+            doc.addImage(image, 'PNG', margin, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight + 5;
+                doc.addPage();
+                doc.addImage(image, 'PNG', margin, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+            doc.save(`${this.cat.title}-${this.ItemId}-${this.ItemTitle}.pdf`);
+        });
+    }
+
+    // async downloadPdf() {
+
+    //     var data = document.getElementById('contentToConvert');
+    //     html2canvas(data).then(canvas => {
+    //         var pdf = new jsPDF('p', 'pt', [canvas.width, canvas.height], true);
+
+    //         var imgData  = canvas.toDataURL("image/jpeg", 1.0);
+    //         pdf.addImage(imgData,0,0,canvas.width, canvas.height);
+    //         pdf.save(`${this.cat.title}-${this.ItemId}.pdf`); // Generated PDF   
+    //     });
+    // }
 
     refreshAllDatas() {
         this.refreshCat();

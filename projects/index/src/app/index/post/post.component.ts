@@ -72,7 +72,7 @@ export class PostComponent implements OnInit, OnDestroy {
     }
 
     getTypeString(type) {
-        return getPostTypeString(type);
+        return getPostTypeString(type, this.auth.fadakTitle, this.auth.hedayatTahsiliTitle, this.auth.blogTitle, this.auth.bargozideganTitle);
 
     }
 

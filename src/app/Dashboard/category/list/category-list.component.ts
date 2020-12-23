@@ -3,7 +3,8 @@ import {
     MatTableDataSource,
     MatPaginator,
     MatSort,
-    PageEvent
+    PageEvent,
+    MatDialog
 } from "@angular/material";
 import { SelectionModel } from "@angular/cdk/collections";
 import { ICategory } from "../category";
@@ -14,6 +15,7 @@ import { merge } from "rxjs";
 import { IGrade } from "../../grade/grade";
 import { IClass } from "../../class/class";
 import { finalize } from "rxjs/operators";
+import { CategoryComfirmAbsenceModalComponent } from "./category-comfirm-absence-modal/category-comfirm-absence-modal.component";
 
 declare var $: any;
 
@@ -83,7 +85,8 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
         private router: Router,
         private activeroute: ActivatedRoute,
         public auth: AuthService,
-        private message: MessageService
+        private message: MessageService,
+        private dialog: MatDialog
     ) {
 
         this.activeroute.data.subscribe(data => {
@@ -504,30 +507,15 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
 
     isLoadingAbsence = false;
 
-    absenceForOnlineExam(catId) {
+    absenceForOnlineExam(catId, catTitle, calculateNegativeScore) {
         if (this.auth.isUserAccess(this.TYPE == 0 ? "edit_Category" : "edit_OnlineExam") && this.TYPE == 1) {
 
-            this.isLoadingAbsence = true;
-
-            this.auth.post("/api/Category/AbsenceForOnlineExam", catId, {
-                type: 'Edit',
-                agentId: this.auth.getUserId(),
-                agentType: 'User',
-                agentName: this.auth.getUser().fullName,
-                tableName: 'Absence For OnlineExam',
-                logSource: 'dashboard',
-                object: catId,
-                oldObject: null,
-                table: "Category",
-                tableObjectIds: [catId]
-            }).pipe(finalize(() => this.isLoadingAbsence = false)).subscribe(data => {
-                if (data.success) {
-                    this.auth.message.showSuccessAlert("حضور و غیاب آزمون با موفقیت انجام شد");
-                } else {
-                    this.auth.message.showMessageforFalseResult(data);
+            this.dialog.open(CategoryComfirmAbsenceModalComponent, {
+                data: {
+                    catId: catId,
+                    catTitle: catTitle,
+                    calculateNegativeScore: calculateNegativeScore,
                 }
-            }, er => {
-                this.auth.handlerError(er);
             });
         }
     }

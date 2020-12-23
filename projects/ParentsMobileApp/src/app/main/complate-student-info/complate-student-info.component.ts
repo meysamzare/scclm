@@ -88,6 +88,18 @@ export class ComplateStudentInfoComponent implements OnInit {
 
     finish() {
 
+        var std = this.stdAuth.getStudent();
+        this.student.id = std.id;
+
+        this.student.idNumber = std.idNumber;
+        this.student.idNumber2 = std.idNumber2;
+        this.student.code = std.code;
+        this.student.orgCode = std.orgCode;
+
+        this.student.name = std.name;
+        this.student.lastName = std.lastName;
+
+
         this.stdAuth.auth.post("/api/Student/Edit", {
             student: this.student,
             studentInfo: this.studentInfo

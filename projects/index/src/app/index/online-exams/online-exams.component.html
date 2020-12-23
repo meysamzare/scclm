@@ -1,13 +1,23 @@
-<div class="row">
+<div class="row margin-top-10">
     <div class="col-lg-12">
 
         <mat-card>
-
             <ng-container *ngIf="isLoading">
                 <mat-progress-bar mode="buffer"></mat-progress-bar>
             </ng-container>
 
             <ng-container *ngIf="!isLoading">
+
+                <div class="row">
+                    <div class="col-lg-6" style="text-align: right;">
+                        <p><b>لیست آزمون های آنلاین پیش رو</b></p>
+                    </div>
+                    <div class="col-lg-6" style="text-align: left;">
+                        <button mat-icon-button (click)="refreshOnlineExams()">
+                            <mat-icon>refresh</mat-icon>
+                        </button>
+                    </div>
+                </div>
 
                 <ng-container *ngIf="onlineExams.length == 0">
                     <div class="al-center">
@@ -16,12 +26,55 @@
                 </ng-container>
 
                 <div class="row">
-                    <div class="col-lg-6" *ngFor="let exam of onlineExams">
-                        <div class="widget-banner card">
-                            <a routerLink="/register-item/{{exam.id}}">
-                                <img class="img-fluid" [src]="getFileUrl(exam.registerPicUrl)">
-                            </a>
-                        </div>
+                    <div class="col-lg-4" *ngFor="let cat of onlineExams">
+                        <mat-card>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <p><b>{{ cat.title }}</b></p>
+                                    <p><span>{{ cat.gradeString + (cat.classString ? ' | ' + cat.classString : '') }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12" style="padding: 0;">
+                                    <img [src]="auth.getFileUrl(cat.headerPicUrl)" style="width: 100%;">
+                                </div>
+                            </div>
+                            <div class="row margin-top-10">
+                                <div class="col-lg-12">
+                                    <p class="margin-top-10">درس: <b>{{ cat.courseString }}</b></p>
+                                    <p *ngIf="cat.examTypeString">نوع آزمون: <b>{{ cat.examTypeString }}</b></p>
+                                    <p *ngIf="cat.workbookString">کارنامه: <b>{{ cat.workbookString }}</b></p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <p>شروع: <b>{{ cat.datePublishString }}</b></p>
+                                    <p>ساعت:
+                                        <mat-chip-list style="display: inline-block;">
+                                            <mat-chip selected>{{ cat.timePublish }}</mat-chip>
+                                        </mat-chip-list>
+                                    </p>
+                                </div>
+                                <div class="col-lg-6">
+                                    <p>پایان: <b>{{ cat.dateExpireString }}</b></p>
+                                    <p>ساعت:
+                                        <mat-chip-list style="display: inline-block;">
+                                            <mat-chip selected>{{ cat.timeExpire }}</mat-chip>
+                                        </mat-chip-list>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row margin-top-10" *ngIf="cat.canStartExam">
+                                <div class="col-lg-12">
+                                    <button style="width: 100%; background-color: #14bb00; outline: none;"
+                                        routerLink="/register-item/{{cat.id}}" mat-raised-button color="primary">
+                                        شرکت در آزمون
+                                    </button>
+                                </div>
+                            </div>
+                        </mat-card>
                     </div>
                 </div>
             </ng-container>

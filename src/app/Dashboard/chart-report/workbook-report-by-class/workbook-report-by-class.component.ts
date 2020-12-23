@@ -5,6 +5,8 @@ import { IGrade } from '../../grade/grade';
 import { IClass } from '../../class/class';
 import { ICourse } from '../../course/course';
 import { MatTableDataSource, MatSort } from '@angular/material';
+import { IDescriptiveScore } from '../../Exam/descriptive-score/descriptive-score';
+import { WorkbookResultService } from '../../workbook/workbook-result.service';
 
 @Component({
     selector: 'app-workbook-report-by-class',
@@ -28,6 +30,7 @@ export class WorkbookReportByClassComponent implements OnInit, AfterViewInit {
 
     constructor(
         public auth: AuthService,
+        private workbookResultService: WorkbookResultService
     ) { }
 
 
@@ -78,7 +81,8 @@ export class WorkbookReportByClassComponent implements OnInit, AfterViewInit {
         results: WorkbookDetailResult[],
         displayedColumns: string[],
         dataSource: MatTableDataSource<WorkbookDetailResult>,
-        courseScores: {courseId: string, courseScore: number}[]
+        courseScores: { courseId: string, courseScore: number }[],
+        isDescriptiveScore: boolean;
     }[] = [];
 
     @ViewChildren(MatSort) sorts: QueryList<MatSort>;
@@ -93,7 +97,7 @@ export class WorkbookReportByClassComponent implements OnInit, AfterViewInit {
         });
     }
 
-    addData() {
+    async addData() {
         if (this.selectedWorkbook && this.selectedGrade) {
 
             let workbookName = this.workbooks.find(c => c.id == this.selectedWorkbook).name;
@@ -117,7 +121,11 @@ export class WorkbookReportByClassComponent implements OnInit, AfterViewInit {
 
             this.isLoading = true;
 
-            let obj = {
+            const descScoreData = await this.auth.post("/api/DescriptiveScore/getAll").toPromise();
+
+            const descriptiveScores: IDescriptiveScore[] = descScoreData.data;
+
+            const obj = {
                 workbookId: this.selectedWorkbook,
                 gradeId: this.selectedGrade,
                 classId: this.selectedClass,
@@ -137,6 +145,7 @@ export class WorkbookReportByClassComponent implements OnInit, AfterViewInit {
                 if (data.success) {
                     let courses: ICourse[] = data.data.courses;
                     let results: WorkbookDetailResult[] = data.data.results;
+                    let isDescriptiveScore: boolean = data.data.isDescriptiveScore;
 
                     let dspCols = ['rate', 'name', 'totalAvg'];
 
@@ -145,13 +154,25 @@ export class WorkbookReportByClassComponent implements OnInit, AfterViewInit {
                         dspCols.push(courseId);
                     });
 
-                    let courseScores: {courseId: string, courseScore: number}[] = [];
+                    let courseScores: { courseId: string, courseScore: number }[] = [];
 
                     results.forEach((result, index, resultArray) => {
-                        courses.forEach((course, courseIndex) => {
-                            (resultArray as any[])[index][course.id.toString()] = result.courseAvgs[courseIndex];
 
-                            courseScores.push({courseId: course.id.toString(), courseScore: result.courseAvgs[courseIndex]});
+                        if (isDescriptiveScore) {
+                            resultArray[index].totalAvgString = this.workbookResultService.getDescriptiveScoreNameForScore(descriptiveScores, resultArray[index].totalAvg);
+                        }
+
+                        courses.forEach((course, courseIndex) => {
+
+                            let courseScore = `${result.courseAvgs[courseIndex].toFixed(2)}`;
+
+                            if (isDescriptiveScore) {
+                                courseScore = this.workbookResultService.getDescriptiveScoreNameForScore(descriptiveScores, result.courseAvgs[courseIndex]);
+                            }
+
+                            (resultArray as any[])[index][course.id.toString()] = courseScore;
+
+                            courseScores.push({ courseId: course.id.toString(), courseScore: result.courseAvgs[courseIndex] });
                         });
                     });
 
@@ -167,12 +188,13 @@ export class WorkbookReportByClassComponent implements OnInit, AfterViewInit {
                         name: "معدل دروس",
                         rate: null,
                         totalAvg: this.average(results.map(c => c.totalAvg)),
+                        totalAvgString: this.workbookResultService.getDescriptiveScoreNameForScore(descriptiveScores, this.average(results.map(c => c.totalAvg))),
                         courseAvgs: averageOfCourseAvgs,
                         isLast: true
                     };
 
                     courses.forEach((course, courseIndex) => {
-                        rs[course.id.toString()] = rs.courseAvgs[courseIndex];
+                        rs[course.id.toString()] = rs.courseAvgs[courseIndex].toFixed(2);
                     });
 
 
@@ -184,7 +206,8 @@ export class WorkbookReportByClassComponent implements OnInit, AfterViewInit {
                         results: results,
                         displayedColumns: dspCols,
                         dataSource: new MatTableDataSource(results),
-                        courseScores: courseScores
+                        courseScores: courseScores,
+                        isDescriptiveScore: isDescriptiveScore
                     });
 
 
@@ -210,7 +233,7 @@ export class WorkbookReportByClassComponent implements OnInit, AfterViewInit {
 
     average = (array: number[]) => array ? array.reduce((a, b) => a + b) / array.length : null;
 
-    getRateOfCourse(courseId: number, courseScore: number, courseScores: {courseId: string, courseScore: number}[]) {
+    getRateOfCourse(courseId: number, courseScore: number, courseScores: { courseId: string, courseScore: number }[]) {
         let scores = courseScores.filter(c => c.courseId == courseId.toString()).map(c => c.courseScore);
         let uniqScores = Array.from(new Set(scores)).sort((a, b) => b - a);
 
@@ -223,6 +246,7 @@ export class WorkbookDetailResult {
     rate: number;
     name: string;
     totalAvg: number;
+    totalAvgString: string;
     courseAvgs: number[];
     isLast = false;
 }

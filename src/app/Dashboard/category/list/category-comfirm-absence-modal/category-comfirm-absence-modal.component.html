@@ -1,0 +1,50 @@
+<div dir="rtl" style="min-width:650px;">
+
+    <div mat-dialog-title>
+        {{ catTitle }}
+    </div>
+
+    <div mat-dialog-content>
+
+        <mat-progress-bar mode="buffer" *ngIf="isLoadingAbsence"></mat-progress-bar>
+
+        <div class="alert alert-info" role="alert">
+            <p>
+                <b>
+                    آیا نمرات این آزمون، در سامانه ارزشیابی های تحصیلی ثبت گردد؟
+                </b>
+            </p>
+        </div>
+
+        <br>
+
+        <div>
+            <label>نحوه ثبت نمره</label>
+            <mat-radio-group class="radio-group" [(ngModel)]="saveScoreType">
+                <mat-radio-button [value]="1" class="radio-button">نمره خام</mat-radio-button>
+                <mat-radio-button [value]="2" class="radio-button" *ngIf="calculateNegativeScore">نمره از
+                    100
+                </mat-radio-button>
+                <mat-radio-button [value]="3" class="radio-button">نمره از 20</mat-radio-button>
+            </mat-radio-group>
+        </div>
+
+        <br>
+        <br>
+
+        <div>
+            <mat-checkbox [(ngModel)]="deleteUnknownDatas">حذف داده های اضافی آزمون آنلاین</mat-checkbox>
+        </div>
+
+        <br>
+
+    </div>
+
+
+    <div mat-dialog-actions>
+        <button mat-stroked-button color="warn" style="margin-right: 5px;" [mat-dialog-close]="false">لغو</button>
+        <button mat-stroked-button (click)="absenceForOnlineExam()">
+            حضور غیاب آزمون
+        </button>
+    </div>
+</div>

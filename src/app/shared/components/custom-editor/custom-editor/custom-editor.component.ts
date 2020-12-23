@@ -3,7 +3,6 @@ import { AbstractControl, ControlValueAccessor, NgControl, ValidationErrors, Val
 import { MatDialog } from '@angular/material';
 import { PictureSelectModalComponent } from 'src/app/html-tools/picture-select-modal/picture-select-modal.component';
 import { SpeechRecognitionDialogComponent } from '../speech-recognition-dialog/speech-recognition-dialog.component';
-import { SpeechRecognitionService } from '../speech-recognition.service';
 
 @Component({
     selector: 'app-custom-editor',
@@ -18,6 +17,7 @@ export class CustomEditorComponent implements OnInit, ControlValueAccessor, Vali
     @Input() required: boolean = true;
     @Input() disabled: boolean = false;
     @Input() showLabel: boolean = true;
+    @Input() showPicSelection: boolean = true;
     
     @Input() data: any = "";
 

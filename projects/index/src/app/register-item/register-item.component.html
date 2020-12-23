@@ -151,8 +151,8 @@
                                             <hr>
 
                                             <ng-container *ngIf="i.questionType == 1">
-                                                <app-custom-editor [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                    label="جواب شما:"
+                                                <app-custom-editor [showPicSelection]="false" [required]="i.isRequired"
+                                                    [formControlName]="'p' + getIndexForAttr(i.id)" label="جواب شما:"
                                                     (dataChange)="setItemAttrDirectly($event, i.id); ">
                                                 </app-custom-editor>
                                             </ng-container>
@@ -183,7 +183,8 @@
                                                 </button>
                                             </div>
                                         </div> -->
-                                                <app-custom-editor [data]="i.complatabelContent"
+                                                <app-custom-editor [showPicSelection]="false" [required]="i.isRequired"
+                                                    [data]="i.complatabelContent"
                                                     [formControlName]="'p' + getIndexForAttr(i.id)"
                                                     label="محتوای زیر را تکمیل کنید"
                                                     (dataChange)="setItemAttrDirectly($event, i.id);">
@@ -389,7 +390,9 @@
                                                 <hr>
 
                                                 <ng-container *ngIf="i.questionType == 1">
-                                                    <app-custom-editor [formControlName]="'p' + getIndexForAttr(i.id)"
+                                                    <app-custom-editor [showPicSelection]="false"
+                                                        [required]="i.isRequired"
+                                                        [formControlName]="'p' + getIndexForAttr(i.id)"
                                                         label="جواب شما:"
                                                         (dataChange)="setItemAttrDirectly($event, i.id); ">
                                                     </app-custom-editor>
@@ -408,7 +411,8 @@
                                                 </ng-container>
 
                                                 <ng-container *ngIf="i.questionType == 3">
-                                                    <app-custom-editor [data]="i.complatabelContent"
+                                                    <app-custom-editor [showPicSelection]="false"
+                                                        [required]="i.isRequired" [data]="i.complatabelContent"
                                                         [formControlName]="'p' + getIndexForAttr(i.id)"
                                                         label="محتوای زیر را تکمیل کنید"
                                                         (dataChange)="setItemAttrDirectly($event, i.id);">
@@ -497,13 +501,28 @@
 
                                 <div class="row" style="flex-flow: row;">
                                     <div class="col-lg-6" *ngIf="activeStep != attrs.length -1">
-                                        <button class="btn btn-outline-success" style="width: 100%;"
-                                            [disabled]="!steps.isActiveStepValid() || attrUniqList.length != 0 || reqfilesAttrint.length != 0 || isUploading || isLoadingForUniqAttr"
-                                            (click)="nextStep()">
-                                            <span class="fa fa-arrow-right" style="vertical-align: middle;"></span>
-                                            &nbsp; &nbsp;
-                                            ثبت و بعدی
-                                        </button>
+                                        <div class="row">
+                                            <div
+                                                [ngClass]="(isPrevStepAllowed && cat.randomAttribute) ? 'col-lg-9' : 'col-lg-12'">
+                                                <button class="btn btn-outline-success" style="width: 100%;"
+                                                    [disabled]="!steps.isActiveStepValid() || attrUniqList.length != 0 || reqfilesAttrint.length != 0 || isUploading || isLoadingForUniqAttr"
+                                                    (click)="nextStep()">
+                                                    <span class="fa fa-arrow-right"
+                                                        style="vertical-align: middle;"></span>
+                                                    &nbsp; &nbsp;
+                                                    ثبت و بعدی
+                                                </button>
+                                            </div>
+                                            <div class="col-lg-3" *ngIf="isPrevStepAllowed && cat.randomAttribute">
+                                                <button class="btn btn-outline-info" style="width: 100%;"
+                                                    [disabled]="activeStep == 0 || !isPrevStepAllowed || !steps.isActiveStepValid() || attrUniqList.length != 0 || reqfilesAttrint.length != 0 || isUploading || isLoadingForUniqAttr"
+                                                    (click)="lastStep()" [tooltip]="'رفتن به سوال آخر'">
+                                                    <span class="fa fa-long-arrow-right"
+                                                        style="vertical-align: middle;"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <div [class.col-lg-6]="activeStep != attrs.length -1"
                                         [class.col-lg-12]="activeStep == attrs.length -1">
@@ -535,13 +554,20 @@
                                     </div>
                                 </div>
 
-                                <div style="text-align: center; margin-top: 50px; direction: ltr;">
-                                    <ng-container *ngFor="let i of attrs">
-                                        <span class="step-dot" [style.cursor]="isPrevStepAllowed ? 'pointer' : ''"
-                                            [tooltip]="getIndexForAttr(i.id) + 1"
-                                            [class.finished]="isItemAttrHasValue(i)"
-                                            [class.active]="activeStep == getIndexForAttr(i.id)"
-                                            [class.error]="isAttrHasError(i.id)" (click)="goToStep(i.id)"></span>
+                                <div style="text-align: center; margin-top: 50px; margin-bottom: 30px; direction: ltr;">
+                                    <ng-container *ngFor="let unit of units">
+                                        <fieldset *ngIf="getAttrsForUnit(unit.id).length != 0">
+                                            <legend>{{ unit.title }}</legend>
+                                            <ng-container
+                                                *ngFor="let i of getAttrsForUnit(unit.id); let attrIndex = index;">
+                                                <span class="step-dot"
+                                                    [style.cursor]="isPrevStepAllowed ? 'pointer' : ''"
+                                                    [tooltip]="attrIndex + 1" [class.finished]="isItemAttrHasValue(i)"
+                                                    [class.active]="activeStep == getIndexForAttr(i.id)"
+                                                    [class.error]="isAttrHasError(i.id)"
+                                                    (click)="goToStep(i.id)"></span>
+                                            </ng-container>
+                                        </fieldset>
                                     </ng-container>
                                 </div>
 

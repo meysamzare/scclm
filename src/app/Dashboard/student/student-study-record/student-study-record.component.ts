@@ -13,6 +13,7 @@ import { getTitleByNumber, getTypeByNumber } from '../Score/ScoreThemplate/score
 import { IStudentScore } from '../Score/StudentScore/student-score';
 import { StdClassMng } from '../stdClassMng';
 import { IWorkbook } from '../../workbook/workbook';
+import { StudentWorkbookResult, WorkbookResultService } from '../../workbook/workbook-result.service';
 
 @Component({
     selector: 'app-student-study-record',
@@ -49,7 +50,8 @@ export class StudentStudyRecordComponent implements OnInit {
         private route: Router,
         private activeRoute: ActivatedRoute,
         private message: MessageService,
-        public auth: AuthService
+        public auth: AuthService,
+        private workbookResultService: WorkbookResultService
     ) {
         this.auth.post("/api/StdClassMng/getAllRegistredStudent").subscribe(data => {
             if (data.success) {
@@ -122,87 +124,38 @@ export class StudentStudyRecordComponent implements OnInit {
         }
     }
 
-
-    coursesHeaders: string[] = [];
-    courseAvgs: number[] = [];
-    totalAvg: number = 0;
-
-    ratingsInClass: number[] = [];
-    ratingsInGrade: number[] = [];
-
-    ratingOfTotalAvgClass: number = 0;
-    ratingOfTotalAvgGrade: number = 0;
-    avgOfTotalAvrageGrade: number = 0;
-    topTotalAvrageGrade: number = 0;
+    workbookResult: StudentWorkbookResult = null;
 
     clearWorkbook() {
-        this.coursesHeaders = [];
-        this.courseAvgs = [];
-        this.totalAvg = 0;
-        this.ratingsInClass = [];
-        this.ratingsInGrade = [];
-
-        this.ratingOfTotalAvgClass = 0;
-        this.ratingOfTotalAvgGrade = 0;
-        this.avgOfTotalAvrageGrade = 0;
-        this.topTotalAvrageGrade = 0;
+        this.workbookResult = null;
     }
 
-    onWorkbookSelect() {
+    async onWorkbookSelect() {
         if (this.selectedWorkBook) {
-            var classId = this.registredStdClassMngs.find(c => c.isActive == true).classId;
+            var classId = this.registredStdClassMngs.find(c => c.isActive).classId;
             if (!classId) {
                 return this.auth.message.showErrorAlert("این دانش آموز سال تحصیلی فعالی ندارد!");
             }
 
-            var obj = {
+            const obj = {
                 studentId: this.selectedStudent,
                 gradeId: this.selectedGrade,
                 classId: classId,
                 workbookId: this.selectedWorkBook
             }
-            this.auth.post("/api/ExamScore/getTotalAverageByStudentGrade", obj, {
-                type: 'View',
-                agentId: this.auth.getUserId(),
-                agentType: 'User',
-                agentName: this.auth.getUser().fullName,
-                tableName: 'View Student Workbook',
-                logSource: 'dashboard',
-                object: obj,
-                table: "Student",
-                tableObjectIds: [this.selectedStudent]
-            }).subscribe(data => {
-                if (data.success) {
 
-                    var headers: string[] = data.data.headers;
-                    var courseAvgs: number[] = data.data.courseAvgs;
-                    var totalAvg: number = data.data.totalAvg;
-                    var ratingsInClass: number[] = data.data.ratingsInClass;
-                    var ratingsInGrade: number[] = data.data.ratingsInGrade;
-
-                    var ratingOfTotalAvgClass: number = data.data.ratingOfTotalAvgClass;
-                    var ratingOfTotalAvgGrade: number = data.data.ratingOfTotalAvgGrade;
-                    var avgOfTotalAvrageGrade: number = data.data.avgOfTotalAvrageGrade;
-                    var topTotalAvrageGrade: number = data.data.topTotalAvrageGrade;
-
-
-                    this.coursesHeaders = headers;
-                    this.courseAvgs = courseAvgs;
-                    this.totalAvg = totalAvg;
-
-                    this.ratingsInClass = ratingsInClass;
-                    this.ratingsInGrade = ratingsInGrade;
-
-                    this.ratingOfTotalAvgClass = ratingOfTotalAvgClass;
-                    this.ratingOfTotalAvgGrade = ratingOfTotalAvgGrade;
-                    this.avgOfTotalAvrageGrade = avgOfTotalAvrageGrade;
-                    this.topTotalAvrageGrade = topTotalAvrageGrade;
-                } else {
-                    this.auth.message.showMessageforFalseResult(data);
-                }
-            }, er => {
-                this.auth.handlerError(er);
-            });
+            this.workbookResult = await this.workbookResultService.getStudnetWorkbook(this.selectedStudent, this.selectedGrade, classId, this.selectedWorkBook,
+                {
+                    type: 'View',
+                    agentId: this.auth.getUserId(),
+                    agentType: 'User',
+                    agentName: this.auth.getUser().fullName,
+                    tableName: 'View Student Workbook',
+                    logSource: 'dashboard',
+                    object: obj,
+                    table: "Student",
+                    tableObjectIds: [this.selectedStudent]
+                });
         }
     }
 

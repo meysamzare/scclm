@@ -3,6 +3,7 @@ import { AuthService } from 'src/app/shared/Auth/auth.service';
 import { IWorkbook } from '../../workbook/workbook';
 import { IStudent } from '../../student/student';
 import { StdClassMng } from '../../student/stdClassMng';
+import { StudentWorkbookResult, WorkbookResultService } from '../../workbook/workbook-result.service';
 
 @Component({
     selector: 'app-workbook-comparison',
@@ -23,10 +24,14 @@ export class WorkbookComparisonComponent implements OnInit {
     selectedStdClassMng: number = null;
 
 
-    workbookResults: StudentWorkbookType[] = [];
+    workbookResults: {
+        title: string,
+        workbook: StudentWorkbookResult
+    }[] = [];
 
     constructor(
-        public auth: AuthService
+        public auth: AuthService,
+        private workbookResultService: WorkbookResultService
     ) { }
 
     ngOnInit() {
@@ -71,7 +76,7 @@ export class WorkbookComparisonComponent implements OnInit {
         }
     }
 
-    addWorkbook() {
+    async addWorkbook() {
         let selectedStdClassMng = this.registredStdClassMngs.find(c => c.id == this.selectedStdClassMng);
 
         if (!selectedStdClassMng) {
@@ -88,14 +93,7 @@ export class WorkbookComparisonComponent implements OnInit {
         let student = this.students.find(c => c.id == this.selectedStudent);
         let studentName = `${student.name} ${student.lastName}`;
 
-        var obj = {
-            studentId: this.selectedStudent,
-            gradeId: gradeId,
-            classId: classId,
-            workbookId: this.selectedWorkbook
-        };
-
-        let title = `${studentName} ( ${gradeName} | ${className} ) - ${workbookName}`;
+        const title = `${studentName} ( ${gradeName} | ${className} ) - ${workbookName}`;
 
         let any = this.workbookResults.find(c => c.title == title);
 
@@ -105,51 +103,34 @@ export class WorkbookComparisonComponent implements OnInit {
         }
 
         this.isLoading = true;
-        this.auth.post("/api/ExamScore/getTotalAverageByStudentGrade", obj, {
-            type: 'View',
-            agentId: this.auth.getUserId(),
-            agentType: 'User',
-            agentName: this.auth.getUser().fullName,
-            tableName: 'Add Workbook to WorkbooksComparison List',
-            logSource: 'dashboard',
-            object: obj,
-            table: "WorkbookComparison",
-            tableObjectIds: [obj.studentId]
-        }).subscribe(data => {
-            if (data.success) {
 
-                var headers: string[] = data.data.headers;
-                var courseAvgs: number[] = data.data.courseAvgs;
-                var totalAvg: number = data.data.totalAvg;
-                var ratingsInClass: number[] = data.data.ratingsInClass;
-                var ratingsInGrade: number[] = data.data.ratingsInGrade;
+        const obj = {
+            studentId: this.selectedStudent,
+            gradeId: gradeId,
+            classId: classId,
+            workbookId: this.selectedWorkbook
+        };
 
-                var ratingOfTotalAvgClass: number = data.data.ratingOfTotalAvgClass;
-                var ratingOfTotalAvgGrade: number = data.data.ratingOfTotalAvgGrade;
-                var avgOfTotalAvrageGrade: number = data.data.avgOfTotalAvrageGrade;
-                var topTotalAvrageGrade: number = data.data.topTotalAvrageGrade;
+        const workbookResult = await this.workbookResultService.getStudnetWorkbook(this.selectedStudent, gradeId, classId, this.selectedWorkbook,
+            {
+                type: 'View',
+                agentId: this.auth.getUserId(),
+                agentType: 'User',
+                agentName: this.auth.getUser().fullName,
+                tableName: 'Add Workbook to WorkbooksComparison List',
+                logSource: 'dashboard',
+                object: obj,
+                table: "WorkbookComparison",
+                tableObjectIds: [obj.studentId]
+            })
 
-                this.workbookResults.push({
-                    title: title,
-                    coursesHeaders: headers,
-                    courseAvgs: courseAvgs,
-                    totalAvg: totalAvg,
-                    ratingsInClass: ratingsInClass,
-                    ratingsInGrade: ratingsInGrade,
-                    ratingOfTotalAvgClass: ratingOfTotalAvgClass,
-                    ratingOfTotalAvgGrade: ratingOfTotalAvgGrade,
-                    avgOfTotalAvrageGrade: avgOfTotalAvrageGrade,
-                    topTotalAvrageGrade: topTotalAvrageGrade,
-                });
-
-            } else {
-                this.auth.message.showMessageforFalseResult(data);
-            }
-        }, er => {
-            this.auth.handlerError(er);
-        }, () => {
-            this.isLoading = false;
+        this.workbookResults.push({
+            title: title,
+            workbook: workbookResult
         });
+
+        this.isLoading = false;
+
     }
 
     removeWorkbook(index: number) {
@@ -157,21 +138,4 @@ export class WorkbookComparisonComponent implements OnInit {
     }
 
 
-}
-
-
-export class StudentWorkbookType {
-
-    title: string;
-
-    coursesHeaders: string[];
-    courseAvgs: number[];
-    totalAvg: number;
-    ratingsInClass: number[];
-    ratingsInGrade: number[];
-
-    ratingOfTotalAvgClass: number;
-    ratingOfTotalAvgGrade: number;
-    avgOfTotalAvrageGrade: number;
-    topTotalAvrageGrade: number;
 }

@@ -27,7 +27,7 @@ import { IQuestion } from "../question";
         `
     ]
 })
-export class QuestionListComponent{
+export class QuestionListComponent {
     displayedColumns: string[] = [
         "select",
         "id",
@@ -54,19 +54,56 @@ export class QuestionListComponent{
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
 
+
+    grades = [];
+    courses = [];
+
+    selectedGrade = null;
+    selectedCourse = null;
+    selectedDefct = null;
+
     constructor(
         private router: Router,
         private activeroute: ActivatedRoute,
         private auth: AuthService,
         private message: MessageService
-    ) {}
+    ) {
+        this.auth.post("/api/Grade/getAll").subscribe(data => {
+            if (data.success) {
+                this.grades = data.data;
+            } else {
+                this.auth.message.showMessageforFalseResult(data);
+            }
+        }, er => {
+            this.auth.handlerError(er);
+        });
+
+        this.auth.post("/api/Course/getAll").subscribe(data => {
+            if (data.success) {
+                this.courses = data.data;
+            } else {
+                this.auth.message.showMessageforFalseResult(data);
+            }
+        });
+    }
+
+
+    getCourseByGrade() {
+        const gradeId = this.selectedGrade;
+
+        if (gradeId) {
+            return this.courses.filter(c => c.gradeId == gradeId);
+        }
+
+        return [];
+    }
 
     getRowCanSelected(): number {
         let rowCanSelect: number = 0;
 
         this.getCurrentDataOfPage().forEach(row => {
             // if (!row.havePerson) {
-                rowCanSelect += 1;
+            rowCanSelect += 1;
             // }
         });
 
@@ -102,9 +139,9 @@ export class QuestionListComponent{
             ? this.selection.clear()
             : this.getCurrentDataOfPage().forEach(row => {
                 //   if (!row.havePerson) {
-                      this.selection.select(row);
+                this.selection.select(row);
                 //   }
-              });
+            });
     }
 
     deleteSelected() {
@@ -154,46 +191,42 @@ export class QuestionListComponent{
     refreshDataSource() {
         this.selection.clear();
 
-        this.auth
-            .post("/api/Question/Get", {
+        const obj = {
+            getparams: {
                 sort: this.sort.active,
                 direction: this.sort.direction,
                 pageIndex: this.paginator.pageIndex,
                 pageSize: this.paginator.pageSize,
                 q: this.txtSearch
-            }, {
-                type: 'View',
-                agentId: this.auth.getUserId(),
-                agentType: 'User',
-                agentName: this.auth.getUser().fullName,
-                tableName: 'Question',
-                logSource: 'dashboard',
-                object: {
-                    sort: this.sort.active,
-                    direction: this.sort.direction,
-                    pageIndex: this.paginator.pageIndex,
-                    pageSize: this.paginator.pageSize,
-                    q: this.txtSearch
-                },
-                table: "Question"
-            })
-            .subscribe(
-                (data: jsondata) => {
-                    if (data.success) {
-                        this.isLoadingResults = false;
-                        this.itemLength = data.type;
-                        this.Questions = data.data;
+            },
+            selectedGrade: this.selectedGrade,
+            selectedCourse: this.selectedCourse,
+            selectedDefct: this.selectedDefct
+        };
 
-                        this.dataSource = new MatTableDataSource(this.Questions);
-                    } else {
-                        this.isLoadingResults = false;
-                        this.message.showMessageforFalseResult(data);
-                    }
-                },
-                er => {
-                    this.auth.handlerError(er);
-                }
-            );
+        this.auth.post("/api/Question/Get", obj, {
+            type: 'View',
+            agentId: this.auth.getUserId(),
+            agentType: 'User',
+            agentName: this.auth.getUser().fullName,
+            tableName: 'Question',
+            logSource: 'dashboard',
+            object: obj,
+            table: "Question"
+        }).subscribe(data => {
+            if (data.success) {
+                this.isLoadingResults = false;
+                this.itemLength = data.type;
+                this.Questions = data.data;
+
+                this.dataSource = new MatTableDataSource(this.Questions);
+            } else {
+                this.isLoadingResults = false;
+                this.message.showMessageforFalseResult(data);
+            }
+        }, er => {
+            this.auth.handlerError(er);
+        });
     }
 
     ngOnInit() {

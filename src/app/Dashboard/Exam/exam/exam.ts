@@ -24,8 +24,6 @@ export class IExam {
 
     order: number;
 
-    yeareducationId: number;
-
     courseId: number;
 
     time: number;

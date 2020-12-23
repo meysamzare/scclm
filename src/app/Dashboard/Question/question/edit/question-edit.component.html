@@ -118,7 +118,7 @@
                                 <div *ngIf="autoCounter" class="col-lg-2">
                                     <div class="form-group">
                                         <label>مقدار شمارنده</label>
-                                        <input type="text" (input)="autoSetQuestionName()" inputmode="numeric"
+                                        <input type="number" (input)="autoSetQuestionName()" inputmode="numeric"
                                             pattern="[0-9]*" name="counter" [(ngModel)]="counter"
                                             placeholder="مقدار شمارنده" class="form-control">
                                     </div>

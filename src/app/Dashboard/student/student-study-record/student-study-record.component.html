@@ -99,15 +99,15 @@
                 <div class="col-lg-12">
                     <div class="form-group">
                         <label>انتخاب کارنامه</label>
-                        <ng-select (change)="clearWorkbook(); onWorkbookSelect();" #workbook="ngModel"
-                            name="workbook" [(ngModel)]="selectedWorkBook" required>
+                        <ng-select (change)="clearWorkbook(); onWorkbookSelect();" #workbook="ngModel" name="workbook"
+                            [(ngModel)]="selectedWorkBook" required>
                             <ng-option *ngFor="let i of workbooks" [value]="i.id">{{ i.name }}</ng-option>
                         </ng-select>
                     </div>
                 </div>
             </div>
 
-            <ng-container *ngIf="selectedWorkBook">
+            <ng-container *ngIf="selectedWorkBook && workbookResult">
 
                 <div class="row">
                     <div class="col-lg-12 table-responsive">
@@ -115,21 +115,26 @@
                             <thead>
                                 <tr>
                                     <th>معدل کل</th>
-                                    <th>رتبه در کلاس</th>
-                                    <th>رتبه در پایه</th>
-                                    <th>معدل برتر در پایه</th>
-                                    <th>میانگین معدل در پایه</th>
+                                    <ng-container *ngIf="!workbookResult.isDescriptiveScore">
+                                        <th>رتبه در کلاس</th>
+                                        <th>رتبه در پایه</th>
+                                        <th>معدل برتر در پایه</th>
+                                        <th>میانگین معدل در پایه</th>
+                                    </ng-container>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td [style.color]="totalAvg >= avgOfTotalAvrageGrade ? 'green' : 'red'">
-                                        {{ totalAvg.toFixed(2) }}
+                                    <td
+                                        [style.color]="workbookResult.isTotalAvgBiggerThanAvgOfTotalAvg ? 'green' : 'red'">
+                                        {{ workbookResult.totalAvg }}
                                     </td>
-                                    <td>{{ ratingOfTotalAvgClass }}</td>
-                                    <td>{{ ratingOfTotalAvgGrade }}</td>
-                                    <td>{{ topTotalAvrageGrade.toFixed(2) }}</td>
-                                    <td>{{ avgOfTotalAvrageGrade.toFixed(2) }}</td>
+                                    <ng-container *ngIf="!workbookResult.isDescriptiveScore">
+                                        <td>{{ workbookResult.ratingOfTotalAvgClass }}</td>
+                                        <td>{{ workbookResult.ratingOfTotalAvgGrade }}</td>
+                                        <td>{{ workbookResult.topTotalAvrageGrade }}</td>
+                                        <td>{{ workbookResult.avgOfTotalAvrageGrade }}</td>
+                                    </ng-container>
                                 </tr>
                             </tbody>
                         </table>
@@ -143,16 +148,20 @@
                                 <tr>
                                     <th>نام درس</th>
                                     <th>معدل</th>
-                                    <th>رتبه در کلاس</th>
-                                    <th>رتبه در پایه</th>
+                                    <ng-container *ngIf="!workbookResult.isDescriptiveScore">
+                                        <th>رتبه در کلاس</th>
+                                        <th>رتبه در پایه</th>
+                                    </ng-container>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let head of coursesHeaders; let index = index;">
+                                <tr *ngFor="let head of workbookResult.headers; let index = index;">
                                     <td>{{ head }}</td>
-                                    <td>{{ courseAvgs[index].toFixed(2) }}</td>
-                                    <td>{{ ratingsInClass[index] }}</td>
-                                    <td>{{ ratingsInGrade[index] }}</td>
+                                    <td>{{ workbookResult.courseAvgs[index] }}</td>
+                                    <ng-container *ngIf="!workbookResult.isDescriptiveScore">
+                                        <td>{{ workbookResult.ratingsInClass[index] }}</td>
+                                        <td>{{ workbookResult.ratingsInGrade[index] }}</td>
+                                    </ng-container>
                                 </tr>
                             </tbody>
                         </table>

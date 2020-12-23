@@ -9,13 +9,10 @@ import { MatChipInputEvent, MatDialog } from "@angular/material";
 import { IUnit } from "../../unit/unit";
 import { IAttr } from "../../attribute/attribute";
 import { IItemAttr } from "../item-attr";
-import { ItemEditLongTextSelectComponent } from "./item-edit-long-text-select.component";
-import { ShowImageComponent } from "src/app/shared/Modal/show-image.component";
 import { ICategory } from "../../category/category";
 import { IAttributeOption } from "../../attribute/attribute-option";
 import { HttpRequest, HttpHeaders, HttpEventType } from "@angular/common/http";
 import { map, catchError, last } from "rxjs/operators";
-import Swal from "sweetalert2";
 import { of, EMPTY } from "rxjs";
 import { Location } from "@angular/common";
 
@@ -220,7 +217,7 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
         return options;
     }
 
-    showDialogforLongSelect(longVal) {
+    showDialogforLongSelect() {
     }
 
     openc(picker1) {
@@ -642,6 +639,6 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
         }
     }
 
-    showPopupImage(imgUrl) {
+    showPopupImage() {
     }
 }

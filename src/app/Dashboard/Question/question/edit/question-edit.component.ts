@@ -367,7 +367,7 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
                             this.clearForm();
 
                             if (this.autoCounter) {
-                                this.counter += 1;
+                                this.counter = Number(this.counter) + 1;
                                 this.autoSetQuestionName();
                             }
                         } else {
@@ -409,7 +409,7 @@ export class QuestionEditComponent implements AfterViewInit, OnInit, OnDestroy {
             for (let index = 0; index < 4; index++) {
                 this.options.push({
                     id: 0,
-                    isTrue: index == 0,
+                    isTrue: false,
                     title: `${this.question.name || ""} گزینه ${index + 1}`,
                     questionId: this.question.id,
                     name: "",

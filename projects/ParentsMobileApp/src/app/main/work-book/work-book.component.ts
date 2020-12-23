@@ -16,6 +16,7 @@ import { IStudentDailySchedule } from './student-daily-schdule/student-daily-sch
 import { StudentDailyScheduleService } from './student-daily-schdule/student-daily-schedule.service';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { ViewCatDetailTokenService } from '../view-cat-detail/view-cat-detail-token.service';
+import { StudentWorkbookResult, WorkbookResultService } from 'src/app/Dashboard/workbook/workbook-result.service';
 
 @Component({
     selector: 'app-work-book',
@@ -64,7 +65,8 @@ export class WorkBookComponent implements OnInit {
         private theme: ThemeService,
         public stdAuth: StudentAuthService,
         private studentDailyScheduleService: StudentDailyScheduleService,
-        private viewCatDetailTokenService: ViewCatDetailTokenService
+        private viewCatDetailTokenService: ViewCatDetailTokenService,
+        private workbookResultService: WorkbookResultService
     ) { }
 
     ngOnInit() {
@@ -217,88 +219,46 @@ export class WorkBookComponent implements OnInit {
 
 
     totalAvgTitle: string = "معدل کل";
-    coursesHeaders: string[] = [];
-    courseAvgs: number[] = [];
-    totalAvg: number = 0;
 
-    ratingsInClass: number[] = [];
-    ratingsInGrade: number[] = [];
-
-    ratingOfTotalAvgClass: number = 0;
-    ratingOfTotalAvgGrade: number = 0;
-    avgOfTotalAvrageGrade: number = 0;
-    topTotalAvrageGrade: number = 0;
+    workbookResult: StudentWorkbookResult = null;
 
 
-    onWorkBookSelect(selectedWorkbook) {
+    async onWorkBookSelect(selectedWorkbook) {
         if (selectedWorkbook != "null") {
             this.isLoading = true;
-            this.stdAuth.auth.post("/api/ExamScore/getTotalAverageByStudentGrade", {
-                studentId: this.stdId,
-                gradeId: this.selectedGrade,
-                classId: this.stdAuth.getActiveStdClassMng().classId,
-                workbookId: this.selectedWorkbook
-            }, {
-                type: 'View',
-                agentId: this.stdAuth.getStudent().id,
-                agentType: 'StudentParent',
-                agentName: this.stdAuth.getStudentFullName(),
-                tableName: 'Student Average Workbook',
-                logSource: 'PMA',
-                object: {
-                    stdName: this.stdAuth.getStudentFullName(),
-                    studentId: this.stdId,
-                    gradeId: this.selectedGrade,
-                    classId: this.stdAuth.getActiveStdClassMng().classId,
-                    workbookId: this.selectedWorkbook
-                },
-                table: "Workbook"
-            }).pipe(finalize(() => this.isLoading = false)).subscribe(data => {
-                if (data.success) {
 
-                    var headers: string[] = data.data.headers;
-                    var courseAvgs: number[] = data.data.courseAvgs;
-                    var totalAvg: number = data.data.totalAvg;
-                    var ratingsInClass: number[] = data.data.ratingsInClass;
-                    var ratingsInGrade: number[] = data.data.ratingsInGrade;
+            this.workbookResult = await this.workbookResultService.getStudnetWorkbook(this.stdId, this.selectedGrade, this.stdAuth.getActiveStdClassMng().classId, this.selectedWorkbook,
+                {
+                    type: 'View',
+                    agentId: this.stdAuth.getStudent().id,
+                    agentType: 'StudentParent',
+                    agentName: this.stdAuth.getStudentFullName(),
+                    tableName: 'Student Average Workbook',
+                    logSource: 'PMA',
+                    object: {
+                        stdName: this.stdAuth.getStudentFullName(),
+                        studentId: this.stdId,
+                        gradeId: this.selectedGrade,
+                        classId: this.stdAuth.getActiveStdClassMng().classId,
+                        workbookId: this.selectedWorkbook
+                    },
+                    table: "Workbook"
+                });
 
-                    var ratingOfTotalAvgClass: number = data.data.ratingOfTotalAvgClass;
-                    var ratingOfTotalAvgGrade: number = data.data.ratingOfTotalAvgGrade;
-                    var avgOfTotalAvrageGrade: number = data.data.avgOfTotalAvrageGrade;
-                    var topTotalAvrageGrade: number = data.data.topTotalAvrageGrade;
+            var maxLength = Math.max(...(this.workbookResult.headers.map(c => c.length)));
 
-                    var maxLength = Math.max(...(headers.map(c => c.length)));
-
-                    headers.forEach((value, index, array) => {
-                        array[index] = array[index].padEnd(maxLength);
-                    });
-
-                    this.totalAvgTitle = this.totalAvgTitle.padEnd(maxLength + 1);
-
-                    this.coursesHeaders = headers;
-                    this.courseAvgs = courseAvgs;
-                    this.totalAvg = totalAvg;
-
-                    this.ratingsInClass = ratingsInClass;
-                    this.ratingsInGrade = ratingsInGrade;
-                    this.ratingOfTotalAvgClass = ratingOfTotalAvgClass;
-                    this.ratingOfTotalAvgGrade = ratingOfTotalAvgGrade;
-                    this.avgOfTotalAvrageGrade = avgOfTotalAvrageGrade;
-                    this.topTotalAvrageGrade = topTotalAvrageGrade;
-
-                } else {
-                    this.stdAuth.auth.message.showMessageforFalseResult(data);
-                }
-            }, er => {
-                this.stdAuth.auth.handlerError(er);
-            }, () => {
-                this.isLoading = false;
+            this.workbookResult.headers.forEach((value, index, array) => {
+                array[index] = array[index].padEnd(maxLength);
             });
+
+            this.totalAvgTitle = this.totalAvgTitle.padEnd(maxLength + 1);
+
+            this.isLoading = false;
         }
     }
 
-    getBackColorOfPanel(avg, stdAvg) {
-        if (stdAvg >= avg) {
+    getBackColorOfPanel() {
+        if (this.workbookResult.isTotalAvgBiggerThanAvgOfTotalAvg) {
             return "#acf57aa1";
         } else {
             return "#ff6363a1";
@@ -484,7 +444,7 @@ export class WorkBookComponent implements OnInit {
         return this.examsByGrade.filter(c => c.courseId == courseId);
     }
 
-    getExamScoreForExam(examId) {
+    getExamScoreForExam(examId): any {
         return this.examScoreByGrade.find(c => c.examId == examId && c.studentId == this.stdId);
     }
 

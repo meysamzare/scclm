@@ -105,7 +105,6 @@ export class BigBlueButtonRepositoryService {
 
     async create(param: CreateParam): Promise<CreateReturn> {
         try {
-            param.fixParams();
             const params = this._getObjectAsParamArray(param);
 
             let data = await this._sendRequestToServer("create", "GET", false, null, ...params);
@@ -125,8 +124,6 @@ export class BigBlueButtonRepositoryService {
             const params = this._getObjectAsParamArray(param);
 
             let data = await this._sendRequestToServer("join", "GET", openUrl, null, ...params);
-
-            console.log(data);
 
             if (data.returncode == "FAILED") {
                 //send a message to client
@@ -246,7 +243,7 @@ export class CreateParam {
     lockSettingsDisablePublicChat?: boolean = false;
     lockSettingsDisableNote?: boolean = false;
 
-    fixParams() {
+    fixParams?() {
         if (!this.meetingID) {
             this.meetingID = randomString();
         }
