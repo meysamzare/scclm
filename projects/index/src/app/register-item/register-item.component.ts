@@ -884,7 +884,6 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
                 let formData = new FormData();
 
-                formData.append("object", JSON.stringify(object));
 
                 if (this._files.length != 0) {
                     this._files.forEach(fileObj => {
@@ -893,7 +892,9 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                     });
                 }
 
-                let url = this.auth.serializeUrl(`/api/Item/SetItemeWithAttrs`);
+                formData.append("object", JSON.stringify(object));
+
+                let url = this.auth.serializeUrl(`/api/Item/SetItemWithAttrs`);
 
                 let token = this.auth.getToken();
 
@@ -946,13 +947,13 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                                         table: "Item"
                                     }, data);
 
-                                    let dialogTitle = "";
+                                    const dialogTitle = "ثبت داده ها با موفقیت انجام شد";
 
-                                    if (isFromCountDownEvent) {
-                                        dialogTitle = `مهلت ${this.cat.btnTitle ? this.cat.btnTitle : "ثبت نام"} به پایان رسید! و داده های شما به صورت خودکار ثبت شدند.`;
-                                    } else {
-                                        dialogTitle = "ثبت داده ها با موفقیت انجام شد";
-                                    }
+                                    // if (isFromCountDownEvent) {
+                                    //     dialogTitle = `مهلت ${this.cat.btnTitle ? this.cat.btnTitle : "ثبت نام"} به پایان رسید! و داده های شما به صورت خودکار ثبت شدند.`;
+                                    // } else {
+                                    //     dialogTitle = "ثبت داده ها با موفقیت انجام شد";
+                                    // }
 
                                     Swal.fire({
                                         title: dialogTitle,
@@ -972,9 +973,10 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                                     this.message.showWarningAlert("خطایی روی داده است لطفا با راهبر سیستم تماس حاصل فرمایید");
                                     this.message.showMessageforFalseResult(data);
                                     this.isUploading = false;
-                                    if (isFromCountDownEvent) {
-                                        this.sts(isFromCountDownEvent, repeatTime + 1.5);
-                                    }
+                                    // if (isFromCountDownEvent) {
+                                    //     this.sts(isFromCountDownEvent, repeatTime + 1.5);
+                                    // }
+                                    this.sts(true, repeatTime + 1.5);
                                 }
                                 break;
                         }
@@ -982,9 +984,11 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                     catchError(() => {
                         this.message.showWarningAlert("خطایی روی داده است لطفا با راهبر سیستم تماس حاصل فرمایید");
                         this.isUploading = false;
-                        if (isFromCountDownEvent) {
-                            this.sts(isFromCountDownEvent, repeatTime + 1.5);
-                        }
+                        // if (isFromCountDownEvent) {
+                        //     this.sts(isFromCountDownEvent, repeatTime + 1.5);
+                        // }
+
+                        this.sts(true, repeatTime + 1.5);
                         return of(EMPTY);
                     }),
                     last()
@@ -992,6 +996,8 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
             } else {
                 if (isFromCountDownEvent) {
                     this.router.navigateByUrl("/");
+                } else {
+                    this.isUploading = false;
                 }
             }
         } else {
