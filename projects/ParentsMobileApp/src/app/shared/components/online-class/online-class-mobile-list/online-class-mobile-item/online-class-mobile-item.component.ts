@@ -3,6 +3,8 @@ import { IOnlineClass } from 'src/app/Dashboard/OnlineClass/online-class';
 import { BigBlueButtonRepositoryService } from 'public/Services/big-blue-button/big-blue-button-repository.service';
 import { interval } from 'rxjs';
 
+var native2ascii = require("node-native2ascii");
+
 @Component({
     selector: 'app-online-class-mobile-item',
     templateUrl: './online-class-mobile-item.component.html',
@@ -45,11 +47,11 @@ export class OnlineClassMobileItemComponent implements OnInit, OnDestroy {
     async openBBBClass() {
         if (this.isAdmin) {
             await this.bbbRepo.create({
-                name: this.onlineClass.name,
+                name: native2ascii(this.onlineClass.name),
                 meetingID: this.onlineClass.meetingId,
                 attendeePW: this.onlineClass.attendeePW,
                 moderatorPW: this.onlineClass.moderatorPW,
-                welcome: this.onlineClass.welcome,
+                welcome: native2ascii(this.onlineClass.welcome),
                 maxParticipants: this.onlineClass.maxParticipants,
                 record: this.onlineClass.record,
                 duration: this.onlineClass.duration,
@@ -68,7 +70,7 @@ export class OnlineClassMobileItemComponent implements OnInit, OnDestroy {
         }
 
         await this.bbbRepo.join({
-            fullName: this.userFullName,
+            fullName: native2ascii(this.userFullName),
             meetingID: this.onlineClass.meetingId,
             password: this.isAdmin ? this.onlineClass.moderatorPW : this.onlineClass.attendeePW,
             joinViaHtml5: true,

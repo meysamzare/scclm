@@ -95,7 +95,7 @@ export class AuthService {
 
     PARENTMOBILEAPP_VERSION = "3.3.2 Build 8530";
 
-    TMA_VERSION = "1.9.93 Build 6952";
+    TMA_VERSION = "1.9.96 Build 4250";
 
 
     public apiUrl: string;
