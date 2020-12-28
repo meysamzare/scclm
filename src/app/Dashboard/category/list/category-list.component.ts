@@ -1,21 +1,20 @@
-import { Component, ViewChild, OnInit, AfterViewInit, AfterViewChecked, AfterContentInit, ElementRef } from "@angular/core";
-import {
-    MatTableDataSource,
-    MatPaginator,
-    MatSort,
-    PageEvent,
-    MatDialog
-} from "@angular/material";
+import { Component, OnInit, AfterViewInit, AfterContentInit } from "@angular/core";
+import { MatTableDataSource, PageEvent, MatDialog } from "@angular/material";
 import { SelectionModel } from "@angular/cdk/collections";
 import { ICategory } from "../category";
 import { Router, ActivatedRoute } from "@angular/router";
 import { AuthService, jsondata } from "src/app/shared/Auth/auth.service";
 import { MessageService } from "src/app/shared/services/message.service";
-import { merge } from "rxjs";
 import { IGrade } from "../../grade/grade";
-import { IClass } from "../../class/class";
 import { finalize } from "rxjs/operators";
 import { CategoryComfirmAbsenceModalComponent } from "./category-comfirm-absence-modal/category-comfirm-absence-modal.component";
+import { EncryptService } from "src/app/shared/services/encrypt.service";
+
+export type RegisterItemPreviewToken = {
+    catId: number,
+    dateExpire?: any,
+    isFromDashboard: boolean
+}
 
 declare var $: any;
 
@@ -86,7 +85,8 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
         private activeroute: ActivatedRoute,
         public auth: AuthService,
         private message: MessageService,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private encrypte: EncryptService
     ) {
 
         this.activeroute.data.subscribe(data => {
@@ -193,6 +193,19 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
     //     }
     // }
 
+    showPreview(catId: number) {
+        const tokenObj = {
+            catId: catId
+        }
+
+        const token = this.encrypte.encryptObject(tokenObj);
+
+        const url = `${this.auth.indexUrl}#/register-item/${catId}?token=${token}`;
+
+        const tab = window.open(url, '_blank');
+        tab.focus();
+    }
+
     getCatsByPined(isPined = true) {
         return isPined ? this.Category.filter(c => c.isPined) : this.Category;
     }
@@ -211,7 +224,6 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
 
     isAllSelected() {
         const numSelected = this.selection.selected.length;
-        const numRows = this.dataSource.data.length;
 
         return numSelected === this.getRowCanSelected();
     }
@@ -224,7 +236,7 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
         return List;
     }
 
-    public resetSelection(event?: PageEvent) {
+    public resetSelection() {
         this.selection.clear();
     }
 
@@ -403,7 +415,6 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
 
     canShowMoreButton(): boolean {
         var nowItemCount = this.Category.length;
-        var nowPage = this.page + 1;
         var totalItemCount = this.itemLength;
 
         if (nowItemCount != 0 && nowItemCount < totalItemCount) {
@@ -440,7 +451,7 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
     clearSelection() {
         $("#divtree").jstree("deselect_all");
         this.txtSearch = "";
-        this.applyFilter("");
+        this.applyFilter();
     }
 
     openAllTree() {
@@ -448,7 +459,6 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
     }
 
     closeAllTree() {
-        var a = $("#divtree").jstree("close_all");
     }
 
     checkForNodeOpen(): boolean {
@@ -459,7 +469,7 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
         }
     }
 
-    applyFilter(filterValue: string) {
+    applyFilter() {
         this.refreshDataSource(true);
     }
 

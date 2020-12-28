@@ -30,10 +30,22 @@ export class LoginForRegisterItemComponent implements OnInit {
     }
 
     sts() {
-        this.auth.post("/api/Item/LoginForRegisterCat", {
+        const obj = {
             username: this.username,
             password: this.password,
             catId: this.catId
+        };
+
+        this.auth.post("/api/Item/LoginForRegisterCat", obj, {
+            type: 'View',
+            agentId: this.auth.getUserId(),
+            agentType: 'Other',
+            agentName: this.username,
+            tableName: 'Login for Register Item',
+            logSource: 'Index',
+            object: obj,
+            table: "Item",
+            tableObjectIds: [this.catId]
         }).subscribe(data => {
             if (data.success) {
                 if (!data.data) {
@@ -46,7 +58,7 @@ export class LoginForRegisterItemComponent implements OnInit {
                 var jwt = data.data.jwt;
                 var userType = data.data.userType;
                 var userFullname = data.data.userFullname;
-                
+
                 this.loginService.addToken({
                     categoryId: this.catId,
                     dateExpire: date,

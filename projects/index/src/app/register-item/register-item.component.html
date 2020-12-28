@@ -9,7 +9,7 @@
 
                 <div style="margin-top: 10px; text-align: right;" [innerHTML]="cat.desc | safeHtml"></div>
 
-                <div style="text-align: left;">
+                <div style="text-align: left;" *ngIf="!isPreview">
                     <small style="font-size: 13px;">مهلت {{ cat.btnTitle ? cat.btnTitle : "ثبت نام" }} تا
                         {{ cat.dateExpireString }}</small>
                     <br>
@@ -30,6 +30,8 @@
                         هستید
                     </p>
                 </div>
+                
+                <p style="color: darkred" *ngIf="isPreview"><b>شما در حال مشاهده پیش نمایش هستید</b></p>
             </div>
             <div class="col-lg-2"></div>
         </div>
@@ -294,7 +296,7 @@
                                         [style.display]="getIndexForAttr(i.id) == activeStep ? 'block' : 'none'"
                                         [style.pointer-events]="isUploading ? 'none' : ''">
 
-                                        <ng-container *ngIf="getIndexForAttr(i.id) == activeStep">
+                                        <ng-container>
 
                                             <div class="row" style="flex-flow: row;">
                                                 <div class="col-lg-10" style="margin: auto;">
@@ -547,10 +549,11 @@
                                     <div class="col-lg-12">
                                         <button class="btn btn-outline-success" style="width: 100%;"
                                             [disabled]="!steps.isActiveStepValid() || attrUniqList.length != 0 || reqfilesAttrint.length != 0 || isUploading || isLoadingForUniqAttr"
-                                            (click)="!isUploading ? sts() : null">
+                                            (click)="!isUploading && !isPreview ? sts() : null">
                                             <span class="fa fa-check" style="vertical-align: middle;"></span>
                                             &nbsp; &nbsp;
-                                            {{ cat.btnTitle ? cat.btnTitle : "ثبت نام" }}</button>
+                                            {{ getRegisterBtnTitle() }}
+                                        </button>
                                     </div>
                                 </div>
 

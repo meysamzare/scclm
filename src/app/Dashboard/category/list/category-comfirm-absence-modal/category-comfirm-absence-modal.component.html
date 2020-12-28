@@ -6,7 +6,7 @@
 
     <div mat-dialog-content>
 
-        <mat-progress-bar mode="buffer" *ngIf="isLoadingAbsence"></mat-progress-bar>
+        <mat-progress-bar mode="buffer" style="margin: 20px;" *ngIf="isLoadingAbsence"></mat-progress-bar>
 
         <div class="alert alert-info" role="alert">
             <p>
@@ -43,7 +43,7 @@
 
     <div mat-dialog-actions>
         <button mat-stroked-button color="warn" style="margin-right: 5px;" [mat-dialog-close]="false">لغو</button>
-        <button mat-stroked-button (click)="absenceForOnlineExam()">
+        <button mat-stroked-button (click)="absenceForOnlineExam()" [disabled]="isLoadingAbsence">
             حضور غیاب آزمون
         </button>
     </div>

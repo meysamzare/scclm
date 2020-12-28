@@ -2,9 +2,9 @@ import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild } from '@angular
 import { IAttr } from 'src/app/Dashboard/attribute/attribute';
 import { IItemAttr } from 'src/app/Dashboard/item/item-attr';
 import { ICategory, CategoryAuthorizeState } from 'src/app/Dashboard/category/category';
-import { FormGroup, NgForm, FormControl, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormGroup, NgForm, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { AuthService, jsondata } from 'src/app/shared/Auth/auth.service';
+import { AuthService } from 'src/app/shared/Auth/auth.service';
 import { MessageService } from 'src/app/shared/services/message.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import Swal from "sweetalert2";
@@ -20,10 +20,11 @@ import { IAttributeOption } from 'src/app/Dashboard/attribute/attribute-option';
 import { StepsDirective } from './register-step.directive';
 import { CountdownFormatFn } from 'ngx-countdown';
 import { RegisterItemDataService } from './register-item-data.service';
-import { Observable } from 'rxjs/internal/Observable';
 import { interval } from 'rxjs/internal/observable/interval';
 import { AttributeInputSaveItemAttributeEvent } from './attribute-input/attribute-input/attribute-input.component';
 import { Subject } from 'rxjs/internal/Subject';
+import { EncryptService } from 'src/app/shared/services/encrypt.service';
+import { RegisterItemPreviewToken } from 'src/app/Dashboard/category/list/category-list.component';
 
 @Component({
     selector: 'app-register-item',
@@ -31,29 +32,14 @@ import { Subject } from 'rxjs/internal/Subject';
     styleUrls: ['./register-item.component.scss']
 })
 export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestroy {
-
     attrs: IAttr[] | any[] = [];
-
     itemAttrs: IItemAttr[] = [];
-
     catId: number = 0;
-
     cat: ICategory;
-
     group: FormGroup;
-
-    formGroupitem = [];
-
     attrUniqList: number[] = [];
-
     reqfilesAttrint: number[] = [];
-
-    disableButton: boolean = false;
-
     isFromSts: boolean = false;
-
-    interval1;
-
     units: IUnit[] = [];
 
     @ViewChild("fm1", { static: false }) public fm1: NgForm;
@@ -61,8 +47,6 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     authorizedFullName: string = "---";
     authorizedUsername: string = "---";
     authorizedType: CategoryAuthorizeState = CategoryAuthorizeState.none;
-
-    catDesc = null;
 
     // Index of Active Attr
     activeStep = 0;
@@ -90,7 +74,8 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         private loginService: RegisterItemLoginService,
         private licenseService: RegisterItemLicenseService,
         private http: HttpClient,
-        private registerItemDataService: RegisterItemDataService
+        private registerItemDataService: RegisterItemDataService,
+        private encrypt: EncryptService
     ) { }
 
     async refreshCat() {
@@ -103,26 +88,40 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
     catRefresh$ = null;
 
+    isPreview = false;
+
     async ngOnInit() {
         this.catRefresh$ = interval(30 * 1000).subscribe(() => this.refreshCat());
         this.countDown$.pipe(debounceTime(700)).subscribe(event => this.countdownEvent(event));
 
-        this.activeRoute.params.subscribe(params => {
-            this.catId = params["id"];
-        });
-
+        this.catId = this.activeRoute.snapshot.params["id"];
         this.cat = this.activeRoute.snapshot.data.cat;
         this.units = this.activeRoute.snapshot.data.units;
-        this.catDesc = this.sanitizer.bypassSecurityTrustHtml(this.cat.desc);
 
+        let previewToken: string = this.activeRoute.snapshot.queryParams["token"];
 
-        if (!this.cat.canShowByDate) {
+        try {
+            previewToken = previewToken.replace(" ", "+");
+
+            if (previewToken) {
+                const previewTokenObject: RegisterItemPreviewToken = this.encrypt.decryptObject(previewToken);
+
+                if (previewTokenObject &&
+                    previewTokenObject.catId == this.catId
+                ) {
+                    this.isPreview = true;
+                    this.isPrevStepAllowed = true;
+                }
+            }
+        } catch (er) { console.error(er) }
+
+        if (!this.cat.canShowByDate && !this.isPreview) {
             const title = `مهلت ${this.cat.btnTitle ? this.cat.btnTitle : "ثبت نام"} به پایان رسیده است`;
             this.message.showWarningAlert(title);
             this.router.navigate(["/"]);
         } else {
 
-            if (this.cat.authorizeState != CategoryAuthorizeState.none) {
+            if (this.cat.authorizeState != CategoryAuthorizeState.none && !this.isPreview) {
                 if (!this.loginService.isUserAccessToCat(this.catId)) {
                     this.router.navigate([`/register-item/${this.catId}/login`], { skipLocationChange: true });
                     return;
@@ -142,7 +141,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
             if (this.cat.haveLicense) {
                 if (!this.licenseService.isUserAcceptTheLicense(this.catId)) {
-                    this.router.navigate([`/register-item/${this.catId}/license`], { skipLocationChange: true });
+                    this.router.navigate([`/register-item/${this.catId}/license?token=${previewToken}`], { skipLocationChange: true });
                     return;
                 }
             }
@@ -150,7 +149,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
             const savedData = await this.registerItemDataService.getRegisterItemData(this.cat.id, this.authorizedUsername, this.authorizedType);
 
-            if (savedData) {
+            if (savedData && !this.isPreview) {
                 if (savedData.itemAttrs) {
                     this.itemAttrs = savedData.itemAttrs;
                 }
@@ -188,6 +187,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
             if (this.attrs.length == 0) {
                 this.router.navigate(["/"]);
+                console.error("There is no Attr for cat!", this.catId);
                 return;
             }
 
@@ -309,7 +309,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     async countdownEvent(action) {
-        if (action == "done" && !this.isUploading) {
+        if (action == "done" && !this.isUploading && !this.isPreview) {
             this.sts(true);
         }
     }
@@ -336,7 +336,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         ['S', 1] // million seconds
     ];
 
-    formatDate: CountdownFormatFn = ({ date, formatStr, timezone }) => {
+    formatDate: CountdownFormatFn = ({ date, formatStr }) => {
         let duration = Number(date || 0);
 
         return this.CountdownTimeUnits.reduce((current, [name, unit]) => {
@@ -366,14 +366,16 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     saveItemAttrs() {
-        this.registerItemDataService.saveRegisterItemData(
-            this.cat.id,
-            this.itemAttrs,
-            this.authorizedUsername,
-            this.authorizedType,
-            this.activeStep,
-            this._files,
-            this.attrs);
+        if (!this.isPreview) {
+            this.registerItemDataService.saveRegisterItemData(
+                this.cat.id,
+                this.itemAttrs,
+                this.authorizedUsername,
+                this.authorizedType,
+                this.activeStep,
+                this._files,
+                this.attrs);
+        }
     }
 
 
@@ -618,7 +620,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
     async checkForUniqValue(val: any, attrId: number) {
         try {
-            if (!val || this.isAttrHasError(attrId, false)) {
+            if (!val || this.isAttrHasError(attrId, false) || this.isPreview) {
                 return;
             }
 
@@ -790,11 +792,13 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     async totallyCheckForUniqAttrs() {
-        let reqAttrs = this.attrs.filter(c => c.isUniq && (c.attrTypeInt == 1 || c.attrTypeInt == 2));
+        if (!this.isPreview) {
+            const reqAttrs = this.attrs.filter(c => c.isUniq && (c.attrTypeInt == 1 || c.attrTypeInt == 2));
 
-        await Promise.all(reqAttrs.map(async (attr) => {
-            await this.checkForUniqValue(this.group.controls['p' + this.getIndexForAttr(attr.id)].value, attr.id);
-        }));
+            await Promise.all(reqAttrs.map(async (attr) => {
+                await this.checkForUniqValue(this.group.controls['p' + this.getIndexForAttr(attr.id)].value, attr.id);
+            }));
+        }
     }
 
     isUploading = false;
@@ -809,7 +813,8 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         if (
             this.group.valid &&
             this.reqfilesAttrint.length == 0 &&
-            this.attrUniqList.length == 0
+            this.attrUniqList.length == 0 &&
+            !this.isPreview
         ) {
             let isAllowedToSendData = isFromCountDownEvent && repeatTime == 0;
 
