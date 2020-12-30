@@ -7,41 +7,19 @@ import * as CryptoJS from 'crypto-js';
 })
 export class EncryptService {
 
-    pss = "HSHBBBSAsadh333";
+    pss = "HSHBBBSA.^427987983 Shjk %#$#$ sadh333";
 
     constructor() { }
 
     encryptObject(obj: any): string {
-
-        console.log({ obj });
-
-
         const value = JSON.stringify(obj);
-
-        console.log({ value });
-
         return this.encrypt(value);
     }
 
     decryptObject(value: string): any {
-
-        console.log({ value });
         const objString = this.decrypt(value);
-
-        console.log({ objString });
-
         return JSON.parse(objString);
     }
-
-
-    // public encrypt(value: string): string {
-    //     return CryptoJS.AES.encrypt(value, this.pss).toString(CryptoJS.format.Hex);
-    // }
-
-    // public decrypt(text: string): string {
-    //     return CryptoJS.AES.decrypt({ ciphertext: CryptoJS.enc.Hex.parse(text) }, this.pss, { format: CryptoJS.format.Hex }).toString();
-    //     // return CryptoJS.AES.decrypt(text, this.pss).toString(CryptoJS.enc.Utf8);
-    // }
 
     encrypt(msg, pass = this.pss) {
         var keySize = 256;

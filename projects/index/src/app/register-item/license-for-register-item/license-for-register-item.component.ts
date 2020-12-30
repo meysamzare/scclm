@@ -39,6 +39,6 @@ export class LicenseForRegisterItemComponent implements OnInit {
 
     sts() {
         this.licenseService.addLicense(this.catId);
-        this.router.navigate([`/register-item/${this.catId}?token=${this.activeRoute.snapshot.queryParams["token"]}`]);
+        this.router.navigate([`/register-item/${this.catId}`]);
     }
 }

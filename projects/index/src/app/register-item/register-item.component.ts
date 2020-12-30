@@ -24,7 +24,6 @@ import { interval } from 'rxjs/internal/observable/interval';
 import { AttributeInputSaveItemAttributeEvent } from './attribute-input/attribute-input/attribute-input.component';
 import { Subject } from 'rxjs/internal/Subject';
 import { EncryptService } from 'src/app/shared/services/encrypt.service';
-import { RegisterItemPreviewToken } from 'src/app/Dashboard/category/list/category-list.component';
 
 @Component({
     selector: 'app-register-item',
@@ -79,11 +78,24 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     ) { }
 
     async refreshCat() {
-        let data = await this.auth.post("/api/Category/getCategory", this.catId).toPromise();
+        const data = await this.auth.post("/api/Category/getCategory", this.catId).toPromise();
 
         if (data.success) {
             this.cat = data.data;
+
+            if (this.isPreview && !this.cat.haveInfo) {
+                this.forceExitPage();
+            }
+
+            if (!this.cat.canShowByDate && !this.isUploading && !this.isPreview) {
+                this.forceExitPage();
+            }
         }
+    }
+
+    forceExitPage() {
+        this.forceExit = true;
+        this.router.navigate(["/"]);
     }
 
     catRefresh$ = null;
@@ -91,7 +103,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     isPreview = false;
 
     async ngOnInit() {
-        this.catRefresh$ = interval(30 * 1000).subscribe(() => this.refreshCat());
+        this.catRefresh$ = interval(15 * 1000).subscribe(() => this.refreshCat());
         this.countDown$.pipe(debounceTime(700)).subscribe(event => this.countdownEvent(event));
 
         this.catId = this.activeRoute.snapshot.params["id"];
@@ -101,13 +113,13 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         let previewToken: string = this.activeRoute.snapshot.queryParams["token"];
 
         try {
-            previewToken = previewToken.replace(" ", "+");
-
             if (previewToken) {
-                const previewTokenObject: RegisterItemPreviewToken = this.encrypt.decryptObject(previewToken);
+                previewToken = previewToken.replace(/\s/g, "+");
+                const previewTokenObject = this.encrypt.decryptObject(previewToken);
 
                 if (previewTokenObject &&
-                    previewTokenObject.catId == this.catId
+                    previewTokenObject.catId == this.catId &&
+                    this.cat.haveInfo
                 ) {
                     this.isPreview = true;
                     this.isPrevStepAllowed = true;
@@ -139,9 +151,9 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                 }
             }
 
-            if (this.cat.haveLicense) {
+            if (this.cat.haveLicense && !this.isPreview) {
                 if (!this.licenseService.isUserAcceptTheLicense(this.catId)) {
-                    this.router.navigate([`/register-item/${this.catId}/license?token=${previewToken}`], { skipLocationChange: true });
+                    this.router.navigate([`/register-item/${this.catId}/license`], { skipLocationChange: true });
                     return;
                 }
             }

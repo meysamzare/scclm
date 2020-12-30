@@ -6,7 +6,9 @@
 
     <div mat-dialog-content>
 
-        <mat-progress-bar mode="buffer" style="margin: 20px;" *ngIf="isLoadingAbsence"></mat-progress-bar>
+        <div style="margin: 20px;">
+            <mat-progress-bar mode="buffer" *ngIf="isLoadingAbsence"></mat-progress-bar>
+        </div>
 
         <div class="alert alert-info" role="alert">
             <p>
@@ -20,12 +22,12 @@
 
         <div>
             <label>نحوه ثبت نمره</label>
-            <mat-radio-group class="radio-group" [(ngModel)]="saveScoreType">
-                <mat-radio-button [value]="1" class="radio-button">نمره خام</mat-radio-button>
-                <mat-radio-button [value]="2" class="radio-button" *ngIf="calculateNegativeScore">نمره از
+            <mat-radio-group class="radio-group pointer-enable" [(ngModel)]="saveScoreType">
+                <mat-radio-button [value]="1" class="radio-button pointer-enable">نمره خام</mat-radio-button>
+                <mat-radio-button [value]="2" class="radio-button pointer-enable" *ngIf="calculateNegativeScore">نمره از
                     100
                 </mat-radio-button>
-                <mat-radio-button [value]="3" class="radio-button">نمره از 20</mat-radio-button>
+                <mat-radio-button [value]="3" class="radio-button pointer-enable">نمره از 20</mat-radio-button>
             </mat-radio-group>
         </div>
 
