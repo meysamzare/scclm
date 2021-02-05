@@ -330,7 +330,9 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
 
                             if (data.success) {
                                 let itemAttr = this.itemAttrs.find(c => c.attributeId == attrId);
-                                itemAttr.attributeFilePath = data.data;
+                                if (itemAttr) {
+                                    itemAttr.attributeFilePath = data.data;
+                                }
 
                                 this.auth.logToServer({
                                     type: 'Add',

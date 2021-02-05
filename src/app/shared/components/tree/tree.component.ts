@@ -38,6 +38,32 @@ export class TreeDialogComponent implements OnInit {
 }
 
 
+@Injectable({
+    providedIn: "root"
+})
+export class DynamicDatabase {
+
+    Url = "";
+
+    rootNodes: ITreeNode[] = [];
+
+    constructor(
+        private auth: AuthService
+    ) { }
+
+    setUrl = url => this.Url = url;
+
+    /** Initial data from database */
+    async initialData() {
+        let rootNodes = await this.auth.get(`/api/${this.Url}/GetTreeRoot`, []).toPromise<ITreeNode[]>()
+        return rootNodes.map(node => new DynamicFlatNode(node.text, 0, node.children, node.id));
+    }
+
+    async getChildren(id: string) {
+        return this.auth.get(`/api/${this.Url}/GetTreeChildren/${id}`, []).toPromise<ITreeNode[]>();
+    }
+}
+
 
 @Component({
     selector: 'app-tree',
@@ -152,31 +178,5 @@ export class DynamicDataSource implements DataSource<DynamicFlatNode> {
         // notify the change
         this.dataChange.next(this.data);
         node.isLoading = false;
-    }
-}
-
-@Injectable({
-    providedIn: "root"
-})
-export class DynamicDatabase {
-
-    Url = "";
-
-    rootNodes: ITreeNode[] = [];
-
-    constructor(
-        private auth: AuthService
-    ) { }
-
-    setUrl = url => this.Url = url;
-
-    /** Initial data from database */
-    async initialData() {
-        let rootNodes = await this.auth.get(`/api/${this.Url}/GetTreeRoot`, []).toPromise<ITreeNode[]>()
-        return rootNodes.map(node => new DynamicFlatNode(node.text, 0, node.children, node.id));
-    }
-
-    async getChildren(id: string) {
-        return this.auth.get(`/api/${this.Url}/GetTreeChildren/${id}`, []).toPromise<ITreeNode[]>();
     }
 }

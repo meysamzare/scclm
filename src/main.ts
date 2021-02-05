@@ -25,4 +25,4 @@ platformBrowserDynamic(providers)
             navigator.serviceWorker.register('ngsw-worker.js');
         }
     })
-    .catch(err => console.log(err));
+    .catch(err => console.log("Boootstrap Error: ", err));

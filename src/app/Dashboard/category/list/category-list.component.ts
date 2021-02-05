@@ -9,6 +9,7 @@ import { IGrade } from "../../grade/grade";
 import { finalize } from "rxjs/operators";
 import { CategoryComfirmAbsenceModalComponent } from "./category-comfirm-absence-modal/category-comfirm-absence-modal.component";
 import { EncryptService } from "src/app/shared/services/encrypt.service";
+import { RegisterItemLoginsModalComponent } from "./register-item-logins-modal/register-item-logins-modal.component";
 
 export type RegisterItemPreviewToken = {
     catId: number,
@@ -192,6 +193,15 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
     //         this.refreshDataSource();
     //     }
     // }
+
+    showLoginList(id, title) {
+        this.dialog.open(RegisterItemLoginsModalComponent, {
+            data: {
+                catId: id,
+                catTitle: title,
+            }
+        });
+    }
 
     showPreview(catId: number) {
         const tokenObj = {
@@ -503,6 +513,7 @@ export class CategoryListComponent implements OnInit, AfterViewInit, AfterConten
                     if (type == "isArchived") {
                         if (this.archiveType == 1 || this.archiveType == 2) {
                             this.Category.splice(this.Category.indexOf(cat), 1);
+                            this.itemLength -= 1;
                         }
                     }
                     this.auth.message.showSuccessAlert();

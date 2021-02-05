@@ -7,7 +7,7 @@
                     style="width: 100%; border-radius: 10px;box-shadow: 2px 3px 12px black; margin-bottom: 15px;"
                     [src]="auth.getFileUrl(cat.headerPicUrl)">
 
-                <div style="margin-top: 10px; text-align: right;" [innerHTML]="cat.desc | safeHtml"></div>
+                <div style="margin-top: 10px; text-align: right;" [innerHTML]="catDesc"></div>
 
                 <div style="text-align: left;" *ngIf="!isPreview">
                     <small style="font-size: 13px;">مهلت {{ cat.btnTitle ? cat.btnTitle : "ثبت نام" }} تا
@@ -30,7 +30,7 @@
                         هستید
                     </p>
                 </div>
-                
+
                 <p style="color: darkred" *ngIf="isPreview"><b>شما در حال مشاهده پیش نمایش هستید</b></p>
             </div>
             <div class="col-lg-2"></div>
@@ -72,7 +72,8 @@
                                                 </label>
                                             </div>
                                             <div class="col-lg-2" style="text-align: left;">
-                                                <button [disabled]="!group.controls['p' + getIndexForAttr(i.id)].value"
+                                                <button
+                                                    [disabled]="!group.controls['p' + getIndexForAttr(i.id)].value || group?.controls['p' + getIndexForAttr(i.id)].disabled"
                                                     mat-icon-button [matTooltip]="'پاکسازی'" style="outline: none;"
                                                     (click)="clearItemAttr(i.id)">
                                                     <mat-icon>close</mat-icon>
@@ -94,7 +95,8 @@
 
                                         <mat-form-field class="example-full-width" *ngIf="i.attrTypeInt == 3">
                                             <input matInput [formControlName]="'p' + getIndexForAttr(i.id)" readonly
-                                                (click)="openc(picker)" (dateChange)="setItemAttr($event, i.id); "
+                                                (click)="openc(picker)"
+                                                (dateChange)="setItemAttr($event, i.id); i.isUniq ? checkForUniqValue($event, i.id) : null"
                                                 [matDatepicker]="picker"
                                                 placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}">
                                             <mat-datepicker-toggle style="font-size: 25px;" matTooltip="باز کردن تقویم"
@@ -116,7 +118,7 @@
                                             <mat-label>{{i.title}}</mat-label>
                                             <mat-select style="direction: ltr"
                                                 [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                (valueChange)="setItemAttrforselect($event, i.id); ">
+                                                (valueChange)="setItemAttrforselect($event, i.id); i.isUniq ? checkForUniqValue($event, i.id) : null">
                                                 <mat-option
                                                     *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption"
                                                     [value]="v.id">{{v.title}}
@@ -126,7 +128,7 @@
 
                                         <mat-radio-group *ngIf="i.attrTypeInt == 10" class="radio-group"
                                             [formControlName]="'p' + getIndexForAttr(i.id)"
-                                            (change)="setItemAttrforselect($event.value, i.id); ">
+                                            (change)="setItemAttrforselect($event.value, i.id); i.isUniq ? checkForUniqValue($event.value, i.id) : null">
                                             <mat-radio-button class="radio-button"
                                                 *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption"
                                                 [value]="v.id">{{v.title}}</mat-radio-button>
@@ -331,7 +333,8 @@
 
                                             <mat-form-field class="example-full-width" *ngIf="i.attrTypeInt == 3">
                                                 <input matInput [formControlName]="'p' + getIndexForAttr(i.id)" readonly
-                                                    (click)="openc(picker)" (dateChange)="setItemAttr($event, i.id); "
+                                                    (click)="openc(picker)"
+                                                    (dateChange)="setItemAttr($event, i.id); i.isUniq ? checkForUniqValue($event, i.id) : null"
                                                     [matDatepicker]="picker"
                                                     placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}">
                                                 <mat-datepicker-toggle style="font-size: 25px;"
@@ -354,7 +357,7 @@
                                                 <mat-label>{{i.title}}</mat-label>
                                                 <mat-select style="direction: ltr"
                                                     [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                    (valueChange)="setItemAttrforselect($event, i.id); ">
+                                                    (valueChange)="setItemAttrforselect($event, i.id); i.isUniq ? checkForUniqValue($event, i.id) : null">
                                                     <mat-option
                                                         *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption"
                                                         [value]="v.id">
@@ -365,7 +368,7 @@
 
                                             <mat-radio-group *ngIf="i.attrTypeInt == 10" class="radio-group"
                                                 [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                (change)="setItemAttrforselect($event.value, i.id); ">
+                                                (change)="setItemAttrforselect($event.value, i.id); i.isUniq ? checkForUniqValue($event.value, i.id) : null">
                                                 <mat-radio-button class="radio-button"
                                                     *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption"
                                                     [value]="v.id">{{v.title}}</mat-radio-button>
@@ -541,13 +544,13 @@
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <button type="button" routerLink="/" [disabled]="isUploading"
-                                            class="btn btn-block btn-outline-danger">انصراف</button>
+                                            class="btn btn-block btn-outline-danger">خروج</button>
                                     </div>
                                 </div>
 
                                 <div class="row" *ngIf="activeStep == attrs.length -1">
                                     <div class="col-lg-12">
-                                        <button class="btn btn-outline-success" style="width: 100%;"
+                                        <button class="btn btn-outline-success" style="width: 100%;" *ngIf="!isPreview"
                                             [disabled]="!steps.isActiveStepValid() || attrUniqList.length != 0 || reqfilesAttrint.length != 0 || isUploading || isLoadingForUniqAttr"
                                             (click)="!isUploading && !isPreview ? sts() : null">
                                             <span class="fa fa-check" style="vertical-align: middle;"></span>

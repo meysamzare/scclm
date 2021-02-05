@@ -1,0 +1,24 @@
+<div class="row">
+    <div class="col-lg-12">
+
+        <div class="grid-layout">
+            <a *ngFor="let post of lastPosts" routerLink="/post/{{post.id}}/{{post.url}}" target="_blank"
+                class="grid-item" [class.high-light]="post.isHighLight" [class.first-high-light]="isFirstHighList(post)"
+                [style.background-image]="getBackgroundImageUrl(post)">
+                <p class="text-on-image">{{ post.title }}</p>
+
+                <div class="text-on-image">
+                    {{ post.viewCount }} <i class="fa fa-eye"></i><span> | </span>
+                    {{ post.commentCount }} <i class="fa fa-comment"></i>
+                </div>
+            </a>
+
+            <div class="grid-item" style="cursor: pointer; background-color: darkcyan; text-align: center;"
+                [routerLink]="['/posts']" [queryParams]="{ 'type' : 0 }" *ngIf="lastPosts.length > 5">
+                <p style="color: white;">مشاهده همه پست ها</p>
+            </div>
+        </div>
+
+
+    </div>
+</div>

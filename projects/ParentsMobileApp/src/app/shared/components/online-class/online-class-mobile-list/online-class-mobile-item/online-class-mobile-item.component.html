@@ -1,6 +1,8 @@
 <mat-card matRipple>
     <p style="text-align: center;">{{ onlineClass.name }}</p>
     <mat-card-footer>
-        <button mat-stroked-button style="width: 100%;" *ngIf="isRunning || isAdmin" (click)="openBBBClass()">ورود به کلاس</button>
+        <button mat-stroked-button [disabled]="!canOpenClass()" style="width: 100%;" (click)="openBBBClass()">
+            ورود به کلاس
+        </button>
     </mat-card-footer>
 </mat-card>

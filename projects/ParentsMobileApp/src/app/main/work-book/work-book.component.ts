@@ -481,12 +481,12 @@ export class WorkBookComponent implements OnInit {
 
             exams.forEach((exam, indexExam) => {
                 if (this.getExamScoreForExam(exam.id)) {
-                    this.datas[indexCourse][0].data.push(this.getJustifiedScore(this.getExamScoreForExam(exam.id).score, exam.topScore));
-                    this.datas[indexCourse][1].data.push(this.getJustifiedScore(exam.avgInExam, exam.topScore));
-                    this.datas[indexCourse][2].data.push(this.getJustifiedScore(exam.maxInExam, exam.topScore));
-                    this.datas[indexCourse][3].data.push(this.getJustifiedScore(exam.minInExam, exam.topScore));
+                    this.datas[indexCourse][0].data.unshift(this.getJustifiedScore(this.getExamScoreForExam(exam.id).score, exam.topScore));
+                    this.datas[indexCourse][1].data.unshift(this.getJustifiedScore(exam.avgInExam, exam.topScore));
+                    this.datas[indexCourse][2].data.unshift(this.getJustifiedScore(exam.maxInExam, exam.topScore));
+                    this.datas[indexCourse][3].data.unshift(this.getJustifiedScore(exam.minInExam, exam.topScore));
 
-                    this.datasLable[indexCourse].push(exam.dateString);
+                    this.datasLable[indexCourse].unshift(exam.dateString);
                 }
             });
 
@@ -511,6 +511,35 @@ export class WorkBookComponent implements OnInit {
 
             this.classBookForSelectedCourse = this.classBooks.filter(c => c.courseId == selectedCourse);
         }
+    }
+
+    getSelectedCourseTitle() {
+        const selectedCourse = this.selectedCourse;
+        const course = this.coursesByGrade.find(c => c.id == selectedCourse);
+
+        if (course) {
+            return course.name;
+        }
+
+        return "---"
+    }
+
+    getWorkbookJustifiedName(workbookName: string) {
+        const staticStringLenght = 17;
+        const staticSpaceLength = 3;
+
+        if (workbookName) {
+
+            const workBookNameLength = workbookName.length;
+
+            if (workBookNameLength >= staticStringLenght) {
+                return workbookName.substring(0, staticStringLenght) + Array(staticSpaceLength).fill(".").join("");
+            }
+
+            return workbookName + Array((staticStringLenght + staticSpaceLength) - workBookNameLength).fill(" ").join("");
+        }
+
+        return Array(staticStringLenght + staticSpaceLength).fill(" ").join("");
     }
 
     getChartDataByCourse(courseId): ChartDataSets[] {

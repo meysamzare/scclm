@@ -17,7 +17,9 @@ export class IStdPayment {
 
 	paymentTypeId: number;
 
-	studentId: number;
+    studentId: number;
+    
+	stdClassMngId: number;
 
 	contractId: number;
 

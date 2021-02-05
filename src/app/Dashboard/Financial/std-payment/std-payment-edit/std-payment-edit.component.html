@@ -32,6 +32,7 @@
                                 </div>
                             </div>
 
+                            <hr>
 
                             <div class="form-group">
                                 <label>حساب</label>
@@ -74,13 +75,26 @@
                                 <label>انتخاب دانش آموز</label>
 
                                 <ng-select style="direction: ltr" #std="ngModel" name="std"
-                                    [(ngModel)]="stdpayment.studentId" required>
+                                    [(ngModel)]="stdpayment.studentId" required (change)="onStudentSelect()">
                                     <ng-option *ngFor="let i of students" [value]="i.id">{{i.name}}</ng-option>
                                 </ng-select>
                                 <mat-error *ngIf="std.hasError('required')">
                                     انتخاب دانش آموز الزامی است
                                 </mat-error>
 
+                            </div>
+
+                            <div class="form-group">
+                                <label>انتخاب پایه تحصیلی دانش آموز</label>
+                                <ng-select [disabled]="!stdpayment.studentId"
+                                    #grade="ngModel" name="grade" [(ngModel)]="stdpayment.stdClassMngId" required>
+                                    <ng-option *ngFor="let i of studnetRegistredStdClassMngs" [value]="i.id">
+                                        {{ i.gradeName + ' (' + i.yeareducationName + ') ' }}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="grade.hasError('required')">
+                                    انتخاب پایه تحصیلی دانش آموز الزامی است
+                                </mat-error>
                             </div>
 
 

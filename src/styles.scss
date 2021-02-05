@@ -2,6 +2,37 @@
 @import 'angular-notifier/styles.css';
 @import "~@ng-select/ng-select/themes/material.theme.css";
 
+.bordered {
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    margin: 3px !important;
+    padding: 6px !important;
+
+    &.isTrue {
+        border-color: green !important;
+        border-width: 2px !important;
+    }
+}
+
+mat-fab-menu {
+    div {
+        align-items: flex-end !important;
+    }
+
+    .mat-fab.mat-button-base {
+        margin-top: 6px !important;
+        margin-bottom: 6px !important;
+    }
+}
+
+a[mat-icon-button] {
+    outline: none;
+}
+
+.swal2-container {
+    z-index: 999999999999 !important;
+}
+
 .cke_button__mathjax {
     display: none !important;
 }
@@ -36,11 +67,14 @@ iframe#FMathEd1_ads {
 
 .radio-group {
     display: flex;
-    flex-direction: column;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
 }
 
 .radio-button {
     margin: 0;
+    flex-wrap: wrap;
+    padding: 5px;
 }
 
 .example-loading-shade {

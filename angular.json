@@ -350,7 +350,6 @@
                         "tsConfig": "projects/ParentsMobileApp/tsconfig.app.json",
                         "aot": false,
                         "assets": [
-                            "projects/ParentsMobileApp/src/favicon.ico",
                             "projects/ParentsMobileApp/src/assets",
                             "projects/ParentsMobileApp/src/manifest.json",
                             "projects/ParentsMobileApp/src/main-sw.js"
@@ -493,7 +492,6 @@
                         "tsConfig": "projects/TeacherMobileApp/tsconfig.app.json",
                         "aot": false,
                         "assets": [
-                            "projects/TeacherMobileApp/src/favicon.ico",
                             "projects/TeacherMobileApp/src/assets",
                             "projects/TeacherMobileApp/src/manifest.json"
                         ],

@@ -61,6 +61,8 @@ import { CountdownModule } from 'ngx-countdown';
 import { AttributeInputModule } from './register-item/attribute-input/attribute-input.module';
 import { CustomEditorModule } from 'src/app/shared/components/custom-editor/custom-editor.module';
 import { SpeechRecognitionDialogComponent } from 'src/app/shared/components/custom-editor/speech-recognition-dialog/speech-recognition-dialog.component';
+import { LastPostsGridComponent } from './index/last-posts-grid/last-posts-grid.component';
+import { LastSpecialPostsComponent } from './index/last-special-posts/last-special-posts.component';
 
 @NgModule({
     declarations: [
@@ -88,6 +90,8 @@ import { SpeechRecognitionDialogComponent } from 'src/app/shared/components/cust
         LicenseForRegisterItemComponent,
         RegisterStepDirective,
         StepsDirective,
+        LastPostsGridComponent,
+        LastSpecialPostsComponent,
     ],
     imports: [
         IndexModule,

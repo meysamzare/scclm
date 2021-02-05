@@ -1,3 +1,9 @@
+<div>
+    <mat-fab-menu color="primary" icon="more_vert" style="position: fixed; bottom: 15px; left: 15px; z-index: 100;"
+        [fabButtons]="fabButtons" (onFabMenuItemSelected)="onFabMenuSelected($event)">
+    </mat-fab-menu>
+</div>
+
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
@@ -249,6 +255,15 @@
                                     </mat-checkbox>
                                 </div>
                             </div>
+                            <div class="col-lg-4">
+
+                                <div class="form-group">
+                                    <mat-checkbox [ngModelOptions]="{standalone: true}"
+                                        [(ngModel)]="category.isBackStepAllowed">
+                                        جابه جایی آزاد بین سوالات
+                                    </mat-checkbox>
+                                </div>
+                            </div>
                             <div class="col-lg-4" *ngIf="isEdit">
                                 <div class="form-group">
                                     <mat-checkbox [ngModelOptions]="{standalone: true}"
@@ -304,7 +319,7 @@
 
                         <ng-container *ngIf="fmQuestionLimit.valid">
                             <p [class.error]="getQuestionNumber() < getSumOfDefctQuestionNumbers()">
-                                جمع سوالات تصادفی : &nbsp; &nbsp;
+                                جمع تعداد سوالات تصادفی : &nbsp; &nbsp;
                                 <b>{{ getSumOfDefctQuestionNumbers() }} / {{ getQuestionNumber() }}</b>
                             </p>
 
@@ -320,8 +335,9 @@
 
                     <mat-accordion>
                         <mat-expansion-panel>
-                            <mat-expansion-panel-header>
+                            <mat-expansion-panel-header style="background-color: #9effed;">
                                 <mat-panel-title>
+                                    <mat-icon>settings</mat-icon> &nbsp;&nbsp;
                                     سایر ویژگی های {{ pageTitle }}
                                 </mat-panel-title>
                                 <mat-panel-description>
@@ -333,7 +349,7 @@
                                 <hr>
 
                                 <div class="row">
-                                    <div class="col-lg-6" style="margin-top: 40px;">
+                                    <div class="col-lg-6" *ngIf="TYPE == 0" style="margin-top: 40px;">
 
                                         <div class="form-group">
                                             <mat-checkbox [ngModelOptions]="{standalone: true}"
@@ -342,15 +358,15 @@
                                         </div>
 
                                     </div>
-                                    <div class="col-lg-6">
+                                    <div [ngClass]="TYPE == 0 ? 'col-lg-6' : 'col-lg-12'">
                                         <div class="form-group">
-                                            <label>انتخاب ریشه</label>
+                                            <label>انتخاب الگوی {{ pageTitle }} (Template)</label>
                                             <ng-select [clearable]="true" name="categoryParent"
                                                 [(ngModel)]="category.parentId">
                                                 <ng-option *ngFor="let u of Categories" [value]="u.id">{{u.title}}
                                                 </ng-option>
                                             </ng-select>
-                                            <mat-hint>انتخاب ریشه اختیاری است</mat-hint>
+                                            <mat-hint>انتخاب الگوی {{ pageTitle }} اختیاری است</mat-hint>
                                         </div>
                                     </div>
                                 </div>
@@ -753,91 +769,184 @@
     </div>
 </div>
 
+<ng-container *ngIf="isEdit && TYPE == 1">
+
+    <div class="row margin-top-10">
+        <div class="col-lg-12">
+            <mat-card style="border-right: outset; border-right-color: blue;">
+                <div class="row">
+                    <div class="col-lg-7">
+                        <p style="font-size: 16px;">
+                            <button mat-icon-button>
+                                <mat-icon>help</mat-icon>
+                            </button>
+                            تعداد کل سوالات: <b>{{ catAllQuestionNumber }}</b>
+                        </p>
+                    </div>
+                    <div class="col-lg-5" style="text-align: left;">
+                        <button mat-icon-button (click)="refreshAttributes()">
+                            <mat-icon>refresh</mat-icon>
+                        </button>
+                    </div>
+                </div>
+                <div class="row" style="text-align: center;">
+                    <div class="col-lg-3">
+                        <p>
+                            <button mat-icon-button>
+                                <mat-icon style="color: green;">brightness_low</mat-icon>
+                            </button>
+                            سوالات آسان: <b>{{ catEasyQuestionNumber }}</b>
+                        </p>
+                    </div>
+                    <div class="col-lg-3">
+                        <p>
+                            <button mat-icon-button>
+                                <mat-icon style="color: #a7a700;">brightness_medium</mat-icon>
+                            </button>
+                            سوالات متوسط: <b>{{ catModrateQuestionNumber }}</b>
+                        </p>
+                    </div>
+                    <div class="col-lg-3">
+                        <p>
+                            <button mat-icon-button>
+                                <mat-icon style="color: orange;">brightness_high</mat-icon>
+                            </button>
+                            سوالات دشوار: <b>{{ catHardQuestionNumber }}</b>
+                        </p>
+                    </div>
+                    <div class="col-lg-3">
+                        <p>
+                            <button mat-icon-button>
+                                <mat-icon style="color: #de0000;">brightness_auto</mat-icon>
+                            </button>
+                            سوالات خیلی دشوار: <b>{{ catVeryHardQuestionNumber }}</b>
+                        </p>
+                    </div>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+
+</ng-container>
+
 <ng-container *ngIf="isEdit">
     <div class="row margin-top-10">
-        <div [class.col-lg-4]="TYPE == 1" [class.col-lg-12]="TYPE != 1">
-            <button mat-flat-button color="primary" style="width: 100%;" (click)="addTemplateAttribute()">
-                افزودن فیلد
-            </button>
-        </div>
-        <div [class.col-lg-4]="true" *ngIf="TYPE == 1">
+        <div [class.col-lg-6]="true" *ngIf="TYPE == 1">
             <button mat-flat-button color="accent" style="width: 100%;" (click)="addQuestion()">افزودن سوال</button>
         </div>
-        <div [class.col-lg-4]="true" *ngIf="TYPE == 1">
-            <button mat-flat-button style="width: 100%;" (click)="addGroupQuestions()">افزودن گروهی سوال</button>
+        <div [class.col-lg-6]="true" *ngIf="TYPE == 1">
+            <button mat-flat-button color="primary" style="width: 100%;" (click)="addGroupQuestions()">افزودن گروهی
+                سوال</button>
         </div>
     </div>
 </ng-container>
 
+<ng-container *ngIf="isEdit">
+    <mat-card style="margin-top: 10px; border-right: outset; border-right-color: blue;">
+        <div class="row" style="margin-top: 10px;">
+
+            <div class="col-lg-1" style="margin-top: 10px;">
+                <mat-card style="cursor: pointer; background-color: #00bfff59;" matRipple
+                    (click)="addTemplateAttribute()">
+                    <div style="text-align: center;">
+                        <div>
+                            <mat-icon>add</mat-icon>
+                        </div>
+                        <div>
+                            فیلد نمونه
+                        </div>
+                    </div>
+                </mat-card>
+            </div>
+
+            <div class="col-lg-1" style="margin-top: 10px;" *ngFor="let i of [1,9,2,3,4,6,10,5,7,8]">
+                <mat-card style="cursor: pointer;" matRipple (click)="openQuickAddAttributeModal(i)">
+                    <div style="text-align: center;">
+                        <div>
+                            <mat-icon>{{ getAttributeTypeIcon(i) }}</mat-icon>
+                        </div>
+                        <div>
+                            {{ getAttributeTypeString(i) }}
+                        </div>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+    </mat-card>
+</ng-container>
 
 <div class="row margin-top-10" *ngIf="isEdit">
-    <mat-progress-bar mode="buffer" *ngIf="isLoading"></mat-progress-bar>
+
+    <div style="margin: 20px;">
+        <mat-progress-bar mode="buffer" *ngIf="isLoading"></mat-progress-bar>
+    </div>
 
     <ng-container *ngFor="let unit of units">
         <div class="col-lg-12" *ngIf="getAttrsForUnit(unit.id).length != 0">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5 style="color: #1ab394"> {{ unit.title }} </h5>
+                    <h5 style="color: #1ab394">
+                        <a routerLink="/dashboard/unit/edit/{{ unit.id }}" target="_blank">
+                            {{ unit.title }}
+                        </a>
+                    </h5>
                 </div>
                 <div class="ibox-content">
                     <div class="form-group" *ngFor="let i of getAttrsForUnit(unit.id); let ind = index">
-                        <div class="panel" style="cursor: pointer; border-radius: 15px; background-color: whitesmoke;">
+                        <div class="panel" style="border-radius: 15px; background-color: whitesmoke;"
+                            [class.question]="i.attrTypeInt == 11" [class.easy]="i.questionDefactInt == 3"
+                            [class.medium]="i.questionDefactInt == 2" [class.hard]="i.questionDefactInt == 1"
+                            [class.veryHard]="i.questionDefactInt == 4">
 
                             <div class="row">
-                                <div class="col-lg-1">
+                                <div class="col-lg-12" style="text-align: center;">
+                                    <mat-checkbox [checked]="i.isInClient"
+                                        (change)="changeCheckableAttr($event.checked, i, 'isInClient')">
+                                        سمت کاربر
+                                    </mat-checkbox>
+
+                                    <mat-checkbox [checked]="i.isRequired"
+                                        (change)="changeCheckableAttr($event.checked, i, 'isRequired')">
+                                        اجباری
+                                    </mat-checkbox>
+
+                                    <mat-checkbox [checked]="i.isUniq"
+                                        (change)="changeCheckableAttr($event.checked, i, 'isUniq')">
+                                        غیرتکراری
+                                    </mat-checkbox>
+
+                                    <mat-checkbox [checked]="i.isInShowInfo"
+                                        (change)="changeCheckableAttr($event.checked, i, 'isInShowInfo')">
+                                        اطلاع رسانی
+                                    </mat-checkbox>
+
+                                    <mat-checkbox [checked]="i.isInSearch"
+                                        (change)="changeCheckableAttr($event.checked, i, 'isInSearch')">
+                                        جستجو
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-1" style="display: flex; flex-direction: column;">
                                     <button [tooltip]="'حذف دائمی فیلد'" mat-icon-button (click)="deleteAttr(i.id)"
                                         color="warn">
                                         <mat-icon>cancel</mat-icon>
                                     </button>
 
-                                    <button [tooltip]="'انتقال به صفحه ویرایش سوال'" *ngIf="i.attrTypeInt == 11"
-                                        routerLink="/dashboard/question/edit/{{ i.questionId }}" mat-icon-button
-                                        color="primary">
+                                    <a style="outline: none;" [tooltip]="'انتقال به صفحه ویرایش سوال'"
+                                        *ngIf="i.attrTypeInt == 11" routerLink="/dashboard/question/edit/{{ i.queId }}"
+                                        target="_blank" mat-icon-button color="primary">
                                         <mat-icon>help_center</mat-icon>
-                                    </button>
+                                    </a>
 
-                                    <button [tooltip]="'ویرایش فیلد'" (click)="editAttr(i.id)" mat-icon-button
+                                    <a [tooltip]="'ویرایش فیلد'" *ngIf="isUserAccessToEditAttr()"
+                                        [routerLink]="getAttrEditUrl(i.id)" target="_blank" mat-icon-button
                                         color="primary">
                                         <mat-icon>edit</mat-icon>
-                                    </button>
+                                    </a>
                                 </div>
-
-                                <div [class.col-lg-7]="i.attrTypeInt == 11" [class.col-lg-11]="i.attrTypeInt != 11">
-
-                                    <div class="row">
-                                        <div class="col-lg-12">
-
-
-                                            <mat-checkbox [checked]="i.isInClient"
-                                                (change)="changeCheckableAttr($event.checked, i, 'isInClient')">
-                                                سمت کاربر
-                                            </mat-checkbox>
-
-                                            <mat-checkbox [checked]="i.isRequired"
-                                                (change)="changeCheckableAttr($event.checked, i, 'isRequired')">
-                                                اجباری
-                                            </mat-checkbox>
-
-                                            <mat-checkbox [checked]="i.isUniq"
-                                                (change)="changeCheckableAttr($event.checked, i, 'isUniq')">
-                                                غیرتکراری
-                                            </mat-checkbox>
-
-                                            <mat-checkbox [checked]="i.isInShowInfo"
-                                                (change)="changeCheckableAttr($event.checked, i, 'isInShowInfo')">
-                                                اطلاع رسانی
-                                            </mat-checkbox>
-
-                                            <mat-checkbox [checked]="i.isInSearch"
-                                                (change)="changeCheckableAttr($event.checked, i, 'isInSearch')">
-                                                جستجو
-                                            </mat-checkbox>
-
-                                        </div>
-                                    </div>
-
-                                    <hr>
-
+                                <div class="col-lg-11">
 
                                     <div class="row">
                                         <div class="col-lg-12 attrSection">
@@ -897,49 +1006,14 @@
 
 
                                             <ng-container *ngIf="i.attrTypeInt == 11">
-
-                                                <p><b>{{ i.questionName }}</b></p>
-
-                                                <div [innerHTML]="i.title | safeHtml"></div>
-
-                                                <hr>
-
-                                                <ng-container *ngIf="i.questionType == 1">
-                                                    <label>جواب کاربر:</label>
-                                                </ng-container>
-
-                                                <ng-container *ngIf="i.questionType == 2">
-                                                    <mat-radio-group class="radio-group">
-                                                        <mat-radio-button class="radio-button"
-                                                            *ngFor="let v of getShiftedItem(i)" [value]="v.id"
-                                                            (dblclick)="setIsTrueQuestionOption(v, i.questionId, i)">
-                                                            <mat-icon *ngIf="v.isTrue" style="color: green;">done_all
-                                                            </mat-icon>
-                                                            &nbsp;
-                                                            <div [innerHTML]="v.title | safeHtml"></div>
-                                                        </mat-radio-button>
-                                                    </mat-radio-group>
-                                                </ng-container>
-
-                                                <ng-container *ngIf="i.questionType == 3">
-                                                    <mat-hint>محتوای زیر را تکمیل کنید</mat-hint>
-                                                    <div [innerHTML]="i.complatabelContent | safeHtml"></div>
-                                                </ng-container>
-
+                                                <app-question-row [question]="i" [questionId]="i.queId"
+                                                    [canEditTrueOption]="true">
+                                                </app-question-row>
                                             </ng-container>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4" *ngIf="i.attrTypeInt == 11" style="padding: 20px;">
-                                    <p>نوع سوال: <b>{{ i.questionTypeString }}</b></p>
-                                    <p>طراح سوال: <b>{{ i.questionPerson }}</b></p>
-                                    <p>سطح سوال: <b>{{ i.questionDefact }}</b></p>
-                                    <p>نمره: <b>{{ i.score }}</b></p>
-                                </div>
-
                             </div>
-
-
 
                         </div>
 

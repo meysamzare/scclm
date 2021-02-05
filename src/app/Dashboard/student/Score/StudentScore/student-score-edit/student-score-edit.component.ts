@@ -90,8 +90,7 @@ export class StudentScoreEditComponent implements OnInit, OnDestroy {
                         var scoreThemplate = this.scoreThemplates.find(c =>
                             c.title == this.PAGE_Data.title &&
                             c.type == this.PAGE_Data.type &&
-                            c.subject == this.PAGE_Data.subject &&
-                            c.value == this.PAGE_Data.value
+                            c.subject == this.PAGE_Data.subject
                         );
 
                         if (scoreThemplate) {

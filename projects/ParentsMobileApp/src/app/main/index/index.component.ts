@@ -16,6 +16,8 @@ export class IndexComponent implements OnInit {
 
     isNewUpdateAvalable = false;
 
+    sumOfStudentScore = "---";
+
     constructor(
         private mainSW: MainServiceWorkerService,
         public message: MessageService,
@@ -24,37 +26,56 @@ export class IndexComponent implements OnInit {
     ) {
         this.theme.setCurrentTheme();
 
-        this.stdAuth.auth.post("/api/Student/IsUserAccessByType", {
-            stdId: this.stdAuth.getStudent().id,
+
+        this.mainSW.Install();
+
+        this.mainSW.newUpdateAvailable$.subscribe(data => {
+            this.isNewUpdateAvalable = true;
+
+            this.mainSW.showNotification("نسخه جدید موجود است!", "نسخه جدیدی از نرم افزار موجود است برای بروز رسانی کلیک کنید", "update");
+        });
+    }
+
+    async ngOnInit() {
+
+        const studentId = this.stdAuth.getStudent().id;
+
+        this.refreshUpComingExams();
+
+        const typeAccessResult = await this.stdAuth.auth.post("/api/Student/IsUserAccessByType", {
+            stdId: studentId,
             type: 2
-        }).subscribe(data => {
+        }).toPromise();
+
+        if (typeAccessResult.success) {
+            if (!typeAccessResult.data) {
+                this.stdAuth.logout(true);
+                this.message.showWarningAlert("دسترسی شما مسدود شده است!");
+                return;
+            }
+        }
+
+        const financeAccessResult = await this.stdAuth.auth.post("/api/Student/IsUserAccessByFinance", studentId).toPromise();
+
+        if (financeAccessResult.success) {
+            const data: { haveAccess: boolean, message: string } = financeAccessResult.data;
+
+            if (!data.haveAccess) {
+                this.stdAuth.logout(true);
+                this.message.showWarningAlert(data.message);
+                return;
+            }
+        }
+
+        this.stdAuth.auth.post("/api/StudentScore/getSumOfStudentScore", studentId).subscribe(data => {
             if (data.success) {
-                if (!data.data) {
-                    this.stdAuth.logout(true);
-
-                    this.message.showWarningAlert("دسترسی شما مسدود شده است!");
-
-                    return;
-                }
-
-                mainSW.Install();
-
-                mainSW.newUpdateAvailable$.subscribe(data => {
-                    this.isNewUpdateAvalable = true;
-
-                    mainSW.showNotification("نسخه جدید موجود است!", "نسخه جدیدی از نرم افزار موجود است برای بروز رسانی کلیک کنید", "update");
-                });
+                this.sumOfStudentScore = data.data || 0;
             } else {
-                this.stdAuth.auth.message.showMessageforFalseResult(data);
+                this.message.showMessageforFalseResult(data);
             }
         }, er => {
             this.stdAuth.auth.handlerError(er);
         });
-
-    }
-
-    ngOnInit() {
-        this.refreshUpComingExams();
     }
 
     subscribeToServer() {

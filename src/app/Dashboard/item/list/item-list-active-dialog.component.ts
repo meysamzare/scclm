@@ -4,7 +4,11 @@ import { AuthService, jsondata } from "src/app/shared/Auth/auth.service";
 import { MessageService } from "src/app/shared/services/message.service";
 import { IItemAttr } from "../item-attr";
 import { Subject } from "rxjs/internal/Subject";
-import { debounceTime } from "rxjs/operators";
+import { catchError, debounceTime, last, map } from "rxjs/operators";
+import { IAttr } from "../../attribute/attribute";
+import { IAttributeOption } from "../../attribute/attribute-option";
+import { HttpEventType, HttpHeaders, HttpRequest } from "@angular/common/http";
+import { of, EMPTY } from "rxjs";
 
 @Component({
     templateUrl: "./item-list-active-dialog.component.html"
@@ -122,98 +126,152 @@ export class ItemListActiveDialogComponent implements OnDestroy {
     }
 
     setItemAttrforPic(event, attrId, type) {
-        var itemId = this.itemId;
-        let reader = new FileReader();
-        var size = type == "file" ? 10 : 1;
-        var sizeText = size == 10 ? "ده مگابایت" : "یک مگابایت";
+        let itemId = this.itemId;
+
+        const fileIsInvalid = (message) => {
+            event.target.value = null;
+            event.target.files = null;
+            return this.message.showWarningAlert(message);
+        }
+
+        let attribute = this.attrs.find(c => c.id == attrId);;
+
+        let size = type == "file" ? attribute.maxFileSize : 10;
+        let sizeText = type == "file" ? `${attribute.maxFileSize} مگابایت` : `10 مگابایت`;
+
         if (event.target.files && event.target.files.length > 0) {
-            let file = event.target.files[0];
-            if (file.size / 1024 / 1024 > size) {
-                return this.message.showWarningAlert(
-                    "حجم فایل باید کمتر از " + sizeText + " باشد",
-                    "اخطار"
-                );
+
+            let file: File = event.target.files[0];
+
+            let fileExtentions = file.name.split('.');
+
+            if (fileExtentions.length <= 1) {
+                fileIsInvalid("بارگذاری این فایل مجاز نمی باشد!");
+                return;
             }
-            reader.readAsDataURL(file);
-            reader.onload = () => {
-                let result = reader.result.toString().split(",")[1];
-                // this.fileName = file.name + " " + file.type;
-                this.auth
-                    .post("/api/Item/setItemAttrForFiles", {
-                        attrId: attrId,
-                        itemId: itemId,
-                        inputValue: result,
-                        fileFormat: file.type,
-                        fileName: file.name
-                    }, {
-                        type: 'Add',
-                        agentId: this.auth.getUserId(),
-                        agentType: 'User',
-                        agentName: this.auth.getUser().fullName,
-                        tableName: 'setItemAttrForFiles(saveFile(OnActiveDialog))',
-                        logSource: 'dashboard',
-                        object: {
-                            attrId: attrId,
-                            itemId: itemId,
-                            inputValue: result,
-                            fileFormat: file.type,
-                            fileName: file.name
-                        },
-                        table: "Item",
-                        tableObjectIds: [itemId]
-                    })
-                    .subscribe(
-                        (data: jsondata) => {
+
+            Object.defineProperty(file, 'name', {
+                writable: true,
+                value: `${this.getRandomFileName()}.${fileExtentions.slice(-1)[0]}`
+            });
+
+            if (file.size / 1024 / 1024 > size) {
+                fileIsInvalid("حجم فایل باید کمتر از " + sizeText + " باشد");
+                return;
+            }
+
+            let result = "(binery)";
+
+            let obj = {
+                attributeId: attrId,
+                attrubuteValue: result,
+                itemId: itemId,
+                fileName: file.name
+            }
+
+            let formData = new FormData();
+
+            formData.append("object", JSON.stringify(obj));
+            formData.append("files", file, file.name);
+
+            let url = this.auth.serializeUrl(`/api/Item/setItemAttrForFiles`);
+
+            let token = this.auth.getToken();
+
+            let request = new HttpRequest('POST', url, formData, {
+                reportProgress: false,
+                headers: new HttpHeaders({
+                    Authorization: `Bearer ${token}`,
+                    "ngsw-bypass": "true"
+                }),
+            });
+
+            this.auth.http.request(request).pipe(
+                map(event => {
+                    switch (event.type) {
+                        case HttpEventType.Response:
+
+                            let data: any = event.body;
+                            
                             if (data.success) {
-                                this.message.showSuccessAlert(
-                                    "با موفقیت ثبت شد"
-                                );
+                                let itemAttr = this.itemAttrs.find(c => c.attributeId == attrId);
+                                if (itemAttr) {
+                                    itemAttr.attributeFilePath = data.data;
+                                }
+
+                                this.auth.logToServer({
+                                    type: 'Add',
+                                    agentId: this.auth.getUserId(),
+                                    agentType: 'User',
+                                    agentName: this.auth.getUser().fullName,
+                                    tableName: 'setItemAttrForFiles(saveFile(On Active Item Dialog))',
+                                    logSource: 'dashboard',
+                                    object: obj,
+                                    table: "Item",
+                                    tableObjectIds: [itemId]
+                                }, data);
+
+                                this.message.showSuccessAlert("با موفقیت ثبت شد");
                             } else {
+                                this.message.showWarningAlert("خطایی روی داده است لطفا با راهبر سیستم تماس حاصل فرمایید");
                                 this.message.showMessageforFalseResult(data);
                             }
-                        },
-                        er => {
-                            this.auth.handlerError(er);
-                        }
-                    );
-            };
+                            break;
+                    }
+                }),
+                catchError((er) => {
+                    console.log(er);
+                    
+                    this.message.showWarningAlert("خطایی روی داده است لطفا با راهبر سیستم تماس حاصل فرمایید");
+                    return of(EMPTY);
+                }),
+                last()
+            ).subscribe();
         }
     }
 
+    
+    getRandomFileName(filelength = 10): string {
+        let result = "";
+        let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let charactersLength = characters.length;
+        for (let i = 0; i < filelength; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+
     setAttrForNullPic(attrId) {
-        var itemId = this.itemId;
-        this.auth
-            .post("/api/Item/setItemAttrForFiles", {
+        let itemId = this.itemId;
+
+        this.auth.post("/api/Item/removeItemAttrFile", {
+            attrId: attrId,
+            itemId: itemId
+        }, {
+            type: 'Delete',
+            agentId: this.auth.getUserId(),
+            agentType: 'User',
+            agentName: this.auth.getUser().fullName,
+            tableName: 'ItemAttrForNullFile(DeleteFileIfExist(On Active Item Dialog))',
+            logSource: 'dashboard',
+            object: {
                 attrId: attrId,
-                itemId: itemId,
-                inputValue: ""
-            }, {
-                type: 'Add',
-                agentId: this.auth.getUserId(),
-                agentType: 'User',
-                agentName: this.auth.getUser().fullName,
-                tableName: 'ItemAttrForNullFile(DeleteFileIfExist(OnActiveDialog))',
-                logSource: 'dashboard',
-                object: {
-                    attrId: attrId,
-                    itemId: itemId,
-                    inputValue: ""
-                },
-                table: "Item",
-                tableObjectIds: [itemId]
-            })
-            .subscribe(
-                (data: jsondata) => {
-                    if (data.success) {
-                        this.message.showSuccessAlert("با موفقیت ثبت شد");
-                    } else {
-                        this.message.showMessageforFalseResult(data);
-                    }
-                },
-                er => {
-                    this.auth.handlerError(er);
-                }
-            );
+                itemId: itemId
+            },
+            table: "Item",
+            tableObjectIds: [itemId]
+        }).subscribe(data => {
+            if (data.success) {
+                let itemAttr = this.itemAttrs.find(c => c.attributeId == attrId);
+                itemAttr.attributeFilePath = "";
+
+                this.message.showSuccessAlert("با موفقیت ثبت شد");
+            } else {
+                this.auth.message.showMessageforFalseResult(data);
+            }
+        }, er => {
+            this.auth.handlerError(er);
+        });
     }
 
     setItemAttr(event, attrId) {
@@ -277,5 +335,11 @@ export class ItemListActiveDialogComponent implements OnDestroy {
         }
 
         return "";
+    }
+
+    getShiftedItem(attr: IAttr) {
+        let options: IAttributeOption[] = (attr as any).attributeOptions || [];
+
+        return options;
     }
 }

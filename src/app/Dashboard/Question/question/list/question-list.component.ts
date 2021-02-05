@@ -27,7 +27,7 @@ import { IQuestion } from "../question";
         `
     ]
 })
-export class QuestionListComponent {
+export class QuestionDataListComponent {
     displayedColumns: string[] = [
         "select",
         "id",
@@ -65,7 +65,7 @@ export class QuestionListComponent {
     constructor(
         private router: Router,
         private activeroute: ActivatedRoute,
-        private auth: AuthService,
+        public auth: AuthService,
         private message: MessageService
     ) {
         this.auth.post("/api/Grade/getAll").subscribe(data => {

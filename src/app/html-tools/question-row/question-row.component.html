@@ -1,0 +1,34 @@
+<div class="row">
+    <div class="col-lg-8">
+
+        <p><b>{{ question.name }}</b></p>
+
+        <div [innerHTML]="question.title | safeHtml"></div>
+        
+        <hr>
+        
+        <ng-container *ngIf="question.type == 1">
+            <label>جواب کاربر:</label>
+        </ng-container>
+        
+        <ng-container *ngIf="question.type == 2">
+            <mat-radio-group class="radio-group">
+                <mat-radio-button class="radio-button bordered" [class.isTrue]="v.isTrue" *ngFor="let v of getShiftedItem(question)"
+                    [value]="v.id" (dblclick)="setIsTrueQuestionOption(v)">
+                    <div [innerHTML]="v.title | safeHtml"></div>
+                </mat-radio-button>
+            </mat-radio-group>
+        </ng-container>
+        
+        <ng-container *ngIf="question.type == 3">
+            <mat-hint>محتوای زیر را تکمیل کنید</mat-hint>
+            <div [innerHTML]="question.complatabelContent | safeHtml"></div>
+        </ng-container>
+    </div>
+    <div class="col-lg-3" style="padding: 10px; text-align: center;">
+        <p>نوع سوال: <b>{{ question.typeString }}</b></p>
+        <p>طراح سوال: <b>{{ question.person }}</b></p>
+        <p>سطح سوال: <b>{{ question.defactString }}</b></p>
+        <p>نمره: <b>{{ question.score }}</b></p>
+    </div>
+</div>

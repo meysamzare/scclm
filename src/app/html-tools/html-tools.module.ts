@@ -12,6 +12,7 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { BootstrapModule } from '../shared/bootstrap/bootstrap.module';
 import { LongPressModule } from 'projects/ParentsMobileApp/src/app/shared/directives/long-press/long-press.module';
+import { QuestionRowComponent } from './question-row/question-row.component';
 
 
 
@@ -21,7 +22,8 @@ import { LongPressModule } from 'projects/ParentsMobileApp/src/app/shared/direct
         ShuffleArrayPipe, 
         PictureSelectModalComponent, 
         AddPicturesModalComponent,
-        AddPictureGroupComponent
+        AddPictureGroupComponent,
+        QuestionRowComponent
     ],
     imports: [
         CommonModule,
@@ -37,7 +39,8 @@ import { LongPressModule } from 'projects/ParentsMobileApp/src/app/shared/direct
         ShuffleArrayPipe, 
         PictureSelectModalComponent, 
         AddPicturesModalComponent,
-        AddPictureGroupComponent
+        AddPictureGroupComponent,
+        QuestionRowComponent
     ],
     entryComponents: [
         PictureSelectModalComponent

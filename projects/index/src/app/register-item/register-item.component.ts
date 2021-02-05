@@ -4,7 +4,7 @@ import { IItemAttr } from 'src/app/Dashboard/item/item-attr';
 import { ICategory, CategoryAuthorizeState } from 'src/app/Dashboard/category/category';
 import { FormGroup, NgForm, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { AuthService } from 'src/app/shared/Auth/auth.service';
+import { AuthService, jsondata } from 'src/app/shared/Auth/auth.service';
 import { MessageService } from 'src/app/shared/services/message.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import Swal from "sweetalert2";
@@ -64,12 +64,14 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
     countDown$ = new Subject<string>();
 
+    catDesc = null;
+
     constructor(
         private router: Router,
         private activeRoute: ActivatedRoute,
         public auth: AuthService,
         private message: MessageService,
-        public sanitizer: DomSanitizer,
+        private sanitizer: DomSanitizer,
         private loginService: RegisterItemLoginService,
         private licenseService: RegisterItemLicenseService,
         private http: HttpClient,
@@ -103,12 +105,16 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     isPreview = false;
 
     async ngOnInit() {
-        this.catRefresh$ = interval(15 * 1000).subscribe(() => this.refreshCat());
+        this.catRefresh$ = interval(46 * 1000).subscribe(() => this.refreshCat());
         this.countDown$.pipe(debounceTime(700)).subscribe(event => this.countdownEvent(event));
 
         this.catId = this.activeRoute.snapshot.params["id"];
         this.cat = this.activeRoute.snapshot.data.cat;
         this.units = this.activeRoute.snapshot.data.units;
+
+        if (this.cat.isBackStepAllowed) {
+            this.isPrevStepAllowed = true;
+        }
 
         let previewToken: string = this.activeRoute.snapshot.queryParams["token"];
 
@@ -125,10 +131,10 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                     this.isPrevStepAllowed = true;
                 }
             }
-        } catch (er) { console.error(er) }
+        } catch (er) { console.error("PWTK: ", er) }
 
         if (!this.cat.canShowByDate && !this.isPreview) {
-            const title = `مهلت ${this.cat.btnTitle ? this.cat.btnTitle : "ثبت نام"} به پایان رسیده است`;
+            const title = `مهلت ${this.getRegisterBtnTitle()} به پایان رسیده است`;
             this.message.showWarningAlert(title);
             this.router.navigate(["/"]);
         } else {
@@ -202,6 +208,8 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                 console.error("There is no Attr for cat!", this.catId);
                 return;
             }
+
+            this.catDesc = this.sanitizer.bypassSecurityTrustHtml(this.cat.desc);
 
             if (this.authorizedUsername != "---") {
                 this.attrs.filter(c => c.isMeliCode && (c.attrTypeInt == 1 || c.attrTypeInt == 2)).forEach(attr => {
@@ -468,6 +476,10 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     getRegisterBtnTitle(): string {
         let btnTitle = this.cat.btnTitle;
         if (!btnTitle || btnTitle == " ") {
+            if (this.cat.type == 1) {
+                return "ثبت و تحویل پاسخ برگ";
+            }
+
             return "ثبت نام";
         }
 
@@ -805,7 +817,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
     async totallyCheckForUniqAttrs() {
         if (!this.isPreview) {
-            const reqAttrs = this.attrs.filter(c => c.isUniq && (c.attrTypeInt == 1 || c.attrTypeInt == 2));
+            const reqAttrs = this.attrs.filter(c => c.isUniq);
 
             await Promise.all(reqAttrs.map(async (attr) => {
                 await this.checkForUniqValue(this.group.controls['p' + this.getIndexForAttr(attr.id)].value, attr.id);
@@ -942,7 +954,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
                                 break;
                             case HttpEventType.Response:
-                                let data: any = event.body;
+                                let data = event.body as jsondata;
 
                                 if (!event.ok) {
                                     this.isUploading = false;
@@ -987,13 +999,15 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                                         }
                                     });
                                 } else {
-                                    this.message.showWarningAlert("خطایی روی داده است لطفا با راهبر سیستم تماس حاصل فرمایید");
                                     this.message.showMessageforFalseResult(data);
                                     this.isUploading = false;
                                     // if (isFromCountDownEvent) {
                                     //     this.sts(isFromCountDownEvent, repeatTime + 1.5);
                                     // }
-                                    this.sts(true, repeatTime + 1.5);
+                                    if (data.type == "error") {
+                                        this.message.showWarningAlert("خطایی روی داده است لطفا با راهبر سیستم تماس حاصل فرمایید");
+                                        this.sts(true, repeatTime + 1.5);
+                                    }
                                 }
                                 break;
                         }

@@ -32,6 +32,8 @@ export class ICategory {
     license: string;
     haveLicense: boolean = false;
 
+    isBackStepAllowed: boolean = false;
+
 
     isPined: boolean;
 

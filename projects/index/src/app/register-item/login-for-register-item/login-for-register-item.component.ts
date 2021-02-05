@@ -52,18 +52,17 @@ export class LoginForRegisterItemComponent implements OnInit {
                     return this.auth.message.showErrorAlert("در هنگام ورود خطایی رخ داده است");
                 }
 
-                var date = new Date();
+                let date = new Date();
                 date = new Date(date.setMinutes(30));
 
-                var jwt = data.data.jwt;
-                var userType = data.data.userType;
-                var userFullname = data.data.userFullname;
+                const userType = data.data.userType;
+                const userFullname = data.data.userFullname;
+                const userName = data.data.userName;
 
                 this.loginService.addToken({
                     categoryId: this.catId,
                     dateExpire: date,
-                    jwtToken: jwt,
-                    username: this.username,
+                    username: userName,
                     userFullName: userFullname,
                     userType: userType
                 });

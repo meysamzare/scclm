@@ -3,6 +3,9 @@
 @import 'angular-notifier/styles.css';
 @import "~@ng-select/ng-select/themes/material.theme.css";
 
+.mat-checkbox-label {
+    white-space: pre-wrap !important;
+}
 
 .cke_button__mathjax {
     display: none !important;

@@ -74,7 +74,7 @@ import { ExamEditResolverService } from "./Exam/exam/exam-edit-resolver.service"
 import { ExamScoreListComponent } from "./Exam/examscore/list/examscore-list.component";
 import { ExamScoreEditComponent } from "./Exam/examscore/edit/examscore-edit.component";
 import { ExamScoreEditResolverService } from "./Exam/examscore/examscore-edit-resolver.service";
-import { QuestionListComponent } from "./Question/question/list/question-list.component";
+import { QuestionDataListComponent } from "./Question/question/list/question-list.component";
 import { QuestionEditComponent } from "./Question/question/edit/question-edit.component";
 import { QuestionEditResolveService } from "./Question/question/question-edit-resolve.service";
 import { QuestionOptionListComponent } from "./Question/questionoption/list/questionoption-list.component";
@@ -166,6 +166,7 @@ import { EditStudentDailyScheduleComponent } from "./student/student-daily-sched
 import { DescriptiveScoreResolverService } from "./Exam/descriptive-score/descriptive-score-edit-resolver.service";
 import { DescriptiveScoreEditComponent } from "./Exam/descriptive-score/descriptive-score-edit/descriptive-score-edit.component";
 import { DescriptiveScoreListComponent } from "./Exam/descriptive-score/descriptive-score-list/descriptive-score-list.component";
+import { QuestionListComponent } from "./Question/question-list/question-list.component";
 
 @NgModule({
     imports: [
@@ -992,7 +993,7 @@ import { DescriptiveScoreListComponent } from "./Exam/descriptive-score/descript
                         children: [
                             {
                                 path: "",
-                                component: QuestionListComponent,
+                                component: QuestionDataListComponent,
                                 pathMatch: "full",
                                 data: {
                                     role: ["view_Question"]
@@ -1009,6 +1010,19 @@ import { DescriptiveScoreListComponent } from "./Exam/descriptive-score/descript
                                 },
                                 resolve: {
                                     question: QuestionEditResolveService
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        path: "questionList",
+                        children: [
+                            {
+                                path: "",
+                                component: QuestionListComponent,
+                                pathMatch: "full",
+                                data: {
+                                    role: ["view_Question"]
                                 }
                             }
                         ]

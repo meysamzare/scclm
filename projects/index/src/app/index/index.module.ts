@@ -21,6 +21,8 @@ import { OnlineExamsComponent } from './online-exams/online-exams.component';
 import { AttributeInputModule } from '../register-item/attribute-input/attribute-input.module';
 import { HtmlToolsModule } from 'src/app/html-tools/html-tools.module';
 import { ShowImageComponent } from 'src/app/shared/Modal/show-image.component';
+import { LastPostsGridComponent } from './last-posts-grid/last-posts-grid.component';
+import { LastSpecialPostsComponent } from './last-special-posts/last-special-posts.component';
 
 @NgModule({
     declarations: [
@@ -36,7 +38,7 @@ import { ShowImageComponent } from 'src/app/shared/Modal/show-image.component';
         ProductComponent,
         ViewVirtualTeachingComponent,
         OnlineExamsComponent,
-        ShowImageComponent
+        ShowImageComponent,
     ],
     imports: [
         CommonModule,

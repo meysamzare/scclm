@@ -37,6 +37,8 @@ export class IExam {
     isCancelled: boolean;
     cancellReason: string;
 
+    showAvgOfExam: boolean;
+
     avgInExam = 0;
     minInExam = 0;
     maxInExam = 0;

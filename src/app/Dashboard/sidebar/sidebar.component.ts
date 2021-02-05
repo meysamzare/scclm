@@ -42,4 +42,8 @@ export class SidebarComponent implements AfterViewInit {
         this.signalr.stopConnectionUser();
         this.auth.lockUser();
     }
+
+    gotoIndex() {
+        location.replace(this.auth.indexUrl);
+    }
 }

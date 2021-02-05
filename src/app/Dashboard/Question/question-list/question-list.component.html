@@ -1,0 +1,87 @@
+<mat-card>
+    <mat-card-title>لیست سوالات</mat-card-title>
+
+    <mat-card-content style="padding: 10px;">
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>پایه تحصیلی</label>
+                    <ng-select name="grade" [(ngModel)]="selectedGrade" (change)="selectedCourse = null;">
+                        <ng-option *ngFor="let u of grades" [value]="u.id">{{u.name}}</ng-option>
+                    </ng-select>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>درس</label>
+                    <ng-select name="course" [(ngModel)]="selectedCourse" [disabled]="!selectedGrade">
+                        <ng-option *ngFor="let u of getCourseByGrade()" [value]="u.id">{{u.name}}
+                        </ng-option>
+                    </ng-select>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>میزان سختی</label>
+                    <ng-select name="defct" [(ngModel)]="selectedDefct">
+                        <ng-option [value]="4">خیلی دشوار</ng-option>
+                        <ng-option [value]="1">دشوار</ng-option>
+                        <ng-option [value]="2">متوسط</ng-option>
+                        <ng-option [value]="3">آسان</ng-option>
+                    </ng-select>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-top-10">
+            <div class="col-lg-12">
+                <input type="text" [(ngModel)]="txtSearch" id="text1" placeholder="جستجو" class="form-control"
+                    style="width: 100%;">
+            </div>
+        </div>
+    </mat-card-content>
+
+
+    <mat-card-actions style="padding: 5px;">
+        <button type="submit" style="width: 100%;" mat-raised-button color="primary"
+            [disabled]="!selectedGrade && !selectedCourse" (click)="refreshQuestions()">
+            بارگذاری سوالات
+        </button>
+    </mat-card-actions>
+</mat-card>
+
+<div class="row margin-top-10">
+    <div class="col-lg-12">
+
+        <mat-card>
+            <div *ngIf="isLoading">
+                <mat-progress-bar mode="buffer"></mat-progress-bar>
+            </div>
+
+            <ng-container *ngFor="let question of questions">
+                <div class="row"
+                    style="border-radius: 15px; background-color: whitesmoke; padding: 10px; margin: 10px;">
+                    <div>
+                        <div class="col-lg-1">
+                            <a style="outline: none;" [tooltip]="'انتقال به صفحه ویرایش سوال'"
+                                routerLink="/dashboard/question/edit/{{ question.id }}" target="_blank" mat-icon-button
+                                color="primary">
+                                <mat-icon>edit</mat-icon>
+                            </a>
+                        </div>
+                        <div class="col-lg-11">
+                            <app-question-row [question]="question" [questionId]="question.id" [canEditTrueOption]="true">
+                            </app-question-row>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+
+
+            <div dir="ltr">
+                <mat-paginator style="width: 100%;" [length]="totalCount" [pageSizeOptions]="[5, 10, 15, 20,
+                    25]" (page)="refreshQuestions()" showFirstLastButtons></mat-paginator>
+            </div>
+        </mat-card>
+
+    </div>
+</div>

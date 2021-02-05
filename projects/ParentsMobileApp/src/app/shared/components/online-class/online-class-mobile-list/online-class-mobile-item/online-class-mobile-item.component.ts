@@ -17,7 +17,7 @@ export class OnlineClassMobileItemComponent implements OnInit, OnDestroy {
     @Input() userFullName = "";
     @Input() userId = "";
 
-    isRunning = false;
+    isClassRunning = false;
 
     refreshInterval = null;
 
@@ -33,49 +33,60 @@ export class OnlineClassMobileItemComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.refreshInterval = interval(10000).subscribe(() => {
+        this.refreshInterval = interval(10000).subscribe(async () => {
             if (!this.isAdmin) {
-                this.refreshIsRunning();
+                await this.refreshIsRunning();
             }
         });
     }
 
     async refreshIsRunning() {
-        this.isRunning = await this.bbbRepo.isMeetingRunning(this.onlineClass.meetingId);
+        const isRunning = await this.bbbRepo.isMeetingRunning(this.onlineClass.meetingId);
+        this.isClassRunning = isRunning;
+    }
+
+    canOpenClass(): boolean {
+        if (this.isAdmin) {
+            return true;
+        }
+
+        return this.isClassRunning;
     }
 
     async openBBBClass() {
-        if (this.isAdmin) {
-            await this.bbbRepo.create({
-                name: native2ascii(this.onlineClass.name),
-                meetingID: this.onlineClass.meetingId,
-                attendeePW: this.onlineClass.attendeePW,
-                moderatorPW: this.onlineClass.moderatorPW,
-                welcome: native2ascii(this.onlineClass.welcome),
-                maxParticipants: this.onlineClass.maxParticipants,
-                record: this.onlineClass.record,
-                duration: this.onlineClass.duration,
-                isBreakout: this.onlineClass.isBreakout,
-                parentMeetingID: this.onlineClass.parentMeetingID,
-                sequence: this.onlineClass.sequence,
-                autoStartRecording: this.onlineClass.autoStartRecording,
-                allowStartStopRecording: this.onlineClass.allowStartStopRecording,
-                muteOnStart: this.onlineClass.muteOnStart,
-                allowModsToUnmuteUsers: this.onlineClass.allowModsToUnmuteUsers,
-                lockSettingsDisableCam: this.onlineClass.lockSettingsDisableCam,
-                lockSettingsDisablePrivateChat: this.onlineClass.lockSettingsDisablePrivateChat,
-                lockSettingsDisablePublicChat: this.onlineClass.lockSettingsDisablePublicChat,
-                lockSettingsDisableNote: this.onlineClass.lockSettingsDisableNote,
-            });
-        }
+        if (this.canOpenClass()) {
+            if (this.isAdmin) {
+                await this.bbbRepo.create({
+                    name: this.bbbRepo.getStringPrecentEncoding(this.onlineClass.name),
+                    meetingID: this.onlineClass.meetingId,
+                    attendeePW: this.onlineClass.attendeePW,
+                    moderatorPW: this.onlineClass.moderatorPW,
+                    welcome: this.bbbRepo.getStringPrecentEncoding(this.onlineClass.welcome),
+                    maxParticipants: this.onlineClass.maxParticipants,
+                    record: this.onlineClass.record,
+                    duration: this.onlineClass.duration,
+                    isBreakout: this.onlineClass.isBreakout,
+                    parentMeetingID: this.onlineClass.parentMeetingID,
+                    sequence: this.onlineClass.sequence,
+                    autoStartRecording: this.onlineClass.autoStartRecording,
+                    allowStartStopRecording: this.onlineClass.allowStartStopRecording,
+                    muteOnStart: this.onlineClass.muteOnStart,
+                    allowModsToUnmuteUsers: this.onlineClass.allowModsToUnmuteUsers,
+                    lockSettingsDisableCam: this.onlineClass.lockSettingsDisableCam,
+                    lockSettingsDisablePrivateChat: this.onlineClass.lockSettingsDisablePrivateChat,
+                    lockSettingsDisablePublicChat: this.onlineClass.lockSettingsDisablePublicChat,
+                    lockSettingsDisableNote: this.onlineClass.lockSettingsDisableNote,
+                });
+            }
 
-        await this.bbbRepo.join({
-            fullName: native2ascii(this.userFullName),
-            meetingID: this.onlineClass.meetingId,
-            password: this.isAdmin ? this.onlineClass.moderatorPW : this.onlineClass.attendeePW,
-            joinViaHtml5: true,
-            userID: `${this.isAdmin ? 'AD' : ''}${this.userId}`
-        }, true);
+            await this.bbbRepo.join({
+                fullName: this.bbbRepo.getStringPrecentEncoding(this.userFullName),
+                meetingID: this.onlineClass.meetingId,
+                password: this.isAdmin ? this.onlineClass.moderatorPW : this.onlineClass.attendeePW,
+                joinViaHtml5: true,
+                userID: `${this.isAdmin ? 'AD' : ''}${this.userId}`
+            }, true);
+        }
     }
 
 }

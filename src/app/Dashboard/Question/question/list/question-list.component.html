@@ -152,11 +152,11 @@
                                         عملیات
                                     </th>
                                     <td mat-cell *matCellDef="let row">
-                                        <button matTooltip="ویرایش
-                                            {{row.name}}" matTooltipPosition="before" mat-icon-button
-                                            (click)="onEdit(row.id)">
+                                        <a [disabled]="!auth.isUserAccess('edit_Question', false)"
+                                            routerLink="/dashboard/question/edit/{{row.id}}" target="_blank" matTooltip="ویرایش
+                                            {{row.name}}" matTooltipPosition="before" mat-icon-button>
                                             <mat-icon>edit</mat-icon>
-                                        </button>
+                                        </a>
                                     </td>
 
                                 </ng-container>

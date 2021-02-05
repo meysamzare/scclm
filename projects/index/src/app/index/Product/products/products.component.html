@@ -126,8 +126,7 @@
                                                 </span>
                                                 <span class="product-seller-details-badge-container"></span>
                                             </div>
-                                            <a class="product-box-img">
-                                                <img [src]="auth.getFileUrl(i.picUrl)" alt="">
+                                            <a class="product-box-img" [style.background-image]="'url('+ auth.getFileUrl(i.picUrl) +')'">
                                             </a>
                                             <div class="product-box-content">
                                                 <div class="product-box-content-row">

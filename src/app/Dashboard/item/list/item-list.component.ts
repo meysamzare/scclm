@@ -146,7 +146,6 @@ declare var $: any;
 
             .radio-button {
                 margin: 0;
-                pointer-events: none;
             }
 
             .bordered {
@@ -747,7 +746,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
                                 isActive: true
                             }).subscribe(data => {
                                 if (data.success) {
-                                    this.items[this.items.findIndex()].isActive = isActive;
+                                    this.items[this.items.findIndex(c => c.id == id)].isActive = isActive;
 
                                     this.dataSource = new MatTableDataSource(this.items);
                                 } else {

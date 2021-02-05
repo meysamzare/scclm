@@ -27,7 +27,7 @@ export class RegisterItemLoginService {
         let catToken = tokens.find(c => c.categoryId == catId);
 
         if (catToken) {
-            return catToken.dateExpire < new Date() || !catToken.jwtToken ? false : true;
+            return catToken.dateExpire < new Date() ? false : true;
         }
 
         return false;
@@ -99,6 +99,4 @@ export class RegisterItemToken {
     categoryId: number;
 
     dateExpire: Date;
-
-    jwtToken: string;
 }

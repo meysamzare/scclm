@@ -40,6 +40,7 @@
             <mat-button-toggle [value]="1">بدون آرشیو ها</mat-button-toggle>
         </mat-button-toggle-group>
     </div>
+    <p>تعداد کل: {{ itemLength }}</p>
     <ng-container *ngIf="TYPE == 1">
         <div class="col-lg-4">
             <div class="form-group">
@@ -129,6 +130,10 @@
                         <mat-icon>launch</mat-icon>
                     </button>
 
+                    <button mat-icon-button matTooltip="لیست ورود به {{ pageTitle }}" (click)="showLoginList(cat.id, cat.title)">
+                        <mat-icon>list</mat-icon>
+                    </button>
+
                     <button mat-icon-button matTooltip="آرشیو" (click)="changeCheckableProperty(cat.id, 'isArchived',
                         !cat.isArchived)">
                         <mat-icon [style.color]="cat.isArchived ? 'blue' : 'orange'">
@@ -146,7 +151,7 @@
                         <mat-icon>{{ cat.haveInfo ? 'help' : 'help_outline' }}</mat-icon>
                     </button>
 
-                    <button mat-icon-button matTooltip="زمان اطلاع رسانی فرارسیده است؟" *ngIf="cat.haveInfo" (click)="changeCheckableProperty(cat.id, 'isInfoShow',
+                    <button mat-icon-button matTooltip="زمان اطلاع رسانی فرارسیده است؟" *ngIf="cat.haveInfo && TYPE != 1" (click)="changeCheckableProperty(cat.id, 'isInfoShow',
                         !cat.isInfoShow)">
                         <mat-icon>{{ cat.isInfoShow ? 'alarm_on' : 'alarm_off' }}</mat-icon>
                     </button>

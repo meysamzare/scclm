@@ -227,12 +227,12 @@ export class StudentWorkbookComponent implements OnInit {
 
             exams.forEach((exam, indexExam) => {
                 if (this.getExamScoreForExam(exam.id)) {
-                    this.datas[indexCourse][0].data.push(this.getJustifiedScore(this.getExamScoreForExam(exam.id).score, exam.topScore));
-                    this.datas[indexCourse][1].data.push(this.getJustifiedScore(exam.avgInExam, exam.topScore));
-                    this.datas[indexCourse][2].data.push(this.getJustifiedScore(exam.maxInExam, exam.topScore));
-                    this.datas[indexCourse][3].data.push(this.getJustifiedScore(exam.minInExam, exam.topScore));
+                    this.datas[indexCourse][0].data.unshift(this.getJustifiedScore(this.getExamScoreForExam(exam.id).score, exam.topScore));
+                    this.datas[indexCourse][1].data.unshift(this.getJustifiedScore(exam.avgInExam, exam.topScore));
+                    this.datas[indexCourse][2].data.unshift(this.getJustifiedScore(exam.maxInExam, exam.topScore));
+                    this.datas[indexCourse][3].data.unshift(this.getJustifiedScore(exam.minInExam, exam.topScore));
 
-                    this.datasLable[indexCourse].push(exam.dateString);
+                    this.datasLable[indexCourse].unshift(exam.dateString);
                 }
             });
 

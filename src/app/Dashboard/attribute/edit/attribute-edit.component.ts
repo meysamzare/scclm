@@ -86,19 +86,20 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
                     this.pageTitle = "آزمون آنلاین";
                     this.pageTitles = "آزمون های آنلاین";
                     this.pageUrl = "online-exam";
-
-                    this.auth.post("/api/Question/getAll").subscribe((data: jsondata) => {
-                        if (data.success) {
-                            this.Questions = data.data;
-                        } else {
-                            this.message.showMessageforFalseResult(data);
-                        }
-                    });
                 }
 
                 this.auth.post("/api/Category/getAllByType", this.TYPE).subscribe((data: jsondata) => {
                     if (data.success) {
                         this.Categories = data.data;
+                    } else {
+                        this.message.showMessageforFalseResult(data);
+                    }
+                });
+
+                
+                this.auth.post("/api/Question/getAll").subscribe((data: jsondata) => {
+                    if (data.success) {
+                        this.Questions = data.data;
                     } else {
                         this.message.showMessageforFalseResult(data);
                     }
@@ -181,10 +182,10 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
             }
         });
 
-        let title = "attribute";
-        if (await this.auth.draft.isAnyDraft(title)) {
-            this.attr = JSON.parse((await this.auth.draft.getDraft(title)).value);
-        }
+        // let title = "attribute";
+        // if (await this.auth.draft.isAnyDraft(title)) {
+        //     this.attr = JSON.parse((await this.auth.draft.getDraft(title)).value);
+        // }
     }
 
     cloneAttrChange() {
@@ -227,7 +228,7 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
         });
 
         if (value) {
-            let title = value;
+            let title: any = value;
 
             let attrOption: IAttributeOption = {
                 attributeId: this.attr.id,
@@ -325,7 +326,7 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
 
         if (value) {
 
-            attrOption.title = value;
+            attrOption.title = value as any;
 
             if (this.isEdit) {
                 this.auth.post("/api/Attribute/EditAttributeOption", attrOption, {

@@ -19,6 +19,8 @@
 						<!-- <li class="divider"></li> -->
                         <li><a (click)="lockUser()">قفل کردن صفحه</a></li>
 						<li class="divider"></li>
+                        <li><a (click)="gotoIndex()">ورود به صفحه اصلی</a></li>
+						<li class="divider"></li>
                         <li><a (click)="Logout()">خروج</a></li>
 						<li class="divider"></li>
 						<li><a *ngIf="auth.isUserAccess('view_Log', false)" routerLink="/dashboard/Log"> لاگ های سیستم </a></li>
@@ -103,6 +105,7 @@
 				<a><i class="fa fa-arrow-circle-o-up"></i> <span class="nav-label">بانک سوالات</span>
 					<span class="fa arrow"></span></a>
 				<ul class="nav nav-second-level collapse">
+					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Question', false)" routerLink="/dashboard/questionList"> لیست سوالات </a></li>
 					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_Question', false)" routerLink="/dashboard/question"> سوالات </a></li>
 					<li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_QuestionOption', false)" routerLink="/dashboard/questionoption"> گزینه های سوالات </a></li>
 

@@ -98,7 +98,6 @@ import { ExamScoreEditComponent } from "./Exam/examscore/edit/examscore-edit.com
 import { ExamScoreListComponent } from "./Exam/examscore/list/examscore-list.component";
 import { ExamScoreEditResolverService } from "./Exam/examscore/examscore-edit-resolver.service";
 import { QuestionEditComponent } from "./Question/question/edit/question-edit.component";
-import { QuestionListComponent } from "./Question/question/list/question-list.component";
 import { QuestionEditResolveService } from "./Question/question/question-edit-resolve.service";
 import { QuestionOptionEditComponent } from "./Question/questionoption/edit/questionoption-edit.component";
 import { QuestionOptionListComponent } from "./Question/questionoption/list/questionoption-list.component";
@@ -207,6 +206,14 @@ import { CustomFormToolsModule } from "projects/ParentsMobileApp/src/app/shared/
 import { DescriptiveScoreEditComponent } from '../Dashboard/Exam/descriptive-score/descriptive-score-edit/descriptive-score-edit.component';
 import { DescriptiveScoreListComponent } from '../Dashboard/Exam/descriptive-score/descriptive-score-list/descriptive-score-list.component';
 import { CategoryComfirmAbsenceModalComponent } from '../Dashboard/category/list/category-comfirm-absence-modal/category-comfirm-absence-modal.component';
+import { RegisterItemLoginsModalComponent } from '../Dashboard/category/list/register-item-logins-modal/register-item-logins-modal.component';
+import { QuestionGridListComponent } from '../Dashboard/Question/question/question-grid-list/question-grid-list.component';
+
+import { NgxFloatButtonModule } from 'ngx-float-button';
+import { MatFabMenuModule } from '@angular-material-extensions/fab-menu';
+import { QuestionDataListComponent } from "./Question/question/list/question-list.component";
+import { QuestionListComponent } from "./Question/question-list/question-list.component";
+import { QuickAddAttributeModalComponent } from '../Dashboard/category/edit/modals/quick-add-attribute-modal/quick-add-attribute-modal.component';
 
 @NgModule({
     imports: [
@@ -233,7 +240,9 @@ import { CategoryComfirmAbsenceModalComponent } from '../Dashboard/category/list
         HtmlToolsModule,
         ImageIconModule,
         CustomEditorModule,
-        CustomFormToolsModule
+        CustomFormToolsModule,
+        NgxFloatButtonModule,
+        MatFabMenuModule
     ],
     declarations: [
         DashboardComponent,
@@ -292,6 +301,7 @@ import { CategoryComfirmAbsenceModalComponent } from '../Dashboard/category/list
         ExamScoreListComponent,
         QuestionEditComponent,
         QuestionListComponent,
+        QuestionDataListComponent,
         QuestionOptionEditComponent,
         QuestionOptionListComponent,
         ItemListActiveDialogComponent,
@@ -385,7 +395,10 @@ import { CategoryComfirmAbsenceModalComponent } from '../Dashboard/category/list
         StudentDailyScheduleDetailComponent,
         DescriptiveScoreEditComponent,
         DescriptiveScoreListComponent,
-        CategoryComfirmAbsenceModalComponent
+        CategoryComfirmAbsenceModalComponent,
+        RegisterItemLoginsModalComponent,
+        QuestionGridListComponent,
+        QuickAddAttributeModalComponent
     ],
     providers: [
         AuthGuardService,
@@ -442,7 +455,8 @@ import { CategoryComfirmAbsenceModalComponent } from '../Dashboard/category/list
         ExamDetailsComponent,
         TreeDialogComponent,
         SetItemAttributeScoreComponent,
-        CategoryComfirmAbsenceModalComponent
+        CategoryComfirmAbsenceModalComponent,
+        RegisterItemLoginsModalComponent
     ]
 })
 export class DashboardModule {}

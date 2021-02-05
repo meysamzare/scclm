@@ -7,7 +7,7 @@ import { ICategory } from "../category";
 import { DomSanitizer } from "@angular/platform-browser";
 import { RoleClass } from "../../role/role";
 import { getPostTypeString } from "../../WebSiteManagment/post/post";
-import { IAttr } from "../../attribute/attribute";
+import { getAttributeTypeIcon, getAttributeTypeString, IAttr } from "../../attribute/attribute";
 import { IUnit } from "../../unit/unit";
 import Swal from "sweetalert2";
 import { IAttributeOption } from "../../attribute/attribute-option";
@@ -24,36 +24,13 @@ import { MatDialog } from "@angular/material";
 import { AddTemplateAttributeModalComponent } from "./modals/add-template-attribute-modal/add-template-attribute-modal.component";
 import { AddQuestionModalComponent } from "./modals/add-question-modal/add-question-modal.component";
 import { AddGroupQuestionModalComponent } from "./modals/add-group-question-modal/add-group-question-modal.component";
+import { MatFabMenu } from "@angular-material-extensions/fab-menu";
+import { QuickAddAttributeModalComponent } from "./modals/quick-add-attribute-modal/quick-add-attribute-modal.component";
 
 @Component({
     templateUrl: "./category-edit.component.html",
     encapsulation: ViewEncapsulation.None,
-    styles: [
-        `
-            .example-radio-group {
-                display: flex;
-                flex-direction: column;
-                margin: 15px 0;
-            }
-
-            .example-radio-button {
-                margin: 5px;
-            }
-
-            .radio-group {
-                display: flex;
-                flex-direction: column;
-            }
-
-            .radio-button {
-                margin: 0;
-            }
-
-            .attrSection img {
-                width: 100%;
-            }
-        `
-    ]
+    styleUrls: ["./category-edit.component.scss"]
 })
 export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewChecked {
     Title: string;
@@ -108,6 +85,48 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
 
     examTypes: IExamType[] = [];
     workbooks: IWorkbook[] = [];
+
+    fabButtons: MatFabMenu[] = [
+        {
+            id: 1,
+            icon: 'refresh',
+            tooltip: "بارگذاری مجدد فیلد ها",
+            tooltipPosition: "right"
+        },
+        {
+            id: 2,
+            icon: 'exit_to_app',
+            tooltip: "لغو",
+            tooltipPosition: "right"
+        },
+        {
+            id: 3,
+            icon: 'save',
+            tooltip: "ثبت",
+            tooltipPosition: "right"
+        },
+    ];
+
+    onFabMenuSelected(id) {
+        if (id == 1) {
+            this.refreshAttributes();
+        }
+        if (id == 2) {
+            this.route.navigateByUrl(`/dashboard/${this.pageUrl}`);
+        }
+        if (id == 3) {
+            this.sts();
+        }
+        if (id == 4) {
+            this.addTemplateAttribute();
+        }
+        if (id == 5) {
+            this.addQuestion();
+        }
+        if (id == 6) {
+            this.addGroupQuestions();
+        }
+    }
 
     constructor(
         private route: Router,
@@ -204,6 +223,10 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
                 this.Title = `افزودن ${this.pageTitle}`;
                 this.btnTitle = "افزودن";
                 this.isEdit = false;
+
+                if (this.TYPE == 1) {
+                    this.category.authorizeState = 2;
+                }
             } else {
                 var idd = Number.parseInt(id);
                 if (Number.isInteger(idd)) {
@@ -211,6 +234,27 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
                         `ویرایش ${this.pageTitle} ${this.category.title}`;
                     this.btnTitle = "ویرایش";
                     this.isEdit = true;
+
+                    this.fabButtons.push({
+                        id: 4,
+                        icon: 'library_add',
+                        tooltip: "افزودن فیلد",
+                        tooltipPosition: "right"
+                    });
+
+                    if (this.TYPE == 1) {
+                        this.fabButtons.push({
+                            id: 5,
+                            icon: 'playlist_add',
+                            tooltip: "افزودن سوال",
+                            tooltipPosition: "right"
+                        }, {
+                            id: 6,
+                            icon: 'view_day',
+                            tooltip: "افزودن گروهی سوال",
+                            tooltipPosition: "right"
+                        });
+                    }
 
                     this.refreshAttributes();
                 } else {
@@ -435,16 +479,7 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
     async deleteAttr(id) {
         if (this.auth.isUserAccess(this.TYPE == 0 ? "remove_Attribute" : "remove_OnlineExamOption")) {
 
-            let swalResult = await Swal.fire({
-                title: "آیا اطمینان دارید؟",
-                text: "حذف کردن این موارد قابل بازگشت نمی باشد",
-                icon: "question",
-                showCancelButton: true,
-                cancelButtonText: "خیر",
-                confirmButtonText: "بله"
-            });
-
-            if (swalResult.value) {
+            if (confirm("آیا از حذف این فیلد اطمینان دارید؟")) {
                 let ids: number[] = [id];
 
                 let attr = this.attributes.find(c => c.id == id);
@@ -482,12 +517,13 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
         }
     }
 
-    editAttr(id) {
-        if (this.auth.isUserAccess(this.TYPE == 0 ? "edit_Attribute" : "edit_OnlineExamOption")) {
-            this.route.navigateByUrl(`/dashboard/${this.TYPE == 0 ? "attribute" : "online-exam/option"}/edit/${id}`);
-        }
+    isUserAccessToEditAttr(): boolean {
+        return this.auth.isUserAccess(this.TYPE == 0 ? "edit_Attribute" : "edit_OnlineExamOption");
     }
 
+    getAttrEditUrl(id) {
+        return `/dashboard/${this.TYPE == 0 ? "attribute" : "online-exam/option"}/edit/${id}`;
+    }
 
     ngOnDestroy(): void {
         let title = "category";
@@ -523,6 +559,12 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
         });
     }
 
+    catAllQuestionNumber = 0;
+    catEasyQuestionNumber = 0;
+    catHardQuestionNumber = 0;
+    catVeryHardQuestionNumber = 0;
+    catModrateQuestionNumber = 0;
+
     refreshAttributes() {
         this.isLoading = true;
 
@@ -533,6 +575,13 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
             .subscribe(data => {
                 if (data.success) {
                     this.attributes = data.data;
+
+                    this.catAllQuestionNumber = this.attributes.filter(c => c.attrTypeInt == 11).length;
+
+                    this.catHardQuestionNumber = this.attributes.filter(c => c.questionDefactInt == 1).length;
+                    this.catModrateQuestionNumber = this.attributes.filter(c => c.questionDefactInt == 2).length;
+                    this.catEasyQuestionNumber = this.attributes.filter(c => c.questionDefactInt == 3).length;
+                    this.catVeryHardQuestionNumber = this.attributes.filter(c => c.questionDefactInt == 4).length;
                 } else {
                     this.message.showMessageforFalseResult(data);
                 }
@@ -730,6 +779,27 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
 
 
         return veryHardQuestionNumber + hardQuestionNumber + moderateQuestionNumber + easyQuestionNumber;
+    }
+
+    getAttributeTypeString(attrType: number) {
+        return getAttributeTypeString(attrType);
+    }
+
+    getAttributeTypeIcon(attrType: number) {
+        return getAttributeTypeIcon(attrType);
+    }
+
+    openQuickAddAttributeModal(attrType: number) {
+        this.dialog.open(QuickAddAttributeModalComponent, {
+            data: {
+                attrType: attrType,
+                catId: this.category.id
+            }
+        }).afterClosed().subscribe(result => {
+            if (result) {
+                this.refreshAttributes();
+            }
+        });
     }
 
 }

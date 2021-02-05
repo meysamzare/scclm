@@ -61,6 +61,17 @@
                                 </mat-error>
                             </div>
 
+                            <div class="form-group">
+                                <label>میزان {{ PAGE_TITLE }}</label>
+                                <input type="tel" required #value="ngModel" name="value" [(ngModel)]="PAGE_Data.value"
+                                    placeholder="میزان" class="form-control">
+                                <div *ngIf="(value.touched || value.dirty) && value.invalid">
+                                    <p *ngIf="value.hasError('required')" class="error">
+                                        وارد کردن میزان {{ PAGE_TITLE }} الزامی است
+                                    </p>
+                                </div>
+                            </div>
+
                         </div>
                         <br>
                         <br>

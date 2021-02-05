@@ -49,15 +49,17 @@
     <br>
     <hr>
 
-    <div class="row margin-top-10">
-        <div class="col-lg-4 margin-top-10" *ngFor="let link of links; let index = index;">
+    <div class="grid-content">
+        <div class="grid" *ngFor="let link of links; let index = index;">
             <mat-card>
                 <mat-card-header style="padding: 10px;"><b>{{ index + 1 }}. {{ link.title }}</b></mat-card-header>
                 <mat-card-content>
 
-                    <video controls (play)="setLinkViewed(link.id)" style="width: 100%;" *ngIf="product.type == 2"
+                    <video controls (play)="setLinkViewed(link.id)" style="width: 100%; height: 200px;"
+                        *ngIf="product.type == 2"
                         [src]="link.haveExternalUrl ? link.fileUrl : auth.getFileUrl(link.fileUrl)"></video>
-                    <audio controls (play)="setLinkViewed(link.id)" style="width: 100%;" *ngIf="product.type == 3"
+                    <audio controls (play)="setLinkViewed(link.id)" style="width: 100%; height: 200px;"
+                        *ngIf="product.type == 3"
                         [src]="link.haveExternalUrl ? link.fileUrl : auth.getFileUrl(link.fileUrl)"></audio>
 
                     <hr>
@@ -134,7 +136,8 @@
                                         ارسال نظر
                                     </mat-panel-title>
                                     <mat-panel-description>
-                                        {{ isCommentPanelExpend ? 'نام و نام خانوادگی و پست الکترونیک خود را برای ارسال نظر وارد نمایید' : 'برای ارسال نظر کلیک نمایید' }}
+                                        {{ isCommentPanelExpend ? 'نام و نام خانوادگی و پست الکترونیک خود را برای ارسال
+                                        نظر وارد نمایید' : 'برای ارسال نظر کلیک نمایید' }}
 
                                     </mat-panel-description>
                                 </mat-expansion-panel-header>

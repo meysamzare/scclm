@@ -53,16 +53,15 @@
                                             {{ classBook.dateString }}
                                         </mat-panel-title>
                                         <mat-panel-description>
-                                            {{ getClassBookTypeString(classBook.type) }}
+                                            <strong
+                                                [style.color]="getClassBookResult(classBook.type, classBook.value).color">
+                                                {{ getClassBookResult(classBook.type, classBook.value).result }}
+                                            </strong>
                                         </mat-panel-description>
                                     </mat-expansion-panel-header>
 
                                     <p>دبیر : <strong>{{ classBook.teacherName }}</strong></p>
-                                    <p>مقدار :
-                                        <strong
-                                            [style.color]="getClassBookResult(classBook.type, classBook.value).color">
-                                            {{ getClassBookResult(classBook.type, classBook.value).result }}
-                                        </strong>
+                                    <p>نوع دفتر کلاسی : <strong>{{ getClassBookTypeString(classBook.type) }}</strong>
                                     </p>
                                 </mat-expansion-panel>
                             </ng-container>
@@ -73,14 +72,14 @@
                     <div class="row">
                         <div class="col-sm-12" style="margin-top: 15px;"
                             *ngIf="selectedCourse && examsForSelectedCourse.length != 0">
-                            <b>آزمون ها</b>
+                            <b>فهرست نمرات درس: {{ getSelectedCourseTitle() }}</b>
                             <mat-divider></mat-divider>
                             <br>
 
                             <ng-container *ngFor="let workbook of workbooks">
                                 <ng-container *ngIf="getExamsByWorkbook(workbook.id).length != 0">
 
-                                    <p>{{ workbook.name }}</p>
+                                    <p>کارنامه: {{ workbook.name }}</p>
                                     <mat-divider></mat-divider>
 
                                     <mat-accordion>
@@ -88,7 +87,7 @@
                                             <mat-expansion-panel *ngIf="getExamScoreForExam(i.id)">
                                                 <mat-expansion-panel-header>
                                                     <mat-panel-title>
-                                                        {{ i.dateString }}
+                                                        {{ getWorkbookJustifiedName(i.name) }}
                                                     </mat-panel-title>
                                                     <mat-panel-description>
                                                         <strong
@@ -102,7 +101,8 @@
                                                     </mat-panel-description>
                                                 </mat-expansion-panel-header>
 
-                                                <p>نام آزمون : {{ i.name }}</p>
+                                                <p>عنوان: <b>{{ i.name }}</b></p>
+                                                <p>تاریخ: <b>{{ i.dateString }}</b></p>
 
                                                 <p>نمره دانش آموز :
                                                     <strong
@@ -115,7 +115,8 @@
                                                     </strong>
                                                 </p>
 
-                                                <p>میانگین : <strong>{{ i.avgInExam }}</strong></p>
+                                                <p *ngIf="i.showAvgOfExam">میانگین : <strong>{{ i.avgInExam }}</strong>
+                                                </p>
                                                 <p>بیشترین : <strong>{{ i.maxInExam }}</strong></p>
                                                 <p>کمترین : <strong>{{ i.minInExam }}</strong></p>
                                                 <p>وضعیت حضور :
@@ -153,7 +154,7 @@
 
                             <ng-container *ngIf="getExamsByWorkbook(null).length != 0">
 
-                                <p>بدون کارنامه</p>
+                                <p>فهرست سایر نمرات</p>
                                 <mat-divider></mat-divider>
 
                                 <mat-accordion>
@@ -161,7 +162,7 @@
                                         <mat-expansion-panel *ngIf="getExamScoreForExam(i.id)">
                                             <mat-expansion-panel-header>
                                                 <mat-panel-title>
-                                                    {{ i.dateString }}
+                                                    {{ getWorkbookJustifiedName(i.name) }}
                                                 </mat-panel-title>
                                                 <mat-panel-description>
                                                     <strong
@@ -175,7 +176,8 @@
                                                 </mat-panel-description>
                                             </mat-expansion-panel-header>
 
-                                            <p>نام آزمون : {{ i.name }}</p>
+                                            <p>عنوان: <b>{{ i.name }}</b></p>
+                                            <p>تاریخ: <b>{{ i.dateString }}</b></p>
 
                                             <p>نمره دانش آموز :
                                                 <strong
@@ -188,7 +190,7 @@
                                                 </strong>
                                             </p>
 
-                                            <p>میانگین : <strong>{{ i.avgInExam }}</strong></p>
+                                            <p *ngIf="i.showAvgOfExam">میانگین : <strong>{{ i.avgInExam }}</strong></p>
                                             <p>بیشترین : <strong>{{ i.maxInExam }}</strong></p>
                                             <p>کمترین : <strong>{{ i.minInExam }}</strong></p>
                                             <p>وضعیت حضور :

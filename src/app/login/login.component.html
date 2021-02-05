@@ -31,7 +31,7 @@
                                 [siteKey]="auth.dashboardRecapchaSiteKey">
                             </ngx-invisible-recaptcha>
                         </div>
-                        <button (click)="Login()" type="submit" [disabled]="!fm1.valid"
+                        <button (click)="Login()" type="submit" [disabled]="!fm1.valid || isLoading"
                             class="btn btn-primary block full-width m-b">
                             ورود
                         </button>

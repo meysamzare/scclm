@@ -16,7 +16,7 @@
             <div class="ibox-content">
                 <div class="row" style="padding: 10px;">
                     <mat-form-field>
-                        <mat-label>انتخاب آزمون مورد نظر</mat-label>
+                        <mat-label>انتخاب الگوی آزمون</mat-label>
                         <mat-select [disabled]="isEdit" style="direction: ltr" #u
                             (valueChange)="copySelectedData(u.value)" name="class">
                             <mat-option selected="selected" value="0">-- موردی را انتخاب نمایید --</mat-option>
@@ -31,13 +31,13 @@
                         <div class="col-sm-6 b-r">
 
                             <div class="form-group">
-                                <label>نام آزمون</label>
+                                <label>عنوان آزمون</label>
                                 <input type="text" required #name="ngModel" name="name" [(ngModel)]="exam.name"
-                                    placeholder="نام" class="form-control">
+                                    placeholder="عنوان" class="form-control">
                                 <div *ngIf="(name.touched || name.dirty) &&
                                     name.invalid">
                                     <p *ngIf="name.hasError('required')" class="error">
-                                        وارد کردن نام آزمون الزامی است
+                                        وارد کردن عنوان آزمون الزامی است
                                     </p>
                                 </div>
                             </div>
@@ -229,6 +229,13 @@
                                 <mat-hint>
                                     انتخاب کارنامه اختیاری است
                                 </mat-hint>
+                            </div>
+
+                            <div class="form-group">
+                                <p>آیا میانگین نمره ها نمایش داده شود؟</p>
+                                <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="exam.showAvgOfExam">
+                                    نمایش میانگین نمره
+                                </mat-checkbox>
                             </div>
 
                         </div>

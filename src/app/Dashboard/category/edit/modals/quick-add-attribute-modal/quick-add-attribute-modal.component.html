@@ -1,0 +1,107 @@
+<div dir="rtl" style="min-width: 450px;">
+    <div mat-dialog-title>
+        <p><b>افزودن سریع فیلد {{ attrTypeString }}</b></p>
+
+        <ng-container *ngIf="isLoading">
+            <mat-progress-bar class="margin-top-10" mode="buffer"></mat-progress-bar>
+        </ng-container>
+    </div>
+
+    <div mat-dialog-content>
+
+        <form #fm3="ngForm">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label>عنوان</label>
+                        <input type="text" required #name="ngModel" name="name" [(ngModel)]="attrTitle"
+                            placeholder="عنوان" class="form-control">
+                        <div *ngIf="(name.touched || name.dirty)  && name.invalid">
+                            <p *ngIf="name.hasError('required')" class="error">
+                                وارد کردن عنوان الزامی است
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label>انتخاب واحد</label>
+                        <ng-select #uni="ngModel" name="units" [(ngModel)]="selectedUnitId" required>
+                            <ng-option *ngFor="let unit of units" [value]="unit.id">
+                                {{ unit.title }}
+                            </ng-option>
+                        </ng-select>
+                        <mat-error *ngIf="uni.hasError('required')">
+                            انتخاب واحد الزامی است
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label>آیا وارد کردن این فیلد اجباری است؟</label>
+                        <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="isRequired">
+                            اجباری
+                        </mat-checkbox>
+                    </div>
+                </div>
+            </div>
+
+
+            <ng-container *ngIf="attrType == 6 || attrType == 10">
+                <div class="form-group">
+                    <label>گزینه ها</label>
+
+                    <mat-list role="list">
+                        <mat-list-item role="listitem" *ngFor="let option of attributeOptions">
+                            {{ option.title }}
+                            <button mat-icon-button style="margin-right: 8px;" [color]=" option.isTrue ? 'primary' : ''"
+                                (click)="setIsTrueAttributeOption(option)" [matTooltip]="'گزینه صحیح'">
+                                <mat-icon>{{ option.isTrue ? 'done_all' : 'done'}}</mat-icon>
+                            </button>
+                            <button mat-icon-button style="margin-right: 8px;" (click)="removeAttributeOption(option)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                            <button mat-icon-button style="margin-right: 8px;" (click)="editAttributeOption(option)">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                        </mat-list-item>
+                        <mat-divider></mat-divider>
+                    </mat-list>
+
+                    <button mat-stroked-button style="margin: 8px;" color="primary" (click)="addAttributeOption()">
+                        افزودن گزینه جدید
+                    </button>
+
+                    <p *ngIf="isAttributeOptionRequired()" class="error">
+                        افزودن حداقل یک گزینه الزامی است
+                    </p>
+                </div>
+            </ng-container>
+
+
+            <div class="form-group" *ngIf="attrType == 8">
+                <label>حداکثر حجم فایل (MB)</label>
+                <input type="number" required #maxSize="ngModel" name="maxFileSize" [(ngModel)]="attrMaxFileSize"
+                    placeholder="حداکثر حجم فایل" class="form-control">
+                <div *ngIf="(maxSize.touched || maxSize.dirty)  && maxSize.invalid">
+                    <p *ngIf="maxSize.hasError('required')" class="error">
+                        وارد کردن حداکثر حجم فایل الزامی است
+                    </p>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <div mat-dialog-actions>
+        <button mat-stroked-button color="warn" style="margin-right: 5px;" [mat-dialog-close]="false">لغو</button>
+        <button mat-stroked-button (click)="sts()" [disabled]="fm3.invalid || isAttributeOptionRequired()">
+            افزودن فیلد
+        </button>
+    </div>
+</div>

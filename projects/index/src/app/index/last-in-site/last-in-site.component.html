@@ -1,39 +1,3 @@
-<div *ngIf="lastSpecialPosts.length != 0" class="row">
-    <div class="col-12">
-        <div class="widget widget-product card"
-            style="border-top-style:solid;border-top-width:3px;border-top-color:red;">
-            <header class="card-header">
-                <h3 class="card-title">
-                    <span style="border-bottom-color: #00bfd6;">آخرین مطالب ویژه سایت</span>
-                </h3>
-                <a [routerLink]="['/posts']" [queryParams]="{ 'type' : 0 }" class="view-all">مشاهده همه</a>
-            </header>
-            <owl-carousel [options]="owlOption" [carouselClasses]="['product-carousel', 'owl-theme']">
-
-                <div class="item" *ngFor="let i of lastSpecialPosts; let index = index;"
-                    routerLink="/post/{{i.id}}/{{i.url}}">
-                    <a>
-                        <img style="width: 150px; height: 80px; border-radius: 10px;" [src]="getFileUrl(i.headerPicUrl)"
-                            class="img-fluid" alt="">
-                    </a>
-                    <h2 class="post-title" style="margin-bottom: 55px;">
-                        <a> {{ i.title }} </a>
-                        <br>
-                        <span style="color: gray;font-size: 10px;"> {{ i.shortContent.substring(0, 50) }} </span>
-                    </h2>
-                    <div style="color: gray">
-                        {{ i.viewCount }} <i class="fa fa-eye"></i><span> | </span>
-                        {{ i.commentCount }} <i class="fa fa-comment"></i>
-                    </div>
-                </div>
-            </owl-carousel>
-
-        </div>
-    </div>
-</div>
-
-<advertising [Type]="1"></advertising>
-
 <div *ngIf="lastPost.length != 0" class="row">
     <div class="col-12">
         <div class="widget widget-product card"

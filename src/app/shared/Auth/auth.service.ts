@@ -1,4 +1,4 @@
-import { Injectable, APP_INITIALIZER, Injector } from "@angular/core";
+﻿import { Injectable, APP_INITIALIZER, Injector } from "@angular/core";
 import { HttpClient, HttpHeaders, HttpParams, HttpRequest } from "@angular/common/http";
 import { MessageService } from "../services/message.service";
 import { Router } from "@angular/router";
@@ -89,13 +89,13 @@ export class AuthService {
 
 
 
-    DASHBOARD_VERSION = "1.0.0 Alpha 16";
+    DASHBOARD_VERSION = "1.0.65 Build 200";
 
-    INDEX_VERSION = "3.5.8 Build 1120";
+    INDEX_VERSION = "3.6.75 Build 290";
 
-    PARENTMOBILEAPP_VERSION = "3.3.2 Build 8530";
+    PARENTMOBILEAPP_VERSION = "3.3.83 Build 113";
 
-    TMA_VERSION = "1.9.96 Build 4250";
+    TMA_VERSION = "1.9.99 Build 556";
 
 
     public apiUrl: string;
@@ -133,6 +133,8 @@ export class AuthService {
     public bargozideganTitle?: string;
     public showForsatShoghli?: boolean;
 
+    public showPostsGrid?: boolean;
+
 
     load(http: HttpClient, type: "promise" | "observable" = "promise") {
         var req = http.get('./assets/config/data.json').pipe(
@@ -168,6 +170,8 @@ export class AuthService {
                 this.hedayatTahsiliTitle = data.hedayatTahsiliTitle || "هدایت تحصیلی";
                 this.blogTitle = data.blogTitle || "بلاگ";
                 this.bargozideganTitle = data.bargozideganTitle || "دبیرخانه برگزیدگان";
+
+                this.showPostsGrid = data.showPostsGrid || false;
 
                 this.idb.getObjectStore(this.idb.dbApiStoreName).then((obstore) => {
                     obstore.getAll().onsuccess = (e) => {

@@ -4,6 +4,7 @@ import { AuthService } from "src/app/shared/Auth/auth.service";
 
 const sha1 = require('js-sha1');
 const parseString = require('xml2js').Parser({ explicitArray: false }).parseString;
+const { iconvPercentEncoding } = require('iconv-percent-encoding');
 
 type requestParam = { name: string, value: any };
 
@@ -38,9 +39,15 @@ export class BigBlueButtonRepositoryService {
             let url = `${this.auth.BBBServer}api/${methodCalledName}?${finalQuery}`;
 
             if (methodType == "GET") {
-                let xml = await this.http.get(url, {
-                    responseType: "text"
-                }).toPromise();
+
+                let xml = null;
+                try {
+                    xml = await this.http.get(url, {
+                        responseType: "text",
+                    }).toPromise();
+                } catch (error) {
+
+                }
 
                 if (openGetUrl) {
                     let win = window.open(url, '_blank');
@@ -59,11 +66,11 @@ export class BigBlueButtonRepositoryService {
 
                         resolve(result.response);
 
-                        // if (result.response.returncode == "SUCCESS") {
-                        //     resolve(result.response)
-                        // } else {
-
-                        // }
+                        if (result.response.returncode == "SUCCESS") {
+                            resolve(result.response)
+                        } else {
+                            
+                        }
                     });
                 });
             }
@@ -79,7 +86,6 @@ export class BigBlueButtonRepositoryService {
             }
 
         } catch (error) {
-
         }
     }
 
@@ -144,7 +150,7 @@ export class BigBlueButtonRepositoryService {
                 //send a message to client
             }
 
-            return data.running;
+            return JSON.parse(data.running);
         } catch (error) {
             return false;
         }
@@ -211,6 +217,11 @@ export class BigBlueButtonRepositoryService {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    getStringPrecentEncoding(text: string) {
+        const encodeCharset = "UTF-8";
+        return iconvPercentEncoding(text, encodeCharset);
     }
 }
 

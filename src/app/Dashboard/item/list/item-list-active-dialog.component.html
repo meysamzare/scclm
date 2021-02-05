@@ -9,7 +9,8 @@
         </div>
 
         <div class="form-group" *ngIf="attrs.length == 0 && isAttrLoad == false">
-            <label style="color: green"> تمامی فیلد های این {{ catTypeTitle }} سمت کاربر هستند، آیا جهت فعال سازی اطمینان دارید؟
+            <label style="color: green"> تمامی فیلد های این {{ catTypeTitle }} سمت کاربر هستند، آیا جهت فعال سازی
+                اطمینان دارید؟
             </label>
         </div>
 
@@ -20,9 +21,9 @@
             <div class="form-group" *ngFor="let i of attrs; let ind = index">
                 <label *ngIf="i.attrTypeInt != 4">{{i.title}}</label>
 
-                <input *ngIf="i.attrTypeInt == 1" [tabIndex]="ind + 5" type="text" [value]="getItemAttrVal(i.id)"
-                    placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}" [matTooltip]="i.desc"
-                    (input)="setItemAttr$.next({ val: $event, attrId: i.id })" />
+                <input *ngIf="i.attrTypeInt == 1" [tabIndex]="ind + 5" type="text" class="form-control"
+                    [value]="getItemAttrVal(i.id)" placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
+                    [matTooltip]="i.desc" (input)="setItemAttr$.next({ val: $event, attrId: i.id })" />
 
                 <input *ngIf="i.attrTypeInt == 2" type="tel" inputmode="numeric" pattern="[+-]?([0-9]*[.])?[0-9]+"
                     class="form-control" [tabIndex]="ind + 5" type="number" class="form-control"
@@ -49,7 +50,9 @@
                     <mat-label>{{i.title}}</mat-label>
                     <mat-select style="direction: ltr" [tabIndex]="ind + 5"
                         (valueChange)="setItemAttrforselect($event, i.id)" [value]="getItemAttrVal(i.id)">
-                        <mat-option *ngFor="let v of  i.attributeOptions | shuffleArray:false" [value]="v">{{v}}
+                        <mat-option *ngFor="let v of getShiftedItem(i)" [value]="v.id.toString()"
+                            [style.color]="v.isTrue ? 'green' : 'unset'">
+                            {{v.title}}
                         </mat-option>
                     </mat-select>
                     <mat-hint>{{i.desc}}</mat-hint>
@@ -57,8 +60,9 @@
 
 
                 <mat-radio-group *ngIf="i.attrTypeInt == 10" class="radio-group"
-                    (change)="setItemAttrforselect($event.value, i.id);">
-                    <mat-radio-button class="radio-button" *ngFor="let v of i.attributeOptions " [value]="v.id">
+                    (change)="setItemAttrforselect($event.value, i.id);" [value]="getItemAttrVal(i.id)">
+                    <mat-radio-button class="radio-button" *ngFor="let v of i.attributeOptions "
+                        [value]="v.id.toString()">
                         {{v.title}}</mat-radio-button>
                 </mat-radio-group>
 

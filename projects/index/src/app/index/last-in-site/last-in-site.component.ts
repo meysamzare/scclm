@@ -14,8 +14,6 @@ export class LastInSiteComponent implements OnInit {
 
     lastPost: IPost[] = [];
 
-    lastSpecialPosts: IPost[] = [];
-
     owlOption = {
         rtl: true,
         margin: 10,
@@ -55,16 +53,6 @@ export class LastInSiteComponent implements OnInit {
         this.auth.post("/api/Post/getLastPostIndex").subscribe((data: jsondata) => {
             if (data.success) {
                 this.lastPost = data.data;
-            } else {
-                this.message.showMessageforFalseResult(data);
-            }
-        }, er => {
-            this.auth.handlerError(er);
-        });
-
-        this.auth.post("/api/Post/getLastSpecialPostIndex").subscribe((data: jsondata) => {
-            if (data.success) {
-                this.lastSpecialPosts = data.data;
             } else {
                 this.message.showMessageforFalseResult(data);
             }

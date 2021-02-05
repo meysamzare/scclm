@@ -54,16 +54,13 @@
 
         <app-amazing-slider></app-amazing-slider>
 
-        <div class="row">
-            <div class="col-lg-12">
-                <app-last-in-site></app-last-in-site>
-            </div>
-        </div>
+        <app-last-posts-grid *ngIf="auth.showPostsGrid"></app-last-posts-grid>
+
+        <app-last-special-posts></app-last-special-posts>
 
         <advertising [Type]="2"></advertising>
 
-        <app-last-in-fadak></app-last-in-fadak>
-
+        <app-last-in-site></app-last-in-site>
 
     </div>
 </div>
