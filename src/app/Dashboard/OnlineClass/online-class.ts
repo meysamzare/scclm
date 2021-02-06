@@ -11,6 +11,8 @@ export class IOnlineClass {
     gradeId: number = null;
     classId: number = null;
     courseId: number = null;
+    
+    onlineClassServerId: number = null;
 
     // auto Set
     attendeePW = "";

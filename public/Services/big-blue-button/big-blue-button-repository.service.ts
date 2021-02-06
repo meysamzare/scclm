@@ -1,6 +1,9 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from "src/app/shared/Auth/auth.service";
+import { EncryptService } from "src/app/shared/services/encrypt.service";
+import { IOnlineClass } from "src/app/Dashboard/OnlineClass/online-class";
+import { IOnlineClassServer } from "src/app/Dashboard/OnlineClassServer/online-class-server";
 
 const sha1 = require('js-sha1');
 const parseString = require('xml2js').Parser({ explicitArray: false }).parseString;
@@ -14,29 +17,37 @@ type requestParam = { name: string, value: any };
 export class BigBlueButtonRepositoryService {
     constructor(
         private http: HttpClient,
-        private auth: AuthService
+        private auth: AuthService,
+        private encryptServ: EncryptService
     ) { }
 
 
     private async _sendRequestToServer(
         methodCalledName: string,
         methodType: "POST" | "GET",
+        onlineClassServerId: number,
         openGetUrl = false,
         customParserString?,
         ...params: requestParam[]
     ) {
         try {
+
+            const server = await this._getOnlineClassServer(onlineClassServerId);
+
+            const serverUrl = server.url;
+            const serverPVKey = this.encryptServ.decrypt(server.privateKey);
+
             let query = "";
 
             params.forEach((param, index) => {
                 query += `${param.name}=${param.value}${index != params.length - 1 ? '&' : ''}`;
             });
 
-            let hashedString = `${methodCalledName}${query}${this.auth.BBBSS}`;
+            let hashedString = `${methodCalledName}${query}${serverPVKey}`;
             let checksum = sha1(hashedString);
 
             let finalQuery = `${query}&checksum=${checksum}`;
-            let url = `${this.auth.BBBServer}api/${methodCalledName}?${finalQuery}`;
+            let url = `${serverUrl}api/${methodCalledName}?${finalQuery}`;
 
             if (methodType == "GET") {
 
@@ -69,7 +80,7 @@ export class BigBlueButtonRepositoryService {
                         if (result.response.returncode == "SUCCESS") {
                             resolve(result.response)
                         } else {
-                            
+
                         }
                     });
                 });
@@ -85,8 +96,7 @@ export class BigBlueButtonRepositoryService {
                 return null;
             }
 
-        } catch (error) {
-        }
+        } catch (error) { }
     }
 
     private _getObjectAsParamArray(obj: any): requestParam[] {
@@ -111,9 +121,13 @@ export class BigBlueButtonRepositoryService {
 
     async create(param: CreateParam): Promise<CreateReturn> {
         try {
+            const meetingId = param.meetingID;
+            const onlineClass = await this._getOnlineClass(meetingId);
+            const onlineClassServerId = onlineClass.onlineClassServerId;
+
             const params = this._getObjectAsParamArray(param);
 
-            let data = await this._sendRequestToServer("create", "GET", false, null, ...params);
+            let data = await this._sendRequestToServer("create", "GET", onlineClassServerId, false, null, ...params);
 
             if (data.returncode == "FAILED") {
                 //send a message to client
@@ -127,9 +141,14 @@ export class BigBlueButtonRepositoryService {
 
     async join(param: JoinParam, openUrl = false): Promise<JoinReturn> {
         try {
+
+            const meetingId = param.meetingID;
+            const onlineClass = await this._getOnlineClass(meetingId);
+            const onlineClassServerId = onlineClass.onlineClassServerId;
+
             const params = this._getObjectAsParamArray(param);
 
-            let data = await this._sendRequestToServer("join", "GET", openUrl, null, ...params);
+            let data = await this._sendRequestToServer("join", "GET", onlineClassServerId, openUrl, null, ...params);
 
             if (data.returncode == "FAILED") {
                 //send a message to client
@@ -143,7 +162,10 @@ export class BigBlueButtonRepositoryService {
 
     async isMeetingRunning(meetingID: string): Promise<boolean> {
         try {
-            let data = await this._sendRequestToServer("isMeetingRunning", "GET", false, null, { name: "meetingID", value: meetingID });
+            const onlineClass = await this._getOnlineClass(meetingID);
+            const onlineClassServerId = onlineClass.onlineClassServerId;
+
+            let data = await this._sendRequestToServer("isMeetingRunning", "GET", onlineClassServerId, false, null, { name: "meetingID", value: meetingID });
 
 
             if (data.returncode == "FAILED") {
@@ -158,7 +180,10 @@ export class BigBlueButtonRepositoryService {
 
     async end(meetingID: string, password: string) {
         try {
-            let data = await this._sendRequestToServer("end", "GET", false, null,
+            const onlineClass = await this._getOnlineClass(meetingID);
+            const onlineClassServerId = onlineClass.onlineClassServerId;
+
+            let data = await this._sendRequestToServer("end", "GET", onlineClassServerId, false, null,
                 { name: "meetingID", value: meetingID },
                 { name: "password", value: password });
 
@@ -173,8 +198,11 @@ export class BigBlueButtonRepositoryService {
 
     async getMeetingInfo(meetingID: string): Promise<MeetingInfoReturn> {
         try {
+            const onlineClass = await this._getOnlineClass(meetingID);
+            const onlineClassServerId = onlineClass.onlineClassServerId;
+
             const ps = require('xml2js').Parser({ explicitArray: true }).parseString;
-            let data = await this._sendRequestToServer("getMeetingInfo", "GET", false, ps, { name: "meetingID", value: meetingID });
+            let data = await this._sendRequestToServer("getMeetingInfo", "GET", onlineClassServerId, false, ps, { name: "meetingID", value: meetingID });
 
 
             if (data.returncode == "FAILED") {
@@ -197,12 +225,12 @@ export class BigBlueButtonRepositoryService {
         }
     }
 
-    async getMeetings(): Promise<getMeetingsParam> {
+    async getMeetings(onlineClassServerId: number): Promise<getMeetingsParam> {
 
         try {
 
             const ps = require('xml2js').Parser({ explicitArray: true }).parseString;
-            let data = await this._sendRequestToServer("getMeetings", "GET", false, ps, ...[]);
+            let data = await this._sendRequestToServer("getMeetings", "GET", onlineClassServerId, false, ps, ...[]);
 
             if (data.returncode == "FAILED") {
                 //send a message to client
@@ -223,6 +251,28 @@ export class BigBlueButtonRepositoryService {
         const encodeCharset = "UTF-8";
         return iconvPercentEncoding(text, encodeCharset);
     }
+
+    private async _getOnlineClass(meetingId: string) {
+        const result = await this.auth.post("/api/OnlineClass/getOnlineClassByMeetingId", meetingId).toPromise();
+
+        if (result && result.success) {
+            return result.data as IOnlineClass;
+        }
+
+        return null;
+    }
+
+    private async _getOnlineClassServer(id: number) {
+        const result = await this.auth.post("/api/OnlineClassServer/getOnlineClassServer", id).toPromise();
+
+        if (result && result.success) {
+            return result.data as IOnlineClassServer;
+        }
+
+        return null;
+    }
+
+
 }
 
 export class CreateParam {

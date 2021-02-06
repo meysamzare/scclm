@@ -133,11 +133,12 @@
 					</li>
 				</ul>
 			</li>
-			<li *ngIf="auth.isUserAccessGroup(['view_OnlineClass'])" routerLinkActive="">
+			<li *ngIf="auth.isUserAccessGroup(['view_OnlineClass', 'view_OnlineClassServer'])" routerLinkActive="">
 				<a><i class="fa fa-comments-o"></i> <span class="nav-label">کلاس های مجازی</span>
 					<span class="fa arrow"></span></a>
 				<ul class="nav nav-second-level collapse">
-                    <li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_OnlineClass', false)" routerLink="/dashboard/online-class"> لیست کلاس های مجازی </a></li>
+                    <li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_OnlineClassServer', false)" routerLink="/dashboard/online-class-server"> لیست سرور ها </a></li>
+                    <li routerLinkActive="active"><a *ngIf="auth.isUserAccess('view_OnlineClass', false)" routerLink="/dashboard/online-class"> لیست کلاس ها </a></li>
 				</ul>
 			</li>
 			<li *ngIf="false" routerLinkActive="">

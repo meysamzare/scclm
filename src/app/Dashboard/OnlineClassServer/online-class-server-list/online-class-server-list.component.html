@@ -1,0 +1,105 @@
+<span class="fa fa-refresh fa-spin spinner" *ngIf="isLoading"></span>
+<div class="row animated fadeInRight">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>لیست {{ PAGE_TITLES }}</h5>
+                <div class="ibox-tools">
+                    <a (click)="refreshDataSource()" matTooltip="بارگذاری مجدد">
+                        <i class="fa fa-refresh"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+
+                <div style="text-align: center;" *ngIf="!haveAnyData() && !isLoading">
+                    <b>موردی یافت نشد</b>
+                </div>
+
+                <div>
+                    <div dir="rtl">
+                        <button class="btn btn-primary font-11" type="button"
+                            [routerLink]="['/dashboard/'+ PAGE_URL +'/edit/0']"
+                            [matTooltip]="'افزودن '+ PAGE_TITLE +' جدید'"><i class="fa fa-plus"></i>&nbsp;افزودن
+                            {{ PAGE_TITLE }}</button>
+
+                        <button class="btn btn-danger font-11 mg-r" type="button"
+                            [matTooltip]="'حذف '+ PAGE_TITLES +' انتخاب شده'" [disabled]="selection.selected.length < 1"
+                            [swal]="deleteSwal"><i class="fa fa-trash"></i>&nbsp;حذف {{ PAGE_TITLES }}</button>
+
+                        <swal #deleteSwal [confirmButtonText]="'بله'" [cancelButtonText]="'خیر'"
+                            title="آیا اطمینان دارید؟" text="حذف کردن این موارد قابل بازگشت نمی باشد" type="question"
+                            [showCancelButton]="true" [focusCancel]="true" (confirm)="deleteSelected()">
+                        </swal>
+                        <input type="text" id="text1" (input)="applyFilter($event.target.value)" [(ngModel)]="txtSearch"
+                            placeholder="جستجو" class="form-control">
+                    </div>
+                    <br>
+                    <div class="example-container mat-elevation-z8">
+                        <div class="example-loading-shade" *ngIf="isLoadingResults">
+                            <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+                        </div>
+                        <div class="mat-elevation-z8">
+                            <table mat-table [dataSource]="dataSource" matSort>
+                                <ng-container matColumnDef="select">
+                                    <th mat-header-cell *matHeaderCellDef>
+                                        <mat-checkbox [disabled]="!haveAnyData() || getRowCanSelected() == 0"
+                                            matTooltipPosition="before"
+                                            matTooltip="تعداد {{ selection.selected.length }} مورد انتخاب شده است"
+                                            (change)="$event ?  masterToggle() : null"
+                                            [checked]="selection.hasValue() && isAllSelected()"
+                                            [indeterminate]="selection.hasValue() && !isAllSelected()">
+                                        </mat-checkbox>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <mat-checkbox [disabled]="row.haveAnyClass" matTooltipPosition="before"
+                                            matTooltip="{{ row.haveAnyClass ? 'این سرور دارای کلاس است، نمیتوان آن را حذف کرد' : 'انتخاب برای حذف' }}"
+                                            (click)="$event.stopPropagation()"
+                                            (change)="$event ? selection.toggle(row) : null"
+                                            [checked]="selection.isSelected(row)">
+                                        </mat-checkbox>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="id">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> ردیف </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.id}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="name">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> نام {{ PAGE_TITLE }} </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="classCount">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> تعداد کلاس ها </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.classCount}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="action">
+                                    <th mat-header-cell *matHeaderCellDef> عملیات </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <button matTooltip="ویرایش {{row.name}}" matTooltipPosition="before"
+                                            mat-icon-button (click)="onEdit(row.id)">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                    </td>
+                                </ng-container>
+
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+                                </tr>
+                            </table>
+
+                            <div dir="ltr">
+                                <mat-paginator [length]="itemLength" [pageSizeOptions]="[5, 10, 15, 20, 25]"
+                                    (page)="resetSelection($event)" showFirstLastButtons></mat-paginator>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

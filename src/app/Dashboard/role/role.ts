@@ -316,6 +316,11 @@ export class RoleClass {
     remove_OnlineClass = false;
     view_OnlineClass = false;
 
+    add_OnlineClassServer = false;
+    edit_OnlineClassServer = false;
+    remove_OnlineClassServer = false;
+    view_OnlineClassServer = false;
+
     add_DescriptiveScore = false;
     edit_DescriptiveScore = false;
     remove_DescriptiveScore = false;

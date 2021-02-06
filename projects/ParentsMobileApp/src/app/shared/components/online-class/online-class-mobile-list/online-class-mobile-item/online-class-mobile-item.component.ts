@@ -84,7 +84,7 @@ export class OnlineClassMobileItemComponent implements OnInit, OnDestroy {
                 meetingID: this.onlineClass.meetingId,
                 password: this.isAdmin ? this.onlineClass.moderatorPW : this.onlineClass.attendeePW,
                 joinViaHtml5: true,
-                userID: `${this.isAdmin ? 'AD' : ''}${this.userId}`
+                userID: `${this.isAdmin ? 'AdTMA_' : 'StPMA_'}${this.userId}`
             }, true);
         }
     }

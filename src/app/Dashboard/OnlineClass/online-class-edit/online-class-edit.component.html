@@ -80,6 +80,18 @@
                                 </mat-hint>
                             </div>
 
+                            <div class="form-group">
+                                <label>انتخاب سرور</label>
+                                <ng-select #serverselect="ngModel" name="server"
+                                    [(ngModel)]="PAGE_Data.onlineClassServerId" required>
+                                    <ng-option *ngFor="let i of onlineClassServers" [value]="i.id">{{i.name}}
+                                    </ng-option>
+                                </ng-select>
+                                <mat-error *ngIf="serverselect.hasError('required')">
+                                    انتخاب سرور الزامی است
+                                </mat-error>
+                            </div>
+
 
                             <div class="form-group">
                                 <label>حداکثر تعداد شرکت کننده {{ PAGE_TITLE }}</label>

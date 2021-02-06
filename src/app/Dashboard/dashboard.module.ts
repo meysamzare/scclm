@@ -214,6 +214,8 @@ import { MatFabMenuModule } from '@angular-material-extensions/fab-menu';
 import { QuestionDataListComponent } from "./Question/question/list/question-list.component";
 import { QuestionListComponent } from "./Question/question-list/question-list.component";
 import { QuickAddAttributeModalComponent } from '../Dashboard/category/edit/modals/quick-add-attribute-modal/quick-add-attribute-modal.component';
+import { OnlineClassServerEditComponent } from '../Dashboard/OnlineClassServer/online-class-server-edit/online-class-server-edit.component';
+import { OnlineClassServerListComponent } from '../Dashboard/OnlineClassServer/online-class-server-list/online-class-server-list.component';
 
 @NgModule({
     imports: [
@@ -398,7 +400,9 @@ import { QuickAddAttributeModalComponent } from '../Dashboard/category/edit/moda
         CategoryComfirmAbsenceModalComponent,
         RegisterItemLoginsModalComponent,
         QuestionGridListComponent,
-        QuickAddAttributeModalComponent
+        QuickAddAttributeModalComponent,
+        OnlineClassServerEditComponent,
+        OnlineClassServerListComponent
     ],
     providers: [
         AuthGuardService,

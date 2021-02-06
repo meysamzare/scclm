@@ -167,6 +167,9 @@ import { DescriptiveScoreResolverService } from "./Exam/descriptive-score/descri
 import { DescriptiveScoreEditComponent } from "./Exam/descriptive-score/descriptive-score-edit/descriptive-score-edit.component";
 import { DescriptiveScoreListComponent } from "./Exam/descriptive-score/descriptive-score-list/descriptive-score-list.component";
 import { QuestionListComponent } from "./Question/question-list/question-list.component";
+import { OnlineClassServerListComponent } from "./OnlineClassServer/online-class-server-list/online-class-server-list.component";
+import { OnlineClassServerEditComponent } from "./OnlineClassServer/online-class-server-edit/online-class-server-edit.component";
+import { OnlineClassServerResolverService } from "./OnlineClassServer/online-class-server-resolver.service";
 
 @NgModule({
     imports: [
@@ -1682,6 +1685,32 @@ import { QuestionListComponent } from "./Question/question-list/question-list.co
                                 },
                                 resolve: {
                                     onlineClass: OnlineClassResolverService
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        path: "online-class-server",
+                        children: [
+                            {
+                                path: "",
+                                pathMatch: "full",
+                                component: OnlineClassServerListComponent,
+                                data: {
+                                    role: ["view_OnlineClassServer"]
+                                }
+                            },
+                            {
+                                path: "edit/:id",
+                                component: OnlineClassServerEditComponent,
+                                data: {
+                                    role: [
+                                        "add_OnlineClassServer",
+                                        "edit_OnlineClassServer"
+                                    ]
+                                },
+                                resolve: {
+                                    onlineClass: OnlineClassServerResolverService
                                 }
                             }
                         ]
