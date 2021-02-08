@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import { StudentAuthService } from './service/parent-student-auth.service';
 import { LoaderService } from 'public/Services/http-interceptor/loader.service';
+import { AccessManagementService } from './service/access-management.service';
 
 @Component({
     selector: 'app-root',
@@ -24,9 +25,7 @@ export class AppComponent implements AfterViewInit {
         public sanitizer: DomSanitizer,
         public overlayContainer: OverlayContainer,
         private themeServ: ThemeService,
-        private mainSW: MainServiceWorkerService,
-        private router: Router,
-        private stdAuth: StudentAuthService
+        private accessMng: AccessManagementService
     ) {
 
         this.themeServ.colorChange$.subscribe(theme => {
@@ -34,6 +33,10 @@ export class AppComponent implements AfterViewInit {
         });
 
         this.themeServ.setCurrentTheme();
+
+        this.accessMng.checkForAccess();
+
+        this.accessMng.startMonitor();
     }
 
     ngAfterViewInit(): void {

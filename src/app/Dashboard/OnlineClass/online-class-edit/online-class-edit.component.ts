@@ -8,6 +8,9 @@ import { IGrade } from '../../grade/grade';
 import { IClass } from '../../class/class';
 import { ICourse } from '../../course/course';
 import { IOnlineClassServer } from '../../OnlineClassServer/online-class-server';
+import { ITeacher } from '../../teacher/teacher';
+import { MatDialog } from '@angular/material';
+import { SelectStudentForOnlineClassAccessModalComponent } from './modals/select-student-for-online-class-access-modal/select-student-for-online-class-access-modal.component';
 
 @Component({
     selector: 'app-online-class-edit',
@@ -35,15 +38,30 @@ export class OnlineClassEditComponent implements OnInit {
     courses: ICourse[] = [];
     onlineClassServers: IOnlineClassServer[] = [];
 
+
+    Teachers: ITeacher[] = [];
+    selectedTeacherId = null;
+
+    Students: any[] = [];
+    
     constructor(
         private route: Router,
         private activeRoute: ActivatedRoute,
         private message: MessageService,
-        public auth: AuthService
+        public auth: AuthService,
+        private dialog: MatDialog
     ) {
         activeRoute.params.subscribe(params => {
             this.activeRoute.data.subscribe(data => {
                 this.PAGE_Data = data.onlineClass;
+
+                if (!this.PAGE_Data.allowedAdminIds) {
+                    this.PAGE_Data.allowedAdminIds = [];
+                }
+
+                if (!this.PAGE_Data.allowedStudentIds) {
+                    this.PAGE_Data.allowedStudentIds = [];
+                }
 
                 this.oldData = JSON.stringify(data.onlineClass);
             });
@@ -97,6 +115,23 @@ export class OnlineClassEditComponent implements OnInit {
                 this.auth.handlerError(er);
             });
 
+
+            this.auth.post("/api/Teacher/getAll").subscribe(data => {
+                if (data.success) {
+                    this.Teachers = data.data;
+                } else {
+                    this.message.showMessageforFalseResult(data);
+                }
+            });
+
+            this.auth.post("/api/Student/getAll").subscribe(data => {
+                if (data.success) {
+                    this.Students = data.data;
+                } else {
+                    this.message.showMessageforFalseResult(data);
+                }
+            });
+
             this.auth.post("/api/OnlineClassServer/getAll").subscribe(data => {
                 if (data.success) {
                     this.onlineClassServers = data.data;
@@ -146,7 +181,7 @@ export class OnlineClassEditComponent implements OnInit {
         return [];
     }
 
-    
+
     randomString(filelength = 10): string {
         let result = "";
         let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -186,7 +221,7 @@ export class OnlineClassEditComponent implements OnInit {
                     }
                 );
             } else {
-                
+
                 this.PAGE_Data.meetingId = `syco_${this.randomString(20)}`;
                 this.PAGE_Data.attendeePW = this.randomString();
                 this.PAGE_Data.moderatorPW = this.randomString();
@@ -224,4 +259,67 @@ export class OnlineClassEditComponent implements OnInit {
     ngOnInit() {
     }
 
+    addTeacherToOnlineClassAccess() {
+        if (this.selectedTeacherId) {
+            const exist = this.PAGE_Data.allowedAdminIds.find(c => c == this.selectedTeacherId);
+
+            if (!exist) {
+                this.PAGE_Data.allowedAdminIds.push(this.selectedTeacherId);
+                this.selectedTeacherId = null;
+            } else {
+                this.selectedTeacherId = null;
+            }
+        }
+    }
+
+    getTeacherName(teacherId) {
+        let teacher = this.Teachers.find(c => c.id == teacherId);
+
+        if (teacher) {
+            return teacher.name;
+        }
+
+        return "";
+    }
+
+    removeTeacher(teacherId) {
+        let exist = this.PAGE_Data.allowedAdminIds.find(c => c == teacherId);
+
+        if (exist) {
+            this.PAGE_Data.allowedAdminIds.splice(this.PAGE_Data.allowedAdminIds.indexOf(exist), 1);
+        }
+    }
+
+    openSelectStudentDialog() {
+        this.dialog.open(SelectStudentForOnlineClassAccessModalComponent).afterClosed().subscribe(result => {
+            if (result) {
+                const selectedStudentIds: number[] = result;
+                const allowedStudentIds = this.PAGE_Data.allowedStudentIds;
+                selectedStudentIds.forEach(stdId => {
+                    if (!allowedStudentIds.some(c => c == stdId)) {
+                        this.PAGE_Data.allowedStudentIds.push(stdId);
+                    }
+                });
+            }
+        });
+    }
+
+    removeStudent(studentId) {
+        let exist = this.PAGE_Data.allowedStudentIds.find(c => c == studentId);
+
+        if (exist) {
+            this.PAGE_Data.allowedStudentIds.splice(this.PAGE_Data.allowedStudentIds.indexOf(exist), 1);
+        }
+    }
+
+    
+    getStudentName(studentId) {
+        let student = this.Students.find(c => c.id == studentId);
+
+        if (student) {
+            return student.name;
+        }
+
+        return "";
+    }
 }

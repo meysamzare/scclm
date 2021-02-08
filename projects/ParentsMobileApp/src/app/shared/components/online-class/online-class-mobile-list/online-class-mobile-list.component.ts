@@ -43,7 +43,9 @@ export class OnlineClassMobileListComponent implements OnInit {
         this.auth.post("/api/OnlineClass/getAllByGrade_Class_Course", {
             gradeId: this.gradeId,
             classId: this.classId,
-            courseId: this.courseId
+            courseId: this.courseId,
+            isAdmin: this.isAdmin,
+            userId: this.userId,
         }).pipe(finalize(() => this.isLoading = false)).subscribe(data => {
             if (data.success) {
                 this.onlineClasses = data.data;

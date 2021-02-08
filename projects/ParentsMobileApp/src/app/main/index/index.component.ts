@@ -42,31 +42,6 @@ export class IndexComponent implements OnInit {
 
         this.refreshUpComingExams();
 
-        const typeAccessResult = await this.stdAuth.auth.post("/api/Student/IsUserAccessByType", {
-            stdId: studentId,
-            type: 2
-        }).toPromise();
-
-        if (typeAccessResult.success) {
-            if (!typeAccessResult.data) {
-                this.stdAuth.logout(true);
-                this.message.showWarningAlert("دسترسی شما مسدود شده است!");
-                return;
-            }
-        }
-
-        const financeAccessResult = await this.stdAuth.auth.post("/api/Student/IsUserAccessByFinance", studentId).toPromise();
-
-        if (financeAccessResult.success) {
-            const data: { haveAccess: boolean, message: string } = financeAccessResult.data;
-
-            if (!data.haveAccess) {
-                this.stdAuth.logout(true);
-                this.message.showWarningAlert(data.message);
-                return;
-            }
-        }
-
         this.stdAuth.auth.post("/api/StudentScore/getSumOfStudentScore", studentId).subscribe(data => {
             if (data.success) {
                 this.sumOfStudentScore = data.data || 0;

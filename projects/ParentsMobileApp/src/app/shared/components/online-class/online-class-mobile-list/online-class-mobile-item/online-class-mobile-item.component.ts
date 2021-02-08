@@ -33,7 +33,7 @@ export class OnlineClassMobileItemComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.refreshInterval = interval(10000).subscribe(async () => {
+        this.refreshInterval = interval(20 * 1000).subscribe(async () => {
             if (!this.isAdmin) {
                 await this.refreshIsRunning();
             }

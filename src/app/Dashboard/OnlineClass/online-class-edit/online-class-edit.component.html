@@ -7,30 +7,131 @@
             <div class="ibox-content">
                 <div class="row">
                     <form #fm1="ngForm" id="fm11">
+
+                        <div class="row">
+                            <div class="col-lg-12" style="text-align: center;">
+                                <p>نوع احراز هویت و ورود دبیران و دانش آموزان</p>
+                                <mat-button-toggle-group name="fontStyle" [(ngModel)]="PAGE_Data.authorizeType">
+                                    <mat-button-toggle [value]="0">براساس کلاس و شعبه</mat-button-toggle>
+                                    <mat-button-toggle [value]="1">انتخابی</mat-button-toggle>
+                                </mat-button-toggle-group>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row" *ngIf="PAGE_Data.authorizeType == 0">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label>انتخاب پایه تحصیلی</label>
+                                    <ng-select #gradeselect="ngModel" name="grade" [(ngModel)]="PAGE_Data.gradeId"
+                                        required>
+                                        <ng-option *ngFor="let i of grades" [value]="i.id">{{i.name}}
+                                        </ng-option>
+                                    </ng-select>
+                                    <mat-error *ngIf="gradeselect.hasError('required')">
+                                        انتخاب پایه تحصیلی الزامی است
+                                    </mat-error>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label>انتخاب کلاس</label>
+                                    <ng-select [disabled]="!PAGE_Data.gradeId" #classelect="ngModel" name="class"
+                                        [(ngModel)]="PAGE_Data.classId">
+                                        <ng-option *ngFor="let i of getClassByGrade()" [value]="i.id">{{i.name}}
+                                        </ng-option>
+                                    </ng-select>
+                                    <mat-hint>
+                                        انتخاب کلاس اختیاری است
+                                    </mat-hint>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label>انتخاب درس</label>
+                                    <ng-select #courseSelect="ngModel" name="course" [(ngModel)]="PAGE_Data.courseId"
+                                        required>
+                                        <ng-option *ngFor="let i of getCourseByGrade()" [value]="i.id">{{i.name}}
+                                        </ng-option>
+                                    </ng-select>
+                                    <mat-error *ngIf="courseSelect.hasError('required')">
+                                        انتخاب درس الزامی است
+                                    </mat-error>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row" *ngIf="PAGE_Data.authorizeType == 1">
+                            <div class="col-lg-6">
+
+                                <div class="row">
+                                    <div class="col-lg-9">
+                                        <div class="form-group">
+                                            <label>انتخاب دسترسی دبیران</label>
+                                            <ng-select name="teacherSelect" [(ngModel)]="selectedTeacherId">
+                                                <ng-option *ngFor="let u of Teachers" [value]="u.id">
+                                                    {{u.name}}
+                                                </ng-option>
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <button [disabled]="!selectedTeacherId" mat-stroked-button
+                                            style="width: 100%; margin-top: 35px;"
+                                            (click)="addTeacherToOnlineClassAccess()">
+                                            افزودن
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="row margin-top-10">
+                                    <div class="col-lg-12">
+                                        <mat-chip-list>
+                                            <mat-chip *ngFor="let i of PAGE_Data.allowedAdminIds">
+                                                {{ getTeacherName(i) }}
+                                                <mat-icon matChipRemove (click)="removeTeacher(i)"
+                                                    style="margin-right: 5px; margin-left: 0;">
+                                                    cancel
+                                                </mat-icon>
+                                            </mat-chip>
+                                        </mat-chip-list>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-lg-6 b-r-r">
+                                <div>
+                                    <label>انتخاب دسترسی دانش آموزان</label>
+                                    <button mat-stroked-button style="width: 100%;" (click)="openSelectStudentDialog()">
+                                        افزودن دسترسی دانش آموز
+                                    </button>
+                                </div>
+
+                                <div class="row margin-top-10">
+                                    <div class="col-lg-12">
+                                        <mat-chip-list>
+                                            <mat-chip *ngFor="let i of PAGE_Data.allowedStudentIds">
+                                                {{ getStudentName(i) }}
+                                                <mat-icon matChipRemove (click)="removeStudent(i)"
+                                                    style="margin-right: 5px; margin-left: 0;">
+                                                    cancel
+                                                </mat-icon>
+                                            </mat-chip>
+                                        </mat-chip-list>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <hr>
+
                         <div class="col-lg-6">
 
-                            <div class="form-group">
-                                <label>انتخاب پایه تحصیلی</label>
-                                <ng-select #gradeselect="ngModel" name="grade" [(ngModel)]="PAGE_Data.gradeId" required>
-                                    <ng-option *ngFor="let i of grades" [value]="i.id">{{i.name}}
-                                    </ng-option>
-                                </ng-select>
-                                <mat-error *ngIf="gradeselect.hasError('required')">
-                                    انتخاب پایه تحصیلی الزامی است
-                                </mat-error>
-                            </div>
-
-                            <div class="form-group">
-                                <label>انتخاب درس</label>
-                                <ng-select #courseSelect="ngModel" name="course" [(ngModel)]="PAGE_Data.courseId"
-                                    required>
-                                    <ng-option *ngFor="let i of getCourseByGrade()" [value]="i.id">{{i.name}}
-                                    </ng-option>
-                                </ng-select>
-                                <mat-error *ngIf="courseSelect.hasError('required')">
-                                    انتخاب درس الزامی است
-                                </mat-error>
-                            </div>
 
                             <div class="form-group">
                                 <label>نام {{ PAGE_TITLE }}</label>
@@ -69,18 +170,6 @@
 
 
                             <div class="form-group">
-                                <label>انتخاب کلاس</label>
-                                <ng-select [disabled]="!PAGE_Data.gradeId" #classelect="ngModel" name="class"
-                                    [(ngModel)]="PAGE_Data.classId">
-                                    <ng-option *ngFor="let i of getClassByGrade()" [value]="i.id">{{i.name}}
-                                    </ng-option>
-                                </ng-select>
-                                <mat-hint>
-                                    انتخاب کلاس اختیاری است
-                                </mat-hint>
-                            </div>
-
-                            <div class="form-group">
                                 <label>انتخاب سرور</label>
                                 <ng-select #serverselect="ngModel" name="server"
                                     [(ngModel)]="PAGE_Data.onlineClassServerId" required>
@@ -117,7 +206,7 @@
                             <div class="form-group">
                                 <label>پیام خوش آمدگویی</label>
                                 <textarea type="text" #desc="ngModel" name="desc" [(ngModel)]="PAGE_Data.welcome"
-                                    placeholder="پیام خوش آمدگویی" class="form-control" rows="10"></textarea>
+                                    placeholder="پیام خوش آمدگویی" class="form-control" rows="8"></textarea>
                             </div>
 
                         </div>

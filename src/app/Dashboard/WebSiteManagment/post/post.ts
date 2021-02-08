@@ -119,7 +119,7 @@ export function getPostTypeString(type, fadakTitle = "", hedayatTahsilTitle = ""
         return "رویه پیگیری مکاتبات";
     }
     if (type == 13) {
-        return "قسمت های مختلف سامانه";
+        return "انجمن نیکوکاری";
     }
     if (type == 14) {
         return "پاسخ به پرسش های متداول";

@@ -216,6 +216,7 @@ import { QuestionListComponent } from "./Question/question-list/question-list.co
 import { QuickAddAttributeModalComponent } from '../Dashboard/category/edit/modals/quick-add-attribute-modal/quick-add-attribute-modal.component';
 import { OnlineClassServerEditComponent } from '../Dashboard/OnlineClassServer/online-class-server-edit/online-class-server-edit.component';
 import { OnlineClassServerListComponent } from '../Dashboard/OnlineClassServer/online-class-server-list/online-class-server-list.component';
+import { SelectStudentForOnlineClassAccessModalComponent } from '../Dashboard/OnlineClass/online-class-edit/modals/select-student-for-online-class-access-modal/select-student-for-online-class-access-modal.component';
 
 @NgModule({
     imports: [
@@ -402,7 +403,8 @@ import { OnlineClassServerListComponent } from '../Dashboard/OnlineClassServer/o
         QuestionGridListComponent,
         QuickAddAttributeModalComponent,
         OnlineClassServerEditComponent,
-        OnlineClassServerListComponent
+        OnlineClassServerListComponent,
+        SelectStudentForOnlineClassAccessModalComponent
     ],
     providers: [
         AuthGuardService,
