@@ -20,6 +20,7 @@
                 <div class="row">
                     <form #fm1="ngForm" id="fm11">
                         <div class="col-sm-6 b-r">
+
                             <div class="form-group">
                                 <label>عنوان</label>
                                 <input type="text" required #name="ngModel" name="name" [(ngModel)]="attr.title"
@@ -31,15 +32,24 @@
                                 </div>
                             </div>
 
+                            <div class="form-group" *ngIf="TYPE != 2">
+                                <label>{{ pageTitle }}</label>
+                                <ng-select #cat="ngModel" name="category" [(ngModel)]="attr.categoryId" required>
+                                    <ng-option *ngFor="let u of Categories" [value]="u.id">{{u.title}}</ng-option>
+                                </ng-select>
+                                <p *ngIf="cat.hasError('required')" class="error">
+                                    انتخاب {{ pageTitle }} الزامی است
+                                </p>
+                            </div>
 
                             <div class="form-group">
-                                <label>انتخاب واحد</label>
+                                <label>انتخاب دسته بندی</label>
                                 <ng-select #units="ngModel" name="units" [(ngModel)]="attr.unitId" required>
                                     <ng-option *ngFor="let u of tys" [value]="u.id">{{u.title}}
                                     </ng-option>
                                 </ng-select>
                                 <mat-error *ngIf="units.hasError('required')">
-                                    انتخاب واحد الزامی است
+                                    انتخاب دسته بندی الزامی است
                                 </mat-error>
                             </div>
 
@@ -143,6 +153,8 @@
                                 </div>
                             </div>
 
+                            <hr>
+
                             <div class="form-group">
                                 <label>آیا این فیلد توسط کاربر پر میشود؟</label>
                                 <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="attr.isInClient">توسط
@@ -160,34 +172,49 @@
 
                             <div class="form-group">
                                 <label>آیا این فیلد کد ملی است؟</label>
-                                <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="attr.isMeliCode">
+                                <mat-checkbox [ngModelOptions]="{standalone: true}"
+                                    (change)="$event.checked ? attr.isPhoneNumber = null : null"
+                                    [(ngModel)]="attr.isMeliCode">
                                     کد ملی
                                 </mat-checkbox>
                             </div>
 
-                        </div>
-                        <div class="col-sm-6 ">
-                            <div class="form-group" *ngIf="TYPE != 2">
-                                <label>{{ pageTitle }}</label>
-                                <ng-select [clearable]="false" #cat="ngModel" name="category"
-                                    [(ngModel)]="attr.categoryId" required>
-                                    <ng-option *ngFor="let u of Categories" [value]="u.id">{{u.title}}</ng-option>
-                                </ng-select>
-                                <div *ngIf="(cat.touched || cat.dirty)  && cat.invalid">
-                                    <p *ngIf="cat.hasError('required')" class="error">
-                                        انتخاب {{ pageTitle }} الزامی است
-                                    </p>
-                                </div>
+                            <div class="form-group">
+                                <label>آیا این فیلد شماره تلفن همراه است؟</label>
+                                <mat-checkbox [ngModelOptions]="{standalone: true}"
+                                    (change)="$event.checked ? attr.isMeliCode = null : null"
+                                    [(ngModel)]="attr.isPhoneNumber">
+                                    تلفن همراه
+                                </mat-checkbox>
                             </div>
+
+                            <div class="form-group">
+                                <label>مقدار این فیلد در هنگام ثبت نام تکراری وارد نشود</label>
+                                <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="attr.isUniq">
+                                    غیر تکراری
+                                </mat-checkbox>
+                            </div>
+
+                            <div class="form-group">
+                                <label>آیا این فیلد در اطلاع رسانی باشد؟</label>
+                                <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="attr.isInShowInfo">
+                                    اطلاع رسانی
+                                </mat-checkbox>
+                            </div>
+
+                            <div class="form-group">
+                                <label>آیا این فیلد در جستجو باشد؟</label>
+                                <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="attr.isInSearch">جستجو
+                                </mat-checkbox>
+                            </div>
+
+
+                        </div>
+                        <div class="col-sm-6">
                             <div class="form-group">
                                 <label>توضیحات</label>
                                 <textarea type="text" rows="5" name="desc" [(ngModel)]="attr.desc"
                                     placeholder="توضیحات " class="form-control"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>غیر تکراری</label>
-                                <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="attr.isUniq">مقدار این
-                                    فیلد در هنگام ثبت نام تکراری وارد نشود</mat-checkbox>
                             </div>
                             <div class="form-group">
                                 <label>اولویت</label>
@@ -199,19 +226,6 @@
                                     </p>
                                 </div>
                             </div>
-
-                            <div class="form-group">
-                                <label>آیا این فیلد در اطلاع رسانی باشد؟</label>
-                                <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="attr.isInShowInfo">
-                                    اطلاع رسانی</mat-checkbox>
-                            </div>
-
-                            <div class="form-group">
-                                <label>آیا این فیلد در جستجو باشد؟</label>
-                                <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="attr.isInSearch">جستجو
-                                </mat-checkbox>
-                            </div>
-
                             <div class="form-group">
                                 <label>اولویت در اطلاع رسانی</label>
                                 <input [disabled]="attr.isInShowInfo == false" type="number" required
@@ -224,11 +238,22 @@
                                 </div>
                             </div>
 
-
                             <div class="form-group">
                                 <label>مثال نمونه</label>
                                 <input type="text" #plshold="ngModel" name="plshold" [(ngModel)]="attr.placeholder"
                                     placeholder="مثال نمونه (placeholder)" class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <label>پیام در صورت اجباری بودن فیلد</label>
+                                <input type="text" name="requiredError" [(ngModel)]="attr.requiredErrorMessage"
+                                    placeholder="پیام در صورت اجباری بودن فیلد" class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <label>پیام در صورت تکراری بودن فیلد</label>
+                                <input type="text" name="uniqError" [(ngModel)]="attr.uniqErrorMessage"
+                                    placeholder="پیام در صورت تکراری بودن فیلد" class="form-control">
                             </div>
                         </div>
                         <br>

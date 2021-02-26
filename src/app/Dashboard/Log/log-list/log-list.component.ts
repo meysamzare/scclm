@@ -80,7 +80,7 @@ export class LogListComponent implements OnInit {
         { name: "TimeAndDays", desc: "ایام هفته" },
         { name: "TimeSchedule", desc: "زمانبندی" },
         { name: "Titute", desc: "آموزشگاه" },
-        { name: "Unit", desc: "واحد" },
+        { name: "Unit", desc: "دسته بندی" },
         { name: "User", desc: "کاربر" },
         { name: "Advertising", desc: "تبلیغ" },
         { name: "BestStudent", desc: "دانش آموز برتر" },
@@ -93,6 +93,8 @@ export class LogListComponent implements OnInit {
         { name: "Workbook", desc: "کارنامه" },
         { name: "Yeareducation", desc: "سال تحصیلی" },
         { name: "Log", desc: "لاگ های سیستم" },
+        { name: "OnlineClass", desc: "کلاس مجازی" },
+        { name: "OnlineClassServer", desc: "سرور کلاس مجازی" },
     ];
 
     selectedTable = null;

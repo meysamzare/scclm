@@ -1,20 +1,15 @@
 <div dir="rtl">
     <h1 mat-dialog-title>تغییر مقدار گروهی</h1>
     <div mat-dialog-content>
-        <div class="form-group">
-            <label>راهنما</label>
-            <br>
-            <span>برای ثبت هر فیلد کلید Enter را بفشارید.</span>
-            <br>
-            <span>برای حذف یک فیلد کافیست تا متن را خالی گذارید و کلید Enter را بفشارید.</span>
-            <br />
-            <span>فیلد هایی مثل تاریخ، چک باکس و لیست با هر تغییر در مقدار به صورت خودکار ثبت میشوند</span>
-            <br>
-            <span>فیلد هایی مثل فایل و تصویر با هر انتخاب به صورت خودکار بارگذاری می شوند</span>
+        <div class="form-group" *ngFor="let i of attrs; let ind = index">
+
+            <app-attribute-input [Attribute]="i" [isAttributeSingle]="true"
+                (setItemAttribute)="setAnyItemAttr($event, i.attrTypeInt)"></app-attribute-input>
 
         </div>
 
         <hr>
+
 
         <div class="form-group">
 
@@ -26,7 +21,9 @@
                             {{i.name}}
                             <mat-icon matChipRemove>delete</mat-icon>
                         </mat-chip>
-                        <input placeholder="تگ ها را با Enter جدا کنید" [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="add($event)">
+                        <input placeholder="تگ ها را با Enter جدا کنید" [matChipInputFor]="chipList"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
+                            (matChipInputTokenEnd)="add($event)">
                     </mat-chip-list>
                 </mat-form-field>
 
@@ -34,46 +31,6 @@
 
             </div>
         </div>
-
-
-        <hr>
-
-        <div class="form-group" *ngFor="let i of attrs; let ind = index">
-            <label *ngIf="i.attrTypeInt != 4">{{i.title}}</label>
-
-            <input *ngIf="i.attrTypeInt == 1" [tabIndex]="ind + 5" type="text" class="form-control" placeholder="{{i.title}}" [matTooltip]="i.desc" (keydown.enter)="setItemAttr($event, i.id)" />
-
-            <input *ngIf="i.attrTypeInt == 2" [tabIndex]="ind + 5" type="number" class="form-control" placeholder="{{i.title}}" [matTooltip]="i.desc" (keydown.enter)="setItemAttr($event, i.id)" />
-
-            <mat-form-field class="example-full-width" *ngIf="i.attrTypeInt == 3">
-                <input required matInput [matTooltip]="i.desc" readonly (click)="openc(picker)" (dateChange)="setItemAttr($event, i.id)" [matDatepicker]="picker" placeholder="{{i.title}}">
-                <mat-datepicker-toggle style="font-size: 25px;" matTooltip="باز کردن تقویم" matSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker touchUi="true"></mat-datepicker>
-            </mat-form-field>
-
-            <mat-checkbox *ngIf="i.attrTypeInt == 4" [matTooltip]="i.desc" (change)="setItemAttr($event, i.id)">{{i.title}}</mat-checkbox>
-
-            <input *ngIf="i.attrTypeInt == 5" [tabIndex]="ind + 5" class="form-control" type="password" placeholder="{{i.title}}" [matTooltip]="i.desc" (keydown.enter)="setItemAttr($event, i.id)" />
-
-            <mat-form-field *ngIf="i.attrTypeInt == 6">
-                <mat-label>{{i.title}}</mat-label>
-                <mat-select style="direction: rtl" [tabIndex]="ind + 5" (valueChange)="setItemAttrforselect($event, i.id)">
-                    <mat-option *ngFor="let v of getShiftedItem(i.values)" [value]="v">{{v}}</mat-option>
-                </mat-select>
-                <mat-hint>{{i.desc}}</mat-hint>
-            </mat-form-field>
-
-
-            <input type="file" *ngIf="i.attrTypeInt == 7" accept="image/x-png,image/jpeg" value="fileSelected" class="form-control" (change)="setItemAttrforPic($event, i.id, 'pic')" />
-
-
-            <input type="file" *ngIf="i.attrTypeInt == 8" class="form-control" (change)="setItemAttrforPic($event, i.id, 'file')" />
-
-            <textarea *ngIf="i.attrTypeInt == 9" [tabIndex]="ind + 5" class="form-control" placeholder="{{i.title}}" [matTooltip]="i.desc" (keydown.control.enter)="setItemAttr($event, i.id)"></textarea>
-        </div>
-
-
-
     </div>
     <div mat-dialog-actions>
         <button mat-stroked-button color="primary" [mat-dialog-close]="">تایید</button>

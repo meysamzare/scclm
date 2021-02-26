@@ -34,6 +34,7 @@ export class ICategory {
 
     isBackStepAllowed: boolean = false;
 
+    registerItemStepType: CategoryRegisterItemStepType = CategoryRegisterItemStepType.noStep;
 
     isPined: boolean;
 
@@ -112,4 +113,11 @@ export enum CategoryAuthorizeState {
     PMA = 2,
     SMA = 3,
     All = 4
+}
+
+
+export enum CategoryRegisterItemStepType {
+    noStep = 0,
+    singleAttrStep = 1,
+    unitAttrStep = 2
 }

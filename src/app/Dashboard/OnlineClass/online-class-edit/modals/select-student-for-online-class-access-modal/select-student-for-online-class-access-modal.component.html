@@ -12,7 +12,8 @@
                 <div class="form-group">
                     <label>انتخاب پایه</label>
 
-                    <ng-select (change)="onGradeSelected()" #grade="ngModel" name="grade" [(ngModel)]="selectedGrade">
+                    <ng-select (change)="onGradeSelected(); selectedClass = null;" #grade="ngModel" name="grade"
+                        [(ngModel)]="selectedGrade">
                         <ng-option *ngFor="let i of grades" [value]="i.id">{{ i.name }}</ng-option>
                     </ng-select>
                 </div>
@@ -31,7 +32,7 @@
         <hr>
         <ng-container *ngFor="let i of getFiltredAgents()">
             <div class="row" matRipple style="padding: 10px; margin-top: 5px; cursor: pointer;"
-                (click)="ToggleSelectedAgent(i.id)">
+                (click)="ToggleSelectedAgent(i.id)" [tooltip]="i.gradeName + '/' + i.className">
                 <div class="col-lg-8">
                     {{ i.name }}
                 </div>

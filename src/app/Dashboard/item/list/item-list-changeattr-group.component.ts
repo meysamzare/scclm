@@ -4,12 +4,12 @@ import {
     MAT_DIALOG_DATA,
     MatChipInputEvent
 } from "@angular/material";
-import { Router, ActivatedRoute } from "@angular/router";
 import { AuthService, jsondata } from "src/app/shared/Auth/auth.service";
 import { MessageService } from "src/app/shared/services/message.service";
 import { IAttr } from "../../attribute/attribute";
 import { ITags } from "../tags";
 import { ENTER } from "@angular/cdk/keycodes";
+import { AttributeInputSaveItemAttributeEvent } from "projects/index/src/app/register-item/attribute-input/attribute-input/attribute-input.component";
 
 declare var $: any;
 
@@ -31,8 +31,6 @@ export class ItemListChangeAttrGroupComponent {
     constructor(
         public dialogRef: MatDialogRef<ItemListChangeAttrGroupComponent>,
         @Inject(MAT_DIALOG_DATA) public data,
-        private router: Router,
-        private activeroute: ActivatedRoute,
         private auth: AuthService,
         private message: MessageService
     ) {
@@ -40,7 +38,7 @@ export class ItemListChangeAttrGroupComponent {
 
         this.itemsIds = data.selectedItemsIds;
 
-        this.auth.post("/api/Attribute/getAttrsForCat", this.catId).subscribe(
+        this.auth.post("/api/Attribute/getNonClientAttrsForCat", this.catId).subscribe(
             (data: jsondata) => {
                 if (data.success) {
                     this.attrs = data.data;
@@ -102,14 +100,19 @@ export class ItemListChangeAttrGroupComponent {
         }
     }
 
-    getShiftedItem(items: string) {
-        var a = items.substring(1);
+    setAnyItemAttr(event: AttributeInputSaveItemAttributeEvent, attrType: number) {
 
-        return a.split(",");
-    }
+        if (attrType == 7 || attrType == 8) {
+            if (event.File) {
+                this.setItemAttrforPic(event.File, event.attrId, attrType == 7 ? "pic" : "file");
+            } else {
+                this.setAttrForNullPic(event.attrId);
+            }
+            return;
+        }
 
-    openc(picker1) {
-        picker1.open();
+
+        this.setItemAttrforselect(event.attrValue, event.attrId);
     }
 
     setItemAttrforselect(event, attrId) {
@@ -147,62 +150,62 @@ export class ItemListChangeAttrGroupComponent {
             );
     }
 
-    setItemAttrforPic(event, attrId, type) {
+    setItemAttrforPic(file, attrId, type) {
+        if (!file) {
+            return;
+        }
         let reader = new FileReader();
-        var size = type == "file" ? 10 : 1;
+        var size = type == "file" ? 20 : 10;
         var sizeText = size == 10 ? "ده مگابایت" : "یک مگابایت";
-        if (event.target.files && event.target.files.length > 0) {
-            let file = event.target.files[0];
-            if (file.size / 1024 / 1024 > size) {
-                return this.message.showWarningAlert(
-                    "حجم فایل باید کمتر از " + sizeText + " باشد",
-                    "اخطار"
-                );
-            }
-            reader.readAsDataURL(file);
-            reader.onload = () => {
-                let result = reader.result.toString().split(",")[1];
-                // this.fileName = file.name + " " + file.type;
-                this.auth
-                    .post("/api/Item/setItemAttrForFilesGroup", {
+        if (file.size / 1024 / 1024 > size) {
+            return this.message.showWarningAlert(
+                "حجم فایل باید کمتر از " + sizeText + " باشد",
+                "اخطار"
+            );
+        }
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            let result = reader.result.toString().split(",")[1];
+            // this.fileName = file.name + " " + file.type;
+            this.auth
+                .post("/api/Item/setItemAttrForFilesGroup", {
+                    attrId: attrId,
+                    itemsIds: this.itemsIds,
+                    inputValue: result,
+                    fileFormat: file.type,
+                    fileName: file.name
+                }, {
+                    type: 'Add',
+                    agentId: this.auth.getUserId(),
+                    agentType: 'User',
+                    agentName: this.auth.getUser().fullName,
+                    tableName: 'setItemAttrForFilesGroup(saveFiles)',
+                    logSource: 'dashboard',
+                    object: {
                         attrId: attrId,
                         itemsIds: this.itemsIds,
                         inputValue: result,
                         fileFormat: file.type,
                         fileName: file.name
-                    }, {
-                        type: 'Add',
-                        agentId: this.auth.getUserId(),
-                        agentType: 'User',
-                        agentName: this.auth.getUser().fullName,
-                        tableName: 'setItemAttrForFilesGroup(saveFiles)',
-                        logSource: 'dashboard',
-                        object: {
-                            attrId: attrId,
-                            itemsIds: this.itemsIds,
-                            inputValue: result,
-                            fileFormat: file.type,
-                            fileName: file.name
-                        },
-                        table: "Item",
-                        tableObjectIds: this.itemsIds
-                    })
-                    .subscribe(
-                        (data: jsondata) => {
-                            if (data.success) {
-                                this.message.showSuccessAlert(
-                                    "با موفقیت ثبت شد"
-                                );
-                            } else {
-                                this.message.showMessageforFalseResult(data);
-                            }
-                        },
-                        er => {
-                            this.auth.handlerError(er);
+                    },
+                    table: "Item",
+                    tableObjectIds: this.itemsIds
+                })
+                .subscribe(
+                    (data: jsondata) => {
+                        if (data.success) {
+                            this.message.showSuccessAlert(
+                                "با موفقیت ثبت شد"
+                            );
+                        } else {
+                            this.message.showMessageforFalseResult(data);
                         }
-                    );
-            };
-        }
+                    },
+                    er => {
+                        this.auth.handlerError(er);
+                    }
+                );
+        };
     }
 
     setAttrForNullPic(attrId) {
@@ -238,60 +241,5 @@ export class ItemListChangeAttrGroupComponent {
                     this.auth.handlerError(er);
                 }
             );
-    }
-
-    setItemAttr(event, attrId) {
-        let inputValue;
-        if (event.target) {
-            inputValue = event.target.value;
-        } else {
-            inputValue = event.checked;
-        }
-
-        this.auth
-            .post("/api/Item/setItemAttrGroup", {
-                attrId: attrId,
-                itemsIds: this.itemsIds,
-                inputValue: inputValue
-            }, {
-                type: 'Add',
-                agentId: this.auth.getUserId(),
-                agentType: 'User',
-                agentName: this.auth.getUser().fullName,
-                tableName: 'SetItemAttrGroup',
-                logSource: 'dashboard',
-                object: {
-                    attrId: attrId,
-                    itemsIds: this.itemsIds,
-                    inputValue: inputValue
-                },
-                table: "Item",
-                tableObjectIds: this.itemsIds
-            })
-            .subscribe(
-                (data: jsondata) => {
-                    if (data.success) {
-                        this.message.showSuccessAlert("با موفقیت ثبت شد");
-                        let allInputs = $("input[tabindex]").toArray();
-
-                        var nextInput =
-                            allInputs[
-                            allInputs.findIndex(c => c.tabIndex == event.target.tabIndex) +
-                            1
-                            ];
-
-                        if (nextInput) {
-                            nextInput.focus();
-                        }
-                    } else {
-                        this.message.showMessageforFalseResult(data);
-                    }
-                },
-                er => {
-                    this.auth.handlerError(er);
-                }
-            );
-
-
     }
 }

@@ -1,0 +1,60 @@
+<div dir="rtl" style="min-width:650px;">
+
+    <div mat-dialog-title>
+        {{ Title }}
+
+        <div class="row">
+            <div class="col-lg-10" style="text-align: right;">
+                <input type="text" class="form-control" [(ngModel)]="searchText" placeholder="جستجو">
+            </div>
+            <div class="col-lg-2" style="text-align: left;">
+                <button mat-icon-button (click)="refreshLogins()">
+                    <mat-icon>refresh</mat-icon>
+                </button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6" style="text-align: right;">
+                <mat-checkbox style="font-size: 14px;" [(ngModel)]="onlyShowAbsence">
+                    فقط نمایش غائب ها
+                </mat-checkbox>
+            </div>
+            <div class="col-lg-6" style="text-align: left;">
+                <p style="font-size: 14px;">تعداد ورودها: <b>{{ getNonAbsenceLoginCount() }}</b></p>
+            </div>
+        </div>
+    </div>
+
+
+    <div mat-dialog-content>
+
+        <ng-container *ngIf="isLoading">
+            <mat-progress-bar mode="buffer"></mat-progress-bar>
+        </ng-container>
+
+        <ng-container *ngIf="!isLoading">
+
+            <ng-container *ngIf="getFiltredLogins().length == 0">
+                <p><b>موردی یافت نشد</b></p>
+            </ng-container>
+
+            <div class="row" matRipple style="padding: 15px;" [style.backgroundColor]="i.absence ? '#ffe8e8' : 'unset'"
+                *ngFor="let i of getFiltredLogins()" [tooltip]="i.ip + ' (' + i.onlineClassAgentTypeString + ')'">
+                <div class="col-lg-7 al-right">
+                    <b>{{ i.id + ". " + i.fullName + " (" + i.username + ")" }}</b>
+                </div>
+                <div class="col-lg-5 al-left" style="text-align: left;">
+                    <p>{{ i.dateString }}</p>
+                </div>
+            </div>
+
+        </ng-container>
+
+    </div>
+
+
+    <div mat-dialog-actions>
+        <button mat-stroked-button color="warn" style="margin-right: 5px;" [mat-dialog-close]="false">خروج</button>
+    </div>
+</div>

@@ -1,7 +1,16 @@
 <mat-card matRipple>
+    <div style="margin: 5px;" *ngIf="isLoading">
+        <mat-progress-bar mode="buffer"></mat-progress-bar>
+    </div>
     <p style="text-align: center;">{{ onlineClass.name }}</p>
+    <p style="text-align: right;">وضعیت اجرا:
+        <b [style.color]="isClassRunning ? 'green' : 'red'">
+            {{ isClassRunning ? "در حال اجرا" : "بسته" }}
+        </b>
+    </p>
     <mat-card-footer>
-        <button mat-stroked-button [disabled]="!canOpenClass()" style="width: 100%;" (click)="openBBBClass()">
+        <button mat-stroked-button [disabled]="!canOpenClass() || isLoading" style="width: 100%;"
+            (click)="openBBBClass()">
             ورود به کلاس
         </button>
     </mat-card-footer>

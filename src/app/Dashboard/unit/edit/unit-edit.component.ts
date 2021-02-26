@@ -40,13 +40,13 @@ export class UnitEditComponent {
             var id = params["id"];
 
             if (id === "0") {
-                this.Title = "افزودن واحد";
+                this.Title = "افزودن دسته بندی";
                 this.btnTitle = "افزودن";
                 this.isEdit = false;
             } else {
                 var idd = Number.parseInt(id);
                 if (Number.isInteger(idd)) {
-                    this.Title = "ویرایش واحد " + this.unit.title;
+                    this.Title = "ویرایش دسته بندی " + this.unit.title;
                     this.btnTitle = "ویرایش";
                     this.isEdit = true;
                 } else {

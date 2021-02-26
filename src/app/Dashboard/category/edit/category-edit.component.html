@@ -345,6 +345,8 @@
                             </mat-expansion-panel-header>
 
                             <div class="margin-top-10">
+                                <br>
+                                <br>
                                 <label>وضعیت کلی</label>
                                 <hr>
 
@@ -392,10 +394,30 @@
                                     </div>
                                 </div>
 
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        
+                                        <div class="form-group">
+                                            <label>انتخاب نحوه نمایش فیلد ها</label>
+                                            <ng-select #stepTypeSelect="ngModel" name="stepType"
+                                                [(ngModel)]="category.registerItemStepType" required>
+                                                <ng-option [value]="0">نمایش به صورت دسته بندی در یک صفحه کامل</ng-option>
+                                                <ng-option [value]="1">نمایش هر فیلد در یک صفحه</ng-option>
+                                                <ng-option [value]="2">نمایش هر دسته بندی در یک صفحه</ng-option>
+                                            </ng-select>
+                                            <mat-error *ngIf="stepTypeSelect.hasError('required')">
+                                                انتخاب نحوه نمایش فیلد ها الزامی است
+                                            </mat-error>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
 
 
                             <div class="margin-top-10">
+                                <br>
+                                <br>
                                 <label>اطلاع رسانی</label>
                                 <hr>
 
@@ -455,6 +477,8 @@
                             </div>
 
                             <div class="margin-top-10">
+                                <br>
+                                <br>
                                 <label>توضیحات</label>
                                 <hr>
 
@@ -485,6 +509,8 @@
                             </div>
 
                             <div class="margin-top-10">
+                                <br>
+                                <br>
                                 <label>درسترسی ها</label>
                                 <hr>
 
@@ -702,6 +728,8 @@
                             </div>
 
                             <div class="margin-top-10">
+                                <br>
+                                <br>
                                 <label>تصاویر</label>
                                 <hr>
 
@@ -929,8 +957,8 @@
 
                             <div class="row">
                                 <div class="col-lg-1" style="display: flex; flex-direction: column;">
-                                    <button [tooltip]="'حذف دائمی فیلد'" mat-icon-button (click)="deleteAttr(i.id)"
-                                        color="warn">
+                                    <button [tooltip]="'حذف دائمی فیلد'" mat-icon-button
+                                        [disabled]="i.canDeleteAttr == false" (click)="deleteAttr(i.id)" color="warn">
                                         <mat-icon>cancel</mat-icon>
                                     </button>
 
@@ -945,6 +973,11 @@
                                         color="primary">
                                         <mat-icon>edit</mat-icon>
                                     </a>
+
+                                    <button [tooltip]="'نمایش داده های آماری فیلد'" mat-icon-button
+                                        (click)="showAttributeChartData(i.id)">
+                                        <mat-icon>insert_chart</mat-icon>
+                                    </button>
                                 </div>
                                 <div class="col-lg-11">
 

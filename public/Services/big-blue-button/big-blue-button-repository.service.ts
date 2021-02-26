@@ -122,8 +122,7 @@ export class BigBlueButtonRepositoryService {
     async create(param: CreateParam): Promise<CreateReturn> {
         try {
             const meetingId = param.meetingID;
-            const onlineClass = await this._getOnlineClass(meetingId);
-            const onlineClassServerId = onlineClass.onlineClassServerId;
+            const onlineClassServerId = await this._getOnlineClassServerId(meetingId);
 
             const params = this._getObjectAsParamArray(param);
 
@@ -143,8 +142,7 @@ export class BigBlueButtonRepositoryService {
         try {
 
             const meetingId = param.meetingID;
-            const onlineClass = await this._getOnlineClass(meetingId);
-            const onlineClassServerId = onlineClass.onlineClassServerId;
+            const onlineClassServerId = await this._getOnlineClassServerId(meetingId);
 
             const params = this._getObjectAsParamArray(param);
 
@@ -162,8 +160,7 @@ export class BigBlueButtonRepositoryService {
 
     async isMeetingRunning(meetingID: string): Promise<boolean> {
         try {
-            const onlineClass = await this._getOnlineClass(meetingID);
-            const onlineClassServerId = onlineClass.onlineClassServerId;
+            const onlineClassServerId = await this._getOnlineClassServerId(meetingID);
 
             let data = await this._sendRequestToServer("isMeetingRunning", "GET", onlineClassServerId, false, null, { name: "meetingID", value: meetingID });
 
@@ -178,14 +175,14 @@ export class BigBlueButtonRepositoryService {
         }
     }
 
-    async end(meetingID: string, password: string) {
+    async end(meetingID: string) {
         try {
             const onlineClass = await this._getOnlineClass(meetingID);
             const onlineClassServerId = onlineClass.onlineClassServerId;
 
             let data = await this._sendRequestToServer("end", "GET", onlineClassServerId, false, null,
                 { name: "meetingID", value: meetingID },
-                { name: "password", value: password });
+                { name: "password", value: onlineClass.moderatorPW });
 
             if (data.returncode == "FAILED") {
                 //send a message to client
@@ -198,8 +195,7 @@ export class BigBlueButtonRepositoryService {
 
     async getMeetingInfo(meetingID: string): Promise<MeetingInfoReturn> {
         try {
-            const onlineClass = await this._getOnlineClass(meetingID);
-            const onlineClassServerId = onlineClass.onlineClassServerId;
+            const onlineClassServerId = await this._getOnlineClassServerId(meetingID);
 
             const ps = require('xml2js').Parser({ explicitArray: true }).parseString;
             let data = await this._sendRequestToServer("getMeetingInfo", "GET", onlineClassServerId, false, ps, { name: "meetingID", value: meetingID });
@@ -209,15 +205,9 @@ export class BigBlueButtonRepositoryService {
                 //send a message to client
             }
 
-            console.log(data);
-
-
             let result: MeetingInfoReturn = new MeetingInfoReturn();
 
             result.fixParams(data);
-
-            console.log(result);
-
 
             return result;
         } catch (error) {
@@ -247,12 +237,32 @@ export class BigBlueButtonRepositoryService {
         }
     }
 
+    getAttendeeArray(object: any[]) {
+        let attendees = [];
+
+        const obj = object[0];
+        (obj.attendee as attendee[]).forEach(user => {
+            let userObj = {};
+
+            const keys = Object.keys(user);
+            const values: any[][] = Object.values(user);
+
+            keys.forEach((key, index) => {
+                userObj[key] = values[index][0];
+            });
+
+            attendees.push(userObj);
+        });
+
+        return attendees as attendee[];
+    }
+
     getStringPrecentEncoding(text: string) {
         const encodeCharset = "UTF-8";
         return iconvPercentEncoding(text, encodeCharset);
     }
 
-    private async _getOnlineClass(meetingId: string) {
+    public async _getOnlineClass(meetingId: string) {
         const result = await this.auth.post("/api/OnlineClass/getOnlineClassByMeetingId", meetingId).toPromise();
 
         if (result && result.success) {
@@ -262,7 +272,27 @@ export class BigBlueButtonRepositoryService {
         return null;
     }
 
-    private async _getOnlineClassServer(id: number) {
+    public async _getOnlineClassServerId(meetingId: string) {
+        const result = await this.auth.post("/api/OnlineClass/getOnlineClassServerId", meetingId).toPromise();
+
+        if (result && result.success) {
+            return result.data as number;
+        }
+
+        return null;
+    }
+
+    public async _getOnlineClassAllowedStudentIds(meetingId: string) {
+        const result = await this.auth.post("/api/OnlineClass/getAllowedStudentIds", meetingId).toPromise();
+
+        if (result && result.success) {
+            return result.data as number[];
+        }
+
+        return [];
+    }
+
+    public async _getOnlineClassServer(id: number) {
         const result = await this.auth.post("/api/OnlineClassServer/getOnlineClassServer", id).toPromise();
 
         if (result && result.success) {
@@ -356,7 +386,7 @@ class JoinReturn {
     url = "";
 }
 
-class MeetingInfoReturn {
+export class MeetingInfoReturn {
     returncode = "";
     meetingName = "";
     meetingID = "";
@@ -399,7 +429,7 @@ class MeetingInfoReturn {
     }
 }
 
-class attendee {
+export class attendee {
     userID = "";
     fullName = "";
     role = "";
@@ -412,7 +442,7 @@ class attendee {
 
 class getMeetingsParam {
     returncode = "";
-    meetings: any[] = [];
+    meetings: MeetingInfoReturn[] = [];
     message = "";
     messageKey = "";
 

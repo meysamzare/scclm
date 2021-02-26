@@ -12,6 +12,39 @@
             </div>
             <div class="ibox-content">
 
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>انتخاب پایه</label>
+
+                            <ng-select (change)="onGradeSelected(); selectedClass = null; selectedCourseId = null;"
+                                #grade="ngModel" name="grade" [(ngModel)]="selectedGrade">
+                                <ng-option *ngFor="let i of grades" [value]="i.id">{{ i.name }}</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>انتخاب کلاس</label>
+
+                            <ng-select (change)="refreshDataSource()" [disabled]="!selectedGrade" #class="ngModel"
+                                name="class" [(ngModel)]="selectedClass">
+                                <ng-option *ngFor="let i of classesByGrade" [value]="i.id">{{ i.name }}</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>انتخاب درس</label>
+
+                            <ng-select [clearable]="true" name="course" [(ngModel)]="selectedCourseId"
+                                (change)="refreshDataSource()" [disabled]="!selectedGrade">
+                                <ng-option *ngFor="let u of getCourseByGrade()" [value]="u.id">{{u.name}}</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                </div>
+
                 <div style="text-align: center;" *ngIf="!haveAnyData() && !isLoading">
                     <b>موردی یافت نشد</b>
                 </div>
@@ -40,7 +73,8 @@
                             <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
                         </div>
                         <div class="mat-elevation-z8">
-                            <table mat-table [dataSource]="dataSource" matSort>
+                            <table mat-table [dataSource]="dataSource" matSort matSortActive="isRunning"
+                                matSortDirection="desc">
                                 <ng-container matColumnDef="select">
                                     <th mat-header-cell *matHeaderCellDef>
                                         <mat-checkbox [disabled]="!haveAnyData() || getRowCanSelected() == 0"
@@ -67,7 +101,18 @@
 
                                 <ng-container matColumnDef="name">
                                     <th mat-header-cell *matHeaderCellDef mat-sort-header> نام {{ PAGE_TITLE }} </th>
-                                    <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+                                    <td mat-cell *matCellDef="let row">
+                                        <p [style.color]="row['isRunning'] ? 'green' : ''">
+                                            {{row.name}}
+                                        </p>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="authType">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> نوع احراز هویت </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        {{row.authorizeType == 0 ? 'براساس کلاس' :'انتخابی' }}
+                                    </td>
                                 </ng-container>
 
                                 <ng-container matColumnDef="grade">
@@ -75,9 +120,47 @@
                                     <td mat-cell *matCellDef="let row"> {{row.gradeName + ' / ' + row.className}} </td>
                                 </ng-container>
 
+                                <ng-container matColumnDef="isRunning">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> وضغیت اجرا </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <p [style.color]="row.isRunning ? 'green' : 'red'">
+                                            {{ row.isRunning ? 'درحال اجرا' : 'بسته' }}
+                                        </p>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="userCount">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> تعداد کاربران </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <p>
+                                            {{ row.usersCount}}
+                                        </p>
+                                    </td>
+                                </ng-container>
+
                                 <ng-container matColumnDef="action">
                                     <th mat-header-cell *matHeaderCellDef> عملیات </th>
                                     <td mat-cell *matCellDef="let row">
+                                        <button matTooltip="آیا کلاس در حال اجرا است؟" mat-icon-button
+                                            (click)="isMeetingRunning(row.meetingId, row.name)">
+                                            <mat-icon>info</mat-icon>
+                                        </button>
+                                        <button matTooltip="لیست ورود" mat-icon-button
+                                            (click)="openOnlineClassLoginsList(row.meetingId, row.name)">
+                                            <mat-icon>playlist_add</mat-icon>
+                                        </button>
+                                        <button matTooltip="ورود به کلاس" mat-icon-button
+                                            (click)="join(row.meetingId, row.name)">
+                                            <mat-icon>launch</mat-icon>
+                                        </button>
+                                        <button matTooltip="پایان جلسه" mat-icon-button
+                                            (click)="endMeeting(row.meetingId, row.name)">
+                                            <mat-icon>remove_circle</mat-icon>
+                                        </button>
+                                        <button matTooltip="لیست حاضرین در کلاس" mat-icon-button
+                                            (click)="openOnlineClassPresentsList(row.meetingId, row.name)">
+                                            <mat-icon>list</mat-icon>
+                                        </button>
                                         <button matTooltip="ویرایش {{row.name}}" matTooltipPosition="before"
                                             mat-icon-button (click)="onEdit(row.id)">
                                             <mat-icon>edit</mat-icon>

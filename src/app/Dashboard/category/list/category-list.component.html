@@ -26,8 +26,8 @@
 
 <div class="row margin-top-10">
     <div class="col-lg-12" style="margin-bottom: 15px;">
-        <input type="text" [(ngModel)]="txtSearch" id="text1" (keyup)="applyFilter()"
-            placeholder="جستجو" class="form-control">
+        <input type="text" [(ngModel)]="txtSearch" id="text1" (keyup)="applyFilter()" placeholder="جستجو"
+            class="form-control">
     </div>
     <div class="col-lg-12" style="margin-bottom: 10px; text-align: center;">
         <p
@@ -130,11 +130,12 @@
                         <mat-icon>launch</mat-icon>
                     </button>
 
-                    <button mat-icon-button matTooltip="لیست ورود به {{ pageTitle }}" (click)="showLoginList(cat.id, cat.title)">
+                    <button mat-icon-button matTooltip="لیست ورود به {{ pageTitle }}"
+                        (click)="showLoginList(cat.id, cat.title)">
                         <mat-icon>list</mat-icon>
                     </button>
 
-                    <button mat-icon-button matTooltip="آرشیو" (click)="changeCheckableProperty(cat.id, 'isArchived',
+                    <button mat-icon-button [matTooltip]="cat.isArchived ? 'خروج از آرشیو' : 'آرشیو'" (click)="changeCheckableProperty(cat.id, 'isArchived',
                         !cat.isArchived)">
                         <mat-icon [style.color]="cat.isArchived ? 'blue' : 'orange'">
                             {{ cat.isArchived ? 'unarchive' : 'archive' }}
@@ -151,7 +152,8 @@
                         <mat-icon>{{ cat.haveInfo ? 'help' : 'help_outline' }}</mat-icon>
                     </button>
 
-                    <button mat-icon-button matTooltip="زمان اطلاع رسانی فرارسیده است؟" *ngIf="cat.haveInfo && TYPE != 1" (click)="changeCheckableProperty(cat.id, 'isInfoShow',
+                    <button mat-icon-button matTooltip="زمان اطلاع رسانی فرارسیده است؟"
+                        *ngIf="cat.haveInfo && TYPE != 1" (click)="changeCheckableProperty(cat.id, 'isInfoShow',
                         !cat.isInfoShow)">
                         <mat-icon>{{ cat.isInfoShow ? 'alarm_on' : 'alarm_off' }}</mat-icon>
                     </button>

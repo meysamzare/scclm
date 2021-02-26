@@ -1,0 +1,24 @@
+<div dir="rtl" style="min-width: 550px;">
+    <div mat-dialog-title>
+        <p><b>{{ Title }}</b></p>
+    </div>
+
+    <div mat-dialog-content>
+
+        <ng-container *ngIf="isLoading">
+            <mat-progress-bar mode="buffer"></mat-progress-bar>
+        </ng-container>
+
+        <ng-container *ngIf="!isLoading">
+            <canvas width="300" height="300" baseChart [data]="chartData" [labels]="chartDataLabel"
+                [legend]="true" [chartType]="'pie'">
+            </canvas>
+        </ng-container>
+
+    </div>
+
+    <div mat-dialog-actions>
+        <button mat-stroked-button color="warn" style="margin-right: 5px;" [mat-dialog-close]="false">لغو</button>
+    </div>
+
+</div>

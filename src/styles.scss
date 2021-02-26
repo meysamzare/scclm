@@ -2,6 +2,11 @@
 @import 'angular-notifier/styles.css';
 @import "~@ng-select/ng-select/themes/material.theme.css";
 
+
+.ng-option {
+    text-align: right !important;
+}
+
 .bordered {
     border: 1px solid #ccc;
     border-radius: 15px;

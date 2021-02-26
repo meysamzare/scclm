@@ -1,7 +1,7 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ViewChildren, QueryList, ContentChildren } from '@angular/core';
 import { IAttr } from 'src/app/Dashboard/attribute/attribute';
 import { IItemAttr } from 'src/app/Dashboard/item/item-attr';
-import { ICategory, CategoryAuthorizeState } from 'src/app/Dashboard/category/category';
+import { ICategory, CategoryAuthorizeState, CategoryRegisterItemStepType } from 'src/app/Dashboard/category/category';
 import { FormGroup, NgForm, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService, jsondata } from 'src/app/shared/Auth/auth.service';
@@ -16,7 +16,6 @@ import { map } from 'rxjs/internal/operators/map';
 import { last, catchError, debounceTime, finalize, take } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
 import { EMPTY } from 'rxjs/internal/observable/empty';
-import { IAttributeOption } from 'src/app/Dashboard/attribute/attribute-option';
 import { StepsDirective } from './register-step.directive';
 import { CountdownFormatFn } from 'ngx-countdown';
 import { RegisterItemDataService } from './register-item-data.service';
@@ -24,6 +23,8 @@ import { interval } from 'rxjs/internal/observable/interval';
 import { AttributeInputSaveItemAttributeEvent } from './attribute-input/attribute-input/attribute-input.component';
 import { Subject } from 'rxjs/internal/Subject';
 import { EncryptService } from 'src/app/shared/services/encrypt.service';
+import { validatePhoneNumber } from './attribute-input/phone-number-validator.directive';
+import { validateMeliCode } from './attribute-input/code-meli-validator.directive';
 
 @Component({
     selector: 'app-register-item',
@@ -36,8 +37,6 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     catId: number = 0;
     cat: ICategory;
     group: FormGroup;
-    attrUniqList: number[] = [];
-    reqfilesAttrint: number[] = [];
     isFromSts: boolean = false;
     units: IUnit[] = [];
 
@@ -56,6 +55,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     haveSavedData = false;
 
     @ViewChild(StepsDirective, { static: false }) RegisterSteps: StepsDirective;
+    @ViewChildren("attrInput") attrInputs: QueryList<any>;
 
     isLoading = false;
     isAttrSetted = false;
@@ -112,7 +112,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         this.cat = this.activeRoute.snapshot.data.cat;
         this.units = this.activeRoute.snapshot.data.units;
 
-        if (this.cat.isBackStepAllowed) {
+        if (this.cat.isBackStepAllowed || this.cat.type == 0) {
             this.isPrevStepAllowed = true;
         }
 
@@ -285,13 +285,74 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         }
     }
 
-    nextStep() {
-        if (this.RegisterSteps.isActiveStepValid()
-            && !this.isUploading
-            && this.attrUniqList.length == 0
-            && this.reqfilesAttrint.length == 0) {
+    isAllUniqAttrsValid(): boolean {
+        if (this.attrInputs) {
+            return this.attrInputs.toArray().every(c => !c.IsUniqValueExist)
+        }
 
-            if (this.activeStep == this.attrs.length - 2) {
+        return false;
+    }
+
+    isAttrUniqValid(attrId: number) {
+        if (this.attrInputs) {
+            const attrInput = this.attrInputs.toArray().find(c => c.Attribute.id == attrId);
+
+            if (attrInput && attrInput.canCheckForUniqAttr()) {
+                return !attrInput.IsUniqValueExist;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    getMaxStepNumber() {
+        if (this.cat.registerItemStepType == 1) {
+            return this.attrs.length;
+        } else if (this.cat.registerItemStepType == 2) {
+            return this.getUnitsThatHaveAttrs().length;
+        }
+
+        return 0;
+    }
+
+    isStepHasError(step: number) {
+        if (this.cat.registerItemStepType == 1) {
+            return this.isAttrHasError(step);
+        } else if (this.cat.registerItemStepType == 2) {
+            return this.isUnitHasError(step);
+        }
+
+        return false;
+    }
+
+    isUnitHasError(unitId: number) {
+        if (this.RegisterSteps) {
+            return !this.RegisterSteps.isStepValid(this.getIndexForUnit(unitId));
+        }
+
+        return false;
+    }
+
+    isStepFinished(step: number) {
+        if (this.RegisterSteps) {
+            if (this.cat.registerItemStepType == 1) {
+                return this.isItemAttrHasValue(step);
+            } else if (this.cat.registerItemStepType == 2) {
+                const stepIndex = this.getIndexForUnit(step);
+                return this.RegisterSteps.isStepCompleted(stepIndex) && this.RegisterSteps.isStepValid(stepIndex);
+            }
+        }
+
+        return false;
+    }
+
+
+
+    nextStep() {
+        if (this.RegisterSteps.isActiveStepValid() && !this.isUploading) {
+            if (this.activeStep == this.getMaxStepNumber() - 2) {
                 this.isPrevStepAllowed = true;
             }
             this.activeStep += 1;
@@ -299,7 +360,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     prevStep() {
-        if (this.isPrevStepAllowed && !this.isUploading) {
+        if (this.isPrevStepAllowed && this.RegisterSteps.isActiveStepValid() && !this.isUploading) {
             if (this.activeStep != 0) {
                 this.activeStep -= 1;
             }
@@ -309,22 +370,27 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
     lastStep() {
         if (this.RegisterSteps.isActiveStepValid()
             && !this.isUploading
-            && this.attrUniqList.length == 0
-            && this.reqfilesAttrint.length == 0) {
-
-            this.activeStep = this.attrs.length - 1
+            && this.isAllUniqAttrsValid()) {
+            this.activeStep = this.getMaxStepNumber() - 1
         }
     }
 
-    goToStep(attrId) {
+    goToStep(step: number) {
         if (
             this.RegisterSteps.isActiveStepValid() &&
             this.isPrevStepAllowed &&
             !this.isUploading &&
-            this.attrUniqList.length == 0 &&
-            this.reqfilesAttrint.length == 0
+            this.isAllUniqAttrsValid()
         ) {
-            this.activeStep = this.getIndexForAttr(attrId);
+            let stepIndex = 0;
+
+            if (this.cat.registerItemStepType == 1) {
+                stepIndex = this.getIndexForAttr(step);
+            } else if (this.cat.registerItemStepType == 2) {
+                stepIndex = this.getIndexForUnit(step);
+            }
+
+            this.activeStep = stepIndex;
         }
     }
 
@@ -334,8 +400,10 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         }
     }
 
-    isItemAttrHasValue(attr) {
-        let itemAttr = this.itemAttrs.find(c => c.attributeId == attr.id);
+    isItemAttrHasValue(attrId: number) {
+        const attr = this.attrs.find(c => c.id == attrId);
+
+        const itemAttr = this.itemAttrs.find(c => c.attributeId == attr.id);
 
         if (itemAttr && itemAttr.attrubuteValue) {
             if (attr.complatabelContent != itemAttr.attrubuteValue) {
@@ -393,7 +461,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
                 this.authorizedUsername,
                 this.authorizedType,
                 this.activeStep,
-                this._files,
+                null,
                 this.attrs);
         }
     }
@@ -401,6 +469,10 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
     ngAfterViewInit(): void {
         window.scroll(0, 0);
+
+        this.attrInputs.changes.subscribe(c => c.toArray().forEach(async input => {
+            await input.checkForUniqValue();
+        }))
     }
 
     toFormGroup(attrs: IAttr[]) {
@@ -418,15 +490,117 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         return new FormGroup(group);
     }
 
+    getActiveStepNavigationTitle() {
+        let stepNavigationTitle = "";
+        const activeStep = this.activeStep;
+
+        let stepNumber = "---"
+        let totalStep = "";
+
+        let stepTypeTitle = "";
+
+        const attr: IAttr = this.attrs[activeStep];
+
+        if (this.attrs && attr && this.cat.registerItemStepType != 0) {
+
+            if (this.cat.registerItemStepType == 2) {
+                const units = this.getUnitsThatHaveAttrs();
+
+                stepTypeTitle = "مرحله";
+                totalStep = `${units.length}`;
+                stepNumber = `${units.findIndex(c => c == units[activeStep]) + 1}`;
+            }
+
+            if (this.cat.registerItemStepType == 1) {
+
+                if (this.cat.type == 1) {
+                    const questions = this.attrs.filter(c => c.attrTypeInt == 11);
+                    const totalQuestionNumber = questions.length;
+
+                    totalStep = `${totalQuestionNumber}`;
+                    stepTypeTitle = "سوال";
+
+                    if (attr.attrTypeInt == 11) {
+                        const questionOrder = questions.findIndex(c => c == attr) + 1;
+                        stepNumber = `${questionOrder}`;
+                    }
+                }
+
+                if (this.cat.type == 0) {
+                    stepTypeTitle = "فیلد";
+
+                    totalStep = `${this.attrs.length}`;
+                    stepNumber = `${activeStep + 1}`;
+                }
+            }
+
+
+            stepNavigationTitle = `
+            شما در ${stepTypeTitle}
+            &nbsp;
+            <b>
+                ${stepNumber} از ${totalStep} 
+            </b>
+            &nbsp;
+            هستید`;
+        }
+
+
+        return this.sanitizer.bypassSecurityTrustHtml(stepNavigationTitle);
+    }
+
+    getStepTooltip(index: number) {
+        let tooltipTitle = "";
+        const catRegisterStepType = this.cat.registerItemStepType;
+
+        if (this.attrs) {
+            if (catRegisterStepType == CategoryRegisterItemStepType.singleAttrStep) {
+                const attr: IAttr = this.attrs[index];
+                const attrUnitId = attr.unitId;
+                const attrUnit = this.units.find(c => c.id == attrUnitId);
+                const unitAttrs = this.attrs.filter(c => c.unitId == attrUnitId);
+                const attrIndexInAttrUnits = unitAttrs.findIndex(c => c == attr);
+
+                if (attr.attrTypeInt == 11) {
+                    tooltipTitle = `سوال شماره ${attrIndexInAttrUnits + 1} ${attrUnit.title}`;
+                } else {
+                    tooltipTitle = attr.title;
+                }
+
+            }
+
+            if (catRegisterStepType == CategoryRegisterItemStepType.unitAttrStep) {
+                const units = this.getUnitsThatHaveAttrs();
+
+                tooltipTitle = units[index].title;
+            }
+        }
+
+        return tooltipTitle;
+    }
+
+    getUnitsThatHaveAttrs() {
+        const attrsUnitIds = Array.from(new Set((this.attrs as IAttr[]).map(c => c.unitId)));
+
+        return this.units.filter(c => attrsUnitIds.includes(c.id));
+    }
+
+    getIndexForUnit(unitId: number) {
+        const unit = this.getUnitsThatHaveAttrs().find(c => c.id == unitId);
+
+        return this.getUnitsThatHaveAttrs().indexOf(unit);
+    }
+
     getDefaultValueForAttr(attr): any {
+
+        if (attr.attrTypeInt == 7 || attr.attrTypeInt == 8) {
+            return null;
+        }
 
         let itemAttr = this.itemAttrs.find(c => c.attributeId == attr.id);
 
         if (itemAttr && itemAttr.attrubuteValue) {
             let value = itemAttr.attrubuteValue;
-            if (attr.isUniq && (attr.attrTypeInt == 1 || attr.attrTypeInt == 2)) {
-                this.checkForUniqValue(value, attr.id);
-            }
             return value;
         }
 
@@ -447,6 +621,10 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
         if (attr.isMeliCode && (attr.attrTypeInt == 2 || attr.attrTypeInt == 1)) {
             validations.push(validateMeliCode);
+        }
+
+        if (attr.isPhoneNumber && attr.attrTypeInt == 2) {
+            validations.push(validatePhoneNumber);
         }
 
         return validations;
@@ -486,39 +664,6 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         return btnTitle;
     }
 
-    getAttrPlaceholder(placeholder: string, title: string): string {
-        if (placeholder) {
-            return placeholder;
-        }
-
-        return title;
-    }
-
-    canShowDesc(desc: string): boolean {
-        if (desc) {
-            return true;
-        }
-
-        return false;
-    }
-
-
-    isValidToShow(cat: ICategory): boolean {
-        if (cat.isActive) {
-            let datePub: Date = new Date(Date.parse(cat.datePublish));
-            let dateEx: Date = new Date(Date.parse(cat.dateExpire));
-            let nowDate: Date = new Date();
-
-            if (nowDate > datePub && nowDate < dateEx) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
     isFormDirty(): boolean {
         if (this.isFromSts || this.forceExit) {
             return false;
@@ -531,71 +676,6 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         return false
     }
 
-    openc(picker1) {
-        picker1.open();
-    }
-
-    setItemAttrDirectly(data, attrId) {
-        let itemAttr = this.itemAttrs.find(c => c.attributeId == attrId);
-
-        if (itemAttr) {
-            itemAttr.attrubuteValue = data;
-        } else {
-            this.itemAttrs.push({
-                itemId: 0,
-                attributeId: attrId,
-                attrubuteValue: data,
-                attributeFilePath: "",
-                fileName: "",
-                score: 0
-            });
-        }
-    }
-
-    setItemAttr(event, attrId) {
-        let inputValue;
-        if (event.target) {
-            inputValue = event.target.value;
-        } else {
-            inputValue = event.checked;
-        }
-
-        let itemAttr = this.itemAttrs.find(c => c.attributeId == attrId);
-
-        if (itemAttr) {
-            itemAttr.attrubuteValue = inputValue;
-        } else {
-            this.itemAttrs.push({
-                itemId: 0,
-                attributeId: attrId,
-                attrubuteValue: inputValue,
-                attributeFilePath: "",
-                fileName: "",
-                score: 0
-            });
-        }
-    }
-
-    getItemAttr(attrId): any {
-        let itemAttr = this.itemAttrs.find(c => c.attributeId == attrId);
-
-        if (itemAttr) {
-            return itemAttr.attrubuteValue;
-        }
-
-        return "";
-    }
-
-    getShiftedItem(attr: IAttr) {
-        let options: IAttributeOption[] = (attr as any).attributeOptions || [];
-
-        if (this.cat.randomAttributeOption) {
-            options = this.shuffleArray(options);
-        }
-
-        return options;
-    }
-
     shuffleArray(array: any[]) {
 
         let shuffled = array
@@ -603,89 +683,26 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
             .sort((a, b) => a.sort - b.sort)
             .map((a) => a.value)
 
-
-        // for (let i = array.length - 1; i > 0; i--) {
-        //     const j = Math.floor(Math.random() * (i + 1));
-        //     [array[i], array[j]] = [array[j], array[i]];
-        // }
-
         return shuffled;
     }
 
-    isAttrHasError(attrId: number, includeUniq = true): boolean {
-        let input = this.group.controls['p' + this.getIndexForAttr(attrId)];
-        if (input.value && (input.invalid ||
-            (includeUniq ? this.attrUniqList.some(c => c == attrId) : false) ||
-            this.reqfilesAttrint.some(c => c == attrId))) {
-            return true
+    isAttrHasError(attrId: number) {
+        const attrInput = this.attrInputs.toArray().find(c => c.Attribute.id == attrId);
+
+        if (attrInput) {
+            return !attrInput.isInputValid();
         }
 
         return false;
     }
 
-    setItemAttrforselect(event, attrId) {
-        let itemAttr = this.itemAttrs.find(c => c.attributeId == attrId);
-
-        if (itemAttr) {
-            itemAttr.attrubuteValue = event;
-        } else {
-            this.itemAttrs.push({
-                itemId: 0,
-                attributeId: attrId,
-                attrubuteValue: event,
-                attributeFilePath: "",
-                fileName: "",
-                score: 0
-            });
-        }
-    }
-
-    isLoadingForUniqAttr = false;
-
-    async checkForUniqValue(val: any, attrId: number) {
-        try {
-            if (!val || this.isAttrHasError(attrId, false) || this.isPreview) {
-                return;
-            }
-
-            let catId = this.catId;
-
-            this.isLoadingForUniqAttr = true;
-
-            let data = await this.auth.post("/api/Item/CheckForUniqAttr", {
-                catId: catId,
-                attrId: attrId,
-                val: val
-            }).pipe(finalize(() => this.isLoadingForUniqAttr = false)).toPromise();
-
-            let un = this.attrUniqList.find(c => c == attrId);
-            if (data.success) {
-                if (un) {
-                    un = attrId;
-                } else {
-                    this.attrUniqList.push(attrId);
-                }
-            } else {
-                if (un) {
-                    let indexOf = this.attrUniqList.indexOf(attrId, 0);
-                    if (indexOf > -1) {
-                        this.attrUniqList.splice(indexOf, 1);
-                    }
-                }
-            }
-        } catch { }
-    }
-
-    isAtrrUniqExsist(attrId = 1): boolean {
-        if (this.attrUniqList.length != 0) {
-            return this.attrUniqList.some(c => c == attrId);
-        } else {
-            return false;
-        }
-    }
+    _files: {
+        file: File,
+        attrId: number
+    }[] = [];
 
     setAnyItemAttribute(result: AttributeInputSaveItemAttributeEvent) {
-        let itemAttr = this.itemAttrs.find(c => c.attributeId == result.attrId);
+        const itemAttr = this.itemAttrs.find(c => c.attributeId == result.attrId);
 
         if (itemAttr) {
             itemAttr.attrubuteValue = result.attrValue;
@@ -709,118 +726,11 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
         }
     }
 
-    _files: {
-        file: File,
-        attrId: number
-    }[] = [];
-
-    setItemAttrforPic(event, attrId, type) {
-        let requiredFileAttr = this.reqfilesAttrint.find(c => c == attrId);
-        const fileIsInvalid = (message) => {
-            event.target.value = null;
-            event.target.files = null;
-            if (requiredFileAttr) {
-                requiredFileAttr = attrId;
-            } else {
-                let attr = this.attrs.find(c => c.id == attrId);
-                if (attr.isRequired) {
-                    this.reqfilesAttrint.push(attrId);
-                }
-            }
-            return this.message.showWarningAlert(message);
-        }
-
-
-        let fileObj = this._files.find(c => c.attrId == attrId);
-        if (fileObj) {
-            this._files.splice(this._files.indexOf(fileObj), 1);
-        }
-
-        let attribute = this.attrs.find(c => c.id == attrId);;
-
-        let size = type == "file" ? attribute.maxFileSize : 10;
-        let sizeText = type == "file" ? `${attribute.maxFileSize} مگابایت` : `10 مگابایت`;
-
-        if (event.target.files && event.target.files.length > 0) {
-            let file: File = event.target.files[0];
-
-            let fileExtentions = file.name.split('.');
-
-            if (fileExtentions.length <= 1) {
-                fileIsInvalid("بارگذاری این فایل مجاز نمی باشد!");
-                return;
-            }
-
-            Object.defineProperty(file, 'name', {
-                writable: true,
-                value: `${this.getRandomFileName()}.${fileExtentions.slice(-1)[0]}`
-            });
-
-            if (file.size / 1024 / 1024 > size) {
-                fileIsInvalid("حجم فایل باید کمتر از " + sizeText + " باشد");
-                return;
-            }
-
-            if (requiredFileAttr) {
-                let indexOf = this.reqfilesAttrint.indexOf(attrId, 0);
-                if (indexOf > -1) {
-                    this.reqfilesAttrint.splice(indexOf, 1);
-                }
-            }
-
-            this._files.push({
-                file: file,
-                attrId: attrId
-            });
-
-            let itemAttr = this.itemAttrs.find(
-                c => c.attributeId == attrId
-            );
-
-            let result = "(binery)";
-
-            if (itemAttr) {
-                itemAttr.attrubuteValue = result;
-                itemAttr.fileName = file.name;
-            } else {
-                this.itemAttrs.push({
-                    itemId: 0,
-                    attributeId: attrId,
-                    attrubuteValue: result,
-                    attributeFilePath: "1",
-                    fileName: file.name,
-                    score: 0
-                });
-            }
-
-            this.saveItemAttrs();
-        }
-    }
-
-    getRandomFileName(filelength = 10): string {
-        let result = "";
-        let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let charactersLength = characters.length;
-        for (let i = 0; i < filelength; i++) {
-            result += characters.charAt(Math.floor(Math.random() * charactersLength));
-        }
-        return result;
-    }
-
-    isFileExist(attrId) {
-        if (this.reqfilesAttrint.length != 0) {
-            return this.reqfilesAttrint.some(c => c == attrId);
-        } else {
-            return false;
-        }
-    }
 
     async totallyCheckForUniqAttrs() {
         if (!this.isPreview) {
-            const reqAttrs = this.attrs.filter(c => c.isUniq);
-
-            await Promise.all(reqAttrs.map(async (attr) => {
-                await this.checkForUniqValue(this.group.controls['p' + this.getIndexForAttr(attr.id)].value, attr.id);
+            await Promise.all(this.attrInputs.map(async (attr) => {
+                await attr.checkForUniqValue();
             }));
         }
     }
@@ -836,8 +746,7 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
 
         if (
             this.group.valid &&
-            this.reqfilesAttrint.length == 0 &&
-            this.attrUniqList.length == 0 &&
+            this.isAllUniqAttrsValid() &&
             !this.isPreview
         ) {
             let isAllowedToSendData = isFromCountDownEvent && repeatTime == 0;
@@ -1041,34 +950,4 @@ export class RegisterItemCatComponent implements OnInit, AfterViewInit, OnDestro
             }
         }
     }
-}
-
-export function validateMeliCode(control: FormControl) {
-
-    let isValid = checkForMeliCode(control.value || "");
-
-    return !isValid ? { 'meliCode': { value: control.value } } : null;
-}
-
-export function checkForMeliCode(input: string) {
-    if (!/^\d{10}$/.test(input)
-        || input == '0000000000'
-        || input == '1111111111'
-        || input == '2222222222'
-        || input == '3333333333'
-        || input == '4444444444'
-        || input == '5555555555'
-        || input == '6666666666'
-        || input == '7777777777'
-        || input == '8888888888'
-        || input == '9999999999')
-        return false;
-    let check = parseInt(input[9]);
-    let sum = 0;
-    let i;
-    for (i = 0; i < 9; ++i) {
-        sum += parseInt(input[i]) * (10 - i);
-    }
-    sum %= 11;
-    return (sum < 2 && check == sum) || (sum >= 2 && check + sum == 11);
 }

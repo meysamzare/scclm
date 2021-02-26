@@ -10,8 +10,9 @@
                 <div style="margin-top: 10px; text-align: right;" [innerHTML]="catDesc"></div>
 
                 <div style="text-align: left;" *ngIf="!isPreview">
-                    <small style="font-size: 13px;">مهلت {{ cat.btnTitle ? cat.btnTitle : "ثبت نام" }} تا
-                        {{ cat.dateExpireString }}</small>
+                    <small style="font-size: 13px;">
+                        مهلت {{ getRegisterBtnTitle() }} تا {{ cat.dateExpireString }}
+                    </small>
                     <br>
                     <countdown style="font-size: 20px; color: red;"
                         [config]="{leftTime: cat.formatedDateEnd, formatDate: formatDate}"
@@ -19,17 +20,7 @@
                     </countdown>
                 </div>
 
-                <div style="text-align: center;" *ngIf="cat.type == 1">
-                    <p>
-                        شما در سوال
-                        &nbsp;
-                        <b>
-                            {{ (activeStep + 1) + ' از ' + attrs?.length }}
-                        </b>
-                        &nbsp;
-                        هستید
-                    </p>
-                </div>
+                <div style="text-align: center;" [innerHTML]="getActiveStepNavigationTitle()"></div>
 
                 <p style="color: darkred" *ngIf="isPreview"><b>شما در حال مشاهده پیش نمایش هستید</b></p>
             </div>
@@ -40,7 +31,7 @@
 
             <div class="col-md-2"></div>
             <div class="col-md-8" style="margin-top: 10px;">
-                <ng-container *ngIf="isLoading || isLoadingForUniqAttr">
+                <ng-container *ngIf="isLoading">
                     <div style="margin-top: 20px;">
                         <mat-progress-bar mode="buffer"></mat-progress-bar>
                     </div>
@@ -49,205 +40,26 @@
                 <ng-container *ngIf="!isLoading && isAttrSetted">
                     <form [formGroup]="group" style="text-align: right;">
 
-                        <ng-container *ngIf="cat.type == 0">
-                            <ng-container *ngFor="let unit of units">
+                        <ng-container *ngIf="cat.registerItemStepType == 0">
+                            <ng-container *ngFor="let unit of getUnitsThatHaveAttrs()">
 
-                                <div class="margin-top-10" style="margin-top: 45px; margin-bottom: 5px;"
-                                    *ngIf="canShowUnit(unit.id)">
+                                <div class="margin-top-10" style="margin-top: 45px; margin-bottom: 5px;">
                                     <b style="font-size: 16px; color: #de7100;">{{ unit.title }}</b>
                                     <!-- <mat-divider></mat-divider> -->
                                 </div>
 
-                                <div class="bordered" *ngIf="canShowUnit(unit.id)">
+                                <div class="bordered">
 
                                     <div class="form-group" *ngFor="let i of getAttrsForUnit(unit.id); index as index"
                                         [style.margin-top.px]="index == 0 ? 0 : 35">
 
-                                        <div class="row" style="flex-flow: row;">
-                                            <div class="col-lg-10" style="margin: auto;">
-                                                <label *ngIf="i.attrTypeInt != 4 && i.attrTypeInt != 11">
-                                                    <b>
-                                                        {{i.title}}
-                                                    </b>
-                                                </label>
-                                            </div>
-                                            <div class="col-lg-2" style="text-align: left;">
-                                                <button
-                                                    [disabled]="!group.controls['p' + getIndexForAttr(i.id)].value || group?.controls['p' + getIndexForAttr(i.id)].disabled"
-                                                    mat-icon-button [matTooltip]="'پاکسازی'" style="outline: none;"
-                                                    (click)="clearItemAttr(i.id)">
-                                                    <mat-icon>close</mat-icon>
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <input *ngIf="i.attrTypeInt == 1"
-                                            [formControlName]="'p' + getIndexForAttr(i.id)" type="text"
-                                            class="form-control"
-                                            placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
-                                            (input)="setItemAttr($event, i.id);  i.isUniq ? checkForUniqValue($event.target.value, i.id) : null" />
-
-                                        <input *ngIf="i.attrTypeInt == 2"
-                                            [formControlName]="'p' + getIndexForAttr(i.id)" type="tel"
-                                            inputmode="numeric" pattern="[+-]?([0-9]*[.])?[0-9]+" class="form-control"
-                                            placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
-                                            (input)="setItemAttr($event, i.id);  i.isUniq ? checkForUniqValue($event.target.value, i.id) : null" />
-
-                                        <mat-form-field class="example-full-width" *ngIf="i.attrTypeInt == 3">
-                                            <input matInput [formControlName]="'p' + getIndexForAttr(i.id)" readonly
-                                                (click)="openc(picker)"
-                                                (dateChange)="setItemAttr($event, i.id); i.isUniq ? checkForUniqValue($event, i.id) : null"
-                                                [matDatepicker]="picker"
-                                                placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}">
-                                            <mat-datepicker-toggle style="font-size: 25px;" matTooltip="باز کردن تقویم"
-                                                matSuffix [for]="picker"></mat-datepicker-toggle>
-                                            <mat-datepicker #picker touchUi="true"></mat-datepicker>
-                                        </mat-form-field>
-
-                                        <mat-checkbox *ngIf="i.attrTypeInt == 4"
+                                        <app-attribute-input #attrInput [(Attribute)]="i" [Category]="cat"
                                             [formControlName]="'p' + getIndexForAttr(i.id)"
-                                            (change)="setItemAttr($event, i.id); ">{{i.title}}
-                                        </mat-checkbox>
+                                            (clearItemAttribute)="clearItemAttr($event)"
+                                            (saveItemAttributes)="saveItemAttrs()"
+                                            (setItemAttribute)="setAnyItemAttribute($event)">
+                                        </app-attribute-input>
 
-                                        <input *ngIf="i.attrTypeInt == 5"
-                                            [formControlName]="'p' + getIndexForAttr(i.id)" class="form-control"
-                                            type="password" (input)="setItemAttr($event, i.id); "
-                                            placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}" />
-
-                                        <mat-form-field *ngIf="i.attrTypeInt == 6">
-                                            <mat-label>{{i.title}}</mat-label>
-                                            <mat-select style="direction: ltr"
-                                                [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                (valueChange)="setItemAttrforselect($event, i.id); i.isUniq ? checkForUniqValue($event, i.id) : null">
-                                                <mat-option
-                                                    *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption"
-                                                    [value]="v.id">{{v.title}}
-                                                </mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-
-                                        <mat-radio-group *ngIf="i.attrTypeInt == 10" class="radio-group"
-                                            [formControlName]="'p' + getIndexForAttr(i.id)"
-                                            (change)="setItemAttrforselect($event.value, i.id); i.isUniq ? checkForUniqValue($event.value, i.id) : null">
-                                            <mat-radio-button class="radio-button"
-                                                *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption"
-                                                [value]="v.id">{{v.title}}</mat-radio-button>
-                                        </mat-radio-group>
-
-                                        <input type="file" *ngIf="i.attrTypeInt == 7"
-                                            [formControlName]="'p' + getIndexForAttr(i.id)"
-                                            accept="image/x-png,image/jpeg" class="form-control"
-                                            (change)="setItemAttrforPic($event, i.id, 'pic'); " />
-
-                                        <input type="file" *ngIf="i.attrTypeInt == 8"
-                                            [formControlName]="'p' + getIndexForAttr(i.id)" class="form-control"
-                                            (change)="setItemAttrforPic($event, i.id, 'file'); " />
-
-                                        <textarea *ngIf="i.attrTypeInt == 9"
-                                            [formControlName]="'p' + getIndexForAttr(i.id)" type="text"
-                                            class="form-control"
-                                            placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
-                                            (change)="setItemAttr($event, i.id); "></textarea>
-
-                                        <ng-container *ngIf="i.attrTypeInt == 11">
-                                            <div [innerHTML]="i.title | safeHtml"></div>
-
-                                            <hr>
-
-                                            <ng-container *ngIf="i.questionType == 1">
-                                                <app-custom-editor [showPicSelection]="false" [required]="i.isRequired"
-                                                    [formControlName]="'p' + getIndexForAttr(i.id)" label="جواب شما:"
-                                                    (dataChange)="setItemAttrDirectly($event, i.id); ">
-                                                </app-custom-editor>
-                                            </ng-container>
-
-                                            <ng-container *ngIf="i.questionType == 2">
-                                                <mat-radio-group class="radio-group"
-                                                    [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                    (change)="setItemAttrforselect($event.value, i.id); ">
-                                                    <mat-radio-button class="radio-button"
-                                                        *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption"
-                                                        [value]="v.id">
-                                                        <div [innerHTML]="v.title | safeHtml"></div>
-                                                    </mat-radio-button>
-                                                </mat-radio-group>
-                                            </ng-container>
-
-
-                                            <ng-container *ngIf="i.questionType == 3">
-                                                <!-- <div class="row" style="flex-flow: row;">
-                                            <div class="col-lg-10" style="margin: auto;">
-                                                <mat-hint>محتوای زیر را تکمیل کنید</mat-hint>
-                                            </div>
-                                            <div class="col-lg-2" style="text-align: left;">
-                                                <button 
-                                                    mat-icon-button [matTooltip]="'بارگذاری مجدد محتوا'" style="outline: none;"
-                                                    (click)="group.controls['p' + getIndexForAttr(i.id)].e">
-                                                    <mat-icon>reload</mat-icon>
-                                                </button>
-                                            </div>
-                                        </div> -->
-                                                <app-custom-editor [showPicSelection]="false" [required]="i.isRequired"
-                                                    [data]="i.complatabelContent"
-                                                    [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                    label="محتوای زیر را تکمیل کنید"
-                                                    (dataChange)="setItemAttrDirectly($event, i.id);">
-                                                </app-custom-editor>
-                                            </ng-container>
-
-                                        </ng-container>
-
-
-
-                                        <ng-container *ngIf="i.attrTypeInt == 11">
-                                            <p *ngIf="group.get('p'+getIndexForAttr(i.id)).hasError('required') || group.get('p'+getIndexForAttr(i.id)).invalid"
-                                                class="error">
-                                                وارد کردن جواب این سوال الزامی است
-                                            </p>
-                                        </ng-container>
-
-                                        <ng-container *ngIf="i.attrTypeInt == 10">
-                                            <p *ngIf="group.get('p'+getIndexForAttr(i.id)).hasError('required') || group.get('p'+getIndexForAttr(i.id)).invalid"
-                                                class="error">
-                                                وارد کردن این فیلد الزامی است
-                                            </p>
-                                        </ng-container>
-
-                                        <ng-container *ngIf="i.attrTypeInt != 10 && i.attrTypeInt != 11">
-
-                                            <ng-container
-                                                *ngIf="i.attrTypeInt != 4 && (group.get('p'+getIndexForAttr(i.id)).touched || group.get('p'+getIndexForAttr(i.id)).dirty)  && group.get('p'+getIndexForAttr(i.id)).invalid">
-
-                                                <p *ngIf="group.get('p'+getIndexForAttr(i.id)).hasError('required')"
-                                                    class="error">
-                                                    وارد کردن این فیلد الزامی است
-                                                </p>
-                                                <p *ngIf="group.get('p'+getIndexForAttr(i.id)).hasError('meliCode') && group.get('p'+getIndexForAttr(i.id)).value"
-                                                    class="error">
-                                                    کد ملی را به صورت صحیح وارد نمایید
-                                                </p>
-                                            </ng-container>
-
-                                        </ng-container>
-
-                                        <p *ngIf="isAtrrUniqExsist(i.id)" class="error">
-                                            این {{i.title}} قبلا وارد شده است
-                                        </p>
-
-                                        <p *ngIf="isFileExist(i.id)" class="error">
-                                            وارد کردن این فیلد الزامی است
-                                        </p>
-
-                                        <div class="row" *ngIf="canShowDesc(i.desc)">
-                                            <div class="col-lg-1">
-                                                <image-icon icon="info" [height]="15"></image-icon>
-                                            </div>
-                                            <div class="col-lg-10">
-                                                <small style="color: #0072ab;">
-                                                    {{ i.desc }}
-                                                </small>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
 
@@ -257,22 +69,9 @@
                             <div class="col-md-12 margin-top-10">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        <div style="direction: ltr; text-align: center;" *ngIf="isUploading">
-
-                                            <progressbar max="100" [value]="uploaded_PS" type="success" [striped]="true"
-                                                [animate]="true">
-                                                <b>{{ uploaded_MB.toFixed(2) }} / {{ fileSize_MB.toFixed(2) }} (mb)</b>
-                                            </progressbar>
-                                            <p>
-                                                <b
-                                                    tooltip="{{ uploaded_MB.toFixed(2) }} / {{ fileSize_MB.toFixed(2) }} (mb)">
-                                                    {{ uploaded_PS.toFixed(3) }} %
-                                                </b>
-                                            </p>
-                                            <p>
-                                                در حال بارگذاری، لطفا شکیبا باشید
-                                            </p>
-                                        </div>
+                                        <app-register-item-loading-progress *ngIf="isUploading"
+                                            [uploaded_MB]="uploaded_MB" [uploaded_PS]="uploaded_PS"
+                                            [fileSize_MB]="fileSize_MB"></app-register-item-loading-progress>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -282,224 +81,36 @@
                                     </div>
                                     <div class="col-lg-9">
                                         <button type="button" class="btn btn-block btn-outline-success"
-                                            [disabled]="group.invalid || attrUniqList.length != 0 || reqfilesAttrint.length != 0 || isUploading"
+                                            [disabled]="group.invalid || !isAllUniqAttrsValid() || isUploading"
                                             (click)="sts()">{{ getRegisterBtnTitle() }}</button>
                                     </div>
                                 </div>
                             </div>
                         </ng-container>
 
-                        <ng-container *ngIf="cat.type == 1">
+                        <ng-container *ngIf="cat.registerItemStepType == 1">
                             <div [registerSteps]="activeStep" #steps="registerSteps">
-
 
                                 <ng-container *ngFor="let i of attrs; index as index">
                                     <div [step]="getIndexForAttr(i.id)"
                                         [style.display]="getIndexForAttr(i.id) == activeStep ? 'block' : 'none'"
                                         [style.pointer-events]="isUploading ? 'none' : ''">
 
-                                        <ng-container>
-
-                                            <div class="row" style="flex-flow: row;">
-                                                <div class="col-lg-10" style="margin: auto;">
-                                                    <label *ngIf="i.attrTypeInt != 4 && i.attrTypeInt != 11">
-                                                        <b>
-                                                            {{i.title}}
-                                                        </b>
-                                                    </label>
-                                                </div>
-                                                <div class="col-lg-2" style="text-align: left;">
-                                                    <button
-                                                        [disabled]="!group?.controls['p' + getIndexForAttr(i.id)].value || group?.controls['p' + getIndexForAttr(i.id)].disabled"
-                                                        mat-icon-button [matTooltip]="'پاکسازی'" style="outline: none;"
-                                                        (click)="clearItemAttr(i.id)">
-                                                        <mat-icon>close</mat-icon>
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            <input *ngIf="i.attrTypeInt == 1"
-                                                [formControlName]="'p' + getIndexForAttr(i.id)" type="text"
-                                                class="form-control" [class.ng-invalid]="isAttrHasError(i.id)"
-                                                placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
-                                                (input)="setItemAttr($event, i.id);  i.isUniq ? checkForUniqValue($event.target.value, i.id) : null" />
-
-                                            <input *ngIf="i.attrTypeInt == 2"
-                                                [formControlName]="'p' + getIndexForAttr(i.id)" type="tel"
-                                                inputmode="numeric" pattern="[+-]?([0-9]*[.])?[0-9]+"
-                                                class="form-control" [class.ng-invalid]="isAttrHasError(i.id)"
-                                                placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
-                                                (input)="setItemAttr($event, i.id);  i.isUniq ? checkForUniqValue($event.target.value, i.id) : null" />
-
-                                            <mat-form-field class="example-full-width" *ngIf="i.attrTypeInt == 3">
-                                                <input matInput [formControlName]="'p' + getIndexForAttr(i.id)" readonly
-                                                    (click)="openc(picker)"
-                                                    (dateChange)="setItemAttr($event, i.id); i.isUniq ? checkForUniqValue($event, i.id) : null"
-                                                    [matDatepicker]="picker"
-                                                    placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}">
-                                                <mat-datepicker-toggle style="font-size: 25px;"
-                                                    matTooltip="باز کردن تقویم" matSuffix [for]="picker">
-                                                </mat-datepicker-toggle>
-                                                <mat-datepicker #picker touchUi="true"></mat-datepicker>
-                                            </mat-form-field>
-
-                                            <mat-checkbox *ngIf="i.attrTypeInt == 4"
-                                                [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                (change)="setItemAttr($event, i.id); ">{{i.title}}
-                                            </mat-checkbox>
-
-                                            <input *ngIf="i.attrTypeInt == 5"
-                                                [formControlName]="'p' + getIndexForAttr(i.id)" class="form-control"
-                                                type="password" (input)="setItemAttr($event, i.id); "
-                                                placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}" />
-
-                                            <mat-form-field *ngIf="i.attrTypeInt == 6">
-                                                <mat-label>{{i.title}}</mat-label>
-                                                <mat-select style="direction: ltr"
-                                                    [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                    (valueChange)="setItemAttrforselect($event, i.id); i.isUniq ? checkForUniqValue($event, i.id) : null">
-                                                    <mat-option
-                                                        *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption"
-                                                        [value]="v.id">
-                                                        {{v.title}}
-                                                    </mat-option>
-                                                </mat-select>
-                                            </mat-form-field>
-
-                                            <mat-radio-group *ngIf="i.attrTypeInt == 10" class="radio-group"
-                                                [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                (change)="setItemAttrforselect($event.value, i.id); i.isUniq ? checkForUniqValue($event.value, i.id) : null">
-                                                <mat-radio-button class="radio-button"
-                                                    *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption"
-                                                    [value]="v.id">{{v.title}}</mat-radio-button>
-                                            </mat-radio-group>
-
-                                            <input type="file" *ngIf="i.attrTypeInt == 7"
-                                                [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                accept="image/x-png,image/jpeg" class="form-control"
-                                                (change)="setItemAttrforPic($event, i.id, 'pic')" />
-
-                                            <input type="file" *ngIf="i.attrTypeInt == 8"
-                                                [formControlName]="'p' + getIndexForAttr(i.id)" class="form-control"
-                                                (change)="setItemAttrforPic($event, i.id, 'file')" />
-
-                                            <textarea *ngIf="i.attrTypeInt == 9"
-                                                [formControlName]="'p' + getIndexForAttr(i.id)" type="text"
-                                                class="form-control"
-                                                placeholder="{{ getAttrPlaceholder(i.placeholder, i.title) }}"
-                                                (change)="setItemAttr($event, i.id); "></textarea>
-
-                                            <ng-container *ngIf="i.attrTypeInt == 11">
-                                                <div [innerHTML]="i.title | safeHtml"></div>
-
-                                                <hr>
-
-                                                <ng-container *ngIf="i.questionType == 1">
-                                                    <app-custom-editor [showPicSelection]="false"
-                                                        [required]="i.isRequired"
-                                                        [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                        label="جواب شما:"
-                                                        (dataChange)="setItemAttrDirectly($event, i.id); ">
-                                                    </app-custom-editor>
-                                                </ng-container>
-
-                                                <ng-container *ngIf="i.questionType == 2">
-                                                    <mat-radio-group class="radio-group"
-                                                        [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                        (change)="setItemAttrforselect($event.value, i.id); ">
-                                                        <mat-radio-button class="radio-button"
-                                                            *ngFor="let v of i.attributeOptions | shuffleArray:cat.randomAttributeOption"
-                                                            [value]="v.id">
-                                                            <div [innerHTML]="v.title | safeHtml"></div>
-                                                        </mat-radio-button>
-                                                    </mat-radio-group>
-                                                </ng-container>
-
-                                                <ng-container *ngIf="i.questionType == 3">
-                                                    <app-custom-editor [showPicSelection]="false"
-                                                        [required]="i.isRequired" [data]="i.complatabelContent"
-                                                        [formControlName]="'p' + getIndexForAttr(i.id)"
-                                                        label="محتوای زیر را تکمیل کنید"
-                                                        (dataChange)="setItemAttrDirectly($event, i.id);">
-                                                    </app-custom-editor>
-                                                </ng-container>
-
-                                            </ng-container>
-
-
-
-                                            <ng-container *ngIf="i.attrTypeInt == 11">
-                                                <p *ngIf="group.get('p'+getIndexForAttr(i.id)).hasError('required') || group.get('p'+getIndexForAttr(i.id)).invalid"
-                                                    class="error">
-                                                    وارد کردن جواب این سوال الزامی است
-                                                </p>
-                                            </ng-container>
-
-                                            <ng-container *ngIf="i.attrTypeInt == 10">
-                                                <p *ngIf="group.get('p'+getIndexForAttr(i.id)).hasError('required') || group.get('p'+getIndexForAttr(i.id)).invalid"
-                                                    class="error">
-                                                    وارد کردن این فیلد الزامی است
-                                                </p>
-                                            </ng-container>
-
-                                            <ng-container *ngIf="i.attrTypeInt != 10 && i.attrTypeInt != 11">
-
-                                                <ng-container
-                                                    *ngIf="i.attrTypeInt != 4 && (group.get('p'+getIndexForAttr(i.id)).touched || group.get('p'+getIndexForAttr(i.id)).dirty)  && group.get('p'+getIndexForAttr(i.id)).invalid">
-
-                                                    <p *ngIf="group.get('p'+getIndexForAttr(i.id)).hasError('required')"
-                                                        class="error">
-                                                        وارد کردن این فیلد الزامی است
-                                                    </p>
-                                                    <p *ngIf="group.get('p'+getIndexForAttr(i.id)).hasError('meliCode') && group.get('p'+getIndexForAttr(i.id)).value"
-                                                        class="error">
-                                                        کد ملی را به صورت صحیح وارد نمایید
-                                                    </p>
-                                                </ng-container>
-
-                                            </ng-container>
-
-                                            <p *ngIf="isAtrrUniqExsist(i.id)" class="error">
-                                                این {{i.title}} قبلا وارد شده است
-                                            </p>
-
-                                            <p *ngIf="isFileExist(i.id)" class="error">
-                                                وارد کردن این فیلد الزامی است
-                                            </p>
-
-                                            <div class="row" *ngIf="canShowDesc(i.desc)">
-                                                <div class="col-lg-1">
-                                                    <image-icon icon="info" [height]="15"></image-icon>
-                                                </div>
-                                                <div class="col-lg-10">
-                                                    <small style="color: #0072ab;">
-                                                        {{ i.desc }}
-                                                    </small>
-                                                </div>
-                                            </div>
-                                        </ng-container>
+                                        <app-attribute-input #attrInput [(Attribute)]="i" [Category]="cat"
+                                            [formControlName]="'p' + getIndexForAttr(i.id)"
+                                            (clearItemAttribute)="clearItemAttr($event)"
+                                            (saveItemAttributes)="saveItemAttrs()"
+                                            (setItemAttribute)="setAnyItemAttribute($event)">
+                                        </app-attribute-input>
 
                                     </div>
                                 </ng-container>
 
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        <div style="direction: ltr; text-align: center;" *ngIf="isUploading">
-
-                                            <progressbar max="100" [value]="uploaded_PS" type="success" [striped]="true"
-                                                [animate]="true">
-                                                <b>{{ uploaded_MB.toFixed(2) }} / {{ fileSize_MB.toFixed(2) }} (mb)</b>
-                                            </progressbar>
-                                            <p>
-                                                <b
-                                                    tooltip="{{ uploaded_MB.toFixed(2) }} / {{ fileSize_MB.toFixed(2) }} (mb)">
-                                                    {{ uploaded_PS.toFixed(3) }} %
-                                                </b>
-                                            </p>
-                                            <p>
-                                                در حال بارگذاری، لطفا شکیبا باشید
-                                            </p>
-                                        </div>
+                                        <app-register-item-loading-progress *ngIf="isUploading"
+                                            [uploaded_MB]="uploaded_MB" [uploaded_PS]="uploaded_PS"
+                                            [fileSize_MB]="fileSize_MB"></app-register-item-loading-progress>
                                     </div>
                                 </div>
 
@@ -510,7 +121,7 @@
                                             <div
                                                 [ngClass]="(isPrevStepAllowed && cat.randomAttribute) ? 'col-lg-9' : 'col-lg-12'">
                                                 <button class="btn btn-outline-success" style="width: 100%;"
-                                                    [disabled]="!steps.isActiveStepValid() || attrUniqList.length != 0 || reqfilesAttrint.length != 0 || isUploading || isLoadingForUniqAttr"
+                                                    [disabled]="!steps.isActiveStepValid() || isUploading"
                                                     (click)="nextStep()">
                                                     <span class="fa fa-arrow-right"
                                                         style="vertical-align: middle;"></span>
@@ -520,7 +131,7 @@
                                             </div>
                                             <div class="col-lg-3" *ngIf="isPrevStepAllowed && cat.randomAttribute">
                                                 <button class="btn btn-outline-info" style="width: 100%;"
-                                                    [disabled]="activeStep == 0 || !isPrevStepAllowed || !steps.isActiveStepValid() || attrUniqList.length != 0 || reqfilesAttrint.length != 0 || isUploading || isLoadingForUniqAttr"
+                                                    [disabled]="activeStep == 0 || !isPrevStepAllowed || !steps.isActiveStepValid() || !isAllUniqAttrsValid() || isUploading"
                                                     (click)="lastStep()" [tooltip]="'رفتن به سوال آخر'">
                                                     <span class="fa fa-long-arrow-right"
                                                         style="vertical-align: middle;"></span>
@@ -532,7 +143,7 @@
                                     <div [class.col-lg-6]="activeStep != attrs.length -1"
                                         [class.col-lg-12]="activeStep == attrs.length -1">
                                         <button class="btn btn-outline-warning" style="width: 100%;"
-                                            [disabled]="activeStep == 0 || isUploading || !isPrevStepAllowed"
+                                            [disabled]="activeStep == 0 || !steps.isActiveStepValid() || isUploading || !isPrevStepAllowed"
                                             (click)="prevStep()">
                                             <span class="fa fa-arrow-left" style="vertical-align: middle;"></span>
                                             &nbsp; &nbsp;
@@ -551,7 +162,7 @@
                                 <div class="row" *ngIf="activeStep == attrs.length -1">
                                     <div class="col-lg-12">
                                         <button class="btn btn-outline-success" style="width: 100%;" *ngIf="!isPreview"
-                                            [disabled]="!steps.isActiveStepValid() || attrUniqList.length != 0 || reqfilesAttrint.length != 0 || isUploading || isLoadingForUniqAttr"
+                                            [disabled]="!steps.isActiveStepValid() || !isAllUniqAttrsValid() || isUploading || group.invalid"
                                             (click)="!isUploading && !isPreview ? sts() : null">
                                             <span class="fa fa-check" style="vertical-align: middle;"></span>
                                             &nbsp; &nbsp;
@@ -561,19 +172,118 @@
                                 </div>
 
                                 <div style="text-align: center; margin-top: 50px; margin-bottom: 30px; direction: ltr;">
-                                    <ng-container *ngFor="let unit of units">
-                                        <fieldset *ngIf="getAttrsForUnit(unit.id).length != 0">
+                                    <ng-container *ngFor="let unit of getUnitsThatHaveAttrs()">
+                                        <fieldset>
                                             <legend>{{ unit.title }}</legend>
                                             <ng-container
                                                 *ngFor="let i of getAttrsForUnit(unit.id); let attrIndex = index;">
                                                 <span class="step-dot"
                                                     [style.cursor]="isPrevStepAllowed ? 'pointer' : ''"
-                                                    [tooltip]="attrIndex + 1" [class.finished]="isItemAttrHasValue(i)"
+                                                    [tooltip]="getStepTooltip(getIndexForAttr(i.id))"
+                                                    [class.finished]="isStepFinished(i.id)"
                                                     [class.active]="activeStep == getIndexForAttr(i.id)"
-                                                    [class.error]="isAttrHasError(i.id)"
+                                                    [class.error]="isStepHasError(i.id)"
                                                     (click)="goToStep(i.id)"></span>
                                             </ng-container>
                                         </fieldset>
+                                    </ng-container>
+                                </div>
+
+
+                            </div>
+                        </ng-container>
+
+                        <ng-container *ngIf="cat.registerItemStepType == 2">
+                            <div [registerSteps]="activeStep" #steps="registerSteps">
+
+                                <ng-container *ngFor="let unit of getUnitsThatHaveAttrs()">
+                                    <div [step]="getIndexForUnit(unit.id)"
+                                        [style.display]="getIndexForUnit(unit.id) == activeStep ? 'block' : 'none'"
+                                        [style.pointer-events]="isUploading ? 'none' : ''">
+
+
+                                        <div class="margin-top-10" style="margin-top: 45px; margin-bottom: 5px;">
+                                            <b style="font-size: 16px; color: #de7100;">{{ unit.title }}</b>
+                                            <!-- <mat-divider></mat-divider> -->
+                                        </div>
+
+                                        <div class="bordered">
+
+                                            <div class="form-group"
+                                                *ngFor="let i of getAttrsForUnit(unit.id); index as index"
+                                                [style.margin-top.px]="index == 0 ? 0 : 35">
+
+                                                <app-attribute-input #attrInput [(Attribute)]="i" [Category]="cat"
+                                                    [formControlName]="'p' + getIndexForAttr(i.id)"
+                                                    (clearItemAttribute)="clearItemAttr($event)"
+                                                    (saveItemAttributes)="saveItemAttrs()"
+                                                    (setItemAttribute)="setAnyItemAttribute($event)">
+                                                </app-attribute-input>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </ng-container>
+
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <app-register-item-loading-progress *ngIf="isUploading"
+                                            [uploaded_MB]="uploaded_MB" [uploaded_PS]="uploaded_PS"
+                                            [fileSize_MB]="fileSize_MB"></app-register-item-loading-progress>
+                                    </div>
+                                </div>
+
+
+                                <div class="row" style="flex-flow: row; margin-top: 10px;">
+                                    <div class="col-lg-6" *ngIf="activeStep != getMaxStepNumber() - 1">
+                                        <button class="btn btn-outline-success" style="width: 100%;"
+                                            [disabled]="!steps.isActiveStepValid() || isUploading" (click)="nextStep()">
+                                            <span class="fa fa-arrow-right" style="vertical-align: middle;"></span>
+                                            &nbsp; &nbsp;
+                                            مرحله بعد
+                                        </button>
+                                    </div>
+                                    <div [class.col-lg-6]="activeStep != getMaxStepNumber() -1"
+                                        [class.col-lg-12]="activeStep == getMaxStepNumber() -1">
+                                        <button class="btn btn-outline-warning" style="width: 100%;"
+                                            [disabled]="activeStep == 0 || !steps.isActiveStepValid() || isUploading || !isPrevStepAllowed"
+                                            (click)="prevStep()">
+                                            <span class="fa fa-arrow-left" style="vertical-align: middle;"></span>
+                                            &nbsp; &nbsp;
+                                            قبلی
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <button type="button" routerLink="/" [disabled]="isUploading"
+                                            class="btn btn-block btn-outline-danger">خروج</button>
+                                    </div>
+                                </div>
+
+                                <div class="row" *ngIf="activeStep == getMaxStepNumber() -1">
+                                    <div class="col-lg-12">
+                                        <button class="btn btn-outline-success" style="width: 100%;" *ngIf="!isPreview"
+                                            [disabled]="!steps.isActiveStepValid() || group.invalid || !isAllUniqAttrsValid() || isUploading"
+                                            (click)="!isUploading && !isPreview ? sts() : null">
+                                            <span class="fa fa-check" style="vertical-align: middle;"></span>
+                                            &nbsp; &nbsp;
+                                            {{ getRegisterBtnTitle() }}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div style="text-align: center; margin-top: 50px; margin-bottom: 30px; direction: ltr;">
+                                    <ng-container>
+                                        <span class="step-dot"
+                                            *ngFor="let unit of getUnitsThatHaveAttrs(); index as index"
+                                            [style.cursor]="isPrevStepAllowed ? 'pointer' : ''"
+                                            [tooltip]="getStepTooltip(index)" [class.finished]="isStepFinished(unit.id)"
+                                            [class.active]="activeStep == index" [class.error]="isStepHasError(unit.id)"
+                                            (click)="goToStep(unit.id)"></span>
                                     </ng-container>
                                 </div>
 

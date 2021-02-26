@@ -81,7 +81,14 @@ export enum PostType {
 }
 
 
-export function getPostTypeString(type, fadakTitle = "", hedayatTahsilTitle = "", blogTitle = "", bargozideganTitle = ""): string {
+export function getPostTypeString(type,
+    fadakTitle = "",
+    hedayatTahsilTitle = "",
+    blogTitle = "",
+    bargozideganTitle = "",
+    porseshMotadavelTitle = "",
+    ehrazeHoviatTitle = ""): string {
+
     if (type == 1) {
         return "اخبار";
     }
@@ -122,10 +129,10 @@ export function getPostTypeString(type, fadakTitle = "", hedayatTahsilTitle = ""
         return "انجمن نیکوکاری";
     }
     if (type == 14) {
-        return "پاسخ به پرسش های متداول";
+        return `${porseshMotadavelTitle}`;
     }
     if (type == 15) {
-        return "رویه احراز هویت";
+        return `${ehrazeHoviatTitle}`;
     }
     if (type == 16) {
         return "شرایط ثبت نام";

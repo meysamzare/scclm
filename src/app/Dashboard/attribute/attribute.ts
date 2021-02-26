@@ -40,6 +40,10 @@ export class IAttr {
 
     values: string = "";
 
+    isPhoneNumber = false;
+    requiredErrorMessage = "";
+    uniqErrorMessage = "";
+
     haveAnyOption = false;
     haveAnyTrueOption = false;
 

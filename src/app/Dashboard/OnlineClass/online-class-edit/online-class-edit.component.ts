@@ -43,7 +43,9 @@ export class OnlineClassEditComponent implements OnInit {
     selectedTeacherId = null;
 
     Students: any[] = [];
-    
+
+    searchInSelectedStudents = "";
+
     constructor(
         private route: Router,
         private activeRoute: ActivatedRoute,
@@ -312,7 +314,7 @@ export class OnlineClassEditComponent implements OnInit {
         }
     }
 
-    
+
     getStudentName(studentId) {
         let student = this.Students.find(c => c.id == studentId);
 
@@ -321,5 +323,27 @@ export class OnlineClassEditComponent implements OnInit {
         }
 
         return "";
+    }
+
+    getStudentGradeClassName(studentId) {
+        const student = this.Students.find(c => c.id == studentId);
+
+        if (student) {
+            return `${student.gradeName}/${student.className}`;
+        }
+
+        return "";
+    }
+
+    getFilteredSelectedStudent(): number[] {
+        const searchText = this.searchInSelectedStudents;
+
+        const students = this.Students.filter(c => this.PAGE_Data.allowedStudentIds.includes(c.id));
+
+        if (searchText) {
+            return students.filter(c => c.name.includes(searchText)).map(c => c.id);
+        }
+
+        return students.map(c => c.id);
     }
 }

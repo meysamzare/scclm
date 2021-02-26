@@ -118,8 +118,9 @@
     <app-mobile-schedule-view></app-mobile-schedule-view>
 
     <app-online-class-mobile-list [isAdmin]="false" [gradeId]="stdAuth.getActiveStdClassMng().gradeId"
-        [classId]="stdAuth.getActiveStdClassMng().classId" [userFullName]="stdAuth.getStudentFullName()"
-        [userId]="stdAuth.getStudent().id"></app-online-class-mobile-list>
+        [classId]="stdAuth.getActiveStdClassMng().classId"
+        [userFullName]="stdAuth.getStudent().lastName + ' - ' + stdAuth.getStudent().name"
+        [userId]="stdAuth.getStudent().id" [userName]="stdAuth.getStudent().idNumber2"></app-online-class-mobile-list>
 
 
 </div>

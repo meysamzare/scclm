@@ -1,8 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChildren, QueryList } from '@angular/core';
 import { AuthService } from 'src/app/shared/Auth/auth.service';
 import { IOnlineClass } from 'src/app/Dashboard/OnlineClass/online-class';
 import { finalize } from 'rxjs/operators';
 import { BigBlueButtonRepositoryService } from 'public/Services/big-blue-button/big-blue-button-repository.service';
+import { OnlineClassMobileItemComponent } from './online-class-mobile-item/online-class-mobile-item.component';
 
 @Component({
     selector: 'app-online-class-mobile-list',
@@ -10,6 +11,8 @@ import { BigBlueButtonRepositoryService } from 'public/Services/big-blue-button/
     styleUrls: ['./online-class-mobile-list.component.scss']
 })
 export class OnlineClassMobileListComponent implements OnInit {
+
+    @ViewChildren(OnlineClassMobileItemComponent) onlineClassesItems: QueryList<OnlineClassMobileItemComponent>;
 
     @Input() isAdmin = false;
 
@@ -20,6 +23,7 @@ export class OnlineClassMobileListComponent implements OnInit {
 
     @Input() userFullName = "";
     @Input() userId = "";
+    @Input() userName = "";
 
 
     @Input() additionalTitle = "";
@@ -35,6 +39,10 @@ export class OnlineClassMobileListComponent implements OnInit {
 
     ngOnInit() {
         this.refreshOnlineClasses();
+    }
+
+    sortOnlineClasses(onlineClass: IOnlineClass) {
+        
     }
 
     refreshOnlineClasses() {

@@ -14,6 +14,7 @@ import { ProductComponent } from './Product/product/product.component';
 import { LoadIdataResolverService } from 'src/app/shared/Auth/load-idata-resolver.service';
 import { ViewVirtualTeachingComponent } from './Product/view-virtual-teaching/view-virtual-teaching.component';
 import { OnlineExamsComponent } from './online-exams/online-exams.component';
+import { GridPostsComponent } from './grid-posts/grid-posts.component';
 
 const routes: Routes = [
     {
@@ -61,6 +62,16 @@ const routes: Routes = [
                     {
                         path: "",
                         component: PostsComponent,
+                        pathMatch: "full",
+                    }
+                ]
+            },
+            {
+                path: "grid-posts",
+                children: [
+                    {
+                        path: "",
+                        component: GridPostsComponent,
                         pathMatch: "full",
                     }
                 ]

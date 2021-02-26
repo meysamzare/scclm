@@ -74,10 +74,14 @@
                         </header>
                         <ul class="footer-menu">
                             <li>
-                                <a [routerLink]="['/posts']" [queryParams]="{ 'type' : 14 }">پاسخ به پرسش‌های متداول</a>
+                                <a [routerLink]="['/posts']" [queryParams]="{ 'type' : 14 }">
+                                    {{ auth.porseshMotadavelTitle }}
+                                </a>
                             </li>
                             <li>
-                                <a [routerLink]="['/posts']" [queryParams]="{ 'type' : 15 }">رویه‌های احراز هویت</a>
+                                <a [routerLink]="['/posts']" [queryParams]="{ 'type' : 15 }">
+                                    {{ auth.ehrazeHoviatTitle }}
+                                </a>
                             </li>
                             <li>
                                 <a [routerLink]="['/posts']" [queryParams]="{ 'type' : 16 }">شرایط ثبت نام در

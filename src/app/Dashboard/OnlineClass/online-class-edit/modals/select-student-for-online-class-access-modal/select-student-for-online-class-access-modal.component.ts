@@ -12,7 +12,7 @@ import { AuthService } from 'src/app/shared/Auth/auth.service';
 export class SelectStudentForOnlineClassAccessModalComponent implements OnInit {
 
     selectedStudentIds: number[] = [];
-    students: IStudent[] = [];
+    students: any[] = [];
 
     grades: IGrade[] = [];
     selectedGrade: number = null;
@@ -69,7 +69,6 @@ export class SelectStudentForOnlineClassAccessModalComponent implements OnInit {
         }).subscribe(data => {
             if (data.success) {
                 this.students = data.data;
-                this.selectedStudentIds = [];
             } else {
                 this.auth.message.showMessageforFalseResult(data);
             }
@@ -141,7 +140,7 @@ export class SelectStudentForOnlineClassAccessModalComponent implements OnInit {
         return this.sortAgentsBySelection(this.students);
     }
 
-    sortAgentsBySelection(students: IStudent[]) {
+    sortAgentsBySelection(students: IStudent[]): any[] {
         return students.sort((a, b) => {
             var aSelected = this.selectedStudentIds.includes(a.id);
             var bSelected = this.selectedStudentIds.includes(b.id);

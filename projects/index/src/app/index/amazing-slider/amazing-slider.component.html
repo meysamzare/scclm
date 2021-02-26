@@ -49,15 +49,25 @@
                             </ul>
                             <hr>
 
-                            <ng-container *ngIf="!sch.isOver">
-                                <countdown-timer style="font-size: 25px; color: red; font-weight: bold;"
-                                    [end]="sch.formatedDateEnd"></countdown-timer>
-                                <h5>زمان باقی مانده تا پایان رویداد</h5>
-                            </ng-container>
+                            <div class="row" style="height: 0;">
+                                <div class="col-lg-7">
+                                    <ng-container *ngIf="!sch.isOver">
+                                        <countdown-timer style="font-size: 25px; color: red; font-weight: bold;"
+                                            [end]="sch.formatedDateEnd"></countdown-timer>
+                                        <h5>زمان باقی مانده تا پایان رویداد</h5>
+                                    </ng-container>
 
-                            <ng-container *ngIf="sch.isOver">
-                                <a class="finished btn"> رویداد پایان یافت </a>
-                            </ng-container>
+                                    <ng-container *ngIf="sch.isOver">
+                                        <a class="finished btn"> رویداد پایان یافت </a>
+                                    </ng-container>
+                                </div>
+                                <div class="col-lg-5" style="text-align: left;">
+                                    <button type="button" class="btn btn-primary" style="margin-top: 10px;"
+                                        *ngIf="!sch.isOver" routerLink="/post/{{sch.postId}}/{{sch.post.url}}">
+                                        بیشتر بخوانید
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,14 @@
+<div style="direction: ltr; text-align: center;">
+
+    <progressbar max="100" [value]="uploaded_PS" type="success" [striped]="true" [animate]="true">
+        <b>{{ uploaded_MB.toFixed(2) }} / {{ fileSize_MB.toFixed(2) }} (mb)</b>
+    </progressbar>
+    <p>
+        <b tooltip="{{ uploaded_MB.toFixed(2) }} / {{ fileSize_MB.toFixed(2) }} (mb)">
+            {{ uploaded_PS.toFixed(3) }} %
+        </b>
+    </p>
+    <p>
+        در حال بارگذاری، لطفا شکیبا باشید
+    </p>
+</div>

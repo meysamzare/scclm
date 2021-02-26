@@ -595,7 +595,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
                     this.items.find(c => c.id == id).categoryRoleAccess
                 )
             ) {
-                this.router.navigate(["/dashboard/item/edit/" + id], {
+                this.router.navigate([`/dashboard/${this.TYPE == 0 ? 'item' : 'online-exam/result'}/edit/` + id], {
                     queryParams: {
                         pagesize: this.paginator.pageSize,
                         page: this.paginator.pageIndex,
@@ -821,7 +821,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
 
     openChahngeGroupDialog() {
         if (this.auth.isUserAccess(this.TYPE == 0 ? "edit_Item" : "edit_OnlineExamResult")) {
-            var selectedData = this.selection.selected;
+            var selectedData: any[] = this.selection.selected;
 
             let ids: number[] = [];
             selectedData.forEach(row => ids.push(row.id));
@@ -843,7 +843,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
 
             if (havePermision) {
                 var haveSameCategory = selectedData.every(
-                    val => val.category.id === selectedData[0].category.id
+                    val => val.categoryId === selectedData[0].categoryId
                 );
 
                 if (haveSameCategory) {
@@ -851,7 +851,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
                         ItemListChangeAttrGroupComponent,
                         {
                             data: {
-                                catId: selectedData[0].category.id,
+                                catId: selectedData[0].categoryId,
                                 selectedItemsIds: ids
                             }
                         }
@@ -859,6 +859,7 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
 
                     dialogRef.afterClosed().subscribe(res => {
                         this.selection.clear();
+                        this.refreshDataSource();
                     });
                 } else {
                     this.message.showWarningAlert(
@@ -910,27 +911,29 @@ export class ItemListComponent implements AfterContentInit, AfterViewInit, OnIni
         this.refreshDataSource();
     }
 
-    addSearchAttrValForSelect(attrId, event) {
-        let val = event;
+    addSearchAttrValDirect(attrId: number, val: string) {
 
-        var i = this.searchAttrVals.find(c => c.attrId == attrId);
+        let searchAttrVal = this.searchAttrVals.find(c => c.attrId == attrId);
 
-        if (i) {
-            if (val === "") {
-                this.searchAttrVals.splice(this.searchAttrVals.indexOf(i), 1);
-            }
-            i.val = val;
-        } else {
-            if (val != "") {
+        if (val) {
+            if (searchAttrVal) {
+                searchAttrVal.val = val;
+            } else {
                 this.searchAttrVals.push({
                     attrId: attrId,
                     val: val
                 });
             }
+        } else {
+            if (searchAttrVal) {
+                this.searchAttrVals.splice(this.searchAttrVals.indexOf(searchAttrVal), 1);
+            }
         }
 
         this.refreshDataSource();
     }
+
+
 
     openc(picker) {
         picker.open();

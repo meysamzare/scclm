@@ -1,24 +1,27 @@
-import { Directive, Input, ElementRef, ContentChildren, QueryList, ContentChild } from '@angular/core';
-import { FormControlName } from '@angular/forms';
+import { Directive, Input, ContentChildren, QueryList } from '@angular/core';
 
 @Directive({
     selector: '[step]'
 })
 export class RegisterStepDirective {
 
-    @Input("step") public attrId = 0;
+    @Input("step") public stepIndex = 0;
 
-    @ContentChild(FormControlName) control: FormControlName;
+    @ContentChildren("attrInput", { descendants: true }) attrInputs: QueryList<any>;
 
     constructor() { }
 
-    isStepControlValid() {
-        if (this.control) {
-            if (this.control.disabled) {
-                return true;
-            }
-            
-            return this.control.valid;
+    isStepInputsValid() {
+        if (this.attrInputs) {
+            return this.attrInputs.toArray().every(c => c.isInputValid());
+        }
+
+        return false;
+    }
+
+    isInputsCompleted() {
+        if (this.attrInputs) {
+            return this.attrInputs.toArray().every(c => c.isInputHaveValue());
         }
 
         return false;
@@ -34,16 +37,40 @@ export class StepsDirective {
 
     @Input("registerSteps") public activeStep = 0;
 
-    @ContentChildren(RegisterStepDirective,  { descendants: true }) steps: QueryList<RegisterStepDirective>;
+    @ContentChildren(RegisterStepDirective, { descendants: true }) steps: QueryList<RegisterStepDirective>;
 
     constructor() { }
 
     isActiveStepValid() {
         if (this.steps) {
-            let step = this.steps.toArray().find(c => c.attrId == this.activeStep);
+            const step = this.steps.toArray().find(c => c.stepIndex == this.activeStep);
 
             if (step) {
-                return step.isStepControlValid();
+                return step.isStepInputsValid();
+            }
+        }
+
+        return true;
+    }
+
+    isStepValid(stepIndex: number) {
+        if (this.steps) {
+            const step = this.steps.toArray().find(c => c.stepIndex == stepIndex);
+
+            if (step) {
+                return step.isStepInputsValid();
+            }
+        }
+
+        return false;
+    }
+
+    isStepCompleted(stepIndex: number) {
+        if (this.steps) {
+            const step = this.steps.toArray().find(c => c.stepIndex == stepIndex);
+
+            if (step) {
+                return step.isInputsCompleted();
             }
         }
 

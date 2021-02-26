@@ -23,6 +23,7 @@ import { HtmlToolsModule } from 'src/app/html-tools/html-tools.module';
 import { ShowImageComponent } from 'src/app/shared/Modal/show-image.component';
 import { LastPostsGridComponent } from './last-posts-grid/last-posts-grid.component';
 import { LastSpecialPostsComponent } from './last-special-posts/last-special-posts.component';
+import { GridPostsComponent } from './grid-posts/grid-posts.component';
 
 @NgModule({
     declarations: [
@@ -39,6 +40,7 @@ import { LastSpecialPostsComponent } from './last-special-posts/last-special-pos
         ViewVirtualTeachingComponent,
         OnlineExamsComponent,
         ShowImageComponent,
+        GridPostsComponent,
     ],
     imports: [
         CommonModule,

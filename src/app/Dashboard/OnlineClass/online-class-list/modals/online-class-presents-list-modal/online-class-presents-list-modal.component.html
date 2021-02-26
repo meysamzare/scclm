@@ -1,0 +1,81 @@
+<div dir="rtl" style="min-width:650px;">
+
+    <div mat-dialog-title>
+        {{ Title }}
+
+        <div class="row">
+            <div class="col-lg-10" style="text-align: right;">
+                <input type="text" class="form-control" [(ngModel)]="searchText" placeholder="جستجو">
+            </div>
+            <div class="col-lg-2" style="text-align: left;">
+                <button mat-icon-button (click)="refreshLogins()">
+                    <mat-icon>refresh</mat-icon>
+                </button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6" style="text-align: right;">
+                <mat-checkbox style="font-size: 14px;" [(ngModel)]="onlyShowAbsence">
+                    فقط نمایش غائب ها
+                </mat-checkbox>
+            </div>
+            <div class="col-lg-6" style="text-align: left;">
+                <p style="font-size: 14px;">تعداد ورودها: <b>{{ getNonAbsenceLoginCount() }}</b></p>
+            </div>
+        </div>
+    </div>
+
+
+    <div mat-dialog-content>
+
+        <ng-container *ngIf="isLoading">
+            <mat-progress-bar mode="buffer"></mat-progress-bar>
+        </ng-container>
+
+        <ng-container *ngIf="!isLoading">
+
+            <ng-container *ngIf="getFilteredLogins().length == 0">
+                <p><b>موردی یافت نشد</b></p>
+            </ng-container>
+
+            <div class="row" matRipple style="padding: 15px;" [tooltip]="i.gradeName + '/' + i.className"
+                [style.backgroundColor]="!isStudentPresent(i.id) ? '#ffe8e8' : 'unset'"
+                *ngFor="let i of getFilteredLogins()">
+                <div class="col-lg-4 al-right">
+                    <b>{{ i.name }}</b>
+                </div>
+                <div class="col-lg-6" style="text-align: center;">
+                    <ng-container *ngIf="isStudentPresent(i.id) && getStudentState(i.id)">
+                        <button mat-icon-button matTooltip="ادمین" *ngIf="getStudentState(i.id).role == 'MODERATOR'">
+                            <mat-icon>verified_user</mat-icon>
+                        </button>
+                        <button mat-icon-button matTooltip="ارائه دهنده" *ngIf="getStudentState(i.id).isPresenter">
+                            <mat-icon>bookmark</mat-icon>
+                        </button>
+                        <button mat-icon-button matTooltip="تنها شنونده" *ngIf="getStudentState(i.id).isListeningOnly">
+                            <mat-icon>record_voice_over</mat-icon>
+                        </button>
+                        <button mat-icon-button matTooltip="اتصال میکروفون"
+                            *ngIf="getStudentState(i.id).hasJoinedVoice">
+                            <mat-icon>mic</mat-icon>
+                        </button>
+                        <button mat-icon-button matTooltip="دارای ویدئو" *ngIf="getStudentState(i.id).hasVideo">
+                            <mat-icon>videocam</mat-icon>
+                        </button>
+                    </ng-container>
+                </div>
+                <div class="col-lg-2 al-left" style="text-align: left;">
+                    <p>{{ isStudentPresent(i.id) ? "حاضر" : "غائب" }}</p>
+                </div>
+            </div>
+
+        </ng-container>
+
+    </div>
+
+
+    <div mat-dialog-actions>
+        <button mat-stroked-button color="warn" style="margin-right: 5px;" [mat-dialog-close]="false">خروج</button>
+    </div>
+</div>

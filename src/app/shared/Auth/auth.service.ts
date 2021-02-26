@@ -89,13 +89,13 @@ export class AuthService {
 
 
 
-    DASHBOARD_VERSION = "1.0.71 Build 6657";
+    DASHBOARD_VERSION = "1.1.35 Build 887";
 
-    INDEX_VERSION = "3.6.79 Build 908";
+    INDEX_VERSION = "3.7.88 Build 0997";
 
-    PARENTMOBILEAPP_VERSION = "3.3.92 Build 776";
+    PARENTMOBILEAPP_VERSION = "3.4.2 Build 220";
 
-    TMA_VERSION = "1.91.2 Build 9987";
+    TMA_VERSION = "1.95.4 Build 825";
 
 
     public apiUrl: string;
@@ -135,6 +135,10 @@ export class AuthService {
 
     public showPostsGrid?: boolean;
 
+    public porseshMotadavelTitle?: string;
+    public ehrazeHoviatTitle?: string;
+
+    public gridShownPostTypes?: number[];
 
     load(http: HttpClient, type: "promise" | "observable" = "promise") {
         var req = http.get('./assets/config/data.json').pipe(
@@ -172,6 +176,13 @@ export class AuthService {
                 this.bargozideganTitle = data.bargozideganTitle || "دبیرخانه برگزیدگان";
 
                 this.showPostsGrid = data.showPostsGrid || false;
+
+
+                this.porseshMotadavelTitle = data.porseshMotadavelTitle || "پاسخ به پرسش های متداول";
+                this.ehrazeHoviatTitle = data.ehrazeHoviatTitle || "رویه احراز هویت";
+
+
+                this.gridShownPostTypes = data.gridShownPostTypes || [];
 
                 this.idb.getObjectStore(this.idb.dbApiStoreName).then((obstore) => {
                     obstore.getAll().onsuccess = (e) => {

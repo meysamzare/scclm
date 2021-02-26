@@ -11,7 +11,7 @@
                         <div class="row">
                             <div class="col-lg-12" style="text-align: center;">
                                 <p>نوع احراز هویت و ورود دبیران و دانش آموزان</p>
-                                <mat-button-toggle-group name="fontStyle" [(ngModel)]="PAGE_Data.authorizeType">
+                                <mat-button-toggle-group name="authorizeType" [(ngModel)]="PAGE_Data.authorizeType">
                                     <mat-button-toggle [value]="0">براساس کلاس و شعبه</mat-button-toggle>
                                     <mat-button-toggle [value]="1">انتخابی</mat-button-toggle>
                                 </mat-button-toggle-group>
@@ -113,15 +113,23 @@
 
                                 <div class="row margin-top-10">
                                     <div class="col-lg-12">
-                                        <mat-chip-list>
-                                            <mat-chip *ngFor="let i of PAGE_Data.allowedStudentIds">
-                                                {{ getStudentName(i) }}
-                                                <mat-icon matChipRemove (click)="removeStudent(i)"
-                                                    style="margin-right: 5px; margin-left: 0;">
-                                                    cancel
-                                                </mat-icon>
-                                            </mat-chip>
-                                        </mat-chip-list>
+                                        <div>
+                                            <input type="text" class="form-control" name="searchInSelected"
+                                                [(ngModel)]="searchInSelectedStudents"
+                                                placeholder="جستجو در دانش آموزان انتخاب شده">
+                                        </div>
+                                        <div style="margin-top: 10px;">
+                                            <mat-chip-list>
+                                                <mat-chip *ngFor="let i of getFilteredSelectedStudent()"
+                                                    [tooltip]="getStudentGradeClassName(i)">
+                                                    {{ getStudentName(i) }}
+                                                    <mat-icon matChipRemove (click)="removeStudent(i)"
+                                                        style="margin-right: 5px; margin-left: 0;">
+                                                        cancel
+                                                    </mat-icon>
+                                                </mat-chip>
+                                            </mat-chip-list>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -147,9 +155,8 @@
 
                             <div class="form-group">
                                 <label>حداکثر مدت زمان {{ PAGE_TITLE }}</label>
-                                <input type="text" inputmode="numeric" pattern="*[0-9]" required #duration="ngModel"
-                                    name="duration" [(ngModel)]="PAGE_Data.duration" placeholder="حداکثر مدت زمان"
-                                    class="form-control">
+                                <input type="text" inputmode="numeric" required #duration="ngModel" name="duration"
+                                    [(ngModel)]="PAGE_Data.duration" placeholder="حداکثر مدت زمان" class="form-control">
                                 <div *ngIf="(duration.touched || duration.dirty) && duration.invalid">
                                     <p *ngIf="name.hasError('required')" class="error">
                                         وارد کردن حداکثر مدت زمان {{ PAGE_TITLE }} الزامی است
@@ -184,10 +191,9 @@
 
                             <div class="form-group">
                                 <label>حداکثر تعداد شرکت کننده {{ PAGE_TITLE }}</label>
-                                <input type="text" inputmode="numeric" pattern="*[0-9]" required
-                                    #maxParticipants="ngModel" name="maxParticipants"
-                                    [(ngModel)]="PAGE_Data.maxParticipants" placeholder="حداکثر تعداد شرکت کننده"
-                                    class="form-control">
+                                <input type="text" inputmode="numeric" required #maxParticipants="ngModel"
+                                    name="maxParticipa" [(ngModel)]="PAGE_Data.maxParticipants"
+                                    placeholder="حداکثر تعداد شرکت کننده" class="form-control">
                                 <div
                                     *ngIf="(maxParticipants.touched || maxParticipants.dirty) && maxParticipants.invalid">
                                     <p *ngIf="name.hasError('required')" class="error">
@@ -221,13 +227,13 @@
 
                                 <div class="form-group">
                                     <mat-checkbox name="record" [(ngModel)]="PAGE_Data.record">
-                                        آیا ادمین بتواند کلاس را ظبط کند؟
+                                        آیا ادمین بتواند کلاس را ضبط کند؟
                                     </mat-checkbox>
                                 </div>
 
                                 <div class="form-group">
                                     <mat-checkbox name="autoStartRecording" [(ngModel)]="PAGE_Data.autoStartRecording">
-                                        ظبط خودکار کلاس
+                                        ضبط خودکار کلاس
                                     </mat-checkbox>
                                 </div>
 

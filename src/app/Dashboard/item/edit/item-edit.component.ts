@@ -113,7 +113,7 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
             let id = params["id"];
 
             if (id === "0") {
-                this.Title = "افزودن نمون برگ";
+                this.Title = `افزودن داده ${this.pageTitle}`
                 this.btnTitle = "افزودن";
                 this.isEdit = false;
                 this.attrs = [];
@@ -122,7 +122,7 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
             } else {
                 let idd = Number.parseInt(id);
                 if (Number.isInteger(idd)) {
-                    this.Title = "ویرایش نمون برگ " + this.item.title;
+                    this.Title = `ویرایش داده ${this.pageTitle} ${this.item.title}`;
                     this.btnTitle = "ویرایش";
                     this.isEdit = true;
 
@@ -135,7 +135,7 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
                             this.item.categoryRoleAccess
                         )
                     ) {
-                        this.route.navigate(["/dashboard/item"], { queryParamsHandling: "preserve" });
+                        this.route.navigate([`/dashboard/${this.TYPE == 0 ? 'item' : 'online-exam/result'}`], { queryParamsHandling: "preserve" });
                     }
 
                     $("#divtree").jstree("deselect_all");
@@ -232,7 +232,7 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
                 itemId: itemId,
                 inputValue: event
             }, {
-                type: 'Add',
+                type: 'Edit',
                 agentId: this.auth.getUserId(),
                 agentType: 'User',
                 agentName: this.auth.getUser().fullName,
@@ -335,7 +335,7 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
                                 }
 
                                 this.auth.logToServer({
-                                    type: 'Add',
+                                    type: 'Edit',
                                     agentId: this.auth.getUserId(),
                                     agentType: 'User',
                                     agentName: this.auth.getUser().fullName,
@@ -424,7 +424,7 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
                     itemId: itemId,
                     inputValue: inputValue
                 }, {
-                    type: 'Add',
+                    type: 'Edit',
                     agentId: this.auth.getUserId(),
                     agentType: 'User',
                     agentName: this.auth.getUser().fullName,
@@ -563,7 +563,7 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
     }
 
     goToList() {
-        this.route.navigate(["/dashboard/item"]);
+        this.route.navigate([`/dashboard/${this.TYPE == 0 ? 'item' : 'online-exam/result'}`]);
     }
 
     sts() {
@@ -599,7 +599,7 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
                                 this.auth.refreshUserData();
                             }
 
-                            this.route.navigate(["/dashboard/item"], { queryParamsHandling: "preserve" });
+                            this.route.navigate([`/dashboard/${this.TYPE == 0 ? 'item' : 'online-exam/result'}`], { queryParamsHandling: "preserve" });
                         } else {
                             this.message.showMessageforFalseResult(data);
                         }
@@ -625,7 +625,7 @@ export class ItemEditComponent implements AfterContentInit, OnInit, OnDestroy {
                             this.message.showSuccessAlert("با موفقیت ثبت شد");
 
                             this.route.navigate([
-                                "/dashboard/item/edit/" + data.data
+                                `/dashboard/${this.TYPE == 0 ? 'item' : 'online-exam/result'}/edit/` + data.data
                             ], { queryParamsHandling: "preserve" });
                         } else {
                             this.message.showMessageforFalseResult(data);

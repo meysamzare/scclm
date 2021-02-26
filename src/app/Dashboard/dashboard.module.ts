@@ -217,6 +217,10 @@ import { QuickAddAttributeModalComponent } from '../Dashboard/category/edit/moda
 import { OnlineClassServerEditComponent } from '../Dashboard/OnlineClassServer/online-class-server-edit/online-class-server-edit.component';
 import { OnlineClassServerListComponent } from '../Dashboard/OnlineClassServer/online-class-server-list/online-class-server-list.component';
 import { SelectStudentForOnlineClassAccessModalComponent } from '../Dashboard/OnlineClass/online-class-edit/modals/select-student-for-online-class-access-modal/select-student-for-online-class-access-modal.component';
+import { OnlineClassPresentsListModalComponent } from '../Dashboard/OnlineClass/online-class-list/modals/online-class-presents-list-modal/online-class-presents-list-modal.component';
+import { OnlineClassLoginsModalComponent } from '../Dashboard/OnlineClass/online-class-list/modals/online-class-logins-modal/online-class-logins-modal.component';
+import { AttributeChartDataModalComponent } from '../Dashboard/category/edit/modals/attribute-chart-data-modal/attribute-chart-data-modal.component';
+import { AttributeInputModule } from "projects/index/src/app/register-item/attribute-input/attribute-input.module";
 
 @NgModule({
     imports: [
@@ -245,7 +249,8 @@ import { SelectStudentForOnlineClassAccessModalComponent } from '../Dashboard/On
         CustomEditorModule,
         CustomFormToolsModule,
         NgxFloatButtonModule,
-        MatFabMenuModule
+        MatFabMenuModule,
+        AttributeInputModule
     ],
     declarations: [
         DashboardComponent,
@@ -404,7 +409,10 @@ import { SelectStudentForOnlineClassAccessModalComponent } from '../Dashboard/On
         QuickAddAttributeModalComponent,
         OnlineClassServerEditComponent,
         OnlineClassServerListComponent,
-        SelectStudentForOnlineClassAccessModalComponent
+        SelectStudentForOnlineClassAccessModalComponent,
+        OnlineClassPresentsListModalComponent,
+        OnlineClassLoginsModalComponent,
+        AttributeChartDataModalComponent
     ],
     providers: [
         AuthGuardService,

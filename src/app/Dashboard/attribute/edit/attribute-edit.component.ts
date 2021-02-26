@@ -4,10 +4,7 @@ import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MessageService } from 'src/app/shared/services/message.service';
 import { AuthService, jsondata } from 'src/app/shared/Auth/auth.service';
-import { DomSanitizer } from '@angular/platform-browser';
 import { IUnit } from '../../unit/unit';
-import { RoleClass } from '../../role/role';
-import { MatChipInputEvent } from '@angular/material';
 import { ITags } from '../../item/tags';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { Location } from '@angular/common';
@@ -73,7 +70,6 @@ export class AttributeEditComponent implements AfterViewInit, OnInit, AfterViewC
         private activeRoute: ActivatedRoute,
         private message: MessageService,
         private auth: AuthService,
-        private sanitizer: DomSanitizer,
         public location: Location
     ) {
         this.activeRoute.params.subscribe(params => {

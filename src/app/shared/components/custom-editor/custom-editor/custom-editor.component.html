@@ -1,20 +1,18 @@
-
-
-
 <label *ngIf="showLabel">{{ label }}</label>
 
 <button mat-mini-fab color="primary" style="margin: 10px;" (click)="openSPTTDialog()">
     <mat-icon>mic</mat-icon>
 </button>
 
-<ckeditor (change)="dataChange.next($event); onChange($event)" (blur)="onTouched()" [disabled]="disabled" [(ngModel)]="content">
+<ckeditor (change)="dataChange.next($event); onChange($event)" (blur)="onTouched()" [disabled]="disabled"
+    (blur)="blur.emit()" [(ngModel)]="content">
     <ckbutton *ngIf="showPicSelection" [name]="'image'" [command]="'insert_pic'" (click)="insertPicture()"
         [icon]="'plugins/icons.png?t=K24B'" [label]="'انتخاب تصویر ار آلبوم تصاویر'">
     </ckbutton>
 </ckeditor>
 
 <ng-container *ngIf="controlDir">
-    <p *ngIf="!isValid() && controlDir.control.touched" class="error">
+    <p *ngIf="!isValid() && controlDir.control.touched && showRequiredLabel" class="error">
         وارد کردن این فیلد الزامی است
     </p>
 </ng-container>

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { IPost, getPostColor, getPostTypeString } from 'src/app/Dashboard/WebSiteManagment/post/post';
 import { AuthService, jsondata } from 'src/app/shared/Auth/auth.service';
 import { MessageService } from 'src/app/shared/services/message.service';
@@ -13,7 +13,7 @@ declare var $: any;
     templateUrl: './post.component.html',
     styleUrls: ['./post.component.scss']
 })
-export class PostComponent implements OnInit, OnDestroy {
+export class PostComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     post: IPost = new IPost();
@@ -66,14 +66,16 @@ export class PostComponent implements OnInit, OnDestroy {
         });
     }
 
+    ngAfterViewInit(): void {
+        document.getElementById("postImg").scrollIntoView();
+    }
 
     getTypeColor(type) {
         return getPostColor(type);
     }
 
     getTypeString(type) {
-        return getPostTypeString(type, this.auth.fadakTitle, this.auth.hedayatTahsiliTitle, this.auth.blogTitle, this.auth.bargozideganTitle);
-
+        return getPostTypeString(type, this.auth.fadakTitle, this.auth.hedayatTahsiliTitle, this.auth.blogTitle, this.auth.bargozideganTitle, this.auth.porseshMotadavelTitle, this.auth.ehrazeHoviatTitle);
     }
 
     getPostShortUrl() {

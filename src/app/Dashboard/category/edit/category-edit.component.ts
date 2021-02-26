@@ -3,7 +3,7 @@ import { jsondata, AuthService } from "src/app/shared/Auth/auth.service";
 import { NgForm } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { MessageService } from "src/app/shared/services/message.service";
-import { ICategory } from "../category";
+import { CategoryRegisterItemStepType, ICategory } from "../category";
 import { DomSanitizer } from "@angular/platform-browser";
 import { RoleClass } from "../../role/role";
 import { getPostTypeString } from "../../WebSiteManagment/post/post";
@@ -26,6 +26,7 @@ import { AddQuestionModalComponent } from "./modals/add-question-modal/add-quest
 import { AddGroupQuestionModalComponent } from "./modals/add-group-question-modal/add-group-question-modal.component";
 import { MatFabMenu } from "@angular-material-extensions/fab-menu";
 import { QuickAddAttributeModalComponent } from "./modals/quick-add-attribute-modal/quick-add-attribute-modal.component";
+import { AttributeChartDataModalComponent } from "./modals/attribute-chart-data-modal/attribute-chart-data-modal.component";
 
 @Component({
     templateUrl: "./category-edit.component.html",
@@ -226,6 +227,7 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
 
                 if (this.TYPE == 1) {
                     this.category.authorizeState = 2;
+                    this.category.registerItemStepType = 1;
                 }
             } else {
                 var idd = Number.parseInt(id);
@@ -526,19 +528,6 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
     }
 
     ngOnDestroy(): void {
-        let title = "category";
-        if (!this.fm1.submitted) {
-            if (this.fm1.dirty && !this.isEdit) {
-                this.auth.draft.setDraft({
-                    title: title,
-                    value: JSON.stringify(this.category)
-                });
-            }
-        } else {
-            if (!this.isEdit) {
-                this.auth.draft.removeDraft(title)
-            }
-        }
     }
 
     ngOnInit(): void {
@@ -652,7 +641,7 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
 
 
     getPostTypeString(type) {
-        return getPostTypeString(type, this.auth.fadakTitle, this.auth.hedayatTahsiliTitle, this.auth.blogTitle, this.auth.bargozideganTitle);
+        return getPostTypeString(type, this.auth.fadakTitle, this.auth.hedayatTahsiliTitle, this.auth.blogTitle, this.auth.bargozideganTitle, this.auth.porseshMotadavelTitle, this.auth.ehrazeHoviatTitle);
     }
 
     getFileUrl(url): string {
@@ -798,6 +787,15 @@ export class CategoryEditComponent implements OnInit, AfterViewInit, AfterViewCh
         }).afterClosed().subscribe(result => {
             if (result) {
                 this.refreshAttributes();
+            }
+        });
+    }
+
+    showAttributeChartData(attrId: number) {
+        this.dialog.open(AttributeChartDataModalComponent, {
+            data: {
+                attrId: attrId,
+                catId: this.category.id
             }
         });
     }

@@ -1,10 +1,9 @@
 import { Component, OnInit, Optional, Self, Input, EventEmitter, Output } from '@angular/core';
 import { NgControl, ControlValueAccessor, Validator, AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { validateMeliCode } from '../../register-item.component';
 import { IAttr } from 'src/app/Dashboard/attribute/attribute';
-import { IAttributeOption } from 'src/app/Dashboard/attribute/attribute-option';
 import { ICategory } from 'src/app/Dashboard/category/category';
 import { AuthService } from 'src/app/shared/Auth/auth.service';
+import { validateMeliCode } from '../code-meli-validator.directive';
 
 @Component({
     selector: 'app-attribute-input',
@@ -15,6 +14,8 @@ export class AttributeInputComponent implements OnInit, ControlValueAccessor, Va
 
     @Input() disabled = false;
     @Input() readonly = false;
+
+    @Input() isAttributeSingle = false;
 
     @Input() pattern = null;
 
@@ -29,7 +30,7 @@ export class AttributeInputComponent implements OnInit, ControlValueAccessor, Va
     @Output() saveItemAttributes = new EventEmitter<any>();
 
     constructor(
-        @Self()  @Optional() public controlDir: NgControl,
+        @Self() @Optional() public controlDir: NgControl,
         private auth: AuthService
     ) {
         if (controlDir) {
@@ -41,11 +42,10 @@ export class AttributeInputComponent implements OnInit, ControlValueAccessor, Va
         if (this.controlDir) {
             const control = this.controlDir.control;
             const validators: ValidatorFn[] = control.validator ? [control.validator] : [];
-            console.log(this.Attribute);
             if (this.Attribute.isRequired) {
                 validators.push(Validators.required);
             }
-            if (this.Attribute.isMeliCode) {
+            if (this.Attribute.isMeliCode && (this.Attribute.attrTypeInt == 1 || this.Attribute.attrTypeInt == 2)) {
                 validators.push(validateMeliCode);
             }
             if (this.pattern) {
@@ -71,12 +71,11 @@ export class AttributeInputComponent implements OnInit, ControlValueAccessor, Va
 
     validate(control: AbstractControl): ValidationErrors {
         const validators: ValidatorFn[] = [];
-        console.log(this.Attribute);
-        
+
         if (this.Attribute.isRequired) {
             validators.push(Validators.required);
         }
-        if (this.Attribute.isMeliCode) {
+        if (this.Attribute.isMeliCode && (this.Attribute.attrTypeInt == 1 || this.Attribute.attrTypeInt == 2)) {
             validators.push(validateMeliCode);
         }
         if (this.pattern) {
@@ -90,8 +89,53 @@ export class AttributeInputComponent implements OnInit, ControlValueAccessor, Va
 
     onTouched() { }
 
-    openc(picker) {
-        picker.open();
+    isInputValid(): boolean {
+        if (this.controlDir.valid && !this.IsUniqValueExist || this.disabled) {
+            return true;
+        }
+
+        return false;
+    }
+
+    isInputHaveValue() {
+        if (this.Attribute.isRequired) {
+            if (this.controlDir.value) {
+                return true;
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    attributeInput(val: any) {
+
+        if (this.disabled) {
+            return;
+        }
+
+        let value = val;
+
+        if (this.Attribute.attrTypeInt == 3 && value) {
+            value = val._d;
+        }
+
+        this.onChange(value);
+
+        if (this.Attribute.attrTypeInt == 7 || this.Attribute.attrTypeInt == 8) {
+            this.setItemAttrForFile(value);
+        } else {
+            this.setItemAttr(value);
+        }
+
+        this.saveItemAttrs();
+
+        if (this.Attribute.isUniq && !(this.Attribute.attrTypeInt == 4 || this.Attribute.attrTypeInt == 9)) {
+            if (this.controlDir && this.controlDir.valid) {
+                this.checkForUniqValue(value);
+            }
+        }
     }
 
     getAttrPlaceholder(): string {
@@ -110,51 +154,30 @@ export class AttributeInputComponent implements OnInit, ControlValueAccessor, Va
         return false;
     }
 
-    getShiftedItem() {
-        let options: IAttributeOption[] = (this.Attribute as any).attributeOptions || [];
-
-        if (this.Category.randomAttributeOption) {
-            options = this.shuffleArray(options);
-        }
-
-        return options;
-    }
-
-    shuffleArray(array: any[]) {
-
-        let shuffled = array
-            .map((a) => ({ sort: Math.random(), value: a }))
-            .sort((a, b) => a.sort - b.sort)
-            .map((a) => a.value)
-
-        return shuffled;
-    }
-
     clearItemAttr() {
+        if (this.isAttributeSingle) {
+            this.value = null;
+            this.attributeInput(null);
+        }
         this.clearItemAttribute.emit(this.Attribute.id);
     }
 
-    setItemAttr(value) {
+    setItemAttr(value: any) {
         this.setItemAttribute.emit({
             attrId: this.Attribute.id,
             attrValue: value
         });
     }
 
-    _File: File = null;
-    IsFileRequiredToEnter = false;
-    setItemAttrforPic(event, attrId, type) {
-
-        const fileIsInvalid = (message) => {
-            event.target.value = null;
-            event.target.files = null;
-
-            this.IsFileRequiredToEnter = true;
-
-            return this.auth.message.showWarningAlert(message);
-        }
-
+    fileIsInvalid(message: string) {
         this.clearItemAttr();
+        return this.auth.message.showWarningAlert(message);
+    }
+
+    _File: File = null;
+    setItemAttrForFile(event) {
+
+        const type = this.Attribute.attrTypeInt == 7 ? "pic" : "file";
 
         let size = type == "file" ? this.Attribute.maxFileSize : 10;
         let sizeText = type == "file" ? `${this.Attribute.maxFileSize} مگابایت` : `10 مگابایت`;
@@ -165,7 +188,7 @@ export class AttributeInputComponent implements OnInit, ControlValueAccessor, Va
             let fileExtentions = file.name.split('.');
 
             if (fileExtentions.length <= 1) {
-                fileIsInvalid("بارگذاری این فایل مجاز نمی باشد!");
+                this.fileIsInvalid("بارگذاری این فایل مجاز نمی باشد!");
                 return;
             }
 
@@ -175,34 +198,13 @@ export class AttributeInputComponent implements OnInit, ControlValueAccessor, Va
             });
 
             if (file.size / 1024 / 1024 > size) {
-                fileIsInvalid("حجم فایل باید کمتر از " + sizeText + " باشد");
+                this.fileIsInvalid("حجم فایل باید کمتر از " + sizeText + " باشد");
                 return;
             }
 
-            this.IsFileRequiredToEnter = false;
-
             this._File = file;
 
-
-            // let itemAttr = this.itemAttrs.find(
-            //     c => c.attributeId == attrId
-            // );
-
-
-            // if (itemAttr) {
-            //     itemAttr.attrubuteValue = result;
-            //     itemAttr.fileName = file.name;
-            // } else {
-            //     this.itemAttrs.push({
-            //         itemId: 0,
-            //         attributeId: attrId,
-            //         attrubuteValue: result,
-            //         attributeFilePath: "1",
-            //         fileName: file.name
-            //     });
-            // }
-
-            let result = "(binery)";
+            const result = "(binary)";
 
             this.setItemAttribute.emit({
                 attrId: this.Attribute.id,
@@ -210,7 +212,9 @@ export class AttributeInputComponent implements OnInit, ControlValueAccessor, Va
                 File: this._File
             });
 
-            this.saveItemAttrs();
+            // this.saveItemAttrs();
+        } else {
+            this.clearItemAttr();
         }
     }
 
@@ -228,20 +232,30 @@ export class AttributeInputComponent implements OnInit, ControlValueAccessor, Va
         this.saveItemAttributes.emit();
     }
 
+    canCheckForUniqAttr() {
+        if (this.value &&
+            this.Attribute.isUniq &&
+            !(this.Attribute.attrTypeInt == 4 || this.Attribute.attrTypeInt == 9 || this.Attribute.attrTypeInt == 7 || this.Attribute.attrTypeInt == 8) &&
+            this.controlDir.valid
+        ) {
+            return true;
+        }
+        return false;
+    }
 
     IsUniqValueExist = false;
-    async checkForUniqValue(val: any, attrId: number) {
+    async checkForUniqValue(val?: any) {
         try {
-            if (!val) {
+            if (!this.canCheckForUniqAttr()) {
                 return;
             }
 
-            let catId = this.Category.id;
+            const catId = this.Category.id;
 
-            let data = await this.auth.post("/api/Item/CheckForUniqAttr", {
+            const data = await this.auth.post("/api/Item/CheckForUniqAttr", {
                 catId: catId,
-                attrId: attrId,
-                val: val
+                attrId: this.Attribute.id,
+                val: val || this.controlDir.value
             }).toPromise();
 
 
@@ -250,9 +264,25 @@ export class AttributeInputComponent implements OnInit, ControlValueAccessor, Va
             } else {
                 this.IsUniqValueExist = false;
             }
-        } catch { }
+        } catch { this.IsUniqValueExist = false; }
     }
 
+
+    getUniqErrorMessage() {
+        if (this.Attribute.uniqErrorMessage) {
+            return this.Attribute.uniqErrorMessage;
+        }
+
+        return `این فیلد قبلا وارد شده است`;
+    }
+
+    getRequiredErrorMessage() {
+        if (this.Attribute.requiredErrorMessage) {
+            return this.Attribute.requiredErrorMessage;
+        }
+
+        return `وارد کردن این فیلد الزامی است`;
+    }
 
 }
 

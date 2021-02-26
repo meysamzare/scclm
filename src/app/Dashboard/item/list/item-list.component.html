@@ -73,56 +73,9 @@
                         <div class="ibox-content">
                             <div class="form-group" *ngFor="let i of searchedAttrs">
 
-                                <input *ngIf="i.attrTypeInt == 1 || i.attrTypeInt == 9" type="text" class="form-control"
-                                    placeholder="{{i.title}}" [matTooltip]="i.desc"
-                                    (input)="addSearchAttrVal(i.id, $event)" [value]="getSearchAttrVal(i.id)" />
-
-                                <input *ngIf="i.attrTypeInt == 2" type="number" class="form-control"
-                                    placeholder="{{i.title}}" [matTooltip]="i.desc"
-                                    (input)="addSearchAttrVal(i.id, $event)" [value]="getSearchAttrVal(i.id)" />
-
-                                <mat-form-field class="example-full-width" *ngIf="i.attrTypeInt == 3">
-                                    <input required matInput [matTooltip]="i.desc" [value]="getSearchAttrVal(i.id)"
-                                        readonly (click)="openc(picker)" (dateChange)="addSearchAttrVal(i.id, $event)"
-                                        [matDatepicker]="picker" placeholder="{{i.title}}">
-                                    <mat-datepicker-toggle style="font-size: 25px;" matTooltip="باز کردن تقویم"
-                                        matSuffix [for]="picker"></mat-datepicker-toggle>
-                                    <mat-datepicker #picker touchUi="true"></mat-datepicker>
-                                </mat-form-field>
-                                <button mat-mini-fab *ngIf="i.attrTypeInt == 3"
-                                    matTooltip="پاک کردن مقدار {{ i.title }}" [disabled]="!getSearchAttrVal(i.id)"
-                                    (click)="addSearchAttrVal(i.id, '')">
-                                    <mat-icon>remove</mat-icon>
-                                </button>
-
-
-                                <mat-checkbox *ngIf="i.attrTypeInt == 4" [value]="getSearchAttrVal(i.id)"
-                                    [matTooltip]="i.desc" (change)="addSearchAttrVal(i.id, $event)">{{i.title}}
-                                </mat-checkbox>
-                                <button mat-mini-fab *ngIf="i.attrTypeInt == 4"
-                                    matTooltip="پاک کردن مقدار {{ i.title }}" [disabled]="!getSearchAttrVal(i.id)"
-                                    (click)="addSearchAttrVal(i.id, '')">
-                                    <mat-icon>remove</mat-icon>
-                                </button>
-
-                                <input *ngIf="i.attrTypeInt == 5" [value]="getSearchAttrVal(i.id)" class="form-control"
-                                    type="password" placeholder="{{i.title}}" [matTooltip]="i.desc"
-                                    (input)="addSearchAttrVal(i.id, $event)" />
-
-                                <mat-form-field *ngIf="i.attrTypeInt == 6">
-                                    <mat-label>{{i.title}}</mat-label>
-                                    <mat-select style="direction: ltr" [value]="getSearchAttrVal(i.id)"
-                                        (valueChange)="addSearchAttrValForSelect(i.id, $event)">
-                                        <mat-option *ngFor="let v of getShiftedItem(i.values)" [value]="v">{{v}}
-                                        </mat-option>
-                                    </mat-select>
-                                    <mat-hint>{{i.desc}}</mat-hint>
-                                </mat-form-field>
-                                <button mat-mini-fab *ngIf="i.attrTypeInt == 6"
-                                    matTooltip="پاک کردن مقدار {{ i.title }}" [disabled]="!getSearchAttrVal(i.id)"
-                                    (click)="addSearchAttrValForSelect(i.id, '')">
-                                    <mat-icon>remove</mat-icon>
-                                </button>
+                                <app-attribute-input [isAttributeSingle]="true" [Attribute]="i"
+                                    (setItemAttribute)="addSearchAttrValDirect($event.attrId, $event.attrValue)">
+                                </app-attribute-input>
 
                             </div>
 
@@ -359,7 +312,7 @@
                                                 [class.example-expanded-row]="expandedElement === row"
                                                 (click)="expandedElement = expandedElement === row ? null : row">
                                             </tr>
-<!-- 
+                                            <!-- 
                                             <tr mat-row *matRowDef="let row; columns: ['expandedDetail']"
                                                 class="example-detail-row">
                                             </tr> -->

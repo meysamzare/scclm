@@ -18,10 +18,12 @@ export class CustomEditorComponent implements OnInit, ControlValueAccessor, Vali
     @Input() disabled: boolean = false;
     @Input() showLabel: boolean = true;
     @Input() showPicSelection: boolean = true;
+    @Input() showRequiredLabel: boolean = true;
     
     @Input() data: any = "";
 
     @Output() dataChange = new EventEmitter<any>();
+    @Output() blur = new EventEmitter<any>();
 
     constructor(
         private dialog: MatDialog,

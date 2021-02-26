@@ -53,11 +53,8 @@ export class PostsComponent implements OnInit {
         public auth: AuthService,
         private message: MessageService,
         private router: Router,
-        private activeRoute: ActivatedRoute,
-        @Inject(DOCUMENT) private document: Document
-    ) {
-
-    }
+        private activeRoute: ActivatedRoute
+    ) { }
 
     ngOnInit() {
         this.activeRoute.queryParams.subscribe(qparam => {
@@ -65,7 +62,7 @@ export class PostsComponent implements OnInit {
             var qparamType = qparam["type"];
 
 
-            this.type = qparamType || 0;
+            this.type = +qparamType || 0;
 
             if (this.type < 0) {
                 this.type = 0;
@@ -73,6 +70,13 @@ export class PostsComponent implements OnInit {
 
             if (this.type > 25) {
                 this.type = 25;
+            }
+
+            if (this.auth.gridShownPostTypes.includes(this.type)) {
+
+                this.router.navigate(["/grid-posts"], { queryParams: { type: this.type } });
+
+                return;
             }
 
 
@@ -126,6 +130,7 @@ export class PostsComponent implements OnInit {
         this.isLoadingData = true;
         this.auth.post("/api/Post/GetIndex", {
             page: this.page,
+            size: this.pageSize,
             type: this.type,
             sort: this.sort,
             searchText: this.searchText,
@@ -208,7 +213,7 @@ export class PostsComponent implements OnInit {
     }
 
     setSearchAuthors(author, $evant) {
-        
+
         var sauth = this.searchAuthors.find(c => c == author);
 
         if ($evant.checked) {
@@ -249,11 +254,9 @@ export class PostsComponent implements OnInit {
 
 
     getTypeString(type?) {
-        if (type) {
-            return getPostTypeString(type, this.auth.fadakTitle, this.auth.hedayatTahsiliTitle, this.auth.blogTitle, this.auth.bargozideganTitle);
-        }
-        return getPostTypeString(this.type, this.auth.fadakTitle, this.auth.hedayatTahsiliTitle, this.auth.blogTitle, this.auth.bargozideganTitle);
+        const postType = type || this.type;
 
+        return getPostTypeString(postType, this.auth.fadakTitle, this.auth.hedayatTahsiliTitle, this.auth.blogTitle, this.auth.bargozideganTitle, this.auth.porseshMotadavelTitle, this.auth.ehrazeHoviatTitle);
     }
 
 }

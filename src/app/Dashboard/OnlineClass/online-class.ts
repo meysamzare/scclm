@@ -26,8 +26,8 @@ export class IOnlineClass {
 
     welcome = "";
 
-    maxParticipants = 50;
-    duration = 200;
+    maxParticipants = null;
+    duration = null;
 
     // auto Set
     logoutURL = "";
